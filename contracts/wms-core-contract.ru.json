@@ -1,6 +1,6 @@
 {
   "specification_version": "0.1.0",
-  "status": "architectural_proposal_not_implemented",
+  "status": "architecture_with_partial_postgresql_implementation",
   "language": "ru",
   "scope": "Общее ядро WMS, стандартные складские процессы и контракт клиентских модулей. Все номера релизов в примерах условные.",
   "deployment": "Выделенная установка и база на клиента; одно ядро для облака и размещения у клиента. Клиентская сборка фиксирует точные версии и хеши артефактов после CI.",
@@ -111,7 +111,7 @@
   ],
   "quantity_contract": {
     "transport": "Decimal string, never a JSON floating-point quantity.",
-    "storage": "Exact PostgreSQL numeric; final precision and scale are chosen from the product workload and unit rules before DDL.",
+    "storage": "PostgreSQL numeric(24,6), up to 18 integral and 6 fractional digits; item quantity_scale further restricts precision. Command input is validated before storage conversion.",
     "base_unit": "Проведённые количества учитываются в базовой единице; пересчёт и округление явные и фиксируются в документе.",
     "available": "on_hand - active_reserved только внутри пригодного состояния запаса. Карантин — отдельное состояние, а не повторное вычитание blocked.",
     "serial": "Для серийного экземпляра количество в базовых штуках равно 0 или 1; один экземпляр не резервируется двум исполнителям."

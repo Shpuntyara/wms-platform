@@ -1,0 +1,173 @@
+{
+  "status": "passed",
+  "postgresql": "17.11",
+  "passed": 41,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Receipt posts balance, ledger, operation and outbox",
+      "status": "passed"
+    },
+    {
+      "name": "NULL lot and serial do not create duplicate balance identities",
+      "status": "passed"
+    },
+    {
+      "name": "Concurrent balance identity creation returns one ID",
+      "status": "passed"
+    },
+    {
+      "name": "Partial reservation release preserves physical stock",
+      "status": "passed"
+    },
+    {
+      "name": "Cannot reserve more than available stock",
+      "status": "passed"
+    },
+    {
+      "name": "Cannot reserve beyond unfulfilled order quantity",
+      "status": "passed"
+    },
+    {
+      "name": "Identical retry returns original result despite stale expected version",
+      "status": "passed"
+    },
+    {
+      "name": "Same command ID with changed payload is rejected",
+      "status": "passed"
+    },
+    {
+      "name": "Changed actor cannot replay or read another actor command result",
+      "status": "passed"
+    },
+    {
+      "name": "Stale document version is rejected for a new command",
+      "status": "passed"
+    },
+    {
+      "name": "Free transfer debits and credits atomically",
+      "status": "passed"
+    },
+    {
+      "name": "Picking relocates reservation without fulfilling the shipment",
+      "status": "passed"
+    },
+    {
+      "name": "Issue consumes reservation and increases fulfillment",
+      "status": "passed"
+    },
+    {
+      "name": "Free transfer cannot steal reserved stock",
+      "status": "passed"
+    },
+    {
+      "name": "Failure after balance changes rolls back all effects",
+      "status": "passed"
+    },
+    {
+      "name": "Exact fractional quantities obey item scale without silent rounding",
+      "status": "passed"
+    },
+    {
+      "name": "Reject quantity 0",
+      "status": "passed"
+    },
+    {
+      "name": "Reject quantity -1",
+      "status": "passed"
+    },
+    {
+      "name": "Reject quantity NaN",
+      "status": "passed"
+    },
+    {
+      "name": "Reject quantity Infinity",
+      "status": "passed"
+    },
+    {
+      "name": "Reject quantity 0.0000001",
+      "status": "passed"
+    },
+    {
+      "name": "Quarantine stock is visible but not allocatable",
+      "status": "passed"
+    },
+    {
+      "name": "A serial has one live location and can be transferred",
+      "status": "passed"
+    },
+    {
+      "name": "Lot-tracked item requires a lot",
+      "status": "passed"
+    },
+    {
+      "name": "Serial cannot be paired with a different lot",
+      "status": "passed"
+    },
+    {
+      "name": "Composite foreign keys reject cross-organization stock identity",
+      "status": "passed"
+    },
+    {
+      "name": "Reservation cannot use another item",
+      "status": "passed"
+    },
+    {
+      "name": "Incomplete operation cannot commit",
+      "status": "passed"
+    },
+    {
+      "name": "Posted movement history rejects updates",
+      "status": "passed"
+    },
+    {
+      "name": "Runtime cannot write balances or invoke private helpers",
+      "status": "passed"
+    },
+    {
+      "name": "Module read role cannot call posting functions or mutate core",
+      "status": "passed"
+    },
+    {
+      "name": "Module writes its own storage while decisions remain append-only",
+      "status": "passed"
+    },
+    {
+      "name": "Expired reservation blocks new issue, supports replay and explicit expiry release",
+      "status": "passed"
+    },
+    {
+      "name": "Concurrent reservations of the last stock cannot oversell",
+      "status": "passed"
+    },
+    {
+      "name": "Concurrent identical commands post once",
+      "status": "passed"
+    },
+    {
+      "name": "Opposite-direction transfers use consistent lock order",
+      "status": "passed"
+    },
+    {
+      "name": "Prepare and post share a transaction; retry bypasses stale guard snapshot",
+      "status": "passed"
+    },
+    {
+      "name": "Prepared command cannot commit without posting",
+      "status": "passed"
+    },
+    {
+      "name": "Guard denial rolls back prepared operation before stock posting",
+      "status": "passed"
+    },
+    {
+      "name": "Outbox envelope follows published contract and accompanies every completed command",
+      "status": "passed"
+    },
+    {
+      "name": "All balances and document reservations reconcile with durable history",
+      "status": "passed"
+    }
+  ],
+  "scope": "Isolated PostgreSQL integration checks; no load, HA, crash durability or application authorization verification."
+}

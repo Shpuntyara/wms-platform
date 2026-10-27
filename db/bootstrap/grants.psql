@@ -1,0 +1,16 @@
+\set ON_ERROR_STOP on
+-- Run as the schema owner. Roles are provisioned by installation management.
+-- Required psql variables: runtime_role, module_role. No login or secret creation.
+GRANT USAGE ON SCHEMA inventory, warehouse, platform, contracts_v1 TO :"runtime_role";
+GRANT SELECT ON contracts_v1.stock_balances, contracts_v1.documents TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION inventory.ensure_balance(uuid,uuid,uuid,uuid,uuid,text,uuid,uuid) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION inventory.reserve_stock(uuid,uuid,uuid,bigint,uuid,numeric,timestamptz) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION inventory.release_reservation(uuid,uuid,uuid,bigint,numeric,text) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION inventory.prepare_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION warehouse.lock_document(uuid,bigint) TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION platform.get_operation_result(uuid,uuid,uuid,uuid) TO :"runtime_role";
+
+-- A module read role has no direct core writes or posting privileges.
+GRANT USAGE ON SCHEMA contracts_v1 TO :"module_role";
+GRANT SELECT ON contracts_v1.stock_balances, contracts_v1.documents TO :"module_role";
