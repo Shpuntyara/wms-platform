@@ -38,6 +38,10 @@ jobs:
           cache: true
       - name: Prepare disposable database
         run: python3 scripts/prepare-test-db.py --psql psql --port 5432
+      - name: Migration recipes and database upgrade regressions
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_*migrat*.py'
+          python3 scripts/verify-migrations.py --psql psql --port 5432
       - name: Formatting and static analysis
         run: |
           test -z "$(gofmt -l cmd internal)"
@@ -49,7 +53,7 @@ jobs:
         run: |
           mkdir -p work
           set -o pipefail
-          go test -race -tags=integration ./... -count=1 -timeout=120s -json | tee work/go-tests.jsonl
+          go test -race -tags=integration ./... -count=1 -timeout=600s -json | tee work/go-tests.jsonl
       - name: SQL kernel regressions and complete report
         run: |
           python3 tests/postgres_kernel.py --psql psql --port 5432 --database wms_kernel_test_backend --admin wms_test_admin --report work/postgres-kernel.json
@@ -65,4 +69,5 @@ jobs:
             work/go-tests.jsonl
             work/postgres-kernel.json
             work/verification.json
+            work/migration-verification.json
           if-no-files-found: error

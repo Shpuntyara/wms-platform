@@ -11,6 +11,7 @@ import (
 
 	"github.com/Shpuntyara/wms-platform/internal/auth"
 	"github.com/Shpuntyara/wms-platform/internal/inventory"
+	"github.com/Shpuntyara/wms-platform/internal/jobs"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
 )
 
@@ -208,19 +209,48 @@ func TestReleaseReasonUnicodeLength(t *testing.T) {
 	}
 }
 
-func TestReadinessIncludesBackgroundProcessing(t *testing.T) {
+func TestReadinessSurvivesBackgroundFailure(t *testing.T) {
 	registry, err := modules.NewRegistry(nil, nil, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	handler, err := New(Config{Backend: &fakeBackend{}, Auth: fakeAuth{}, Modules: registry, BackgroundReady: func() error { return errors.New("private worker failure") }})
+	worker := &jobs.Worker{}
+	if worker.Ready() == nil {
+		t.Fatal("test requires unhealthy background processing")
+	}
+	handler, err := New(Config{Backend: &fakeBackend{}, Auth: fakeAuth{}, Modules: registry})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if w := request(handler, "GET", "/readyz", "", "", "", ""); w.Code != 503 || strings.Contains(w.Body.String(), "private") {
+	if w := request(handler, "GET", "/readyz", "", "", "", ""); w.Code != 200 || strings.Contains(w.Body.String(), "private") {
 		t.Fatalf("readiness=%d %s", w.Code, w.Body)
 	}
 	if w := request(handler, "GET", "/livez", "", "", "", ""); w.Code != 200 {
 		t.Fatal(w.Code)
+	}
+}
+
+func (b *fakeBackend) CommandDocument(context.Context, inventory.Principal, string, string, inventory.DocumentInput, *modules.Registry) (json.RawMessage, error) {
+	b.calls++
+	return json.RawMessage(`{}`), b.err
+}
+func TestDocumentInputValidationPrecedesBackend(t *testing.T) {
+	for _, tc := range []struct {
+		name, path, body string
+		status           int
+	}{
+		{"empty lines", "/api/v1/documents", `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","owner_id":"` + testActor + `","kind":"receipt","number":"R-1","lines":[]}`, 400},
+		{"float quantity", "/api/v1/documents", `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","owner_id":"` + testActor + `","kind":"receipt","number":"R-1","lines":[{"item_id":"` + testLine + `","quantity":1.5}]}`, 400},
+		{"unknown field", "/api/v1/documents", `{"organization_id":"` + testOrg + `","admin":true}`, 400},
+		{"transition cannot change lines", "/api/v1/documents/" + testLine + "/transitions", `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","state":"active","expected_document_version":1,"lines":[]}`, 400},
+		{"invalid transition state", "/api/v1/documents/" + testLine + "/transitions", `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","state":"draft","expected_document_version":1}`, 400},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			h, b := testHandler(t)
+			w := request(h, "POST", tc.path, tc.body, "valid", testCommand, "application/json")
+			if w.Code != tc.status || b.calls != 0 {
+				t.Fatalf("status=%d calls=%d body=%s", w.Code, b.calls, w.Body)
+			}
+		})
 	}
 }

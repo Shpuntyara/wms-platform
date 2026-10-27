@@ -1,5 +1,5 @@
 \set ON_ERROR_STOP on
--- Apply after core migrations through 0008, in addition to grants.psql.
+-- Apply after core migrations through 0009, in addition to grants.psql.
 GRANT SELECT ON contracts_v1.actor_grants, contracts_v1.document_lines,
   contracts_v1.reservations, contracts_v1.movements, contracts_v1.operations,
   contracts_v1.active_modules, contracts_v1.module_migrations TO :"runtime_role";
@@ -12,3 +12,6 @@ GRANT EXECUTE ON FUNCTION inventory.expire_reservations(integer),platform.claim_
 GRANT EXECUTE ON FUNCTION platform.lock_module_configuration() TO :"runtime_role";
 
 GRANT SELECT ON contracts_v1.background_health TO :"runtime_role";
+
+GRANT SELECT ON contracts_v1.document_details TO :"runtime_role";
+GRANT EXECUTE ON FUNCTION warehouse.command_document(uuid,uuid,uuid,jsonb) TO :"runtime_role";

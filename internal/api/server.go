@@ -25,15 +25,15 @@ type Backend interface {
 	List(context.Context, inventory.Resource, inventory.Scope, inventory.Filters) (inventory.Page, error)
 	Get(context.Context, inventory.Resource, inventory.Scope, string) (json.RawMessage, error)
 	Execute(context.Context, inventory.Principal, inventory.Command, *modules.Registry) (json.RawMessage, error)
+	CommandDocument(context.Context, inventory.Principal, string, string, inventory.DocumentInput, *modules.Registry) (json.RawMessage, error)
 	Ping(context.Context) error
 }
 type Config struct {
-	BackgroundReady func() error
-	Backend         Backend
-	Auth            auth.Authenticator
-	Modules         *modules.Registry
-	RequestTimeout  time.Duration
-	Logger          *slog.Logger
+	Backend        Backend
+	Auth           auth.Authenticator
+	Modules        *modules.Registry
+	RequestTimeout time.Duration
+	Logger         *slog.Logger
 }
 type Server struct {
 	config Config
@@ -66,10 +66,6 @@ func New(config Config) (http.Handler, error) {
 			s.problem(w, r, &inventory.Problem{Status: 503, Code: "not_ready", Detail: "A required dependency is unavailable."})
 			return
 		}
-		if s.config.BackgroundReady != nil && s.config.BackgroundReady() != nil {
-			s.problem(w, r, &inventory.Problem{Status: 503, Code: "not_ready", Detail: "Background processing is unavailable."})
-			return
-		}
 		writeJSON(w, 200, map[string]string{"status": "ready"})
 	})
 	for _, resource := range []inventory.Resource{inventory.StockResource, inventory.ReservationResource, inventory.MovementResource} {
@@ -94,6 +90,26 @@ func New(config Config) (http.Handler, error) {
 			}
 		})
 	}
+	s.mux.HandleFunc("/api/v1/documents", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			s.list(w, r, inventory.DocumentResource)
+		case http.MethodPost:
+			s.documentCommand(w, r, false)
+		default:
+			s.method(w, r, "GET, POST")
+		}
+	})
+	s.mux.HandleFunc("/api/v1/documents/{id}", func(w http.ResponseWriter, r *http.Request) {
+		if s.method(w, r, "GET") {
+			s.get(w, r, inventory.DocumentResource)
+		}
+	})
+	s.mux.HandleFunc("/api/v1/documents/{id}/transitions", func(w http.ResponseWriter, r *http.Request) {
+		if s.method(w, r, "POST") {
+			s.documentCommand(w, r, true)
+		}
+	})
 	s.mux.HandleFunc("/api/v1/reservations/{id}/releases", func(w http.ResponseWriter, r *http.Request) {
 		if s.method(w, r, "POST") {
 			s.mutate(w, r, inventory.ReservationResource, true)

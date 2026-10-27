@@ -119,7 +119,7 @@ func run(logger *slog.Logger) error {
 		concurrency = n
 	}
 	worker := jobs.Worker{Store: jobStore, Sender: sender, Logger: logger, Concurrency: concurrency}
-	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger, BackgroundReady: worker.Ready})
+	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger})
 	if err != nil {
 		return err
 	}

@@ -1,0 +1,27 @@
+{
+  "status": "expected failures observed before implementation",
+  "source": "local test console during this task",
+  "checks": [
+    {
+      "test": "TestReadinessSurvivesBackgroundFailure",
+      "observed": "readiness=503 while database healthy; background failure supplied",
+      "expected": "200"
+    },
+    {
+      "tests": [
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI",
+        "TestDocumentCommandsRejectScopeAndInvalidLines"
+      ],
+      "observed": "404 for POST /api/v1/documents before route implementation",
+      "expected": "201 and 403 respectively"
+    },
+    {
+      "test": "MigrationPlanTests",
+      "observed": "ModuleNotFoundError: No module named migrate_core before runner implementation"
+    },
+    {
+      "test": "LegacyPlanTests",
+      "observed": "TypeError: build_script() got an unexpected keyword argument legacy_through before explicit legacy upgrade support"
+    }
+  ]
+}

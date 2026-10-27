@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "WMS inventory backend",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "description": "Inventory API backed by PostgreSQL kernel commands. OIDC JWT access tokens identify users; database grants authorize warehouses and owners. PostgreSQL is the sole business guard evaluator; the host validates module configuration. Trusted compiled modules and bounded declarative policies are supported. Product licensing is not selected yet."
   },
   "servers": [
@@ -869,7 +869,7 @@
     "/readyz": {
       "get": {
         "summary": "Check ready",
-        "description": "Checks database connectivity and mandatory background processing health. Returns 503 for stale loops, dead events or an ageing backlog. Workers continue draining while HTTP readiness is withdrawn.",
+        "description": "API database readiness only. Broker, relay, expiry and backlog health are reported separately on the loopback operations listener and do not withdraw the API.",
         "operationId": "getReady",
         "tags": [
           "Health"
@@ -918,6 +918,301 @@
         },
         "security": []
       }
+    },
+    "/api/v1/documents": {
+      "get": {
+        "summary": "List warehouse documents with planned and fulfilled lines",
+        "description": "Requires document.read. Supports owner_id and bound pagination; item, position and document_line filters are rejected.",
+        "operationId": "listDocuments",
+        "tags": [
+          "Inventory"
+        ],
+        "responses": {
+          "200": {
+            "description": "One bounded page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Problem401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Problem403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem404"
+          },
+          "405": {
+            "$ref": "#/components/responses/Problem405"
+          },
+          "409": {
+            "$ref": "#/components/responses/Problem409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Problem413"
+          },
+          "415": {
+            "$ref": "#/components/responses/Problem415"
+          },
+          "500": {
+            "$ref": "#/components/responses/Problem500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem503"
+          }
+        },
+        "x-required-permission": "document.read",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Organization"
+          },
+          {
+            "$ref": "#/components/parameters/Warehouse"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "name": "owner_id",
+            "in": "query",
+            "description": "Additional filter within the authorized scope.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a draft warehouse document",
+        "description": "Creates all planned lines atomically. Requires document.create for the owner. Up to 200 lines; quantities use the SKU scale. Idempotency includes the complete request.",
+        "operationId": "createDocument",
+        "tags": [
+          "Inventory"
+        ],
+        "responses": {
+          "201": {
+            "description": "Command committed, or the identical previously committed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Problem401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Problem403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem404"
+          },
+          "405": {
+            "$ref": "#/components/responses/Problem405"
+          },
+          "409": {
+            "$ref": "#/components/responses/Problem409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Problem413"
+          },
+          "415": {
+            "$ref": "#/components/responses/Problem415"
+          },
+          "500": {
+            "$ref": "#/components/responses/Problem500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem503"
+          }
+        },
+        "x-required-permission": "document.create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/documents/{id}": {
+      "get": {
+        "summary": "Read a scoped warehouse document",
+        "description": "Includes planned, reserved and fulfilled line quantities.",
+        "operationId": "getDocument",
+        "tags": [
+          "Inventory"
+        ],
+        "responses": {
+          "200": {
+            "description": "Scoped resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Problem401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Problem403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem404"
+          },
+          "405": {
+            "$ref": "#/components/responses/Problem405"
+          },
+          "409": {
+            "$ref": "#/components/responses/Problem409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Problem413"
+          },
+          "415": {
+            "$ref": "#/components/responses/Problem415"
+          },
+          "500": {
+            "$ref": "#/components/responses/Problem500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem503"
+          }
+        },
+        "x-required-permission": "document.read",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Organization"
+          },
+          {
+            "$ref": "#/components/parameters/Warehouse"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Resource UUID.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
+    },
+    "/api/v1/documents/{id}/transitions": {
+      "post": {
+        "summary": "Activate, close or cancel a warehouse document",
+        "description": "Requires document.transition. Locks the document and checks expected version. draft -> active/cancelled, active -> closed/cancelled. Closing requires every line fulfilled and zero reservations. Cancellation requires no fulfilled or reserved quantity. Closed/cancelled documents cannot reopen.",
+        "operationId": "transitionDocument",
+        "tags": [
+          "Inventory"
+        ],
+        "responses": {
+          "201": {
+            "description": "Command committed, or the identical previously committed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentResultResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Problem400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Problem401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Problem403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Problem404"
+          },
+          "405": {
+            "$ref": "#/components/responses/Problem405"
+          },
+          "409": {
+            "$ref": "#/components/responses/Problem409"
+          },
+          "413": {
+            "$ref": "#/components/responses/Problem413"
+          },
+          "415": {
+            "$ref": "#/components/responses/Problem415"
+          },
+          "500": {
+            "$ref": "#/components/responses/Problem500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem503"
+          }
+        },
+        "x-required-permission": "document.transition",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentTransitionInput"
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Resource UUID.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ]
     }
   },
   "components": {
@@ -1662,6 +1957,321 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Movement"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "next_cursor": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 2048
+              }
+            },
+            "required": [
+              "next_cursor"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "DocumentLineInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item_id",
+          "quantity"
+        ],
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,17})(\\.[0-9]{1,6})?$",
+            "description": "Positive exact quantity. Zero is rejected. Item-specific precision is enforced by PostgreSQL.",
+            "not": {
+              "pattern": "^0(?:\\.0{1,6})?$"
+            }
+          }
+        }
+      },
+      "DocumentInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "organization_id",
+          "warehouse_id",
+          "owner_id",
+          "kind",
+          "number",
+          "lines"
+        ],
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "owner_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "receipt",
+              "shipment",
+              "transfer",
+              "adjustment"
+            ]
+          },
+          "number": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "lines": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 200,
+            "items": {
+              "$ref": "#/components/schemas/DocumentLineInput"
+            }
+          }
+        }
+      },
+      "DocumentTransitionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "organization_id",
+          "warehouse_id",
+          "expected_document_version",
+          "state"
+        ],
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expected_document_version": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "closed",
+              "cancelled"
+            ]
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "warehouse_id",
+          "owner_id",
+          "kind",
+          "number",
+          "state",
+          "version",
+          "content_revision",
+          "lines"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "owner_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "number": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "active",
+              "closed",
+              "cancelled"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "content_revision": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "line_no",
+                "item_id",
+                "requested_qty",
+                "reserved_qty",
+                "fulfilled_qty"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "line_no": {
+                  "type": "integer"
+                },
+                "item_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "requested_qty": {
+                  "type": "string"
+                },
+                "reserved_qty": {
+                  "type": "string"
+                },
+                "fulfilled_qty": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DocumentResult": {
+        "type": "object",
+        "required": [
+          "operation_id",
+          "document_id",
+          "document_version",
+          "content_revision",
+          "state",
+          "lines"
+        ],
+        "properties": {
+          "operation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "document_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "document_version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "content_revision": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "state": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "line_no",
+                "item_id",
+                "requested_qty",
+                "reserved_qty",
+                "fulfilled_qty"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "line_no": {
+                  "type": "integer"
+                },
+                "item_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "requested_qty": {
+                  "type": "string"
+                },
+                "reserved_qty": {
+                  "type": "string"
+                },
+                "fulfilled_qty": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DocumentResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Document"
+          }
+        }
+      },
+      "DocumentResultResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DocumentResult"
+          }
+        }
+      },
+      "DocumentPage": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Document"
             }
           },
           "pagination": {

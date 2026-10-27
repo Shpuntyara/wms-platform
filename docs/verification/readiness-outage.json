@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "environment": "Local isolated PostgreSQL 17.11, Go 1.27.3 with race detector, actual refused TCP connection to TLS receiver then restoration at the same address; real time and retry delays.",
+  "runs": [
+    {
+      "outage_seconds": 120,
+      "recovery_seconds": 63.9866701,
+      "api_writes": 600,
+      "verified_event_ids": 601,
+      "events": [
+        {
+          "Time": "2026-10-27T22:17:57.7111899+01:00",
+          "Action": "run",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers"
+        },
+        {
+          "Time": "2026-10-27T22:17:57.7111899+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "=== RUN   TestBrokerOutageKeepsAPIAvailableAndRecovers\n",
+          "OutputType": "frame"
+        },
+        {
+          "Time": "2026-10-27T22:21:02.1347564+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "    store_outage_integration_test.go:152: actual outage=2m0s recovery=1m3.9866701s writes=600 durable_events=601 delivery_errors=3212 background_unhealthy_observed=true\n"
+        },
+        {
+          "Time": "2026-10-27T22:21:02.1358518+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "--- PASS: TestBrokerOutageKeepsAPIAvailableAndRecovers (184.42s)\n",
+          "OutputType": "frame"
+        },
+        {
+          "Time": "2026-10-27T22:21:02.1358518+01:00",
+          "Action": "pass",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Elapsed": 184.42
+        }
+      ]
+    },
+    {
+      "outage_seconds": 300,
+      "recovery_seconds": 256.193676,
+      "api_writes": 1500,
+      "verified_event_ids": 1501,
+      "events": [
+        {
+          "Time": "2026-10-27T22:41:31.4264719+01:00",
+          "Action": "run",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers"
+        },
+        {
+          "Time": "2026-10-27T22:41:31.4264719+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "=== RUN   TestBrokerOutageKeepsAPIAvailableAndRecovers\n",
+          "OutputType": "frame"
+        },
+        {
+          "Time": "2026-10-27T22:50:47.8346571+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "    store_outage_integration_test.go:152: actual outage=5m0s recovery=4m16.193676s writes=1500 durable_events=1501 delivery_errors=9969 background_unhealthy_observed=true\n"
+        },
+        {
+          "Time": "2026-10-27T22:50:47.8356963+01:00",
+          "Action": "output",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Output": "--- PASS: TestBrokerOutageKeepsAPIAvailableAndRecovers (556.41s)\n",
+          "OutputType": "frame"
+        },
+        {
+          "Time": "2026-10-27T22:50:47.8356963+01:00",
+          "Action": "pass",
+          "Package": "github.com/Shpuntyara/wms-platform/internal/postgres",
+          "Test": "TestBrokerOutageKeepsAPIAvailableAndRecovers",
+          "Elapsed": 556.41
+        }
+      ]
+    }
+  ]
+}

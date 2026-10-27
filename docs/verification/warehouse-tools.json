@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "go": "1.27.3",
+  "postgres": "17.11",
+  "checks": [
+    "go vet -tags=integration ./...",
+    "go test -race -tags=integration ./... -count=1 -timeout=600s -json",
+    "go mod verify",
+    "scoped go fix clean",
+    "govulncheck v1.9.0: no vulnerabilities found",
+    "OpenAPI internal references, unique operation ids and path parameters validated",
+    "DocumentInput schema accepts decimal strings and rejects numeric JSON",
+    "three migration recipe unit tests, nine real PostgreSQL migration scenarios"
+  ],
+  "openapi_references_checked": 236
+}

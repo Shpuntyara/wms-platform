@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory=$true)][string]$PgBin,
     [Parameter(Mandatory=$true)][string]$GoExe,
     [Parameter(Mandatory=$true)][string]$PythonExe,
-    [string]$Report = 'work/go-backend-verification.json'
+    [string]$Report = 'work/go-backend-verification.json',
+    [int]$BrokerOutageSeconds = 0
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -20,6 +21,8 @@ $ctl = Join-Path $PgBin 'pg_ctl.exe'
 $started = $false
 $priorAdmin = $env:WMS_TEST_ADMIN_DSN
 $priorRuntime = $env:WMS_TEST_RUNTIME_DSN
+$priorOutage = $env:WMS_BROKER_OUTAGE_SECONDS
+if ($BrokerOutageSeconds -gt 0) { $env:WMS_BROKER_OUTAGE_SECONDS = "$BrokerOutageSeconds" }
 
 function Invoke-Checked([string]$Program, [string[]]$Arguments) {
     & $Program @Arguments
@@ -36,10 +39,12 @@ try {
     Invoke-Checked $PythonExe @('scripts/prepare-test-db.py','--psql',$psql,'--port',"$testPort",'--admin','wms_test_admin')
     $env:WMS_TEST_ADMIN_DSN = "postgres://wms_test_admin@127.0.0.1:$testPort/wms_kernel_test_backend?sslmode=disable"
     $env:WMS_TEST_RUNTIME_DSN = "postgres://wms_go_runtime@127.0.0.1:$testPort/wms_kernel_test_backend?sslmode=disable"
+    Invoke-Checked $PythonExe @('-m','unittest','discover','-s','scripts','-p','test_*migrat*.py')
+    Invoke-Checked $PythonExe @('scripts/verify-migrations.py','--psql',$psql,'--port',"$testPort",'--admin','wms_test_admin')
     Write-Host 'Running vet and Go unit/integration tests with race detection'
     Invoke-Checked $GoExe @('vet','-tags=integration','./...')
     $events = Join-Path $testRoot 'go-tests.jsonl'
-    & $GoExe test -race -tags=integration ./... -count=1 -timeout=120s -json | Set-Content -LiteralPath $events -Encoding utf8
+    & $GoExe test -race -tags=integration ./... -count=1 -timeout=600s -json | Set-Content -LiteralPath $events -Encoding utf8
     if ($LASTEXITCODE -ne 0) { throw "Go tests failed; inspect $events" }
     Write-Host 'Running existing SQL-kernel regression scenarios'
     $legacy = Join-Path $testRoot 'postgres-kernel.json'
@@ -52,5 +57,6 @@ try {
     if ($started) { & $ctl -D $dataPath -m fast -w stop; if ($LASTEXITCODE -ne 0) { Write-Warning "Could not stop isolated PostgreSQL at $dataPath" } }
     $env:WMS_TEST_ADMIN_DSN = $priorAdmin
     $env:WMS_TEST_RUNTIME_DSN = $priorRuntime
+    $env:WMS_BROKER_OUTAGE_SECONDS = $priorOutage
     Pop-Location
 }

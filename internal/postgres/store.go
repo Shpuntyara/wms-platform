@@ -59,7 +59,7 @@ func New(ctx context.Context, pool *pgxpool.Pool) (*Store, error) {
 	if privileged {
 		return nil, errors.New("unsafe database role: application must not own, write or administer core or module objects")
 	}
-	for _, view := range []string{"stock_balances", "documents", "document_lines", "reservations", "movements", "operations", "actor_grants", "active_modules", "module_migrations"} {
+	for _, view := range []string{"stock_balances", "documents", "document_details", "document_lines", "reservations", "movements", "operations", "actor_grants", "active_modules", "module_migrations"} {
 		if _, err := pool.Exec(ctx, "SELECT 1 FROM contracts_v1."+view+" LIMIT 0"); err != nil {
 			return nil, fmt.Errorf("backend schema unavailable: %w", err)
 		}
@@ -176,6 +176,8 @@ type readSpec struct{ view, projection string }
 
 func spec(resource inventory.Resource) (readSpec, error) {
 	switch resource {
+	case inventory.DocumentResource:
+		return readSpec{"document_details", `to_jsonb(document_details)`}, nil
 	case inventory.StockResource:
 		return readSpec{"stock_balances", `jsonb_build_object('id',id,'organization_id',organization_id,'warehouse_id',warehouse_id,
       'owner_id',owner_id,'item_id',item_id,'position_id',position_id,'stock_state',stock_state,'lot_id',lot_id,'serial_id',serial_id,
@@ -235,6 +237,9 @@ func (s *Store) List(ctx context.Context, resource inventory.Resource, scope inv
 	}
 	if f.OwnerID != "" && !scope.AllowsOwner(f.OwnerID) {
 		return page, inventory.Forbidden()
+	}
+	if resource == inventory.DocumentResource && (f.ItemID != "" || f.PositionID != "" || f.DocumentLineID != "") {
+		return page, inventory.Invalid("unsupported_filter")
 	}
 	if f.PositionID != "" && resource != inventory.StockResource || f.DocumentLineID != "" && resource == inventory.StockResource {
 		return page, inventory.Invalid("unsupported_filter")
@@ -507,6 +512,11 @@ func translate(err error) error {
 		return inventory.Invalid("invalid_value")
 	case "22P02", "22003", "22007", "22008":
 		return inventory.Invalid("invalid_value")
+	case "42501":
+		if pgerr.Message == "forbidden" {
+			return inventory.Forbidden()
+		}
+		return &inventory.Problem{Status: 503, Code: "database_busy", Detail: "The operation is unavailable."}
 	case "P0001":
 		if pgerr.Message == "required_guard_unavailable" {
 			return &modules.Unavailable{}
@@ -514,13 +524,13 @@ func translate(err error) error {
 		if pgerr.Message == "module_guard_denied" {
 			return &inventory.Problem{Status: 409, Code: "module_guard_denied", Detail: "A required module policy denied this operation."}
 		}
-		allowed := map[string]bool{"document_version_conflict": true, "document_not_active": true, "insufficient_available_stock": true, "insufficient_active_reservation": true, "reservation_mismatch": true, "reservation_expired": true, "reservation_expiry_in_past": true, "stock_scope_mismatch": true, "stock_state_not_allocatable": true, "target_state_not_allocatable": true, "stock_state_not_shippable": true, "document_kind_mismatch": true, "invalid_movement_shape": true, "invalid_movement_kind": true, "adjustment_reason_required": true, "release_reason_required": true, "reservation_requires_shipment": true, "correction_requires_adjustment": true, "correction_scope_mismatch": true, "transfer_tracking_mismatch": true}
+		allowed := map[string]bool{"invalid_document_transition": true, "document_incomplete": true, "document_has_activity": true, "document_version_conflict": true, "document_not_active": true, "insufficient_available_stock": true, "insufficient_active_reservation": true, "reservation_mismatch": true, "reservation_expired": true, "reservation_expiry_in_past": true, "stock_scope_mismatch": true, "stock_state_not_allocatable": true, "target_state_not_allocatable": true, "stock_state_not_shippable": true, "document_kind_mismatch": true, "invalid_movement_shape": true, "invalid_movement_kind": true, "adjustment_reason_required": true, "release_reason_required": true, "reservation_requires_shipment": true, "correction_requires_adjustment": true, "correction_scope_mismatch": true, "transfer_tracking_mismatch": true}
 		if allowed[pgerr.Message] {
 			return &inventory.Problem{Status: 409, Code: pgerr.Message, Detail: "The operation conflicts with the current inventory or document state."}
 		}
 	case "23514", "23505", "23503":
 		return &inventory.Problem{Status: 409, Code: "inventory_constraint_conflict", Detail: "The operation conflicts with inventory constraints."}
-	case "40P01", "40001", "55P03", "57014", "57P01", "53300", "42501":
+	case "40P01", "40001", "55P03", "57014", "57P01", "53300":
 		return &inventory.Problem{Status: 503, Code: "database_busy", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
 	return errors.New("unexpected database error")

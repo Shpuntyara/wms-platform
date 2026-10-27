@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "checks": [
+    "legacy database refused without declaration",
+    "explicit 0007 adoption and upgrade to 0009",
+    "guard OID and dependent view preserved",
+    "repeat all migrations",
+    "checksum drift refused",
+    "simultaneous migrator refused",
+    "wrong index definition refused",
+    "partial concurrent migration resumed",
+    "explicit 0008 adoption and upgrade to 0009"
+  ]
+}

@@ -12,6 +12,7 @@ import (
 type Resource string
 
 const (
+	DocumentResource    Resource = "documents"
 	StockResource       Resource = "stock-balances"
 	ReservationResource Resource = "reservations"
 	MovementResource    Resource = "movements"
@@ -114,6 +115,8 @@ func (c Command) Permission() string {
 }
 func (r Resource) ReadPermission() string {
 	switch r {
+	case DocumentResource:
+		return "document.read"
 	case StockResource:
 		return "stock.read"
 	case ReservationResource:
