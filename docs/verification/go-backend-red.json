@@ -1,0 +1,17 @@
+{
+  "phase": "red",
+  "command": "go test ./internal/...",
+  "expected_failure": true,
+  "reason": "Behavioral test files were added before implementation. Packages have no non-test Go source files yet.",
+  "implementation_files_present": false,
+  "coverage_specified": [
+    "OIDC signature issuer audience expiry access-token purpose",
+    "Warehouse and stock-owner authorization",
+    "Exact decimal strings and strict HTTP input validation",
+    "Required module availability and compatibility",
+    "Guard denial panic timeout and transaction rollback",
+    "Idempotent replay before guard reevaluation",
+    "Concurrent reservations and identical commands",
+    "Real PostgreSQL module facts and runtime privilege separation"
+  ]
+}
