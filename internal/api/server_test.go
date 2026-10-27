@@ -170,3 +170,12 @@ func TestServerHealth(t *testing.T) {
 		t.Fatalf("readiness=%d", w.Code)
 	}
 }
+
+func TestAdjustmentsRequireSeparatePermission(t *testing.T) {
+	h, b := testHandler(t)
+	body := `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","document_line_id":"` + testLine + `","expected_document_version":1,"kind":"adjustment_out","source_balance_id":"` + testBalance + `","quantity":"1","reason":"stock count"}`
+	w := request(h, "POST", "/api/v1/movements", body, "valid", testCommand, "application/json")
+	if w.Code != 403 || b.calls != 0 {
+		t.Fatalf("status=%d calls=%d body=%s", w.Code, b.calls, w.Body)
+	}
+}

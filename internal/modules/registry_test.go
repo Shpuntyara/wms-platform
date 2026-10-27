@@ -24,6 +24,7 @@ func TestNewRegistryRejectsInvalidInstallations(t *testing.T) {
 	}{
 		{name: "missing required module", missing: true},
 		{name: "missing handler", edit: func(_ *Manifest, m *Module) { m.Guards = nil }},
+		{name: "compiled guard omitted from manifest", edit: func(m *Manifest, _ *Module) { m.Guards = nil }},
 		{name: "wrong compiled version", edit: func(_ *Manifest, m *Module) { m.Version = "2.0.0" }},
 		{name: "unsupported sdk", edit: func(m *Manifest, _ *Module) { m.Compatibility.SDK = ">=2.0.0 <3.0.0" }},
 		{name: "unsupported core", edit: func(m *Manifest, _ *Module) { m.Compatibility.Core = ">=1.0.0 <2.0.0" }},
@@ -96,8 +97,7 @@ func TestRegistryFailsClosedOnGuardFailure(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 			defer cancel()
 			err = r.Check(ctx, DispatchPoint, Check{}, nil)
-			var unavailable *Unavailable
-			if !errors.As(err, &unavailable) {
+			if _, ok := errors.AsType[*Unavailable](err); !ok {
 				t.Fatalf("expected fail-closed unavailable, got %v", err)
 			}
 		})
@@ -138,5 +138,27 @@ func TestRegistryRejectsDuplicateModules(t *testing.T) {
 	}
 	if _, err := NewRegistry([]Manifest{m}, []Module{code, code}, nil); err == nil {
 		t.Fatal("duplicate compiled module accepted")
+	}
+}
+
+func TestRegistryRejectsUnsupportedExecutableExtensions(t *testing.T) {
+	for _, field := range []string{"policies", "subscribers", "runtime"} {
+		t.Run(field, func(t *testing.T) {
+			m := fixtureManifest()
+			raw, _ := json.Marshal(m)
+			var document map[string]any
+			_ = json.Unmarshal(raw, &document)
+			if field == "runtime" {
+				document[field] = "external_worker"
+			} else {
+				document[field] = []any{map[string]any{"handler": "Unimplemented"}}
+			}
+			raw, _ = json.Marshal(document)
+			_ = json.Unmarshal(raw, &m)
+			code := Module{ID: m.ID, Version: m.Version, Guards: map[string]Guard{"Approve": func(context.Context, Check) error { return nil }}}
+			if _, err := NewRegistry([]Manifest{m}, []Module{code}, nil); err == nil {
+				t.Fatal("unsupported executable extension was silently ignored")
+			}
+		})
 	}
 }

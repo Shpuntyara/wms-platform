@@ -1,0 +1,58 @@
+{
+  "manifest_version": 1,
+  "id": "example.dispatch_quality",
+  "version": "1.0.0",
+  "runtime": "in_process_compiled",
+  "compatibility": {
+    "core": ">=0.2.0 <1.0.0",
+    "sdk": ">=1.0.0 <2.0.0"
+  },
+  "requires_capabilities": [
+    "outbound.shipment_dispatch_guard.v1",
+    "platform.aggregate_transaction.v1"
+  ],
+  "requires_modules": [],
+  "conflicts_with": [],
+  "data": {
+    "schema": "mod_example_dispatch_quality",
+    "read_contracts": [],
+    "target_schema_version": 2
+  },
+  "guards": [
+    {
+      "point": "outbound.shipment_dispatch_guard.v1",
+      "handler": "CheckApproval",
+      "required": true,
+      "failure_policy": "deny",
+      "timeout_ms": 100
+    }
+  ],
+  "policies": [],
+  "subscribers": [],
+  "permissions": [],
+  "ui": [],
+  "migrations": [
+    {
+      "id": "001_create_checks",
+      "phase": "expand",
+      "resource": "migrations/001_create_checks.sql",
+      "transactional": true,
+      "resumable": false
+    },
+    {
+      "id": "002_document_facts",
+      "phase": "expand",
+      "resource": "migrations/002_document_facts.sql",
+      "transactional": true,
+      "resumable": false
+    }
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false
+  },
+  "lifecycle": {
+    "disable": "drain_and_check_dependencies",
+    "uninstall_data": "retain"
+  }
+}

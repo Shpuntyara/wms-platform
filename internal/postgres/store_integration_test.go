@@ -20,7 +20,6 @@ import (
 	"github.com/Shpuntyara/wms-platform/internal/api"
 	"github.com/Shpuntyara/wms-platform/internal/auth"
 	"github.com/Shpuntyara/wms-platform/internal/clientmodules/dispatchquality"
-	"github.com/Shpuntyara/wms-platform/internal/inventory"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
 	"github.com/Shpuntyara/wms-platform/internal/postgres"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -80,16 +79,16 @@ func newFixture(t *testing.T) *fixture {
 		t.Fatal(err)
 	}
 	f := &fixture{t: t, admin: admin, runtime: runtime, store: store, org: id(), wh: id(), owner: id(), otherOwner: id(), actor: id(), item: id(), document: id(), line: id()}
-	f.exec(`INSERT INTO platform.organizations(id,code,name) VALUES($1,$1::text,'Go API test')`, f.org)
-	f.exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'https://tests.invalid',$1::text)`, f.actor)
-	f.exec(`INSERT INTO catalog.stock_owners(id,organization_id,code) VALUES($1,$3,$1::text),($2,$3,$2::text)`, f.owner, f.otherOwner, f.org)
+	f.exec(`INSERT INTO platform.organizations(id,code,name) VALUES($1,$1::uuid::text,'Go API test')`, f.org)
+	f.exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'https://tests.invalid',$1::uuid::text)`, f.actor)
+	f.exec(`INSERT INTO catalog.stock_owners(id,organization_id,code) VALUES($1,$3,$1::uuid::text),($2,$3,$2::uuid::text)`, f.owner, f.otherOwner, f.org)
 	f.exec(`INSERT INTO catalog.units(code,dimension) VALUES('ea','count') ON CONFLICT DO NOTHING`)
-	f.exec(`INSERT INTO catalog.items(id,organization_id,sku,base_unit,quantity_scale,tracking) VALUES($1,$2,$1::text,'ea',3,'none')`, f.item, f.org)
-	f.exec(`INSERT INTO warehouse.warehouses(id,organization_id,code) VALUES($1,$2,$1::text)`, f.wh, f.org)
+	f.exec(`INSERT INTO catalog.items(id,organization_id,sku,base_unit,quantity_scale,tracking) VALUES($1,$2,$1::uuid::text,'ea',3,'none')`, f.item, f.org)
+	f.exec(`INSERT INTO warehouse.warehouses(id,organization_id,code) VALUES($1,$2,$1::uuid::text)`, f.wh, f.org)
 	positions := []string{id(), id(), id()}
 	for _, p := range positions {
 		l := id()
-		f.exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) VALUES($1,$2,$3,$1::text,'storage')`, l, f.org, f.wh)
+		f.exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) VALUES($1,$2,$3,$1::uuid::text,'storage')`, l, f.org, f.wh)
 		f.exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,location_id) VALUES($1,$2,$3,$4)`, p, f.org, f.wh, l)
 	}
 	for i, ptr := range [](*string){&f.source, &f.target, &f.foreign} {
@@ -106,7 +105,7 @@ func newFixture(t *testing.T) *fixture {
 		t.Fatal(err)
 	}
 	_ = rd
-	f.exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,'shipment',$1::text,'active')`, f.document, f.org, f.wh, f.owner)
+	f.exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,'shipment',$1::uuid::text,'active')`, f.document, f.org, f.wh, f.owner)
 	f.exec(`INSERT INTO warehouse.document_lines(id,document_id,organization_id,warehouse_id,owner_id,item_id,line_no,requested_qty) VALUES($1,$2,$3,$4,$5,$6,1,10)`, f.line, f.document, f.org, f.wh, f.owner, f.item)
 	for _, p := range []string{"stock.read", "reservation.read", "reservation.create", "reservation.release", "movement.read", "movement.create", "operation.read"} {
 		f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,$5)`, f.actor, f.org, f.wh, f.owner, p)
@@ -123,7 +122,7 @@ func (f *fixture) exec(sql string, args ...any) {
 func (f *fixture) doc(kind, qty, owner string) (string, string) {
 	f.t.Helper()
 	d, l := id(), id()
-	f.exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,$5,$1::text,'active')`, d, f.org, f.wh, owner, kind)
+	f.exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,$5,$1::uuid::text,'active')`, d, f.org, f.wh, owner, kind)
 	f.exec(`INSERT INTO warehouse.document_lines(id,document_id,organization_id,warehouse_id,owner_id,item_id,line_no,requested_qty) VALUES($1,$2,$3,$4,$5,$6,1,$7::numeric)`, l, d, f.org, f.wh, owner, f.item, qty)
 	return d, l
 }
@@ -492,5 +491,36 @@ func TestRequestCancellationLeavesNoPreparedCommand(t *testing.T) {
 	}
 	if got := f.scalar(`SELECT count(*)::text FROM platform.operations WHERE id=$1`, c); got != "0" {
 		t.Fatal("canceled operation committed")
+	}
+}
+
+func TestChangedCommandPayloadConflicts(t *testing.T) {
+	f := newFixture(t)
+	h := f.handler(nil, nil)
+	c := id()
+	body := f.reserveBody(f.line, "2", 1)
+	requireStatus(t, f.request(h, "POST", "/api/v1/reservations", body, c), 201)
+	body["quantity"] = "1"
+	requireStatus(t, f.request(h, "POST", "/api/v1/reservations", body, c), 409)
+}
+
+func TestAmbiguousModuleFactsFailClosed(t *testing.T) {
+	f := newFixture(t)
+	f.exec(`CREATE SCHEMA mod_test_ambiguous`)
+	f.exec(`CREATE VIEW mod_test_ambiguous.document_facts_v1 AS
+      SELECT d.organization_id,d.warehouse_id,d.id AS document_id,d.content_revision,
+        jsonb_build_object('approved',true) AS payload
+      FROM warehouse.documents d CROSS JOIN generate_series(1,2)`)
+	f.exec(`GRANT USAGE ON SCHEMA mod_test_ambiguous TO wms_test_runtime; GRANT SELECT ON mod_test_ambiguous.document_facts_v1 TO wms_test_runtime`)
+	t.Cleanup(func() {
+		_, _ = f.admin.Exec(context.Background(), `DROP VIEW mod_test_ambiguous.document_facts_v1; DROP SCHEMA mod_test_ambiguous`)
+	})
+	m := modules.Manifest{ManifestVersion: 1, ID: "test.ambiguous", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.2.0 <1.0.0", SDK: ">=1.0.0 <2.0.0"}, Guards: []modules.GuardSpec{{Point: modules.ReservationPoint, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 100}}}
+	code := modules.Module{ID: m.ID, Version: m.Version, FactView: "mod_test_ambiguous.document_facts_v1", Guards: map[string]modules.Guard{"Check": func(context.Context, modules.Check) error { return nil }}}
+	h := f.handler([]modules.Manifest{m}, []modules.Module{code})
+	w := f.request(h, "POST", "/api/v1/reservations", f.reserveBody(f.line, "1", 1), id())
+	requireStatus(t, w, 503)
+	if value := f.scalar(`SELECT reserved_qty::text FROM inventory.stock_balances WHERE id=$1`, f.source); value != "0.000000" {
+		t.Fatalf("reserved=%s", value)
 	}
 }

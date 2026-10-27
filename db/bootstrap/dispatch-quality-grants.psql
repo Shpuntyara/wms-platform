@@ -1,0 +1,3 @@
+\set ON_ERROR_STOP on
+GRANT USAGE ON SCHEMA mod_example_dispatch_quality TO :"runtime_role";
+GRANT SELECT ON mod_example_dispatch_quality.document_facts_v1 TO :"runtime_role";

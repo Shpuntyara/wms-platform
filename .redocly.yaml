@@ -1,0 +1,6 @@
+extends:
+  - recommended
+rules:
+  # The private product's licensing decision is still pending.
+  info-license: off
+  info-license-strict: off

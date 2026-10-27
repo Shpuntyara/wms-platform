@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "tdd_test_commit": "8c4a2d9",
+  "go": "go version go1.27.3 windows/amd64",
+  "postgresql": "17.11",
+  "command": "go test -race -tags=integration ./... -count=1 -timeout=120s -json",
+  "race_detector": true,
+  "integration_tests_ran": true,
+  "passed_test_events": 111,
+  "failed_test_events": 0,
+  "skipped_test_events": 0,
+  "packages": {
+    "github.com/Shpuntyara/wms-platform/internal/clientmodules/dispatchquality": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/inventory": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/modules": "pass",
+    "github.com/Shpuntyara/wms-platform/cmd/wms-api": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/api": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/auth": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/postgres": "pass"
+  },
+  "sql_kernel_regressions": {
+    "passed": 41,
+    "failed": 0
+  },
+  "scope": "Local isolated PostgreSQL, OIDC cryptography, HTTP contract, permissions, guards, concurrency and SQL regressions. No production load, HA, external IdP deployment or power-loss verification."
+}
