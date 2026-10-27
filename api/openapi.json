@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "WMS inventory backend",
-    "version": "0.4.0",
-    "description": "Inventory API backed by PostgreSQL kernel commands. OIDC JWT access tokens identify users; database grants authorize warehouses and owners. Installed guards are enforced by PostgreSQL and the host. Trusted compiled modules and bounded declarative policies are supported. Product licensing is not selected yet."
+    "version": "0.5.0",
+    "description": "Inventory API backed by PostgreSQL kernel commands. OIDC JWT access tokens identify users; database grants authorize warehouses and owners. PostgreSQL is the sole business guard evaluator; the host validates module configuration. Trusted compiled modules and bounded declarative policies are supported. Product licensing is not selected yet."
   },
   "servers": [
     {
@@ -869,7 +869,7 @@
     "/readyz": {
       "get": {
         "summary": "Check ready",
-        "description": "Check ready",
+        "description": "Checks database connectivity and mandatory background processing health. Returns 503 for stale loops, dead events or an ageing backlog. Workers continue draining while HTTP readiness is withdrawn.",
         "operationId": "getReady",
         "tags": [
           "Health"

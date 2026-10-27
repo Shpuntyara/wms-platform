@@ -13,7 +13,6 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"testing"
 	"time"
 
@@ -261,49 +260,40 @@ func guarded(point string, g modules.Guard) ([]modules.Manifest, []modules.Modul
 
 func TestMandatoryGuardsRollbackEveryMutation(t *testing.T) {
 	for _, tc := range []struct {
-		name, point, action string
-		guard               modules.Guard
-		status              int
+		name, point, action, mode string
+		status                    int
 	}{
-		{"reserve denied", modules.ReservationPoint, "reserve", func(context.Context, modules.Check) error { return &modules.Denial{Code: "test.required.denied"} }, 409},
-		{"release denied", modules.ReleasePoint, "release", func(context.Context, modules.Check) error { return &modules.Denial{Code: "test.required.denied"} }, 409},
-		{"movement denied", modules.MovementPoint, "movement", func(context.Context, modules.Check) error { return &modules.Denial{Code: "test.required.denied"} }, 409},
-		{"movement panic", modules.MovementPoint, "movement", func(context.Context, modules.Check) error { panic("private driver state") }, 503},
-		{"movement timeout", modules.MovementPoint, "movement", func(ctx context.Context, _ modules.Check) error { <-ctx.Done(); return ctx.Err() }, 503},
+		{"reserve denied", modules.ReservationPoint, "reserve", "deny", 409},
+		{"release denied", modules.ReleasePoint, "release", "deny", 409},
+		{"movement denied", modules.MovementPoint, "movement", "deny", 409},
+		{"SQL error", modules.MovementPoint, "movement", "error", 500},
+		{"SQL timeout", modules.MovementPoint, "movement", "wait", 503},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			f := newFixture(t)
-			manifests, code := guarded(tc.point, tc.guard)
-			h := f.handler(manifests, code)
-			c := id()
-			path := "/api/v1/reservations"
 			body := f.reserveBody(f.line, "2", 1)
+			path := "/api/v1/reservations"
 			if tc.action == "movement" {
 				_, line := f.doc("transfer", "2", f.owner)
 				path = "/api/v1/movements"
 				body = f.movementBody(line, "transfer", "2", 1, "")
 			}
 			if tc.action == "release" {
-				seed := f.request(f.handler(nil, nil), "POST", "/api/v1/reservations", body, id())
+				seed := f.request(f.handler(nil, nil), "POST", path, body, id())
 				requireStatus(t, seed, 201)
-				r := data(t, seed)["reservation_id"].(string)
-				path = "/api/v1/reservations/" + r + "/releases"
+				path = "/api/v1/reservations/" + data(t, seed)["reservation_id"].(string) + "/releases"
 				body = map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "expected_document_version": 2, "quantity": "1", "reason": "test"}
 			}
+			manifests, code := installSQLTestGuard(t, f, tc.point, tc.mode, func(context.Context, modules.Check) error { t.Error("Go guard executed"); return nil })
 			before := f.scalar(`SELECT json_build_array(on_hand,reserved_qty)::text FROM inventory.stock_balances WHERE id=$1`, f.source)
-			w := f.request(h, "POST", path, body, c)
+			command := id()
+			w := f.request(f.handler(manifests, code), "POST", path, body, command)
 			requireStatus(t, w, tc.status)
-			if strings.Contains(w.Body.String(), "private driver") {
-				t.Fatal("panic leaked")
-			}
 			if after := f.scalar(`SELECT json_build_array(on_hand,reserved_qty)::text FROM inventory.stock_balances WHERE id=$1`, f.source); after != before {
-				t.Fatalf("balance changed: %s -> %s", before, after)
+				t.Fatal("denied command changed stock")
 			}
-			if got := f.scalar(`SELECT count(*)::text FROM platform.operations WHERE id=$1`, c); got != "0" {
-				t.Fatal("rejected operation committed")
-			}
-			if got := f.scalar(`SELECT count(*)::text FROM platform.outbox WHERE operation_id=$1`, c); got != "0" {
-				t.Fatal("rejected event committed")
+			if f.scalar(`SELECT count(*) FROM platform.operations WHERE id=$1`, command) != "0" || f.scalar(`SELECT count(*) FROM platform.outbox WHERE operation_id=$1`, command) != "0" {
+				t.Fatal("denied command committed")
 			}
 		})
 	}
@@ -311,22 +301,17 @@ func TestMandatoryGuardsRollbackEveryMutation(t *testing.T) {
 
 func TestCompletedRetryDoesNotReevaluateGuard(t *testing.T) {
 	f := newFixture(t)
-	var calls atomic.Int32
-	manifests, code := guarded(modules.ReservationPoint, func(context.Context, modules.Check) error {
-		if calls.Add(1) > 1 {
-			return &modules.Denial{Code: "test.required.later_denied"}
-		}
-		return nil
-	})
+	manifests, code := installSQLTestGuard(t, f, modules.ReservationPoint, "allow", func(context.Context, modules.Check) error { t.Error("Go guard executed"); return nil })
 	h := f.handler(manifests, code)
 	c := id()
 	body := f.reserveBody(f.line, "3", 1)
 	a := f.request(h, "POST", "/api/v1/reservations", body, c)
 	requireStatus(t, a, 201)
+	f.exec(`UPDATE mod_test_required.control SET mode='deny'`)
 	b := f.request(h, "POST", "/api/v1/reservations", body, c)
 	requireStatus(t, b, 201)
-	if calls.Load() != 1 || a.Body.String() != b.Body.String() {
-		t.Fatalf("calls=%d results differ=%v", calls.Load(), a.Body.String() != b.Body.String())
+	if f.scalar(`SELECT calls FROM mod_test_required.control`) != "1" || a.Body.String() != b.Body.String() {
+		t.Fatal("SQL guard reran or results differ")
 	}
 }
 
@@ -360,8 +345,7 @@ func TestConcurrentAPICommandsDoNotOversell(t *testing.T) {
 
 func TestConcurrentIdenticalAPICommandRunsGuardOnce(t *testing.T) {
 	f := newFixture(t)
-	var calls atomic.Int32
-	manifests, code := guarded(modules.ReservationPoint, func(context.Context, modules.Check) error { calls.Add(1); return nil })
+	manifests, code := installSQLTestGuard(t, f, modules.ReservationPoint, "allow", func(context.Context, modules.Check) error { t.Error("Go guard executed"); return nil })
 	h := f.handler(manifests, code)
 	c := id()
 	responses := make(chan *httptest.ResponseRecorder, 2)
@@ -381,8 +365,8 @@ func TestConcurrentIdenticalAPICommandRunsGuardOnce(t *testing.T) {
 		requireStatus(t, w, 201)
 		bodies = append(bodies, w.Body.String())
 	}
-	if calls.Load() != 1 || bodies[0] != bodies[1] {
-		t.Fatalf("calls=%d bodies=%v", calls.Load(), bodies)
+	if f.scalar(`SELECT calls FROM mod_test_required.control`) != "1" || bodies[0] != bodies[1] {
+		t.Fatal("SQL guard ran more than once or results differ")
 	}
 }
 
@@ -392,12 +376,17 @@ func TestDispatchQualityModuleUsesTransactionalFacts(t *testing.T) {
 	seed := f.request(base, "POST", "/api/v1/reservations", f.reserveBody(f.line, "4", 1), id())
 	requireStatus(t, seed, 201)
 	r := data(t, seed)["reservation_id"].(string)
+	installSecurityModule(t, f)
+	reviewer := id()
+	f.exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'https://tests.invalid',$1::uuid::text)`, reviewer)
+	f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'quality.approve')`, reviewer, f.org, f.wh, f.owner)
+	f.exec(`INSERT INTO mod_example_dispatch_quality.policies(organization_id,warehouse_id,revision) VALUES($1,$2,1)`, f.org, f.wh)
 	module := dispatchquality.New()
 	h := f.handler([]modules.Manifest{dispatchquality.Manifest()}, []modules.Module{module})
 	body := f.movementBody(f.line, "issue", "2", 2, r)
 	w := f.request(h, "POST", "/api/v1/movements", body, id())
 	requireStatus(t, w, 409)
-	f.exec(`INSERT INTO mod_example_dispatch_quality.checks(organization_id,warehouse_id,document_id,checked_content_revision,policy_revision,decision,reviewer_id,evidence_reference,expires_at) VALUES($1,$2,$3,2,1,'approved',$4,'verified-test-evidence',clock_timestamp()+interval '1 hour')`, f.org, f.wh, f.document, f.actor)
+	f.exec(`INSERT INTO mod_example_dispatch_quality.checks(organization_id,warehouse_id,document_id,checked_content_revision,policy_revision,decision,reviewer_id,evidence_reference,expires_at) VALUES($1,$2,$3,2,1,'approved',$4,'verified-test-evidence',clock_timestamp()+interval '1 hour')`, f.org, f.wh, f.document, reviewer)
 	c := id()
 	w = f.request(h, "POST", "/api/v1/movements", body, c)
 	requireStatus(t, w, 201)
@@ -460,33 +449,48 @@ func TestDatabaseBusinessErrorsUseSafeHTTPProblems(t *testing.T) {
 
 func TestRequestCancellationLeavesNoPreparedCommand(t *testing.T) {
 	f := newFixture(t)
-	started := make(chan struct{})
-	manifests, code := guarded(modules.ReservationPoint, func(ctx context.Context, _ modules.Check) error { close(started); <-ctx.Done(); return ctx.Err() })
-	manifests[0].Guards[0].TimeoutMS = 1000
-	h := f.handler(manifests, code)
-	c := id()
+	tx, err := f.admin.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(context.Background())
+	if _, err := tx.Exec(t.Context(), `SELECT id FROM warehouse.documents WHERE id=$1 FOR UPDATE`, f.document); err != nil {
+		t.Fatal(err)
+	}
+	h := f.handler(nil, nil)
+	command := id()
 	raw, _ := json.Marshal(f.reserveBody(f.line, "2", 1))
 	ctx, cancel := context.WithCancel(t.Context())
+	defer cancel()
 	r := httptest.NewRequest("POST", "/api/v1/reservations", strings.NewReader(string(raw))).WithContext(ctx)
 	r.Header.Set("Authorization", "Bearer valid")
 	r.Header.Set("Content-Type", "application/json")
-	r.Header.Set("Idempotency-Key", c)
+	r.Header.Set("Idempotency-Key", command)
 	done := make(chan struct{})
 	go func() { defer close(done); h.ServeHTTP(httptest.NewRecorder(), r) }()
-	select {
-	case <-started:
-	case <-time.After(3 * time.Second):
-		cancel()
-		t.Fatal("guard did not start")
+	timer := time.NewTimer(3 * time.Second)
+	defer timer.Stop()
+	ticker := time.NewTicker(10 * time.Millisecond)
+	defer ticker.Stop()
+waiting:
+	for {
+		select {
+		case <-timer.C:
+			t.Fatal("request did not wait for document lock")
+		case <-ticker.C:
+			if f.scalar(`SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND wait_event_type='Lock' AND query LIKE 'SELECT inventory.prepare_reservation%'`) != "0" {
+				break waiting
+			}
+		}
 	}
 	cancel()
 	select {
 	case <-done:
 	case <-time.After(3 * time.Second):
-		t.Fatal("canceled request did not finish")
+		t.Fatal("cancelled request did not finish")
 	}
-	if got := f.scalar(`SELECT count(*)::text FROM platform.operations WHERE id=$1`, c); got != "0" {
-		t.Fatal("canceled operation committed")
+	if f.scalar(`SELECT count(*) FROM platform.operations WHERE id=$1`, command) != "0" {
+		t.Fatal("cancelled command committed")
 	}
 }
 

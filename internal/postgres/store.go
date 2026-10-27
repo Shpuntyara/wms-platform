@@ -407,7 +407,7 @@ func (s *Store) execute(ctx context.Context, p inventory.Principal, scope invent
 			return nil, err
 		}
 	}
-	prepare, post, args, point, err := commandSQL(p, c)
+	prepare, post, args, err := commandSQL(p, c)
 	if err != nil {
 		return nil, err
 	}
@@ -433,18 +433,8 @@ func (s *Store) execute(ctx context.Context, p inventory.Principal, scope invent
 		if err := validateRegistry(ctx, tx, registry); err != nil {
 			return nil, err
 		}
-		check := modules.Check{Document: prepared.Document, ActorID: p.ActorID, CommandID: c.ID, Kind: c.Kind, MovementKind: c.MovementKind, Quantity: c.Quantity}
-		load := func(ctx context.Context, view string, doc modules.Document) (json.RawMessage, error) {
-			return readModuleFact(ctx, tx, view, doc)
-		}
-		if err := registry.Check(ctx, point, check, load); err != nil {
-			return nil, err
-		}
-		if c.Kind == "movement" && c.MovementKind == "issue" {
-			if err := registry.Check(ctx, modules.DispatchPoint, check, load); err != nil {
-				return nil, err
-			}
-		}
+		// The kernel executes the required SQL guards under the document lock.
+		// Registry checks establish compatibility, never a second business verdict.
 		var raw []byte
 		if err := tx.QueryRow(ctx, post, args...).Scan(&raw); err != nil {
 			return nil, err
@@ -461,48 +451,22 @@ func (s *Store) execute(ctx context.Context, p inventory.Principal, scope invent
 	return result, nil
 }
 
-func readModuleFact(ctx context.Context, tx pgx.Tx, view string, doc modules.Document) (json.RawMessage, error) {
-	parts := strings.Split(view, ".")
-	if len(parts) != 2 {
-		return nil, errors.New("invalid module fact view")
-	}
-	rows, err := tx.Query(ctx, "SELECT payload FROM "+pgx.Identifier(parts).Sanitize()+" WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND document_id=$3::text::uuid AND content_revision=$4 LIMIT 2", doc.OrganizationID, doc.WarehouseID, doc.ID, doc.ContentRevision)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	if !rows.Next() {
-		return nil, rows.Err()
-	}
-	var raw []byte
-	if err := rows.Scan(&raw); err != nil {
-		return nil, err
-	}
-	if rows.Next() {
-		return nil, errors.New("ambiguous module facts")
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return json.RawMessage(raw), nil
-}
-
-func commandSQL(p inventory.Principal, c inventory.Command) (string, string, []any, string, error) {
+func commandSQL(p inventory.Principal, c inventory.Command) (string, string, []any, error) {
 	switch c.Kind {
 	case "reserve":
 		args := []any{c.ID, p.ActorID, c.DocumentLineID, c.ExpectedDocumentVersion, c.BalanceID, c.Quantity, c.ExpiresAt}
 		suffix := `($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)`
-		return "SELECT inventory.prepare_reservation" + suffix, "SELECT inventory.reserve_stock" + suffix, args, modules.ReservationPoint, nil
+		return "SELECT inventory.prepare_reservation" + suffix, "SELECT inventory.reserve_stock" + suffix, args, nil
 	case "release":
 		args := []any{c.ID, p.ActorID, c.ReservationID, c.ExpectedDocumentVersion, c.Quantity, c.Reason}
 		suffix := `($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::numeric,$6::text)`
-		return "SELECT inventory.prepare_release" + suffix, "SELECT inventory.release_reservation" + suffix, args, modules.ReleasePoint, nil
+		return "SELECT inventory.prepare_release" + suffix, "SELECT inventory.release_reservation" + suffix, args, nil
 	case "movement":
 		args := []any{c.ID, p.ActorID, c.DocumentLineID, c.ExpectedDocumentVersion, c.MovementKind, optional(c.SourceBalanceID), optional(c.TargetBalanceID), c.Quantity, optional(c.ReservationID), optional(c.Reason), optional(c.CorrectionOf)}
 		suffix := `($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)`
-		return "SELECT inventory.prepare_movement" + suffix, "SELECT inventory.post_movement" + suffix, args, modules.MovementPoint, nil
+		return "SELECT inventory.prepare_movement" + suffix, "SELECT inventory.post_movement" + suffix, args, nil
 	default:
-		return "", "", nil, "", inventory.Invalid("invalid_command")
+		return "", "", nil, inventory.Invalid("invalid_command")
 	}
 }
 
@@ -575,6 +539,7 @@ func validateRegistry(ctx context.Context, q moduleQuerier, r *modules.Registry)
 		return err
 	}
 	defer rows.Close()
+	seen := map[string]bool{}
 	for rows.Next() {
 		var raw []byte
 		var state string
@@ -585,6 +550,10 @@ func validateRegistry(ctx context.Context, q moduleQuerier, r *modules.Registry)
 		if state != "active" || json.Unmarshal(raw, &m) != nil || !r.AcceptsManifest(m) {
 			return &modules.Unavailable{}
 		}
+		seen[m.ID] = true
+	}
+	if len(seen) != len(r.Installations()) {
+		return &modules.Unavailable{}
 	}
 	return rows.Err()
 }

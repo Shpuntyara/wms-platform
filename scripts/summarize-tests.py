@@ -18,6 +18,18 @@ packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
 required = [
+    'TestRelayDrainsBurstWithoutPerEventPollingDelay',
+    'TestSlowDeliveryDoesNotHoldOtherSlots',
+    'TestBackgroundReadinessDetectsStallsAndBacklogs',
+    'TestBackgroundMonitorExposesCountersAndUnhealthyStatus',
+    'TestReadinessIncludesBackgroundProcessing',
+    'TestMonitoringListenerMustStayOnLoopback',
+    'TestSQLGuardIsOnlyBusinessDecision',
+    'TestUninstalledHostGuardsCannotAuthorizeCommands',
+    'TestDeclarativeV2ValidatesAlternativesAndTypedRules',
+    'TestDeclarativeV2SQLAlternativesAndExactDecimals',
+    'TestRelayDatabaseHTTPBurst',
+    'TestBackgroundQueueHealthReportsDeadAndExpired',
     'TestSecurityRuntimeRejectsServerFileAndDatabaseOwnershipPrivileges',
     'TestSecurityRuntimeCannotOwnModuleExecutionSurface',
     'TestSecurityDeclarativePolicyEnforcedByAPIAndSQL',
@@ -50,6 +62,7 @@ report = {
     'status': 'passed' if passed else 'failed',
     'tdd_test_commit': '8032682',
     'tdd_evidence': 'docs/verification/security-red.json',
+    'additional_tdd_evidence': 'docs/verification/background-red.json',
     'go': args.go.strip(),
     'postgresql': args.postgres.strip(),
     'command': 'go test -race -tags=integration ./... -count=1 -timeout=120s -json',

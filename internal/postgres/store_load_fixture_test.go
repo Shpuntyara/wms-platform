@@ -23,7 +23,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"testing"
 	"time"
 
@@ -167,7 +166,6 @@ type loadService struct {
 	server               *httptest.Server
 	client               *http.Client
 	ownerToken, allToken string
-	guards               atomic.Int64
 	capture              *loadCapture
 }
 
@@ -237,11 +235,22 @@ func newLoadService(t testing.TB) *loadService {
 	s.ownerToken = signLoadToken(t, key, provider.URL, seed.Actor)
 	s.allToken = signLoadToken(t, key, provider.URL, seed.AllActor)
 	points := []string{modules.ReservationPoint, modules.ReleasePoint, modules.MovementPoint, modules.DispatchPoint}
-	m := modules.Manifest{ManifestVersion: 1, ID: "load.required", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.3.0 <1.0.0", SDK: ">=2.0.0 <3.0.0"}}
+	m := modules.Manifest{ManifestVersion: 1, ID: "load.required", Version: "1.0.0", Data: modules.ManifestData{Schema: "mod_load_required", TargetSchemaVersion: 1}, Compatibility: modules.Compatibility{Core: ">=0.3.0 <1.0.0", SDK: ">=2.0.0 <3.0.0"}}
 	for _, point := range points {
 		m.Guards = append(m.Guards, modules.GuardSpec{Point: point, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 100})
 	}
-	code := modules.Module{ID: m.ID, Version: m.Version, GuardPoints: map[string][]string{"Check": points}, Guards: map[string]modules.Guard{"Check": func(ctx context.Context, _ modules.Check) error { s.guards.Add(1); return ctx.Err() }}}
+	f.exec(`CREATE SCHEMA mod_load_required;CREATE SEQUENCE mod_load_required.guard_calls;
+ CREATE FUNCTION mod_load_required.enforce(uuid,uuid) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$ BEGIN PERFORM nextval('mod_load_required.guard_calls');END $$;
+ GRANT USAGE ON SCHEMA mod_load_required TO wms_test_owner;GRANT EXECUTE ON FUNCTION mod_load_required.enforce(uuid,uuid) TO wms_test_owner`)
+	rawManifest, _ := json.Marshal(m)
+	f.exec(`INSERT INTO platform.modules(id,version,schema_name,state,manifest) VALUES($1,$2,$3,'active',$4)`, m.ID, m.Version, m.Data.Schema, rawManifest)
+	for _, point := range points {
+		f.exec(`INSERT INTO platform.sql_guards VALUES('load.required',$1,'Check','mod_load_required.enforce(uuid,uuid)'::regprocedure)`, point)
+	}
+	t.Cleanup(func() {
+		_, _ = f.admin.Exec(context.Background(), `DELETE FROM platform.modules WHERE id='load.required';DELETE FROM platform.sql_guards WHERE module_id='load.required';DROP SCHEMA mod_load_required CASCADE`)
+	})
+	code := modules.Module{ID: m.ID, Version: m.Version, SchemaVersion: 1, GuardPoints: map[string][]string{"Check": points}, Guards: map[string]modules.Guard{"Check": modules.SQLOnlyGuard(m.ID)}}
 	registry, err := modules.NewRegistry([]modules.Manifest{m}, []modules.Module{code}, []string{m.ID})
 	if err != nil {
 		t.Fatal(err)
@@ -358,5 +367,13 @@ func (o *loadObservations) summary(elapsed time.Duration) loadSummary {
 }
 
 func loadBuildMetadata() map[string]any {
-	return map[string]any{"go": runtime.Version(), "goos": runtime.GOOS, "goarch": runtime.GOARCH, "logical_cpus": runtime.NumCPU(), "gomaxprocs": runtime.GOMAXPROCS(0), "driver": "closed-loop real loopback HTTP, real RSA OIDC JWT verification, runtime PostgreSQL role, required synthetic pure guards", "limitations": "App, driver, OIDC fixture and PostgreSQL share one host. Warm-cache local measurement; no ingress, real customer guards, external IdP or failover."}
+	return map[string]any{"go": runtime.Version(), "goos": runtime.GOOS, "goarch": runtime.GOARCH, "logical_cpus": runtime.NumCPU(), "gomaxprocs": runtime.GOMAXPROCS(0), "driver": "closed-loop real loopback HTTP, real RSA OIDC JWT verification, runtime PostgreSQL role, required synthetic SQL guards", "limitations": "App, driver, OIDC fixture and PostgreSQL share one host. Warm-cache local measurement; no ingress, real customer guards, external IdP or failover."}
+}
+
+func (s *loadService) guardCalls() int64 {
+	var n int64
+	if err := s.f.admin.QueryRow(context.Background(), `SELECT CASE WHEN is_called THEN last_value ELSE 0 END FROM mod_load_required.guard_calls`).Scan(&n); err != nil {
+		s.f.t.Fatal(err)
+	}
+	return n
 }

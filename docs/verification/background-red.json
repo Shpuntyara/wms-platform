@@ -1,0 +1,23 @@
+{
+  "baseline_commit": "89532314ad556678e722da83c7da538501594484",
+  "status": "reproduced_before_fix",
+  "failures": [
+    {
+      "test": "TestRelayDrainsBurstWithoutPerEventPollingDelay",
+      "result": "delivered 20/1000 after 2 seconds"
+    },
+    {
+      "test": "TestSQLGuardIsOnlyBusinessDecision",
+      "result": "Go guard executed alongside SQL; HTTP 409 where SQL permitted the command"
+    },
+    {
+      "test": "TestDeclarativeV2ValidatesAlternativesAndTypedRules",
+      "result": "declarative_v2 rejected as unsupported"
+    },
+    {
+      "test": "TestSlowDeliveryDoesNotHoldOtherSlots",
+      "stage": "first batched implementation",
+      "result": "one slow request held batch; only 15 completed after one second"
+    }
+  ]
+}

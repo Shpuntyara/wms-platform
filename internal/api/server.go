@@ -28,11 +28,12 @@ type Backend interface {
 	Ping(context.Context) error
 }
 type Config struct {
-	Backend        Backend
-	Auth           auth.Authenticator
-	Modules        *modules.Registry
-	RequestTimeout time.Duration
-	Logger         *slog.Logger
+	BackgroundReady func() error
+	Backend         Backend
+	Auth            auth.Authenticator
+	Modules         *modules.Registry
+	RequestTimeout  time.Duration
+	Logger          *slog.Logger
 }
 type Server struct {
 	config Config
@@ -63,6 +64,10 @@ func New(config Config) (http.Handler, error) {
 		}
 		if err := s.config.Backend.Ping(r.Context()); err != nil {
 			s.problem(w, r, &inventory.Problem{Status: 503, Code: "not_ready", Detail: "A required dependency is unavailable."})
+			return
+		}
+		if s.config.BackgroundReady != nil && s.config.BackgroundReady() != nil {
+			s.problem(w, r, &inventory.Problem{Status: 503, Code: "not_ready", Detail: "Background processing is unavailable."})
 			return
 		}
 		writeJSON(w, 200, map[string]string{"status": "ready"})

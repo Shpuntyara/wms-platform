@@ -207,3 +207,20 @@ func TestReleaseReasonUnicodeLength(t *testing.T) {
 		}
 	}
 }
+
+func TestReadinessIncludesBackgroundProcessing(t *testing.T) {
+	registry, err := modules.NewRegistry(nil, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	handler, err := New(Config{Backend: &fakeBackend{}, Auth: fakeAuth{}, Modules: registry, BackgroundReady: func() error { return errors.New("private worker failure") }})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := request(handler, "GET", "/readyz", "", "", "", ""); w.Code != 503 || strings.Contains(w.Body.String(), "private") {
+		t.Fatalf("readiness=%d %s", w.Code, w.Body)
+	}
+	if w := request(handler, "GET", "/livez", "", "", "", ""); w.Code != 200 {
+		t.Fatal(w.Code)
+	}
+}

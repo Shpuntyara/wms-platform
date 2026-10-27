@@ -15,7 +15,7 @@ func TestDeclarativeModuleDoesNotNeedCompiledBuild(t *testing.T) {
 	for _, test := range []struct {
 		fact   string
 		denied bool
-	}{{`{"decision":"approved"}`, false}, {`{"decision":"rejected"}`, true}, {`{}`, true}} {
+	}{{`{"decision":"approved"}`, true}, {`{"decision":"rejected"}`, true}, {`{}`, true}} {
 		err = r.Check(t.Context(), DispatchPoint, Check{}, func(_ctx context.Context, _ string, _ Document) (json.RawMessage, error) {
 			return json.RawMessage(test.fact), nil
 		})

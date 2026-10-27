@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	CoreVersion      = "0.4.0"
+	CoreVersion      = "0.5.0"
 	SDKVersion       = "2.0.0"
 	ReservationPoint = "inventory.before_reservation.v1"
 	ReleasePoint     = "inventory.before_release.v1"
@@ -180,8 +180,12 @@ func inRange(version, rule string) bool {
 
 func NewRegistry(installed []Manifest, compiled []Module, required []string) (*Registry, error) {
 	for _, m := range installed {
-		if m.Runtime == "declarative_v1" {
-			code, err := declarativeModule(m)
+		if m.Runtime == "declarative_v1" || m.Runtime == "declarative_v2" {
+			build := declarativeModule
+			if m.Runtime == "declarative_v2" {
+				build = declarativeV2
+			}
+			code, err := build(m)
 			if err != nil {
 				return nil, err
 			}
@@ -225,7 +229,7 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 	}
 	capabilities := map[string]bool{ReservationPoint: true, ReleasePoint: true, MovementPoint: true, DispatchPoint: true, "platform.aggregate_transaction.v1": true, "platform.outbox.v1": true}
 	for _, m := range installed {
-		if (m.Runtime != "declarative_v1" && ((m.Runtime != "" && m.Runtime != "in_process_compiled") || len(m.Policies) > 0)) || len(m.Subscribers) > 0 {
+		if (m.Runtime != "declarative_v1" && m.Runtime != "declarative_v2" && ((m.Runtime != "" && m.Runtime != "in_process_compiled") || len(m.Policies) > 0)) || len(m.Subscribers) > 0 {
 			return nil, fmt.Errorf("unsupported executable extension in module %q", m.ID)
 		}
 		if _, exists := manifests[m.ID]; exists {
@@ -331,6 +335,8 @@ func (r *Registry) Installations() []Installation {
 	return result
 }
 
+// Check runs legacy local SDK hooks. It is not used to authorize kernel writes.
+// Shipped SQL-backed modules fail closed here; only PostgreSQL decides them.
 func (r *Registry) Check(ctx context.Context, point string, input Check, load FactLoader) error {
 	for _, g := range r.guards[point] {
 		guardCtx, cancel := context.WithTimeout(ctx, g.timeout)
@@ -396,4 +402,15 @@ func (r *Registry) AcceptsManifest(m Manifest) bool {
 		return string(normalized)
 	}
 	return canonical(expected) == canonical(m)
+}
+
+// SQLOnlyGuard records the handler binding without duplicating its business
+// predicate. Calling it outside the transactional kernel fails closed.
+func SQLOnlyGuard(moduleID string) Guard {
+	return func(ctx context.Context, _ Check) error {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		return &Unavailable{ModuleID: moduleID}
+	}
 }

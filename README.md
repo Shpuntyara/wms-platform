@@ -46,3 +46,7 @@ Go backend на PostgreSQL: API остатков, резервов и движе
 - [Проверка после аудита, включая потерю подтверждения COMMIT](docs/verification/backend-audit-green.json).
 
 Нужна Go 1.27.3. После настройки PostgreSQL и OIDC: `go build -o work/wms-api ./cmd/wms-api`. Приложение читает переменные окружения и по умолчанию слушает `127.0.0.1:8080`. Миграции при старте не применяются.
+
+## Исправления 0.5.0
+
+SQL является единственным исполнителем бизнес-guards. Outbox использует пакетный claim и независимые слоты доставки, фоновые задачи — отдельный пул БД; readiness и loopback metrics отражают их состояние. Declarative v2 добавляет альтернативные группы, списки, boolean и точные десятичные сравнения. Для обновления нужны миграция 0008 и новые grants: [контракты и порядок обновления](docs/security-hardening.md). [Проверки](docs/verification/background-green.json).

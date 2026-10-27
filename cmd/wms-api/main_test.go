@@ -33,3 +33,16 @@ func TestDatabaseTLSChecksEveryEndpoint(t *testing.T) {
 		})
 	}
 }
+
+func TestMonitoringListenerMustStayOnLoopback(t *testing.T) {
+	for _, address := range []string{"0.0.0.0:9091", "[::]:9091", "10.0.0.1:9091", "example.com:9091", "localhost:9091", "invalid"} {
+		if validateMonitorAddress(address) == nil {
+			t.Fatalf("unsafe monitoring bind accepted: %s", address)
+		}
+	}
+	for _, address := range []string{"127.0.0.1:9091", "[::1]:9091"} {
+		if err := validateMonitorAddress(address); err != nil {
+			t.Fatal(err)
+		}
+	}
+}

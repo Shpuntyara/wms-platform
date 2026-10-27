@@ -2,12 +2,9 @@ package modules
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"io"
-	"strings"
-	"time"
 )
 
 type condition struct {
@@ -49,37 +46,7 @@ func declarativeModule(m Manifest) (Module, error) {
 				return code, errors.New("unsupported policy operator")
 			}
 		}
-		code.Guards[p.Handler] = func(ctx context.Context, c Check) error {
-			if err := ctx.Err(); err != nil {
-				return err
-			}
-			var facts map[string]json.RawMessage
-			if json.Unmarshal(c.Facts, &facts) != nil {
-				return &Denial{ModuleID: m.ID, Code: m.ID + ".denied"}
-			}
-			for _, rule := range p.Conditions {
-				var value string
-				if json.Unmarshal(facts[rule.Field], &value) != nil {
-					return &Denial{ModuleID: m.ID, Code: m.ID + ".denied"}
-				}
-				pass := false
-				switch rule.Op {
-				case "eq":
-					pass = rule.Value != nil && value == *rule.Value
-				case "nonempty":
-					pass = strings.Trim(value, " ") != ""
-				case "not_actor":
-					pass = value != "" && !strings.EqualFold(value, c.ActorID)
-				case "future":
-					at, err := time.Parse(time.RFC3339Nano, value)
-					pass = err == nil && at.After(time.Now())
-				}
-				if !pass {
-					return &Denial{ModuleID: m.ID, Code: m.ID + ".denied"}
-				}
-			}
-			return nil
-		}
+		code.Guards[p.Handler] = SQLOnlyGuard(m.ID)
 	}
 	for _, g := range m.Guards {
 		code.GuardPoints[g.Handler] = append(code.GuardPoints[g.Handler], g.Point)

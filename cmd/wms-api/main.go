@@ -90,10 +90,6 @@ func run(logger *slog.Logger) error {
 	if err != nil {
 		return errors.New("oidc initialization failed; verify HTTPS issuer, audience and discovery")
 	}
-	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger})
-	if err != nil {
-		return err
-	}
 	relayKey, err := base64.StdEncoding.DecodeString(os.Getenv("WMS_OUTBOX_HMAC_KEY"))
 	if err != nil {
 		return errors.New("invalid WMS_OUTBOX_HMAC_KEY: expected base64")
@@ -102,9 +98,36 @@ func run(logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	jobConfig := config.Copy()
+	jobConfig.MaxConns = 4
+	jobConfig.MinConns = 1
+	jobPool, err := pgxpool.NewWithConfig(startup, jobConfig)
+	if err != nil {
+		return errors.New("background database initialization failed")
+	}
+	defer jobPool.Close()
+	jobStore, err := postgres.New(startup, jobPool)
+	if err != nil {
+		return errors.New("background database preflight failed")
+	}
+	concurrency := 16
+	if value := os.Getenv("WMS_OUTBOX_CONCURRENCY"); value != "" {
+		n, err := strconv.Atoi(value)
+		if err != nil || n < 1 || n > 64 {
+			return errors.New("invalid WMS_OUTBOX_CONCURRENCY")
+		}
+		concurrency = n
+	}
+	worker := jobs.Worker{Store: jobStore, Sender: sender, Logger: logger, Concurrency: concurrency}
+	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger, BackgroundReady: worker.Ready})
+	if err != nil {
+		return err
+	}
+	if _, err := jobStore.QueueState(startup); err != nil {
+		return errors.New("background health contract unavailable; apply migration 0008 and grants")
+	}
 	workerCtx, stopWorkers := context.WithCancel(ctx)
 	workerDone := make(chan struct{})
-	worker := jobs.Worker{Store: store, Sender: sender, Logger: logger}
 	go func() { defer close(workerDone); worker.Run(workerCtx) }()
 	defer func() { stopWorkers(); <-workerDone }()
 	address := os.Getenv("WMS_HTTP_ADDR")
@@ -115,7 +138,18 @@ func run(logger *slog.Logger) error {
 		return errors.New("invalid WMS_HTTP_ADDR")
 	}
 	server := &http.Server{Addr: address, Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
-	finished := make(chan error, 1)
+	monitorAddress := os.Getenv("WMS_MONITOR_ADDR")
+	if monitorAddress == "" {
+		monitorAddress = "127.0.0.1:9091"
+	}
+	if err := validateMonitorAddress(monitorAddress); err != nil {
+		return err
+	}
+	monitor := &http.Server{Addr: monitorAddress, Handler: worker.MonitorHandler(), ReadHeaderTimeout: 3 * time.Second, WriteTimeout: 5 * time.Second, IdleTimeout: 30 * time.Second, MaxHeaderBytes: 8192}
+	defer monitor.Close()
+	defer server.Close()
+	finished := make(chan error, 2)
+	go func() { finished <- monitor.ListenAndServe() }()
 	go func() { finished <- server.ListenAndServe() }()
 	logger.Info("backend started", "address", address, "core_version", modules.CoreVersion, "sdk_version", modules.SDKVersion)
 	select {
@@ -127,7 +161,7 @@ func run(logger *slog.Logger) error {
 	case <-ctx.Done():
 		shutdown, done := context.WithTimeout(context.Background(), 10*time.Second)
 		defer done()
-		if err := server.Shutdown(shutdown); err != nil {
+		if err := errors.Join(server.Shutdown(shutdown), monitor.Shutdown(shutdown)); err != nil {
 			_ = server.Close()
 			return errors.New("http shutdown timed out")
 		}
@@ -144,6 +178,14 @@ func validateDatabaseTLS(config *pgconn.Config) error {
 		if !local && (endpoint.TLSConfig == nil || endpoint.TLSConfig.InsecureSkipVerify) {
 			return errors.New("every remote database endpoint requires verified TLS")
 		}
+	}
+	return nil
+}
+
+func validateMonitorAddress(address string) error {
+	host, _, err := net.SplitHostPort(address)
+	if err != nil || net.ParseIP(host) == nil || !net.ParseIP(host).IsLoopback() {
+		return errors.New("WMS_MONITOR_ADDR must bind a loopback IP address")
 	}
 	return nil
 }

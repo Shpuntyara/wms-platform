@@ -92,7 +92,7 @@ func parallelLoad(t *testing.T, s *loadService, name string, workers, repetition
 	s.f.exec(`SELECT pg_stat_statements_reset()`)
 	stopMonitor := monitorLoad(t, s)
 	before := s.f.runtime.Stat()
-	guards := s.guards.Load()
+	guards := s.guardCalls()
 	results := make([]loadObservations, workers)
 	startGate := make(chan struct{})
 	var wg sync.WaitGroup
@@ -116,7 +116,7 @@ func parallelLoad(t *testing.T, s *loadService, name string, workers, repetition
 			combined.codes[code] += count
 		}
 	}
-	return loadCaseReport{Name: name, Concurrency: workers, Repetition: repetition, loadSummary: combined.summary(elapsed), GuardCalls: s.guards.Load() - guards, PoolWaitMS: float64(after.EmptyAcquireWaitTime()-before.EmptyAcquireWaitTime()) / float64(time.Millisecond), PoolEmptyAcquires: after.EmptyAcquireCount() - before.EmptyAcquireCount(), DBWaitSamples: waits, TopSQL: loadTopSQL(t, s)}
+	return loadCaseReport{Name: name, Concurrency: workers, Repetition: repetition, loadSummary: combined.summary(elapsed), GuardCalls: s.guardCalls() - guards, PoolWaitMS: float64(after.EmptyAcquireWaitTime()-before.EmptyAcquireWaitTime()) / float64(time.Millisecond), PoolEmptyAcquires: after.EmptyAcquireCount() - before.EmptyAcquireCount(), DBWaitSamples: waits, TopSQL: loadTopSQL(t, s)}
 }
 
 func writeLoadRequest(ctx context.Context, s *loadService, o *loadObservations, path string, body any) (bool, map[string]any) {

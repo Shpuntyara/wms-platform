@@ -1,0 +1,21 @@
+{
+  "go": "1.27.3",
+  "checks": {
+    "go_vet_integration": "passed",
+    "go_mod_verify": "passed",
+    "go_fix_changed_packages": "no changes",
+    "govulncheck_v1_9_0": "No vulnerabilities found",
+    "json_schema_draft_2020_12": "compiled manifest and v2 example valid",
+    "load_harness_compiles": "passed"
+  },
+  "local_burst": {
+    "events": 1000,
+    "transport": "local TLS HTTP with 1 ms receiver delay",
+    "background_db_max_connections": 4,
+    "outbox_concurrency": 16,
+    "observed": [
+      "store_background_integration_test.go:134: 1000 database events over TLS HTTP in 431.0434ms (2320 events/s)"
+    ],
+    "limitations": "Local burst with race detector; no sustained production SLO or external broker outage proof."
+  }
+}

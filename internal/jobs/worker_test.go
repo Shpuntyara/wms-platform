@@ -71,13 +71,11 @@ type fakeStore struct {
 }
 
 func (f *fakeStore) ExpireReservations(context.Context) (int, error) { return 1, nil }
-func (f *fakeStore) ClaimEvent(context.Context) (Event, bool, error) {
-	if len(f.events) == 0 {
-		return Event{}, false, nil
-	}
-	e := f.events[0]
-	f.events = f.events[1:]
-	return e, true, nil
+func (f *fakeStore) ClaimEvents(_ context.Context, n int) ([]Event, error) {
+	n = min(n, len(f.events))
+	events := f.events[:n]
+	f.events = f.events[n:]
+	return events, nil
 }
 func (f *fakeStore) CompleteEvent(_ context.Context, _ Event, success bool) error {
 	f.acked = true
