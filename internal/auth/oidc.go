@@ -33,14 +33,27 @@ func NewOIDC(ctx context.Context, issuer, audience string, client *http.Client) 
 	if !secureURL(issuer) || audience == "" {
 		return nil, errors.New("https issuer and resource audience are required")
 	}
-	if client == nil {
-		client = &http.Client{Timeout: 5 * time.Second}
-	} else if client.Timeout == 0 {
-		copy := *client
-		copy.Timeout = 5 * time.Second
-		client = &copy
+	secureClient := http.Client{}
+	if client != nil {
+		secureClient = *client
 	}
-	ctx = oidc.ClientContext(ctx, client)
+	if secureClient.Timeout == 0 {
+		secureClient.Timeout = 5 * time.Second
+	}
+	redirectPolicy := secureClient.CheckRedirect
+	secureClient.CheckRedirect = func(request *http.Request, via []*http.Request) error {
+		if !secureURL(request.URL.String()) {
+			return errors.New("oidc redirect requires a secure HTTPS URL")
+		}
+		if redirectPolicy != nil {
+			return redirectPolicy(request, via)
+		}
+		if len(via) >= 10 {
+			return errors.New("stopped after 10 redirects")
+		}
+		return nil
+	}
+	ctx = oidc.ClientContext(ctx, &secureClient)
 	provider, err := oidc.NewProvider(ctx, issuer)
 	if err != nil {
 		return nil, fmt.Errorf("oidc discovery: %w", err)

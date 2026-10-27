@@ -17,7 +17,21 @@ skipped = [e for e in tests if e['Action'] == 'skip']
 packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e.get('Action') in ('pass', 'fail', 'skip')}
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
-passed = not failed and not skipped and 'fail' not in packages.values() and integration_ran and legacy['status'] == 'passed'
+required = [
+    'TestOIDCSecureRedirects',
+    'TestRegistryRejectsRelocatedGuard',
+    'TestStoreRejectsDirectCoreWrites',
+    'TestLostCommitAcknowledgementRecoversByCommandID',
+    'TestModuleInstallationIntegrity',
+    'TestMovementAPIReceiptTransferAndCorrection',
+    'TestPickingRelocatesReservationBeforeShipment',
+    'TestWritesRejectCrossOwnerWarehouseAndOrganization',
+    'TestDispatchQualityUpgradePreservesDataAndHistory',
+    'TestDispatchQualityUpgradeRejectsUnexpectedInstallation',
+]
+observed = {e['Test'] for e in tests if e['Action'] == 'pass'}
+critical = {name: name in observed for name in required}
+passed = not failed and not skipped and 'fail' not in packages.values() and integration_ran and all(critical.values()) and legacy['status'] == 'passed'
 report = {
     'status': 'passed' if passed else 'failed',
     'tdd_test_commit': '8c4a2d9',
@@ -26,6 +40,7 @@ report = {
     'command': 'go test -race -tags=integration ./... -count=1 -timeout=120s -json',
     'race_detector': True,
     'integration_tests_ran': integration_ran,
+    'critical_regressions': critical,
     'passed_test_events': sum(e['Action'] == 'pass' for e in tests),
     'failed_test_events': len(failed),
     'skipped_test_events': len(skipped),

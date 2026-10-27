@@ -2,8 +2,11 @@ package dispatchquality
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -21,6 +24,24 @@ func TestPackagedManifestMatchesCompiledModule(t *testing.T) {
 	}
 	if _, err := modules.NewRegistry([]modules.Manifest{manifest}, []modules.Module{New()}, []string{ID}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestCompiledMigrationChecksumsMatchPackage(t *testing.T) {
+	code := New()
+	manifest := Manifest()
+	if code.SchemaVersion != 2 || manifest.Data.TargetSchemaVersion != 2 || manifest.Data.Schema != "mod_example_dispatch_quality" || len(manifest.Migrations) != 2 || len(code.MigrationChecksums) != 2 {
+		t.Fatal("compiled storage metadata does not describe the installed package")
+	}
+	for _, migration := range manifest.Migrations {
+		content, err := os.ReadFile(filepath.Join("../../../modules/dispatch-quality/migrations", migration.ID+".sql"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		sum := sha256.Sum256(content)
+		if expected := hex.EncodeToString(sum[:]); code.MigrationChecksums[migration.ID] != expected {
+			t.Fatalf("compiled checksum for %s does not match SQL package", migration.ID)
+		}
 	}
 }
 

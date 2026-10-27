@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net"
 	"strings"
 	"time"
 
@@ -27,16 +29,32 @@ func New(ctx context.Context, pool *pgxpool.Pool) (*Store, error) {
 		return nil, errors.New("database pool required")
 	}
 	var privileged bool
-	err := pool.QueryRow(ctx, `SELECT r.rolsuper OR has_table_privilege(current_user,'inventory.stock_balances','UPDATE')
-      OR has_table_privilege(current_user,'inventory.stock_balances','INSERT')
-      OR has_table_privilege(current_user,'inventory.stock_balances','DELETE') FROM pg_roles r WHERE r.rolname=current_user`).Scan(&privileged)
+	err := pool.QueryRow(ctx, `SELECT EXISTS (
+      SELECT 1 FROM pg_roles r
+      WHERE (r.rolname=current_user OR pg_has_role(r.oid,'SET')) AND (
+        r.rolsuper OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication OR r.rolbypassrls
+        OR EXISTS (
+          SELECT 1 FROM pg_namespace n
+          WHERE n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1')
+            AND has_schema_privilege(r.oid,n.oid,'CREATE')
+        )
+        OR EXISTS (
+          SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+          WHERE n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1')
+            AND c.relkind IN ('r','p','v','m','f')
+            AND (c.relowner=r.oid
+              OR has_table_privilege(r.oid,c.oid,'INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER')
+              OR has_any_column_privilege(r.oid,c.oid,'INSERT,UPDATE'))
+        )
+      )
+    )`).Scan(&privileged)
 	if err != nil {
 		return nil, fmt.Errorf("check application database role: %w", err)
 	}
 	if privileged {
-		return nil, errors.New("unsafe database role: application must not own or write inventory tables")
+		return nil, errors.New("unsafe database role: application must not own, write or administer core objects")
 	}
-	for _, view := range []string{"stock_balances", "documents", "document_lines", "reservations", "movements", "operations", "actor_grants", "active_modules"} {
+	for _, view := range []string{"stock_balances", "documents", "document_lines", "reservations", "movements", "operations", "actor_grants", "active_modules", "module_migrations"} {
 		if _, err := pool.Exec(ctx, "SELECT 1 FROM contracts_v1."+view+" LIMIT 0"); err != nil {
 			return nil, fmt.Errorf("backend schema unavailable: %w", err)
 		}
@@ -72,23 +90,23 @@ func (s *Store) ResolvePrincipal(ctx context.Context, identity auth.Identity) (i
 }
 
 func (s *Store) InstalledModules(ctx context.Context) ([]modules.Manifest, error) {
-	rows, err := s.pool.Query(ctx, `SELECT id,version,manifest FROM contracts_v1.active_modules ORDER BY id`)
+	rows, err := s.pool.Query(ctx, `SELECT id,version,schema_name::text,manifest FROM contracts_v1.active_modules ORDER BY id`)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	var installed []modules.Manifest
 	for rows.Next() {
-		var id, version string
+		var id, version, schema string
 		var raw []byte
 		var m modules.Manifest
-		if err := rows.Scan(&id, &version, &raw); err != nil {
+		if err := rows.Scan(&id, &version, &schema, &raw); err != nil {
 			return nil, err
 		}
 		if err := json.Unmarshal(raw, &m); err != nil {
 			return nil, errors.New("invalid active module manifest")
 		}
-		if id != m.ID || version != m.Version {
+		if id != m.ID || version != m.Version || schema != "mod_"+strings.ReplaceAll(id, ".", "_") || schema != m.Data.Schema {
 			return nil, errors.New("module registry metadata does not match manifest")
 		}
 		installed = append(installed, m)
@@ -97,6 +115,14 @@ func (s *Store) InstalledModules(ctx context.Context) ([]modules.Manifest, error
 }
 
 func (s *Store) ValidateModules(ctx context.Context, r *modules.Registry) error {
+	for _, installation := range r.Installations() {
+		if installation.SchemaVersion == 0 && len(installation.Migrations) == 0 {
+			continue
+		}
+		if err := s.validateInstallation(ctx, installation); err != nil {
+			return err
+		}
+	}
 	for _, view := range r.FactViews() {
 		parts := strings.Split(view, ".")
 		if len(parts) != 2 {
@@ -105,6 +131,32 @@ func (s *Store) ValidateModules(ctx context.Context, r *modules.Registry) error 
 		if _, err := s.pool.Exec(ctx, "SELECT organization_id,warehouse_id,document_id,content_revision,payload FROM "+pgx.Identifier(parts).Sanitize()+" LIMIT 0"); err != nil {
 			return fmt.Errorf("module fact view unavailable: %w", err)
 		}
+	}
+	return nil
+}
+
+func (s *Store) validateInstallation(ctx context.Context, installation modules.Installation) error {
+	rows, err := s.pool.Query(ctx, `SELECT migration_id,checksum FROM contracts_v1.module_migrations WHERE module_id=$1`, installation.ID)
+	if err != nil {
+		return fmt.Errorf("module migration history unavailable: %w", err)
+	}
+	defer rows.Close()
+	seen := make(map[string]bool, len(installation.Migrations))
+	for rows.Next() {
+		var id, checksum string
+		if err := rows.Scan(&id, &checksum); err != nil {
+			return fmt.Errorf("module migration history unavailable: %w", err)
+		}
+		if expected, exists := installation.Migrations[id]; !exists || expected != checksum || seen[id] {
+			return fmt.Errorf("module migration history mismatch: %q", installation.ID)
+		}
+		seen[id] = true
+	}
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("module migration history unavailable: %w", err)
+	}
+	if len(seen) != len(installation.Migrations) {
+		return fmt.Errorf("module migrations are incomplete: %q", installation.ID)
 	}
 	return nil
 }
@@ -367,7 +419,11 @@ func (s *Store) execute(ctx context.Context, p inventory.Principal, scope invent
 		result = json.RawMessage(raw)
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return nil, err
+		if _, ok := errors.AsType[*pgconn.PgError](err); ok {
+			return nil, err
+		}
+		// A transport/client failure cannot tell us whether COMMIT took effect.
+		return nil, &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
 	return result, nil
 }
@@ -427,12 +483,19 @@ func translate(err error) error {
 	if errors.Is(err, context.DeadlineExceeded) || errors.Is(err, context.Canceled) {
 		return &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
+	var networkError net.Error
+	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) || errors.Is(err, io.ErrClosedPipe) || errors.Is(err, net.ErrClosed) || errors.Is(err, pgconn.ErrConnClosed) || errors.Is(err, pgx.ErrTxCommitRollback) || errors.As(err, &networkError) {
+		return &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
+	}
 	if _, ok := errors.AsType[*pgconn.ConnectError](err); ok {
-		return &inventory.Problem{Status: 503, Code: "database_unavailable", Detail: "The database is temporarily unavailable."}
+		return &inventory.Problem{Status: 503, Code: "database_unavailable", Detail: "The database is temporarily unavailable. Retry with the same command identifier."}
 	}
 	var pgerr *pgconn.PgError
 	if !errors.As(err, &pgerr) {
 		return err
+	}
+	if strings.HasPrefix(pgerr.Code, "08") {
+		return &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
 	switch pgerr.Code {
 	case "P0002":

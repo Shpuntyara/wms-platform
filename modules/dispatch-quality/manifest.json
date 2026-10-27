@@ -1,11 +1,11 @@
 {
   "manifest_version": 1,
   "id": "example.dispatch_quality",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "runtime": "in_process_compiled",
   "compatibility": {
-    "core": ">=0.2.0 <1.0.0",
-    "sdk": ">=1.0.0 <2.0.0"
+    "core": ">=0.3.0 <1.0.0",
+    "sdk": ">=2.0.0 <3.0.0"
   },
   "requires_capabilities": [
     "outbound.shipment_dispatch_guard.v1",

@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/Shpuntyara/wms-platform/internal/auth"
 	"github.com/Shpuntyara/wms-platform/internal/inventory"
@@ -391,7 +392,7 @@ func validateCommand(c *inventory.Command) error {
 			*field = value
 		}
 	}
-	if len(c.Reason) > 2000 {
+	if utf8.RuneCountInString(c.Reason) > 2000 {
 		return inventory.Invalid("invalid_reason")
 	}
 	switch c.Kind {

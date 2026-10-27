@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "WMS inventory backend",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Inventory API backed by PostgreSQL kernel commands. OIDC JWT access tokens identify users; database grants authorize warehouses and owners. Client modules are compiled into the service and activated by installed manifests. Product licensing is not selected yet."
   },
   "servers": [

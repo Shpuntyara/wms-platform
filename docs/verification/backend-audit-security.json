@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "date": "2026-10-27",
+  "tool": "golang.org/x/vuln/cmd/govulncheck@v1.9.0",
+  "go": "go1.27.3",
+  "command": "govulncheck ./...",
+  "source_configurations": {
+    "windows/amd64": {"exit_code": 0, "result": "No vulnerabilities found."},
+    "linux/amd64": {"exit_code": 0, "result": "No vulnerabilities found."}
+  },
+  "baseline_findings": ["GO-2026-6629", "GO-2026-5970"],
+  "dependency_change": {
+    "golang.org/x/text": {"from": "v0.29.0", "to": "v0.41.0"},
+    "golang.org/x/sync": {"from": "v0.17.0", "to": "v0.22.0"}
+  },
+  "scope": "Known vulnerabilities in the scanned source build configurations and current database. Not proof of absence of unknown vulnerabilities or a deployed-system penetration test. Linux runtime deployment has not been exercised."
+}

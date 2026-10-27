@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"regexp"
 	"slices"
 	"strings"
@@ -15,8 +16,8 @@ import (
 )
 
 const (
-	CoreVersion      = "0.2.0"
-	SDKVersion       = "1.0.0"
+	CoreVersion      = "0.3.0"
+	SDKVersion       = "2.0.0"
 	ReservationPoint = "inventory.before_reservation.v1"
 	ReleasePoint     = "inventory.before_release.v1"
 	MovementPoint    = "inventory.before_movement.v1"
@@ -38,20 +39,29 @@ type GuardSpec struct {
 	FailurePolicy string `json:"failure_policy"`
 	TimeoutMS     int    `json:"timeout_ms"`
 }
+type ManifestData struct {
+	Schema              string `json:"schema"`
+	TargetSchemaVersion int    `json:"target_schema_version"`
+}
+type ManifestMigration struct {
+	ID string `json:"id"`
+}
 
 // Manifest is the executable projection of the full package manifest.
 type Manifest struct {
-	ManifestVersion      int               `json:"manifest_version"`
-	ID                   string            `json:"id"`
-	Version              string            `json:"version"`
-	Compatibility        Compatibility     `json:"compatibility"`
-	RequiresCapabilities []string          `json:"requires_capabilities"`
-	RequiresModules      []Dependency      `json:"requires_modules"`
-	ConflictsWith        []string          `json:"conflicts_with"`
-	Guards               []GuardSpec       `json:"guards"`
-	Runtime              string            `json:"runtime"`
-	Policies             []json.RawMessage `json:"policies"`
-	Subscribers          []json.RawMessage `json:"subscribers"`
+	ManifestVersion      int                 `json:"manifest_version"`
+	ID                   string              `json:"id"`
+	Version              string              `json:"version"`
+	Compatibility        Compatibility       `json:"compatibility"`
+	RequiresCapabilities []string            `json:"requires_capabilities"`
+	RequiresModules      []Dependency        `json:"requires_modules"`
+	ConflictsWith        []string            `json:"conflicts_with"`
+	Guards               []GuardSpec         `json:"guards"`
+	Runtime              string              `json:"runtime"`
+	Policies             []json.RawMessage   `json:"policies"`
+	Subscribers          []json.RawMessage   `json:"subscribers"`
+	Data                 ManifestData        `json:"data"`
+	Migrations           []ManifestMigration `json:"migrations"`
 }
 type Document struct {
 	ID              string `json:"id"`
@@ -72,6 +82,14 @@ type FactLoader func(context.Context, string, Document) (json.RawMessage, error)
 type Module struct {
 	ID, Version, FactView string
 	Guards                map[string]Guard
+	GuardPoints           map[string][]string
+	SchemaVersion         int
+	MigrationChecksums    map[string]string
+}
+type Installation struct {
+	ID, Schema    string
+	SchemaVersion int
+	Migrations    map[string]string
 }
 type Denial struct{ ModuleID, Code string }
 
@@ -87,13 +105,62 @@ type registeredGuard struct {
 	check        Guard
 }
 type Registry struct {
-	guards    map[string][]registeredGuard
-	factViews []string
+	guards        map[string][]registeredGuard
+	factViews     []string
+	installations []Installation
 }
 
 var moduleID = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`)
 var stableVersion = regexp.MustCompile(`^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$`)
 var viewName = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+var migrationID = regexp.MustCompile(`^[0-9]{3}_[a-z0-9_]+$`)
+var checksum = regexp.MustCompile(`^[0-9a-f]{64}$`)
+
+func canonicalSchema(id string) string { return "mod_" + strings.ReplaceAll(id, ".", "_") }
+
+func validModuleID(id string) bool { return len(id) <= 58 && moduleID.MatchString(id) }
+
+func knownPoint(point string) bool {
+	return point == ReservationPoint || point == ReleasePoint || point == MovementPoint || point == DispatchPoint
+}
+
+func guardBindings(code Module) (map[string]bool, error) {
+	bindings := map[string]bool{}
+	if len(code.Guards) != len(code.GuardPoints) {
+		return nil, errors.New("compiled guards require explicit point bindings")
+	}
+	for handler, points := range code.GuardPoints {
+		if code.Guards[handler] == nil || len(points) == 0 {
+			return nil, errors.New("invalid compiled guard binding")
+		}
+		for _, point := range points {
+			key := point + "/" + handler
+			if !knownPoint(point) || bindings[key] {
+				return nil, errors.New("unknown or duplicate compiled guard binding")
+			}
+			bindings[key] = true
+		}
+	}
+	return bindings, nil
+}
+
+func validateStorage(m Manifest, code Module) error {
+	declared := m.Data.Schema != "" || m.Data.TargetSchemaVersion != 0 || code.SchemaVersion != 0 || len(m.Migrations) > 0 || len(code.MigrationChecksums) > 0
+	if declared && (code.SchemaVersion < 1 || m.Data.TargetSchemaVersion != code.SchemaVersion || m.Data.Schema != canonicalSchema(m.ID)) {
+		return fmt.Errorf("module storage schema does not match compiled package: %q", m.ID)
+	}
+	if len(m.Migrations) != len(code.MigrationChecksums) {
+		return fmt.Errorf("module migrations do not match compiled package: %q", m.ID)
+	}
+	seen := map[string]bool{}
+	for _, migration := range m.Migrations {
+		if seen[migration.ID] || !migrationID.MatchString(migration.ID) || !checksum.MatchString(code.MigrationChecksums[migration.ID]) {
+			return fmt.Errorf("invalid module migration metadata: %q", m.ID)
+		}
+		seen[migration.ID] = true
+	}
+	return nil
+}
 
 func inRange(version, rule string) bool {
 	parts := strings.Fields(rule)
@@ -110,18 +177,35 @@ func inRange(version, rule string) bool {
 func NewRegistry(installed []Manifest, compiled []Module, required []string) (*Registry, error) {
 	r := &Registry{guards: make(map[string][]registeredGuard)}
 	codes := make(map[string]Module)
+	bindings := make(map[string]map[string]bool)
+	schemas := map[string]string{}
 	manifests := make(map[string]Manifest)
 	for _, code := range compiled {
 		if _, exists := codes[code.ID]; exists {
 			return nil, fmt.Errorf("duplicate compiled module %q", code.ID)
 		}
-		if !moduleID.MatchString(code.ID) || !stableVersion.MatchString(code.Version) {
+		if !validModuleID(code.ID) || !stableVersion.MatchString(code.Version) || code.SchemaVersion < 0 {
 			return nil, errors.New("invalid compiled module identity")
 		}
+		schema := canonicalSchema(code.ID)
+		if previous, exists := schemas[schema]; exists {
+			return nil, fmt.Errorf("module schema collision between %q and %q", previous, code.ID)
+		}
+		schemas[schema] = code.ID
 		if code.FactView != "" {
 			parts := strings.Split(code.FactView, ".")
-			if len(parts) != 2 || parts[0] != "mod_"+strings.ReplaceAll(code.ID, ".", "_") || !viewName.MatchString(parts[1]) {
+			if len(parts) != 2 || parts[0] != schema || len(parts[1]) > 63 || !viewName.MatchString(parts[1]) {
 				return nil, errors.New("module fact view must belong to its own schema")
+			}
+		}
+		bound, err := guardBindings(code)
+		if err != nil {
+			return nil, fmt.Errorf("compiled module %q: %w", code.ID, err)
+		}
+		bindings[code.ID] = bound
+		for id, digest := range code.MigrationChecksums {
+			if code.SchemaVersion < 1 || !migrationID.MatchString(id) || !checksum.MatchString(digest) {
+				return nil, fmt.Errorf("invalid compiled migration metadata: %q", code.ID)
 			}
 		}
 		codes[code.ID] = code
@@ -134,12 +218,15 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 		if _, exists := manifests[m.ID]; exists {
 			return nil, fmt.Errorf("duplicate installed module %q", m.ID)
 		}
-		if m.ManifestVersion != 1 || !moduleID.MatchString(m.ID) || !stableVersion.MatchString(m.Version) || !inRange(CoreVersion, m.Compatibility.Core) || !inRange(SDKVersion, m.Compatibility.SDK) {
+		if m.ManifestVersion != 1 || !validModuleID(m.ID) || !stableVersion.MatchString(m.Version) || !inRange(CoreVersion, m.Compatibility.Core) || !inRange(SDKVersion, m.Compatibility.SDK) {
 			return nil, fmt.Errorf("incompatible module %q", m.ID)
 		}
 		code, exists := codes[m.ID]
 		if !exists || code.Version != m.Version {
 			return nil, fmt.Errorf("compiled module missing or version mismatch: %q", m.ID)
+		}
+		if err := validateStorage(m, code); err != nil {
+			return nil, err
 		}
 		for _, capability := range m.RequiresCapabilities {
 			if !capabilities[capability] {
@@ -197,33 +284,38 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 	for _, id := range order {
 		m, code := manifests[id], codes[id]
 		seen := map[string]bool{}
-		usedHandlers := map[string]bool{}
 		for _, spec := range m.Guards {
-			if spec.Point != ReservationPoint && spec.Point != ReleasePoint && spec.Point != MovementPoint && spec.Point != DispatchPoint {
+			if !knownPoint(spec.Point) {
 				return nil, fmt.Errorf("unknown guard point %q", spec.Point)
 			}
 			fn := code.Guards[spec.Handler]
 			key := spec.Point + "/" + spec.Handler
-			if fn == nil || !spec.Required || spec.FailurePolicy != "deny" || spec.TimeoutMS < 1 || spec.TimeoutMS > 1000 || seen[key] {
+			if fn == nil || !bindings[id][key] || !spec.Required || spec.FailurePolicy != "deny" || spec.TimeoutMS < 1 || spec.TimeoutMS > 1000 || seen[key] {
 				return nil, fmt.Errorf("invalid required guard in %q", id)
 			}
 			seen[key] = true
-			usedHandlers[spec.Handler] = true
 			r.guards[spec.Point] = append(r.guards[spec.Point], registeredGuard{module: id, view: code.FactView, timeout: time.Duration(spec.TimeoutMS) * time.Millisecond, check: fn})
 		}
-		for handler := range code.Guards {
-			if !usedHandlers[handler] {
-				return nil, fmt.Errorf("compiled guard omitted from active manifest: %q", id)
-			}
+		if len(seen) != len(bindings[id]) {
+			return nil, fmt.Errorf("compiled guard binding omitted from active manifest: %q", id)
 		}
 		if code.FactView != "" {
 			r.factViews = append(r.factViews, code.FactView)
 		}
+		r.installations = append(r.installations, Installation{ID: id, Schema: canonicalSchema(id), SchemaVersion: code.SchemaVersion, Migrations: maps.Clone(code.MigrationChecksums)})
 	}
 	return r, nil
 }
 
 func (r *Registry) FactViews() []string { return slices.Clone(r.factViews) }
+
+func (r *Registry) Installations() []Installation {
+	result := slices.Clone(r.installations)
+	for i := range result {
+		result[i].Migrations = maps.Clone(result[i].Migrations)
+	}
+	return result
+}
 
 func (r *Registry) Check(ctx context.Context, point string, input Check, load FactLoader) error {
 	for _, g := range r.guards[point] {

@@ -55,14 +55,8 @@ func newFixture(t *testing.T) *fixture {
 	if adminDSN == "" || runtimeDSN == "" {
 		t.Skip("integration PostgreSQL DSNs not configured")
 	}
-	for _, dsn := range []string{adminDSN, runtimeDSN} {
-		cfg, err := pgxpool.ParseConfig(dsn)
-		if err != nil {
-			t.Fatal("invalid test DSN")
-		}
-		if cfg.ConnConfig.Host != "127.0.0.1" || !strings.HasPrefix(cfg.ConnConfig.Database, "wms_kernel_test") {
-			t.Fatal("refusing a non-isolated database")
-		}
+	if err := validateTestDatabaseDSNs(adminDSN, runtimeDSN); err != nil {
+		t.Fatal(err)
 	}
 	admin, err := pgxpool.New(t.Context(), adminDSN)
 	if err != nil {
@@ -261,8 +255,8 @@ func TestReservationAndReleaseAPI(t *testing.T) {
 }
 
 func guarded(point string, g modules.Guard) ([]modules.Manifest, []modules.Module) {
-	m := modules.Manifest{ManifestVersion: 1, ID: "test.required", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.2.0 <1.0.0", SDK: ">=1.0.0 <2.0.0"}, Guards: []modules.GuardSpec{{Point: point, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 10}}}
-	return []modules.Manifest{m}, []modules.Module{{ID: m.ID, Version: m.Version, Guards: map[string]modules.Guard{"Check": g}}}
+	m := modules.Manifest{ManifestVersion: 1, ID: "test.required", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.2.0 <1.0.0", SDK: ">=2.0.0 <3.0.0"}, Guards: []modules.GuardSpec{{Point: point, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 10}}}
+	return []modules.Manifest{m}, []modules.Module{{ID: m.ID, Version: m.Version, Guards: map[string]modules.Guard{"Check": g}, GuardPoints: map[string][]string{"Check": {point}}}}
 }
 
 func TestMandatoryGuardsRollbackEveryMutation(t *testing.T) {
@@ -428,6 +422,8 @@ func TestRuntimeModuleInstallationLoading(t *testing.T) {
 	f := newFixture(t)
 	manifests, code := guarded(modules.MovementPoint, func(context.Context, modules.Check) error { return nil })
 	m := manifests[0]
+	m.Data = modules.ManifestData{Schema: "mod_test_required", TargetSchemaVersion: 1}
+	code[0].SchemaVersion = 1
 	raw, _ := json.Marshal(m)
 	f.exec(`INSERT INTO platform.modules(id,version,schema_name,state,manifest) VALUES($1,$2,'mod_test_required','active',$3::jsonb)`, m.ID, m.Version, string(raw))
 	t.Cleanup(func() { _, _ = f.admin.Exec(context.Background(), `DELETE FROM platform.modules WHERE id=$1`, m.ID) })
@@ -515,8 +511,8 @@ func TestAmbiguousModuleFactsFailClosed(t *testing.T) {
 	t.Cleanup(func() {
 		_, _ = f.admin.Exec(context.Background(), `DROP VIEW mod_test_ambiguous.document_facts_v1; DROP SCHEMA mod_test_ambiguous`)
 	})
-	m := modules.Manifest{ManifestVersion: 1, ID: "test.ambiguous", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.2.0 <1.0.0", SDK: ">=1.0.0 <2.0.0"}, Guards: []modules.GuardSpec{{Point: modules.ReservationPoint, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 100}}}
-	code := modules.Module{ID: m.ID, Version: m.Version, FactView: "mod_test_ambiguous.document_facts_v1", Guards: map[string]modules.Guard{"Check": func(context.Context, modules.Check) error { return nil }}}
+	m := modules.Manifest{ManifestVersion: 1, ID: "test.ambiguous", Version: "1.0.0", Compatibility: modules.Compatibility{Core: ">=0.2.0 <1.0.0", SDK: ">=2.0.0 <3.0.0"}, Guards: []modules.GuardSpec{{Point: modules.ReservationPoint, Handler: "Check", Required: true, FailurePolicy: "deny", TimeoutMS: 100}}}
+	code := modules.Module{ID: m.ID, Version: m.Version, FactView: "mod_test_ambiguous.document_facts_v1", Guards: map[string]modules.Guard{"Check": func(context.Context, modules.Check) error { return nil }}, GuardPoints: map[string][]string{"Check": {modules.ReservationPoint}}}
 	h := f.handler([]modules.Manifest{m}, []modules.Module{code})
 	w := f.request(h, "POST", "/api/v1/reservations", f.reserveBody(f.line, "1", 1), id())
 	requireStatus(t, w, 503)

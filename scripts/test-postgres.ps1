@@ -37,7 +37,7 @@ try {
     Invoke-Checked $psql ($connection + @('-d','postgres','-c',$roles))
     Invoke-Checked (Join-Path $PgBin 'createdb.exe') @('-h','127.0.0.1','-p',"$testPort",'-U','wms_test_admin','-O','wms_test_owner','wms_kernel_test_backend')
     $migrations = @('-d','wms_kernel_test_backend','-v','runtime_role=wms_test_runtime','-v','module_role=wms_test_module','-c','SET ROLE wms_test_owner')
-    foreach ($file in @('db/migrations/0001_inventory_schema.sql','db/migrations/0002_inventory_commands.sql','db/migrations/0003_backend_api.sql','db/bootstrap/grants.psql','db/bootstrap/backend-grants.psql','modules/dispatch-quality/migrations/001_create_checks.sql','modules/dispatch-quality/migrations/002_document_facts.sql','db/bootstrap/dispatch-quality-grants.psql')) {
+    foreach ($file in @('db/migrations/0001_inventory_schema.sql','db/migrations/0002_inventory_commands.sql','db/migrations/0003_backend_api.sql','db/migrations/0004_module_integrity.sql','db/bootstrap/grants.psql','db/bootstrap/backend-grants.psql','modules/dispatch-quality/migrations/001_create_checks.sql','modules/dispatch-quality/migrations/002_document_facts.sql','db/bootstrap/dispatch-quality-grants.psql')) {
         $migrations += @('-f',$file)
     }
     Invoke-Checked $psql ($connection + $migrations)

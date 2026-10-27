@@ -179,3 +179,31 @@ func TestAdjustmentsRequireSeparatePermission(t *testing.T) {
 		t.Fatalf("status=%d calls=%d body=%s", w.Code, b.calls, w.Body)
 	}
 }
+
+func TestReleaseReasonUnicodeLength(t *testing.T) {
+	t.Parallel()
+	for _, tc := range []struct {
+		name, character string
+	}{{name: "ASCII", character: "a"}, {name: "Cyrillic", character: "я"}, {name: "emoji", character: "📦"}} {
+		for _, length := range []int{2000, 2001} {
+			name := tc.name + "/within limit"
+			status, calls := 201, 1
+			if length > 2000 {
+				name = tc.name + "/over limit"
+				status, calls = 400, 0
+			}
+			t.Run(name, func(t *testing.T) {
+				t.Parallel()
+				h, backend := testHandler(t)
+				body, err := json.Marshal(map[string]any{"organization_id": testOrg, "warehouse_id": testWarehouse, "expected_document_version": 1, "quantity": "1", "reason": strings.Repeat(tc.character, length)})
+				if err != nil {
+					t.Fatal(err)
+				}
+				w := request(h, "POST", "/api/v1/reservations/"+testBalance+"/releases", string(body), "valid", testCommand, "application/json")
+				if w.Code != status || backend.calls != calls {
+					t.Fatalf("status=%d calls=%d want status=%d calls=%d body=%s", w.Code, backend.calls, status, calls, w.Body)
+				}
+			})
+		}
+	}
+}

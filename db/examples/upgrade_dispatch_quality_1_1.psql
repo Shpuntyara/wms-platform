@@ -1,0 +1,110 @@
+\set ON_ERROR_STOP on
+-- Run as the installation owner during the coordinated 1.0.0 -> 1.1.0 update.
+-- SQL layout is unchanged. Preserve all module data and applied-history rows.
+BEGIN;
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '15s';
+LOCK TABLE platform.module_migrations IN SHARE MODE;
+DO $upgrade$
+DECLARE
+  v_module platform.modules;
+  v_target jsonb := $manifest${
+  "manifest_version": 1,
+  "id": "example.dispatch_quality",
+  "version": "1.1.0",
+  "runtime": "in_process_compiled",
+  "compatibility": {
+    "core": ">=0.3.0 <1.0.0",
+    "sdk": ">=2.0.0 <3.0.0"
+  },
+  "requires_capabilities": [
+    "outbound.shipment_dispatch_guard.v1",
+    "platform.aggregate_transaction.v1"
+  ],
+  "requires_modules": [],
+  "conflicts_with": [],
+  "data": {
+    "schema": "mod_example_dispatch_quality",
+    "read_contracts": [],
+    "target_schema_version": 2
+  },
+  "guards": [
+    {
+      "point": "outbound.shipment_dispatch_guard.v1",
+      "handler": "CheckApproval",
+      "required": true,
+      "failure_policy": "deny",
+      "timeout_ms": 100
+    }
+  ],
+  "policies": [],
+  "subscribers": [],
+  "permissions": [],
+  "ui": [],
+  "migrations": [
+    {
+      "id": "001_create_checks",
+      "phase": "expand",
+      "resource": "migrations/001_create_checks.sql",
+      "transactional": true,
+      "resumable": false
+    },
+    {
+      "id": "002_document_facts",
+      "phase": "expand",
+      "resource": "migrations/002_document_facts.sql",
+      "transactional": true,
+      "resumable": false
+    }
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false
+  },
+  "lifecycle": {
+    "disable": "drain_and_check_dependencies",
+    "uninstall_data": "retain"
+  }
+}$manifest$::jsonb;
+BEGIN
+  SELECT * INTO v_module FROM platform.modules
+    WHERE id='example.dispatch_quality' FOR UPDATE;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'dispatch_quality_upgrade_missing_module';
+  END IF;
+  IF v_module.schema_name::text <> 'mod_example_dispatch_quality'
+     OR v_module.state <> 'active'
+     OR v_module.version NOT IN ('1.0.0','1.1.0') THEN
+    RAISE EXCEPTION 'dispatch_quality_upgrade_unexpected_installation';
+  END IF;
+  IF v_module.manifest->>'id' IS DISTINCT FROM v_module.id
+     OR v_module.manifest->>'version' IS DISTINCT FROM v_module.version
+     OR v_module.manifest#>>'{data,schema}' IS DISTINCT FROM 'mod_example_dispatch_quality'
+     OR v_module.manifest#>>'{data,target_schema_version}' IS DISTINCT FROM '2' THEN
+    RAISE EXCEPTION 'dispatch_quality_upgrade_source_manifest_mismatch';
+  END IF;
+  IF EXISTS (
+    WITH expected(migration_id,checksum) AS (VALUES
+      ('001_create_checks','8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4'),
+      ('002_document_facts','0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d')
+    ), actual AS (
+      SELECT migration_id,checksum FROM platform.module_migrations
+      WHERE module_id='example.dispatch_quality'
+    )
+    SELECT 1 FROM expected FULL JOIN actual USING (migration_id)
+    WHERE expected.migration_id IS NULL OR actual.migration_id IS NULL
+       OR expected.checksum IS DISTINCT FROM actual.checksum
+  ) THEN
+    RAISE EXCEPTION 'dispatch_quality_upgrade_migration_history_mismatch';
+  END IF;
+  IF v_module.version='1.1.0' THEN
+    IF v_module.manifest IS DISTINCT FROM v_target THEN
+      RAISE EXCEPTION 'dispatch_quality_upgrade_target_manifest_mismatch';
+    END IF;
+    RETURN;
+  END IF;
+  UPDATE platform.modules SET version='1.1.0',manifest=v_target
+    WHERE id='example.dispatch_quality';
+END
+$upgrade$;
+COMMIT;

@@ -1,0 +1,43 @@
+{
+  "phase": "red",
+  "baseline_commit": "fa6763422db0741e39117c58446776926d06241b",
+  "expected_failure": true,
+  "method": "Behavioral regressions were executed before their fixes. The database regressions were also rerun with only store.go overlaid from the baseline commit against an isolated PostgreSQL cluster.",
+  "confirmed_api_module_regressions": [
+    "HTTPS discovery and JWKS redirect to plaintext were followed before the fix",
+    "2000 Cyrillic or emoji characters were rejected by a byte-length check",
+    "Required dispatch handler was accepted at a different supported point",
+    "Canonical module schema collisions and PostgreSQL identifier truncation were accepted"
+  ],
+  "database_baseline_failed_test_events": [
+    "TestStoreRejectsDirectCoreWrites/UPDATE_ON_platform.actor_grants",
+    "TestStoreRejectsDirectCoreWrites/UPDATE_ON_inventory.reservations",
+    "TestStoreRejectsDirectCoreWrites/UPDATE_ON_warehouse.documents",
+    "TestStoreRejectsDirectCoreWrites/INSERT_ON_platform.operations",
+    "TestStoreRejectsDirectCoreWrites/TRUNCATE_ON_inventory.movements",
+    "TestStoreRejectsDirectCoreWrites/UPDATE_(reserved_qty)_ON_inventory.stock_balances",
+    "TestStoreRejectsDirectCoreWrites/CREATE_ON_SCHEMA_contracts_v1",
+    "TestStoreRejectsDirectCoreWrites/UPDATE_ON_contracts_v1.documents",
+    "TestStoreRejectsDirectCoreWrites/owner_through_SET_ROLE",
+    "TestStoreRejectsDirectCoreWrites",
+    "TestLostCommitAcknowledgementRecoversByCommandID",
+    "TestModuleInstallationIntegrity/checksum_mismatch",
+    "TestModuleInstallationIntegrity/missing_migration",
+    "TestModuleInstallationIntegrity/unexpected_migration",
+    "TestModuleInstallationIntegrity/schema_metadata_mismatch",
+    "TestModuleInstallationIntegrity/manifest_schema_mismatch",
+    "TestModuleInstallationIntegrity",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/unexpected_commit_rollback",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/closed_socket",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/closed_pipe",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/EOF_after_request",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/truncated_response",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/SQL_connection_disappeared",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/network_operation",
+    "TestTranslateConnectionFailurePreservesCommandRecovery/SQL_connection_failure",
+    "TestTranslateConnectionFailurePreservesCommandRecovery"
+  ],
+  "commit_ack_loss": "PostgreSQL completed the operation; the test discarded the COMMIT acknowledgement. Baseline API returned 500 instead of a recoverable 503.",
+  "dependency_findings": ["GO-2026-6629", "GO-2026-5970"],
+  "scope": "Synthetic local test data; no production deployment or external identity provider used."
+}
