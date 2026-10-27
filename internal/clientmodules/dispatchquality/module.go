@@ -27,7 +27,7 @@ func New() modules.Module {
 		GuardPoints:   map[string][]string{"CheckApproval": {modules.DispatchPoint}},
 		SchemaVersion: 3,
 		MigrationChecksums: map[string]string{
-			"003_authoritative_guard": "84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343",
+			"003_authoritative_guard": "8af9d832c46bdd07a709b4572cf968ff6b7a8fcf62a1bfc75e726833afbaf11e",
 			"001_create_checks":       "8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4",
 			"002_document_facts":      "0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d",
 		}}

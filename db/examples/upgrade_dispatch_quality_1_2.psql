@@ -77,14 +77,14 @@ BEGIN
   WITH expected(id,checksum) AS (VALUES
    ('001_create_checks','8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4'),
    ('002_document_facts','0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d'),
-   ('003_authoritative_guard','84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343')),
+   ('003_authoritative_guard','8af9d832c46bdd07a709b4572cf968ff6b7a8fcf62a1bfc75e726833afbaf11e')),
   actual AS (SELECT migration_id AS id,checksum FROM platform.module_migrations WHERE module_id=m.id)
   SELECT 1 FROM expected FULL JOIN actual USING(id) WHERE expected.id IS NULL
    OR (actual.id IS NULL AND expected.id<>'003_authoritative_guard')
    OR (actual.id IS NOT NULL AND expected.checksum IS DISTINCT FROM actual.checksum)
  ) THEN RAISE EXCEPTION 'dispatch_quality_upgrade_migration_history_mismatch'; END IF;
  IF m.version='1.2.0' AND m.manifest IS DISTINCT FROM target THEN RAISE EXCEPTION 'dispatch_quality_upgrade_target_manifest_mismatch'; END IF;
- INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES(m.id,'003_authoritative_guard','84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343') ON CONFLICT DO NOTHING;
+ INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES(m.id,'003_authoritative_guard','8af9d832c46bdd07a709b4572cf968ff6b7a8fcf62a1bfc75e726833afbaf11e') ON CONFLICT DO NOTHING;
  UPDATE platform.modules SET version='1.2.0',manifest=target WHERE id=m.id;
 END $upgrade$;
 COMMIT;

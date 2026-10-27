@@ -1,6 +1,7 @@
 package dispatchquality
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -37,6 +38,9 @@ func TestCompiledMigrationChecksumsMatchPackage(t *testing.T) {
 		content, err := os.ReadFile(filepath.Join("../../../modules/dispatch-quality/migrations", migration.ID+".sql"))
 		if err != nil {
 			t.Fatal(err)
+		}
+		if bytes.Contains(content, []byte("\r\n")) {
+			t.Fatalf("migration %s must use LF before checksumming", migration.ID)
 		}
 		sum := sha256.Sum256(content)
 		if expected := hex.EncodeToString(sum[:]); code.MigrationChecksums[migration.ID] != expected {

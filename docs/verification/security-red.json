@@ -31,5 +31,10 @@
         "empty registry accepted installed required module"
       ]
     }
-  ]
+  ],
+  "packaging_regression": {
+    "test": "TestCompiledMigrationChecksumsMatchPackage",
+    "status": "failed_before_normalization",
+    "evidence": "migration 003_authoritative_guard must use LF before checksumming"
+  }
 }

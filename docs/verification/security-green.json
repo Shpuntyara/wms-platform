@@ -1,5 +1,6 @@
 {
   "status": "passed",
+  "tdd_test_commit": "8032682",
   "tdd_evidence": "docs/verification/security-red.json",
   "go": "go version go1.27.3 windows/amd64",
   "postgresql": "17.11",
@@ -35,10 +36,10 @@
   "failed_test_events": 0,
   "skipped_test_events": 0,
   "packages": {
-    "github.com/Shpuntyara/wms-platform/cmd/wms-api": "pass",
-    "github.com/Shpuntyara/wms-platform/internal/inventory": "pass",
-    "github.com/Shpuntyara/wms-platform/internal/modules": "pass",
     "github.com/Shpuntyara/wms-platform/internal/clientmodules/dispatchquality": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/inventory": "pass",
+    "github.com/Shpuntyara/wms-platform/cmd/wms-api": "pass",
+    "github.com/Shpuntyara/wms-platform/internal/modules": "pass",
     "github.com/Shpuntyara/wms-platform/internal/jobs": "pass",
     "github.com/Shpuntyara/wms-platform/internal/api": "pass",
     "github.com/Shpuntyara/wms-platform/internal/auth": "pass",
@@ -48,6 +49,5 @@
     "passed": 41,
     "failed": 0
   },
-  "scope": "Local isolated PostgreSQL, OIDC cryptography, HTTP contract, permissions, guards, concurrency and SQL regressions. No production load, HA, external IdP deployment or power-loss verification.",
-  "tdd_test_commit": "8032682"
+  "scope": "Local isolated PostgreSQL, OIDC cryptography, HTTP contract, permissions, guards, concurrency and SQL regressions. No production load, HA, external IdP deployment or power-loss verification."
 }
