@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+work/
+tmp/
+node_modules/
+__pycache__/
+*.pyc
+*.log
+*.dump
+*.backup
+pgdata/
+coverage/

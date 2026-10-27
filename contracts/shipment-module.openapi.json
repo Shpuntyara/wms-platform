@@ -1,0 +1,1044 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WMS shipment and module contract example",
+    "version": "0.1.0",
+    "description": "Architectural example only; no running service or implemented SDK. Covers shipments, dispatches and one client module. Other WMS APIs are outside this excerpt.",
+    "license": {
+      "name": "Product license to be defined; example only",
+      "url": "https://wms.example.invalid/legal/license"
+    }
+  },
+  "x-example-only": true,
+  "servers": [
+    {
+      "url": "https://wms.example.invalid",
+      "description": "Placeholder for an installation URL"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Shipments",
+      "description": "Core outbound shipment operations"
+    },
+    {
+      "name": "QualityChecks",
+      "description": "Client-specific dispatch approval module"
+    },
+    {
+      "name": "Operations",
+      "description": "Durable command results"
+    }
+  ],
+  "security": [
+    {
+      "CookieSession": []
+    }
+  ],
+  "paths": {
+    "/api/v1/shipments": {
+      "get": {
+        "summary": "List accessible shipments",
+        "description": "List accessible shipments",
+        "operationId": "listShipments",
+        "tags": [
+          "Shipments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Accessible shipments ordered by a stable cursor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "name": "warehouse_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Optional warehouse filter; never grants access."
+          }
+        ]
+      }
+    },
+    "/api/v1/shipments/{shipment_id}": {
+      "parameters": [
+        {
+          "name": "shipment_id",
+          "in": "path",
+          "required": true,
+          "description": "Shipment identifier; server checks organization and warehouse scope.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Read a shipment snapshot",
+        "description": "Read a shipment snapshot",
+        "operationId": "getShipment",
+        "tags": [
+          "Shipments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current snapshot from the authoritative database.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShipmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/shipments/{shipment_id}/dispatches": {
+      "parameters": [
+        {
+          "name": "shipment_id",
+          "in": "path",
+          "required": true,
+          "description": "Shipment identifier; server checks organization and warehouse scope.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Dispatch a shipment through all required guards",
+        "description": "Dispatch a shipment through all required guards",
+        "operationId": "createShipmentDispatch",
+        "tags": [
+          "Shipments"
+        ],
+        "responses": {
+          "201": {
+            "description": "Dispatch committed; an identical idempotent retry returns the same result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchResponse"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "URI of the resulting shipment.",
+                "schema": {
+                  "type": "string",
+                  "format": "uri-reference"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchRequest"
+              },
+              "example": {
+                "expected_shipment_version": 34
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CookieSession": [],
+            "CsrfToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/extensions/client.acme.dispatch_quality/shipments/{shipment_id}/checks": {
+      "parameters": [
+        {
+          "name": "shipment_id",
+          "in": "path",
+          "required": true,
+          "description": "Shipment identifier; server checks organization and warehouse scope.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "List dispatch quality checks",
+        "description": "List dispatch quality checks",
+        "operationId": "listDispatchQualityChecks",
+        "tags": [
+          "QualityChecks"
+        ],
+        "responses": {
+          "200": {
+            "description": "Accessible immutable checks, newest first with a stable cursor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Cursor"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          }
+        ]
+      },
+      "post": {
+        "summary": "Record a quality decision under the shipment lock",
+        "description": "Record a quality decision under the shipment lock",
+        "operationId": "createDispatchQualityCheck",
+        "tags": [
+          "QualityChecks"
+        ],
+        "responses": {
+          "201": {
+            "description": "Immutable decision bound to shipment content and policy revisions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckResponse"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "URI of the created check.",
+                "schema": {
+                  "type": "string",
+                  "format": "uri-reference"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckRequest"
+              },
+              "example": {
+                "expected_shipment_version": 33,
+                "decision": "approved",
+                "attachment_ids": [
+                  "68d5746e-0a3b-4ccd-a4bb-84ecae713036"
+                ],
+                "note": "Упаковка проверена"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "CookieSession": [],
+            "CsrfToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/extensions/client.acme.dispatch_quality/shipments/{shipment_id}/checks/{check_id}": {
+      "parameters": [
+        {
+          "name": "shipment_id",
+          "in": "path",
+          "required": true,
+          "description": "Shipment identifier; server checks organization and warehouse scope.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "check_id",
+          "in": "path",
+          "required": true,
+          "description": "Immutable quality check identifier.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Read a dispatch quality check",
+        "description": "Read a dispatch quality check",
+        "operationId": "getDispatchQualityCheck",
+        "tags": [
+          "QualityChecks"
+        ],
+        "responses": {
+          "200": {
+            "description": "One check after shipment and module authorization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/operations/{operation_id}": {
+      "parameters": [
+        {
+          "name": "operation_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "description": "Command UUID, equal to its Idempotency-Key. A 404 does not prove that an in-flight command failed; retry that same command UUID."
+        }
+      ],
+      "get": {
+        "summary": "Read an authorized durable command result",
+        "description": "Read an authorized durable command result",
+        "operationId": "getOperation",
+        "tags": [
+          "Operations"
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed or durably rejected command. Authorize against the original scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "CookieSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "wms_session",
+        "description": "Opaque Secure HttpOnly session established by an OIDC-backed server. Authentication endpoints are outside this excerpt."
+      },
+      "CsrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-Token",
+        "description": "Validated CSRF token for browser mutations; not an authorization substitute."
+      }
+    },
+    "parameters": {
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "description": "New UUID for a new business command. Reuse only for identical retries. A changed payload, principal or scope conflicts; recheck authorization before replay.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "Cursor": {
+        "name": "cursor",
+        "in": "query",
+        "description": "Opaque cursor bound to the filters and ordering.",
+        "schema": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "Limit": {
+        "name": "limit",
+        "in": "query",
+        "description": "Maximum page size.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200,
+          "default": 50
+        }
+      }
+    },
+    "schemas": {
+      "Shipment": {
+        "type": "object",
+        "required": [
+          "id",
+          "warehouse_id",
+          "state",
+          "version",
+          "content_revision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "released",
+              "in_progress",
+              "ready_to_dispatch",
+              "dispatched",
+              "cancelled"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "content_revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "ShipmentResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Shipment"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "required": [
+          "next_cursor"
+        ],
+        "properties": {
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ShipmentPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Shipment"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "DispatchRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_shipment_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "expected_shipment_version"
+        ]
+      },
+      "Dispatch": {
+        "type": "object",
+        "required": [
+          "id",
+          "shipment_id",
+          "operation_id",
+          "shipment_version",
+          "dispatched_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipment_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "dispatched_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DispatchResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Dispatch"
+          }
+        }
+      },
+      "CheckRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expected_shipment_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "attachment_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "expected_shipment_version",
+          "decision",
+          "attachment_ids"
+        ]
+      },
+      "Check": {
+        "type": "object",
+        "required": [
+          "id",
+          "shipment_id",
+          "shipment_version",
+          "checked_content_revision",
+          "decision",
+          "reviewer_id",
+          "created_at",
+          "policy_revision",
+          "attachment_ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipment_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "checked_content_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "reviewer_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "policy_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "attachment_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 16,
+            "uniqueItems": true
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "CheckResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Check"
+          }
+        }
+      },
+      "CheckPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Check"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "Operation": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "rejected"
+            ]
+          },
+          "result_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "OperationResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Operation"
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code",
+          "trace_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "description": "Stable problem type URI; example host is a placeholder."
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "code": {
+            "type": "string",
+            "description": "Stable machine-readable code; never parse the localized title."
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "module_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid syntax, fields or configuration-dependent validation.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/badrequest",
+              "title": "Invalid syntax, fields or configuration-dependent validation.",
+              "status": 400,
+              "code": "badrequest",
+              "trace_id": "example-trace"
+            }
+          }
+        }
+      },
+      "Unauthenticated": {
+        "description": "A valid session is required.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/unauthenticated",
+              "title": "A valid session is required.",
+              "status": 401,
+              "code": "unauthenticated",
+              "trace_id": "example-trace"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The actor lacks access or the CSRF check failed.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/forbidden",
+              "title": "The actor lacks access or the CSRF check failed.",
+              "status": 403,
+              "code": "forbidden",
+              "trace_id": "example-trace"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource is absent or hidden by the resource visibility policy.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/notfound",
+              "title": "Resource is absent or hidden by the resource visibility policy.",
+              "status": 404,
+              "code": "notfound",
+              "trace_id": "example-trace"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Revision conflict, invalid state, guard denial or reuse of an idempotency key with different input.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/conflict",
+              "title": "Revision conflict, invalid state, guard denial or reuse of an idempotency key with different input.",
+              "status": 409,
+              "code": "conflict",
+              "trace_id": "example-trace"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Request budget exhausted; retry using the same command UUID.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/ratelimited",
+              "title": "Request budget exhausted; retry using the same command UUID.",
+              "status": 429,
+              "code": "ratelimited",
+              "trace_id": "example-trace"
+            }
+          }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Optional retry delay in seconds.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "Required guard, storage or dependency is unavailable; no successful stock movement is claimed.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://wms.example.invalid/problems/unavailable",
+              "title": "Required guard, storage or dependency is unavailable; no successful stock movement is claimed.",
+              "status": 503,
+              "code": "unavailable",
+              "trace_id": "example-trace"
+            }
+          }
+        },
+        "headers": {
+          "Retry-After": {
+            "description": "Optional retry delay in seconds.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]+$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

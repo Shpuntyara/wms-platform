@@ -1,0 +1,28 @@
+{
+  "example_only": true,
+  "description": "Illustrative build input. Versions are fictional. This is not a tested or deployable release lock; package artifacts and migrations are not included.",
+  "client": "example-acme",
+  "core": "1.4.2",
+  "sdk": "1.2.0",
+  "modules": [
+    {
+      "id": "client.acme.dispatch_quality",
+      "version": "2.1.0"
+    }
+  ],
+  "policy_bindings": [],
+  "module_config": {
+    "client.acme.dispatch_quality": {
+      "require_photo": true,
+      "approval_max_age_minutes": 60
+    }
+  },
+  "activation_requires": [
+    "resolved_dependency_graph",
+    "verified_artifact_digests",
+    "migration_rehearsal",
+    "compatibility_suite_pass",
+    "configuration_validation",
+    "recovery_plan"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "manifest_version": 1,
+  "id": "client.acme.dispatch_quality",
+  "version": "2.1.0",
+  "runtime": "in_process_compiled",
+  "compatibility": {
+    "core": ">=1.4.0 <2.0.0",
+    "sdk": ">=1.2.0 <2.0.0"
+  },
+  "requires_capabilities": [
+    "outbound.shipment_dispatch_guard.v1",
+    "platform.aggregate_transaction.v1",
+    "platform.attachments_ready.v1",
+    "platform.outbox.v1"
+  ],
+  "requires_modules": [],
+  "conflicts_with": [],
+  "data": {
+    "schema": "mod_client_acme_dispatch_quality",
+    "read_contracts": [
+      "outbound.shipment_snapshot.v1"
+    ],
+    "target_schema_version": 1
+  },
+  "guards": [
+    {
+      "point": "outbound.shipment_dispatch_guard.v1",
+      "handler": "CheckDispatchApproval",
+      "required": true,
+      "failure_policy": "deny",
+      "timeout_ms": 50
+    }
+  ],
+  "policies": [],
+  "subscribers": [
+    {
+      "event": "wms.shipment.dispatched",
+      "event_version": 1,
+      "handler": "ScheduleQualityReport",
+      "delivery": "at_least_once",
+      "ordering": "not_guaranteed",
+      "max_attempts": 12
+    }
+  ],
+  "permissions": [
+    {
+      "id": "client.acme.dispatch_quality.review",
+      "scope": "warehouse"
+    },
+    {
+      "id": "client.acme.dispatch_quality.read",
+      "scope": "warehouse"
+    }
+  ],
+  "ui": [
+    {
+      "slot": "outbound.shipment_details_tab.v1",
+      "route": "/extensions/client.acme.dispatch_quality",
+      "required_permission": "client.acme.dispatch_quality.read"
+    }
+  ],
+  "migrations": [
+    {
+      "id": "001_create_dispatch_checks",
+      "phase": "expand",
+      "resource": "migrations/001_create_dispatch_checks.sql",
+      "transactional": true,
+      "resumable": false
+    }
+  ],
+  "config_schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "require_photo": {
+        "type": "boolean"
+      },
+      "approval_max_age_minutes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1440
+      }
+    },
+    "required": [
+      "require_photo",
+      "approval_max_age_minutes"
+    ]
+  },
+  "lifecycle": {
+    "disable": "drain_and_check_dependencies",
+    "uninstall_data": "retain"
+  }
+}

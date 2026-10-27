@@ -1,0 +1,58 @@
+{
+  "example_only": true,
+  "description": "Illustrative public contract catalog, not an implemented SDK.",
+  "core": "1.4.2",
+  "sdk": "1.2.0",
+  "capabilities": [
+    "outbound.shipment_dispatch_guard.v1",
+    "platform.aggregate_transaction.v1",
+    "platform.attachments_ready.v1",
+    "platform.outbox.v1"
+  ],
+  "read_contracts": [
+    "outbound.shipment_snapshot.v1"
+  ],
+  "extension_points": [
+    {
+      "id": "outbound.shipment_dispatch_guard.v1",
+      "kind": "guard",
+      "execution": "in_process_under_shipment_lock",
+      "allowed_results": [
+        "allow",
+        "deny"
+      ],
+      "merge": "all_required_guards_must_allow",
+      "failure_policy": "deny_affected_operation",
+      "network_io": false,
+      "side_effects": false
+    }
+  ],
+  "ui_slots": [
+    "outbound.shipment_details_tab.v1"
+  ],
+  "event_contracts": [
+    {
+      "type": "wms.shipment.dispatched",
+      "version": 1,
+      "delivery": "at_least_once",
+      "ordering": "not_guaranteed",
+      "envelope_required": [
+        "event_id",
+        "event_type",
+        "event_version",
+        "aggregate_id",
+        "aggregate_version",
+        "occurred_at",
+        "correlation_id",
+        "causation_id",
+        "organization_id",
+        "warehouse_id",
+        "data"
+      ],
+      "consumer_dedup_key": [
+        "consumer_id",
+        "event_id"
+      ]
+    }
+  ]
+}

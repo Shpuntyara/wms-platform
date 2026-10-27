@@ -1,0 +1,379 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:wms:module-manifest:1",
+  "title": "WMS module manifest contract version 1",
+  "description": "Design contract. Schema validity alone does not establish compatibility, authorization or successful migration.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$",
+      "maxLength": 58
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "description": "Stable release X.Y.Z; prereleases are excluded from production profiles."
+    },
+    "runtime": {
+      "enum": [
+        "in_process_compiled",
+        "external_worker"
+      ]
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "core": {
+          "type": "string",
+          "pattern": "^>=(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*) <(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "description": "Restricted production range syntax: >=X.Y.Z <X.Y.Z. Checked semantically by the resolver."
+        },
+        "sdk": {
+          "type": "string",
+          "pattern": "^>=(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*) <(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "description": "Restricted production range syntax: >=X.Y.Z <X.Y.Z. Checked semantically by the resolver."
+        }
+      },
+      "required": [
+        "core",
+        "sdk"
+      ]
+    },
+    "requires_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
+      },
+      "uniqueItems": true
+    },
+    "requires_modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^>=(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*) <(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+            "description": "Restricted production range syntax: >=X.Y.Z <X.Y.Z. Checked semantically by the resolver."
+          }
+        },
+        "required": [
+          "id",
+          "version"
+        ]
+      }
+    },
+    "conflicts_with": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+      },
+      "uniqueItems": true
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema": {
+          "type": "string",
+          "pattern": "^mod_[a-z][a-z0-9_]*$",
+          "maxLength": 63
+        },
+        "read_contracts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
+          },
+          "uniqueItems": true
+        },
+        "target_schema_version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "schema",
+        "read_contracts",
+        "target_schema_version"
+      ]
+    },
+    "guards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "point": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z0-9]*$"
+          },
+          "required": {
+            "const": true
+          },
+          "failure_policy": {
+            "const": "deny"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          }
+        },
+        "required": [
+          "point",
+          "handler",
+          "required",
+          "failure_policy",
+          "timeout_ms"
+        ]
+      }
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "point": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
+          },
+          "strategy_id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z0-9]*$"
+          }
+        },
+        "required": [
+          "point",
+          "strategy_id",
+          "handler"
+        ]
+      }
+    },
+    "subscribers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          },
+          "event_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "handler": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z0-9]*$"
+          },
+          "delivery": {
+            "const": "at_least_once"
+          },
+          "ordering": {
+            "const": "not_guaranteed"
+          },
+          "max_attempts": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "event",
+          "event_version",
+          "handler",
+          "delivery",
+          "ordering",
+          "max_attempts"
+        ]
+      }
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          },
+          "scope": {
+            "enum": [
+              "installation",
+              "organization",
+              "warehouse",
+              "stock_owner"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "scope"
+        ]
+      }
+    },
+    "ui": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "slot": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
+          },
+          "route": {
+            "type": "string",
+            "pattern": "^/extensions/[a-z0-9_.]+(/[a-z0-9_-]+)*$"
+          },
+          "required_permission": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+          }
+        },
+        "required": [
+          "slot",
+          "route",
+          "required_permission"
+        ]
+      }
+    },
+    "migrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9]{3}_[a-z0-9_]+$"
+          },
+          "phase": {
+            "enum": [
+              "expand",
+              "backfill",
+              "contract"
+            ]
+          },
+          "resource": {
+            "type": "string",
+            "pattern": "^migrations/[0-9]{3}_[a-z0-9_]+\\.sql$"
+          },
+          "transactional": {
+            "type": "boolean"
+          },
+          "resumable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "phase",
+          "resource",
+          "transactional",
+          "resumable"
+        ]
+      }
+    },
+    "config_schema": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "disable": {
+          "const": "drain_and_check_dependencies"
+        },
+        "uninstall_data": {
+          "const": "retain"
+        }
+      },
+      "required": [
+        "disable",
+        "uninstall_data"
+      ]
+    }
+  },
+  "required": [
+    "manifest_version",
+    "id",
+    "version",
+    "runtime",
+    "compatibility",
+    "requires_capabilities",
+    "requires_modules",
+    "conflicts_with",
+    "data",
+    "guards",
+    "policies",
+    "subscribers",
+    "permissions",
+    "ui",
+    "migrations",
+    "config_schema",
+    "lifecycle"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "runtime": {
+            "const": "external_worker"
+          }
+        },
+        "required": [
+          "runtime"
+        ]
+      },
+      "then": {
+        "properties": {
+          "guards": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "policies": {
+            "type": "array",
+            "maxItems": 0
+          },
+          "ui": {
+            "type": "array",
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
+}
