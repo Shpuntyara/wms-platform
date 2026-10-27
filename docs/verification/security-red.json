@@ -1,0 +1,35 @@
+{
+  "status": "expected_failures_before_implementation",
+  "baseline_commit": "4ff22f4545e3c541e1a6486f23a13cc9c386f970",
+  "command": "go test -race -tags=integration ./... -count=1 -timeout=120s -json",
+  "regressions": [
+    {
+      "test": "TestSecurityDirectSQLCannotBypassDispatchGuard",
+      "status": "failed_before_fix",
+      "evidence": [
+        "direct SQL bypassed required quality guard"
+      ]
+    },
+    {
+      "test": "TestSecurityDisabledModuleStillBlocksSQL",
+      "status": "failed_before_fix",
+      "evidence": [
+        "disabling required module silently removed enforcement"
+      ]
+    },
+    {
+      "test": "TestSecurityExpiryReleasesExactlyOnce",
+      "status": "failed_before_fix",
+      "evidence": [
+        "ERROR: function inventory.expire_reservations(integer) does not exist (SQLSTATE 42883)"
+      ]
+    },
+    {
+      "test": "TestSecurityRegistryCannotOmitInstalledModule",
+      "status": "failed_before_fix",
+      "evidence": [
+        "empty registry accepted installed required module"
+      ]
+    }
+  ]
+}

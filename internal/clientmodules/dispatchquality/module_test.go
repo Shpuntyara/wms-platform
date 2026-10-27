@@ -30,7 +30,7 @@ func TestPackagedManifestMatchesCompiledModule(t *testing.T) {
 func TestCompiledMigrationChecksumsMatchPackage(t *testing.T) {
 	code := New()
 	manifest := Manifest()
-	if code.SchemaVersion != 2 || manifest.Data.TargetSchemaVersion != 2 || manifest.Data.Schema != "mod_example_dispatch_quality" || len(manifest.Migrations) != 2 || len(code.MigrationChecksums) != 2 {
+	if code.SchemaVersion != 3 || manifest.Data.TargetSchemaVersion != 3 || manifest.Data.Schema != "mod_example_dispatch_quality" || len(manifest.Migrations) != 3 || len(code.MigrationChecksums) != 3 {
 		t.Fatal("compiled storage metadata does not describe the installed package")
 	}
 	for _, migration := range manifest.Migrations {

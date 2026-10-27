@@ -58,7 +58,7 @@ func seedDispatchUpgrade(t *testing.T, f *fixture) []byte {
 		f.cleanupExec(`DELETE FROM platform.module_migrations WHERE module_id='example.dispatch_quality'`)
 		f.cleanupExec(`DELETE FROM platform.modules WHERE id='example.dispatch_quality'`)
 	})
-	newManifest, err := os.ReadFile("../../modules/dispatch-quality/manifest.json")
+	newManifest, err := os.ReadFile("../../tests/fixtures/dispatch-quality-1.1.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -119,7 +119,7 @@ func TestDispatchQualityUpgradePreservesDataAndHistory(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	registry, err := modules.NewRegistry(installed, []modules.Module{dispatchquality.New()}, []string{dispatchquality.ID})
+	registry, err := modules.NewRegistry(installed, []modules.Module{legacyDispatchModule()}, []string{dispatchquality.ID})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,4 +166,13 @@ func TestDispatchQualityUpgradeRejectsUnexpectedInstallation(t *testing.T) {
 			t.Fatal("failed repeat changed the target manifest")
 		}
 	})
+}
+
+// Preserve upgrade coverage for the previously shipped package and its exact history.
+func legacyDispatchModule() modules.Module {
+	m := dispatchquality.New()
+	m.Version = "1.1.0"
+	m.SchemaVersion = 2
+	delete(m.MigrationChecksums, "003_authoritative_guard")
+	return m
 }
