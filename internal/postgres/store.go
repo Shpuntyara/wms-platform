@@ -31,7 +31,11 @@ func New(ctx context.Context, pool *pgxpool.Pool) (*Store, error) {
 	var privileged bool
 	err := pool.QueryRow(ctx, `SELECT EXISTS (
       SELECT 1 FROM pg_roles r
-      WHERE (r.rolname=current_user OR pg_has_role(r.oid,'SET')) AND (
+      WHERE (r.rolname=current_user OR pg_has_role(r.oid,'SET') OR pg_has_role(r.oid,'USAGE')) AND (
+        r.oid=(SELECT datdba FROM pg_database WHERE datname=current_database())
+        OR r.rolname IN ('pg_read_all_data','pg_write_all_data','pg_read_server_files','pg_write_server_files',
+          'pg_execute_server_program','pg_create_subscription','pg_checkpoint','pg_signal_backend','pg_maintain')
+        OR
         r.rolsuper OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication OR r.rolbypassrls
         OR EXISTS (
           SELECT 1 FROM pg_namespace n

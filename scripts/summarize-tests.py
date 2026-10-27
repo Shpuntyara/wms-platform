@@ -18,6 +18,7 @@ packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
 required = [
+    'TestSecurityRuntimeRejectsServerFileAndDatabaseOwnershipPrivileges',
     'TestSecurityRuntimeCannotOwnModuleExecutionSurface',
     'TestSecurityDeclarativePolicyEnforcedByAPIAndSQL',
     'TestSecurityDispatchUpgradeTo12',

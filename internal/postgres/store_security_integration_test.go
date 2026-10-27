@@ -227,3 +227,28 @@ func TestSecurityDispatchUpgradeTo12(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestSecurityRuntimeRejectsServerFileAndDatabaseOwnershipPrivileges(t *testing.T) {
+	f := newFixture(t)
+	for _, role := range []string{"pg_read_server_files", "pg_write_server_files", "pg_execute_server_program"} {
+		t.Run(role, func(t *testing.T) {
+			f.exec("GRANT " + role + " TO wms_go_runtime")
+			defer f.exec("REVOKE " + role + " FROM wms_go_runtime")
+			if _, err := postgres.New(t.Context(), f.runtime); err == nil {
+				t.Fatalf("runtime accepted privileged role %s", role)
+			}
+		})
+	}
+	t.Run("inherited privilege without SET", func(t *testing.T) {
+		f.exec(`GRANT pg_execute_server_program TO wms_go_runtime WITH SET FALSE`)
+		defer f.exec(`REVOKE pg_execute_server_program FROM wms_go_runtime`)
+		if _, err := postgres.New(t.Context(), f.runtime); err == nil {
+			t.Fatal("inherited server program privilege accepted")
+		}
+	})
+	f.exec(`ALTER DATABASE wms_kernel_test_backend OWNER TO wms_go_runtime`)
+	defer f.exec(`ALTER DATABASE wms_kernel_test_backend OWNER TO wms_test_owner`)
+	if _, err := postgres.New(t.Context(), f.runtime); err == nil {
+		t.Fatal("runtime accepted database ownership")
+	}
+}

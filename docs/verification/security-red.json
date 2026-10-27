@@ -36,5 +36,15 @@
     "test": "TestCompiledMigrationChecksumsMatchPackage",
     "status": "failed_before_normalization",
     "evidence": "migration 003_authoritative_guard must use LF before checksumming"
+  },
+  "role_preflight_regression": {
+    "test": "TestSecurityRuntimeRejectsServerFileAndDatabaseOwnershipPrivileges",
+    "status": "failed_before_fix",
+    "evidence": [
+      "runtime accepted privileged role pg_read_server_files",
+      "runtime accepted privileged role pg_write_server_files",
+      "runtime accepted privileged role pg_execute_server_program",
+      "runtime accepted database ownership"
+    ]
   }
 }
