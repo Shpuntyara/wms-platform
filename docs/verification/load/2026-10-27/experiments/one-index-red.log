@@ -1,0 +1,16 @@
+=== RUN   TestLoadPageWorkStaysBounded
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerFirst
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerDeep
+=== RUN   TestLoadPageWorkStaysBounded/MovementsAllDeep
+=== RUN   TestLoadPageWorkStaysBounded/ReservationsOwnerDeep
+    store_load_bench_test.go:218: force_generic_plan reads 1254 shared blocks for at most 51 rows; pagination scans history
+=== RUN   TestLoadPageWorkStaysBounded/StockOwnerDeep
+--- FAIL: TestLoadPageWorkStaysBounded (0.56s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsOwnerFirst (0.04s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsOwnerDeep (0.03s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsAllDeep (0.03s)
+    --- FAIL: TestLoadPageWorkStaysBounded/ReservationsOwnerDeep (0.13s)
+    --- PASS: TestLoadPageWorkStaysBounded/StockOwnerDeep (0.04s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	0.589s
+FAIL

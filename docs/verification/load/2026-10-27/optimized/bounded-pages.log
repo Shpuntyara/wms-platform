@@ -1,0 +1,28 @@
+=== RUN   TestLoadPageWorkStaysBounded
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerFirst
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerDeep
+=== RUN   TestLoadPageWorkStaysBounded/MovementsAllDeep
+=== RUN   TestLoadPageWorkStaysBounded/ReservationsOwnerDeep
+=== RUN   TestLoadPageWorkStaysBounded/StockOwnerDeep
+--- PASS: TestLoadPageWorkStaysBounded (0.42s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsOwnerFirst (0.03s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsOwnerDeep (0.02s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsAllDeep (0.02s)
+    --- PASS: TestLoadPageWorkStaysBounded/ReservationsOwnerDeep (0.02s)
+    --- PASS: TestLoadPageWorkStaysBounded/StockOwnerDeep (0.02s)
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/empty_scope
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/single_owner
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/multiple_owners
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/all_owners
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/authorized_owner_filter
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/forbidden_owner_filter
+--- PASS: TestPaginationPreservesEveryOwnerScopeShape (0.26s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/empty_scope (0.00s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/single_owner (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/multiple_owners (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/all_owners (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/authorized_owner_filter (0.00s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/forbidden_owner_filter (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	0.706s

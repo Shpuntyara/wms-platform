@@ -1,0 +1,30 @@
+goos: windows
+goarch: amd64
+pkg: github.com/Shpuntyara/wms-platform/internal/postgres
+cpu: AMD Ryzen 5 5600X 6-Core Processor
+                                     │   baseline   │              optimized               │
+                                     │    sec/op    │    sec/op     vs base                │
+HistoryHTTP/MovementsOwnerFirst-12     6.201m ± 26%   1.930m ±  5%  -68.88% (p=0.000 n=10)
+HistoryHTTP/MovementsOwnerDeep-12      9.241m ±  4%   1.938m ±  3%  -79.03% (p=0.000 n=10)
+HistoryHTTP/MovementsAllDeep-12        1.979m ±  4%   1.920m ±  4%        ~ (p=0.105 n=10)
+HistoryHTTP/ReservationsOwnerDeep-12   3.443m ±  3%   1.381m ±  7%  -59.89% (p=0.000 n=10)
+HistoryHTTP/StockOwnerDeep-12          1.612m ±  4%   1.404m ± 20%  -12.89% (p=0.015 n=10)
+geomean                                3.629m         1.693m        -53.34%
+
+                                     │   baseline    │              optimized               │
+                                     │     B/op      │     B/op       vs base               │
+HistoryHTTP/MovementsOwnerFirst-12     410.6Ki ±  5%   390.4Ki ±  8%       ~ (p=0.052 n=10)
+HistoryHTTP/MovementsOwnerDeep-12      403.1Ki ± 10%   406.2Ki ±  6%       ~ (p=0.436 n=10)
+HistoryHTTP/MovementsAllDeep-12        403.9Ki ±  6%   411.2Ki ±  5%       ~ (p=0.481 n=10)
+HistoryHTTP/ReservationsOwnerDeep-12   354.3Ki ±  3%   359.2Ki ±  2%       ~ (p=0.280 n=10)
+HistoryHTTP/StockOwnerDeep-12          309.4Ki ±  6%   315.3Ki ± 14%       ~ (p=0.739 n=10)
+geomean                                374.1Ki         374.7Ki        +0.16%
+
+                                     │  baseline   │             optimized              │
+                                     │  allocs/op  │  allocs/op   vs base               │
+HistoryHTTP/MovementsOwnerFirst-12     2.916k ± 1%   2.900k ± 1%  -0.53% (p=0.030 n=10)
+HistoryHTTP/MovementsOwnerDeep-12      2.909k ± 1%   2.922k ± 1%       ~ (p=0.182 n=10)
+HistoryHTTP/MovementsAllDeep-12        2.995k ± 1%   3.004k ± 0%       ~ (p=0.224 n=10)
+HistoryHTTP/ReservationsOwnerDeep-12   2.654k ± 0%   2.655k ± 0%       ~ (p=0.867 n=10)
+HistoryHTTP/StockOwnerDeep-12          2.273k ± 1%   2.276k ± 1%       ~ (p=0.868 n=10)
+geomean                                2.736k        2.738k       +0.08%

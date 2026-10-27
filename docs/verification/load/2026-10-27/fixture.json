@@ -1,0 +1,22 @@
+{
+  "Org": "124af02f-21dc-44fd-9bf4-86ff6dbeac82",
+  "Warehouse": "1e252784-f1e4-439b-b9bc-3f1103731418",
+  "Owner": "f623575b-d86c-467a-85ba-1f7b1a5daf04",
+  "Actor": "720c8d64-fa10-4a4b-a37d-8e021c6de915",
+  "AllActor": "ca110330-bb40-4682-9fcb-d76e49791e51",
+  "Item": "7d744546-7bfd-4a8f-ad1d-68b97c2b9a0e",
+  "Source": "14ec7eab-73b0-4972-ac48-c167d6b4ba3c",
+  "Target": "ef7c9d11-3163-475d-a7a9-2bd69f318375",
+  "Foreign": "385895a7-576b-4648-9b4d-5c94c268e768",
+  "Movements": 1000000,
+  "Reservations": 250000,
+  "Balances": 100000,
+  "DeepIDs": {
+    "movements": "e64f2781-c2b1-1e88-35ce-836397c1c181",
+    "movements_all": "e68382ff-bf64-5697-efda-82638fa54fc6",
+    "reservations": "e3633fff-2a69-6707-33a4-496d0b7d9b03",
+    "reservations_all": "e66379e9-6b29-96a8-dc77-8c2a4166e196",
+    "stock_balances": "e21b5f36-bbb7-f648-2e94-8b87db1f49a2",
+    "stock_balances_all": "e6827a90-4203-4027-a413-f41ecec519cb"
+  }
+}

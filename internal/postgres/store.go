@@ -241,17 +241,33 @@ func (s *Store) List(ctx context.Context, resource inventory.Resource, scope inv
 			return page, inventory.Invalid("invalid_cursor")
 		}
 	}
-	args := scopeArgs(scope)
+	args := []any{scope.OrganizationID, scope.WarehouseID}
 	var where strings.Builder
-	where.WriteString(scopeWhere)
+	where.WriteString("organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid")
+	// Separate query shapes keep owner and cursor bounds visible even when
+	// PostgreSQL reuses a generic prepared plan. All values remain parameters.
+	if !scope.AllOwners && f.OwnerID == "" {
+		switch len(scope.OwnerIDs) {
+		case 0:
+			where.WriteString(" AND false")
+		case 1:
+			args = append(args, scope.OwnerIDs[0])
+			where.WriteString(" AND owner_id=$3::text::uuid")
+		default:
+			args = append(args, scope.OwnerIDs)
+			where.WriteString(" AND owner_id=ANY($3::text[]::uuid[])")
+		}
+	}
 	for _, filter := range []struct{ column, value string }{{"owner_id", f.OwnerID}, {"item_id", f.ItemID}, {"position_id", f.PositionID}, {"document_line_id", f.DocumentLineID}} {
 		if filter.value != "" {
 			args = append(args, filter.value)
 			where.WriteString(fmt.Sprintf(" AND %s=$%d::text::uuid", filter.column, len(args)))
 		}
 	}
-	args = append(args, optional(last))
-	where.WriteString(fmt.Sprintf(" AND ($%d::text IS NULL OR id>$%d::text::uuid)", len(args), len(args)))
+	if last != "" {
+		args = append(args, last)
+		where.WriteString(fmt.Sprintf(" AND id>$%d::text::uuid", len(args)))
+	}
 	args = append(args, f.Limit+1)
 	rows, err := s.pool.Query(ctx, "SELECT "+definition.projection+" FROM contracts_v1."+definition.view+" WHERE "+where.String()+fmt.Sprintf(" ORDER BY id LIMIT $%d", len(args)), args...)
 	if err != nil {

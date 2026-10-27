@@ -1,0 +1,46 @@
+{
+  "CPU": "AMD Ryzen 5 5600X 6-Core Processor             ",
+  "RAMBytes": 34279063552,
+  "PGSettings": {
+    "fsync": {
+      "unit": null,
+      "value": "on"
+    },
+    "work_mem": {
+      "unit": "kB",
+      "value": "4096"
+    },
+    "max_wal_size": {
+      "unit": "MB",
+      "value": "2048"
+    },
+    "server_version": {
+      "unit": null,
+      "value": "17.11"
+    },
+    "shared_buffers": {
+      "unit": "8kB",
+      "value": "32768"
+    },
+    "max_connections": {
+      "unit": null,
+      "value": "100"
+    },
+    "plan_cache_mode": {
+      "unit": null,
+      "value": "auto"
+    },
+    "track_io_timing": {
+      "unit": null,
+      "value": "on"
+    },
+    "full_page_writes": {
+      "unit": null,
+      "value": "on"
+    },
+    "synchronous_commit": {
+      "unit": null,
+      "value": "on"
+    }
+  }
+}

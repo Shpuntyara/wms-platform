@@ -1,0 +1,3639 @@
+{
+  "cases": [
+    {
+      "Name": "hot_balance",
+      "Concurrency": 1,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1180,
+        "P50MS": 2.4287,
+        "P95MS": 3.1735,
+        "P99MS": 3.7479,
+        "MaxMS": 99.4207
+      },
+      "Statuses": {
+        "201:": 1180
+      },
+      "Successes": 1180,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 393.7093388756042,
+      "ElapsedSeconds": 2.9971349,
+      "GuardCalls": 1770,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 37,
+        "Client:ClientRead": 6,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 2,
+        "IO:WalWrite": 2
+      },
+      "TopSQL": [
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.266,
+          "total_ms": 746.873,
+          "wal_bytes": 27102717,
+          "shared_hits": 156428,
+          "shared_reads": 4074
+        },
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.890,
+          "total_ms": 524.851,
+          "wal_bytes": 21533499,
+          "shared_hits": 93771,
+          "shared_reads": 3452
+        },
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.266,
+          "total_ms": 157.061,
+          "wal_bytes": 3788135,
+          "shared_hits": 20223,
+          "shared_reads": 570
+        },
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.261,
+          "total_ms": 153.925,
+          "wal_bytes": 3658046,
+          "shared_hits": 20973,
+          "shared_reads": 563
+        },
+        {
+          "rows": 1180,
+          "calls": 2360,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.052,
+          "total_ms": 122.959,
+          "wal_bytes": 7331145,
+          "shared_hits": 22825,
+          "shared_reads": 1131
+        },
+        {
+          "rows": 1180,
+          "calls": 1180,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object($13, v_event, $14, p_event, $15, $16,\n      $17, p_aggregate, $18, p_result-\u003e$19,\n      $20, v_op.organization_id, $21, v_op.warehouse_id,\n      $22, v_op.actor_id, $23, v_occurred, $24, p_id,\n      $25, p_id, $26, p_result))",
+          "mean_ms": 0.086,
+          "total_ms": 101.858,
+          "wal_bytes": 14209412,
+          "shared_hits": 15640,
+          "shared_reads": 2311
+        },
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + $9 WHERE id = p_source",
+          "mean_ms": 0.160,
+          "total_ms": 94.587,
+          "wal_bytes": 763231,
+          "shared_hits": 30064,
+          "shared_reads": 0
+        },
+        {
+          "rows": 590,
+          "calls": 590,
+          "query": "INSERT INTO inventory.reservation_events(operation_id, reservation_id, kind, quantity)\n    VALUES (p_command, v_reservation, $14, p_qty)",
+          "mean_ms": 0.141,
+          "total_ms": 83.164,
+          "wal_bytes": 6736772,
+          "shared_hits": 12568,
+          "shared_reads": 1702
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 1,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1152,
+        "P50MS": 2.5653,
+        "P95MS": 3.5665,
+        "P99MS": 4.1051,
+        "MaxMS": 18.951
+      },
+      "Statuses": {
+        "201:": 1152
+      },
+      "Successes": 1152,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 384.2495572791342,
+      "ElapsedSeconds": 2.9980516,
+      "GuardCalls": 1728,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 45,
+        "Client:ClientRead": 3,
+        "IO:DataFileRead": 5,
+        "IO:WalWrite": 3
+      },
+      "TopSQL": [
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.328,
+          "total_ms": 765.097,
+          "wal_bytes": 23663453,
+          "shared_hits": 155785,
+          "shared_reads": 3453
+        },
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.843,
+          "total_ms": 485.472,
+          "wal_bytes": 17802645,
+          "shared_hits": 92366,
+          "shared_reads": 2890
+        },
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.275,
+          "total_ms": 158.456,
+          "wal_bytes": 3142074,
+          "shared_hits": 21512,
+          "shared_reads": 442
+        },
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.249,
+          "total_ms": 143.257,
+          "wal_bytes": 3221864,
+          "shared_hits": 21510,
+          "shared_reads": 466
+        },
+        {
+          "rows": 1152,
+          "calls": 2304,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.052,
+          "total_ms": 120.563,
+          "wal_bytes": 6251546,
+          "shared_hits": 25742,
+          "shared_reads": 908
+        },
+        {
+          "rows": 1152,
+          "calls": 1152,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.087,
+          "total_ms": 100.660,
+          "wal_bytes": 12472671,
+          "shared_hits": 15796,
+          "shared_reads": 1912
+        },
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.159,
+          "total_ms": 91.519,
+          "wal_bytes": 734045,
+          "shared_hits": 29142,
+          "shared_reads": 0
+        },
+        {
+          "rows": 576,
+          "calls": 576,
+          "query": "INSERT INTO inventory.movements(operation_id, document_line_id, organization_id, warehouse_id, owner_id, item_id, kind, reason, correction_of)\n  VALUES (p_command, p_line, v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id, p_kind, p_reason, p_correction_of)\n  RETURNING id",
+          "mean_ms": 0.115,
+          "total_ms": 66.272,
+          "wal_bytes": 6229848,
+          "shared_hits": 13239,
+          "shared_reads": 550
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 1,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1174,
+        "P50MS": 2.5343,
+        "P95MS": 3.4942,
+        "P99MS": 4.0743,
+        "MaxMS": 19.8871
+      },
+      "Statuses": {
+        "201:": 1174
+      },
+      "Successes": 1174,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 390.701620905878,
+      "ElapsedSeconds": 3.0048506,
+      "GuardCalls": 1761,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 38,
+        "Client:ClientRead": 2,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 1,
+        "IO:WalWrite": 7
+      },
+      "TopSQL": [
+        {
+          "rows": 587,
+          "calls": 587,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.285,
+          "total_ms": 754.450,
+          "wal_bytes": 21525264,
+          "shared_hits": 158161,
+          "shared_reads": 3460
+        },
+        {
+          "rows": 587,
+          "calls": 587,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.826,
+          "total_ms": 484.899,
+          "wal_bytes": 15495400,
+          "shared_hits": 93888,
+          "shared_reads": 2618
+        },
+        {
+          "rows": 587,
+          "calls": 587,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.266,
+          "total_ms": 156.103,
+          "wal_bytes": 2824089,
+          "shared_hits": 20276,
+          "shared_reads": 389
+        },
+        {
+          "rows": 587,
+          "calls": 587,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.236,
+          "total_ms": 138.731,
+          "wal_bytes": 2852444,
+          "shared_hits": 20277,
+          "shared_reads": 403
+        },
+        {
+          "rows": 1174,
+          "calls": 2348,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.048,
+          "total_ms": 113.566,
+          "wal_bytes": 5561759,
+          "shared_hits": 22943,
+          "shared_reads": 792
+        },
+        {
+          "rows": 1174,
+          "calls": 1174,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.082,
+          "total_ms": 96.651,
+          "wal_bytes": 11488531,
+          "shared_hits": 16286,
+          "shared_reads": 1752
+        },
+        {
+          "rows": 587,
+          "calls": 587,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.156,
+          "total_ms": 91.645,
+          "wal_bytes": 759511,
+          "shared_hits": 29783,
+          "shared_reads": 0
+        },
+        {
+          "rows": 32872,
+          "calls": 1174,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.059,
+          "total_ms": 69.746,
+          "wal_bytes": 0,
+          "shared_hits": 2348,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 16,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1600,
+        "P50MS": 29.0799,
+        "P95MS": 57.2756,
+        "P99MS": 214.1102,
+        "MaxMS": 418.6286
+      },
+      "Statuses": {
+        "201:": 1600
+      },
+      "Successes": 1600,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 526.5834982883569,
+      "ElapsedSeconds": 3.0384545,
+      "GuardCalls": 2400,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 101,
+        "Client:ClientRead": 7,
+        "IO:DataFileRead": 1,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 2,
+        "LWLock:LockManager": 1,
+        "Lock:transactionid": 74,
+        "Lock:tuple": 753
+      },
+      "TopSQL": [
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 28.776,
+          "total_ms": 23020.655,
+          "wal_bytes": 17394353,
+          "shared_hits": 308355,
+          "shared_reads": 2629
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 27.235,
+          "total_ms": 21788.280,
+          "wal_bytes": 44400,
+          "shared_hits": 35381,
+          "shared_reads": 0
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 27.102,
+          "total_ms": 21681.950,
+          "wal_bytes": 26040996,
+          "shared_hits": 521803,
+          "shared_reads": 3819
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 25.019,
+          "total_ms": 20015.002,
+          "wal_bytes": 43550,
+          "shared_hits": 33879,
+          "shared_reads": 0
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.770,
+          "total_ms": 616.319,
+          "wal_bytes": 3504279,
+          "shared_hits": 39805,
+          "shared_reads": 461
+        },
+        {
+          "rows": 1600,
+          "calls": 3200,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.094,
+          "total_ms": 299.424,
+          "wal_bytes": 6797366,
+          "shared_hits": 34417,
+          "shared_reads": 907
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + $9 WHERE id = p_source",
+          "mean_ms": 0.337,
+          "total_ms": 269.672,
+          "wal_bytes": 1027410,
+          "shared_hits": 176382,
+          "shared_reads": 0
+        },
+        {
+          "rows": 800,
+          "calls": 800,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.334,
+          "total_ms": 267.296,
+          "wal_bytes": 3464855,
+          "shared_hits": 28702,
+          "shared_reads": 446
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 16,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1766,
+        "P50MS": 30.3643,
+        "P95MS": 54.462,
+        "P99MS": 72.1358,
+        "MaxMS": 109.9617
+      },
+      "Statuses": {
+        "201:": 1766
+      },
+      "Successes": 1766,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 581.957070219843,
+      "ElapsedSeconds": 3.0345881,
+      "GuardCalls": 2649,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 88,
+        "Client:ClientRead": 7,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 3,
+        "IO:WalWrite": 7,
+        "LWLock:WALWrite": 1,
+        "LWLock:pg_stat_statements": 12,
+        "Lock:transactionid": 76,
+        "Lock:tuple": 747
+      },
+      "TopSQL": [
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 25.381,
+          "total_ms": 22411.448,
+          "wal_bytes": 16030439,
+          "shared_hits": 325326,
+          "shared_reads": 2783
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 25.064,
+          "total_ms": 22131.266,
+          "wal_bytes": 25313192,
+          "shared_hits": 569293,
+          "shared_reads": 4317
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 24.060,
+          "total_ms": 21245.417,
+          "wal_bytes": 49280,
+          "shared_hits": 38876,
+          "shared_reads": 0
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 23.147,
+          "total_ms": 20439.012,
+          "wal_bytes": 48132,
+          "shared_hits": 37623,
+          "shared_reads": 0
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.620,
+          "total_ms": 547.655,
+          "wal_bytes": 3167375,
+          "shared_hits": 33662,
+          "shared_reads": 391
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.338,
+          "total_ms": 298.386,
+          "wal_bytes": 3406294,
+          "shared_hits": 33603,
+          "shared_reads": 421
+        },
+        {
+          "rows": 1766,
+          "calls": 3532,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.081,
+          "total_ms": 285.738,
+          "wal_bytes": 6382767,
+          "shared_hits": 40729,
+          "shared_reads": 812
+        },
+        {
+          "rows": 883,
+          "calls": 883,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.259,
+          "total_ms": 228.502,
+          "wal_bytes": 1158757,
+          "shared_hits": 190827,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 16,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1758,
+        "P50MS": 29.4839,
+        "P95MS": 55.6033,
+        "P99MS": 88.315,
+        "MaxMS": 184.9296
+      },
+      "Statuses": {
+        "201:": 1758
+      },
+      "Successes": 1758,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 578.7421680926011,
+      "ElapsedSeconds": 3.0376221,
+      "GuardCalls": 2637,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 89,
+        "Client:ClientRead": 13,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 5,
+        "LWLock:pg_stat_statements": 13,
+        "Lock:transactionid": 67,
+        "Lock:tuple": 749
+      },
+      "TopSQL": [
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 25.332,
+          "total_ms": 22266.804,
+          "wal_bytes": 13837282,
+          "shared_hits": 348424,
+          "shared_reads": 2890
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 25.049,
+          "total_ms": 22018.006,
+          "wal_bytes": 21134358,
+          "shared_hits": 618805,
+          "shared_reads": 4218
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 23.979,
+          "total_ms": 21077.865,
+          "wal_bytes": 49528,
+          "shared_hits": 38769,
+          "shared_reads": 0
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 23.129,
+          "total_ms": 20330.686,
+          "wal_bytes": 47666,
+          "shared_hits": 37478,
+          "shared_reads": 0
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.608,
+          "total_ms": 534.213,
+          "wal_bytes": 2766566,
+          "shared_hits": 33685,
+          "shared_reads": 320
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.344,
+          "total_ms": 302.530,
+          "wal_bytes": 2893560,
+          "shared_hits": 33685,
+          "shared_reads": 320
+        },
+        {
+          "rows": 1758,
+          "calls": 3516,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.081,
+          "total_ms": 285.501,
+          "wal_bytes": 5473318,
+          "shared_hits": 40755,
+          "shared_reads": 640
+        },
+        {
+          "rows": 879,
+          "calls": 879,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.263,
+          "total_ms": 231.136,
+          "wal_bytes": 1133580,
+          "shared_hits": 215630,
+          "shared_reads": 1
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1506,
+        "P50MS": 115.7962,
+        "P95MS": 220.4242,
+        "P99MS": 322.9479,
+        "MaxMS": 366.5122
+      },
+      "Statuses": {
+        "201:": 1506
+      },
+      "Successes": 1506,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 473.1054623701151,
+      "ElapsedSeconds": 3.1832226,
+      "GuardCalls": 2259,
+      "PoolWaitMS": 134296.722,
+      "PoolEmptyAcquires": 2991,
+      "DBWaitSamples": {
+        "CPU:running": 100,
+        "Client:ClientRead": 10,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 2,
+        "LWLock:BufferContent": 2,
+        "LWLock:LockManager": 1,
+        "LWLock:pg_stat_statements": 22,
+        "Lock:transactionid": 98,
+        "Lock:tuple": 1015
+      },
+      "TopSQL": [
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 41.195,
+          "total_ms": 31020.163,
+          "wal_bytes": 16189715,
+          "shared_hits": 1472708,
+          "shared_reads": 3437
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 38.799,
+          "total_ms": 29215.525,
+          "wal_bytes": 41034,
+          "shared_hits": 45865,
+          "shared_reads": 0
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 38.228,
+          "total_ms": 28785.834,
+          "wal_bytes": 10141888,
+          "shared_hits": 750132,
+          "shared_reads": 2379
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 36.554,
+          "total_ms": 27525.307,
+          "wal_bytes": 40894,
+          "shared_hits": 42723,
+          "shared_reads": 0
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.807,
+          "total_ms": 607.568,
+          "wal_bytes": 2161081,
+          "shared_hits": 32626,
+          "shared_reads": 231
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.431,
+          "total_ms": 324.761,
+          "wal_bytes": 995357,
+          "shared_hits": 643724,
+          "shared_reads": 0
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "UPDATE inventory.stock_balances SET reserved_qty = reserved_qty + p_qty, version = version + 1 WHERE id = p_balance",
+          "mean_ms": 0.375,
+          "total_ms": 282.201,
+          "wal_bytes": 763268,
+          "shared_hits": 603721,
+          "shared_reads": 0
+        },
+        {
+          "rows": 753,
+          "calls": 753,
+          "query": "UPDATE inventory.stock_balances SET reserved_qty = reserved_qty - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.372,
+          "total_ms": 279.971,
+          "wal_bytes": 769420,
+          "shared_hits": 627681,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 64,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1636,
+        "P50MS": 110.3764,
+        "P95MS": 203.2428,
+        "P99MS": 240.9306,
+        "MaxMS": 313.1248
+      },
+      "Statuses": {
+        "201:": 1636
+      },
+      "Successes": 1636,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 508.4584834790619,
+      "ElapsedSeconds": 3.2175685,
+      "GuardCalls": 2454,
+      "PoolWaitMS": 135629.1971,
+      "PoolEmptyAcquires": 3251,
+      "DBWaitSamples": {
+        "CPU:running": 97,
+        "Client:ClientRead": 10,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 3,
+        "IO:WalWrite": 3,
+        "LWLock:pg_stat_statements": 15,
+        "Lock:transactionid": 92,
+        "Lock:tuple": 1044
+      },
+      "TopSQL": [
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 39.079,
+          "total_ms": 31966.886,
+          "wal_bytes": 15817638,
+          "shared_hits": 1430810,
+          "shared_reads": 3439
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 36.765,
+          "total_ms": 30074.030,
+          "wal_bytes": 44306,
+          "shared_hits": 50235,
+          "shared_reads": 0
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 34.490,
+          "total_ms": 28212.672,
+          "wal_bytes": 9544784,
+          "shared_hits": 718322,
+          "shared_reads": 2320
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 32.976,
+          "total_ms": 26974.242,
+          "wal_bytes": 44950,
+          "shared_hits": 47277,
+          "shared_reads": 0
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.690,
+          "total_ms": 564.705,
+          "wal_bytes": 1908394,
+          "shared_hits": 32132,
+          "shared_reads": 231
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.412,
+          "total_ms": 336.804,
+          "wal_bytes": 2256538,
+          "shared_hits": 32360,
+          "shared_reads": 278
+        },
+        {
+          "rows": 1636,
+          "calls": 3272,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.097,
+          "total_ms": 316.476,
+          "wal_bytes": 3988024,
+          "shared_hits": 38115,
+          "shared_reads": 509
+        },
+        {
+          "rows": 818,
+          "calls": 818,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.368,
+          "total_ms": 301.111,
+          "wal_bytes": 1057665,
+          "shared_hits": 614311,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "hot_balance",
+      "Concurrency": 64,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1670,
+        "P50MS": 106.2018,
+        "P95MS": 207.3094,
+        "P99MS": 259.2578,
+        "MaxMS": 336.6246
+      },
+      "Statuses": {
+        "201:": 1670
+      },
+      "Successes": 1670,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 520.8948549406082,
+      "ElapsedSeconds": 3.2060213,
+      "GuardCalls": 2505,
+      "PoolWaitMS": 135433.8204,
+      "PoolEmptyAcquires": 3320,
+      "DBWaitSamples": {
+        "CPU:running": 102,
+        "Client:ClientRead": 14,
+        "IO:DataFileRead": 1,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 4,
+        "LWLock:BufferContent": 2,
+        "LWLock:pg_stat_statements": 11,
+        "Lock:transactionid": 101,
+        "Lock:tuple": 1020
+      },
+      "TopSQL": [
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 39.529,
+          "total_ms": 33006.611,
+          "wal_bytes": 14440987,
+          "shared_hits": 1580479,
+          "shared_reads": 3538
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 37.260,
+          "total_ms": 31111.894,
+          "wal_bytes": 45090,
+          "shared_hits": 53643,
+          "shared_reads": 0
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 32.279,
+          "total_ms": 26952.944,
+          "wal_bytes": 9007686,
+          "shared_hits": 789749,
+          "shared_reads": 2371
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 30.808,
+          "total_ms": 25724.906,
+          "wal_bytes": 45090,
+          "shared_hits": 46965,
+          "shared_reads": 0
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.784,
+          "total_ms": 654.823,
+          "wal_bytes": 1773533,
+          "shared_hits": 32912,
+          "shared_reads": 267
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.398,
+          "total_ms": 332.343,
+          "wal_bytes": 1878175,
+          "shared_hits": 33052,
+          "shared_reads": 281
+        },
+        {
+          "rows": 835,
+          "calls": 835,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.377,
+          "total_ms": 315.143,
+          "wal_bytes": 1082311,
+          "shared_hits": 685203,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1670,
+          "calls": 3340,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.090,
+          "total_ms": 299.075,
+          "wal_bytes": 3469968,
+          "shared_hits": 38832,
+          "shared_reads": 548
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 1,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1026,
+        "P50MS": 2.8589,
+        "P95MS": 4.0533,
+        "P99MS": 4.8891,
+        "MaxMS": 19.3716
+      },
+      "Statuses": {
+        "201:": 1026
+      },
+      "Successes": 1026,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 341.20402787031657,
+      "ElapsedSeconds": 3.0069985,
+      "GuardCalls": 1368,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 39,
+        "Client:ClientRead": 10,
+        "IO:DataFileRead": 1,
+        "IO:WalWrite": 3
+      },
+      "TopSQL": [
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.521,
+          "total_ms": 1040.515,
+          "wal_bytes": 12228072,
+          "shared_hits": 230999,
+          "shared_reads": 3169
+        },
+        {
+          "rows": 342,
+          "calls": 342,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.854,
+          "total_ms": 292.208,
+          "wal_bytes": 3257395,
+          "shared_hits": 55840,
+          "shared_reads": 989
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.271,
+          "total_ms": 185.144,
+          "wal_bytes": 1393207,
+          "shared_hits": 25875,
+          "shared_reads": 221
+        },
+        {
+          "rows": 79002,
+          "calls": 1026,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.148,
+          "total_ms": 152.333,
+          "wal_bytes": 0,
+          "shared_hits": 4104,
+          "shared_reads": 0
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.152,
+          "total_ms": 103.727,
+          "wal_bytes": 816852,
+          "shared_hits": 35105,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1026,
+          "calls": 2052,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.050,
+          "total_ms": 102.626,
+          "wal_bytes": 1915560,
+          "shared_hits": 23415,
+          "shared_reads": 329
+        },
+        {
+          "rows": 1026,
+          "calls": 1026,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.097,
+          "total_ms": 99.168,
+          "wal_bytes": 4154421,
+          "shared_hits": 14380,
+          "shared_reads": 1398
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "INSERT INTO inventory.movements(operation_id, document_line_id, organization_id, warehouse_id, owner_id, item_id, kind, reason, correction_of)\n  VALUES (p_command, p_line, v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id, p_kind, p_reason, p_correction_of)\n  RETURNING id",
+          "mean_ms": 0.130,
+          "total_ms": 88.904,
+          "wal_bytes": 2322617,
+          "shared_hits": 16265,
+          "shared_reads": 898
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 1,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1026,
+        "P50MS": 2.8621,
+        "P95MS": 4.1461,
+        "P99MS": 5.1269,
+        "MaxMS": 18.7969
+      },
+      "Statuses": {
+        "201:": 1026
+      },
+      "Successes": 1026,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 341.80560375962176,
+      "ElapsedSeconds": 3.0017062,
+      "GuardCalls": 1368,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 47,
+        "Client:ClientRead": 6,
+        "IO:DataFileRead": 1,
+        "IO:DataFileWrite": 2,
+        "IO:WalWrite": 2
+      },
+      "TopSQL": [
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.508,
+          "total_ms": 1031.465,
+          "wal_bytes": 11052822,
+          "shared_hits": 226793,
+          "shared_reads": 3083
+        },
+        {
+          "rows": 342,
+          "calls": 342,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.841,
+          "total_ms": 287.522,
+          "wal_bytes": 3002650,
+          "shared_hits": 55258,
+          "shared_reads": 946
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.269,
+          "total_ms": 183.765,
+          "wal_bytes": 1276365,
+          "shared_hits": 25885,
+          "shared_reads": 219
+        },
+        {
+          "rows": 86184,
+          "calls": 1026,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.157,
+          "total_ms": 161.068,
+          "wal_bytes": 0,
+          "shared_hits": 4104,
+          "shared_reads": 0
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.150,
+          "total_ms": 102.554,
+          "wal_bytes": 814147,
+          "shared_hits": 33796,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1026,
+          "calls": 2052,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.049,
+          "total_ms": 101.168,
+          "wal_bytes": 1751069,
+          "shared_hits": 23431,
+          "shared_reads": 313
+        },
+        {
+          "rows": 1026,
+          "calls": 1026,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.096,
+          "total_ms": 98.110,
+          "wal_bytes": 3877278,
+          "shared_hits": 14443,
+          "shared_reads": 1345
+        },
+        {
+          "rows": 684,
+          "calls": 684,
+          "query": "INSERT INTO inventory.movements(operation_id, document_line_id, organization_id, warehouse_id, owner_id, item_id, kind, reason, correction_of)\n  VALUES (p_command, p_line, v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id, p_kind, p_reason, p_correction_of)\n  RETURNING id",
+          "mean_ms": 0.127,
+          "total_ms": 86.821,
+          "wal_bytes": 1892190,
+          "shared_hits": 16067,
+          "shared_reads": 849
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 1,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1014,
+        "P50MS": 2.8866,
+        "P95MS": 4.2765,
+        "P99MS": 5.3343,
+        "MaxMS": 18.4771
+      },
+      "Statuses": {
+        "201:": 1014
+      },
+      "Successes": 1014,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 337.89811245582416,
+      "ElapsedSeconds": 3.0009046,
+      "GuardCalls": 1352,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 43,
+        "Client:ClientRead": 3,
+        "IO:DataFileRead": 3,
+        "IO:WalWrite": 1
+      },
+      "TopSQL": [
+        {
+          "rows": 676,
+          "calls": 676,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.507,
+          "total_ms": 1018.769,
+          "wal_bytes": 10964703,
+          "shared_hits": 228833,
+          "shared_reads": 2973
+        },
+        {
+          "rows": 338,
+          "calls": 338,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.863,
+          "total_ms": 291.729,
+          "wal_bytes": 2813856,
+          "shared_hits": 55245,
+          "shared_reads": 986
+        },
+        {
+          "rows": 676,
+          "calls": 676,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.272,
+          "total_ms": 184.008,
+          "wal_bytes": 1239770,
+          "shared_hits": 26872,
+          "shared_reads": 222
+        },
+        {
+          "rows": 92274,
+          "calls": 1014,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.176,
+          "total_ms": 178.861,
+          "wal_bytes": 0,
+          "shared_hits": 4056,
+          "shared_reads": 0
+        },
+        {
+          "rows": 676,
+          "calls": 676,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.159,
+          "total_ms": 107.726,
+          "wal_bytes": 815753,
+          "shared_hits": 34907,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1014,
+          "calls": 2028,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.051,
+          "total_ms": 103.407,
+          "wal_bytes": 1631013,
+          "shared_hits": 25095,
+          "shared_reads": 329
+        },
+        {
+          "rows": 1014,
+          "calls": 1014,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.097,
+          "total_ms": 98.653,
+          "wal_bytes": 3747073,
+          "shared_hits": 14206,
+          "shared_reads": 1399
+        },
+        {
+          "rows": 338,
+          "calls": 338,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.247,
+          "total_ms": 83.519,
+          "wal_bytes": 495515,
+          "shared_hits": 13433,
+          "shared_reads": 107
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 16,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1791,
+        "P50MS": 23.7572,
+        "P95MS": 56.2479,
+        "P99MS": 111.474,
+        "MaxMS": 169.927
+      },
+      "Statuses": {
+        "201:": 1791
+      },
+      "Successes": 1791,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 587.8160212653522,
+      "ElapsedSeconds": 3.0468717,
+      "GuardCalls": 2553,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 110,
+        "Client:ClientRead": 16,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 1,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 3,
+        "LWLock:pg_stat_statements": 8,
+        "Lock:transactionid": 124,
+        "Lock:tuple": 673
+      },
+      "TopSQL": [
+        {
+          "rows": 1029,
+          "calls": 1029,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 26.540,
+          "total_ms": 27309.213,
+          "wal_bytes": 14760197,
+          "shared_hits": 809495,
+          "shared_reads": 4586
+        },
+        {
+          "rows": 1296,
+          "calls": 1029,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 24.255,
+          "total_ms": 24958.350,
+          "wal_bytes": 70330,
+          "shared_hits": 36295,
+          "shared_reads": 0
+        },
+        {
+          "rows": 762,
+          "calls": 762,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 22.042,
+          "total_ms": 16796.160,
+          "wal_bytes": 6210557,
+          "shared_hits": 331317,
+          "shared_reads": 2173
+        },
+        {
+          "rows": 762,
+          "calls": 762,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 20.599,
+          "total_ms": 15696.811,
+          "wal_bytes": 42072,
+          "shared_hits": 26529,
+          "shared_reads": 0
+        },
+        {
+          "rows": 762,
+          "calls": 762,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.760,
+          "total_ms": 578.845,
+          "wal_bytes": 1396151,
+          "shared_hits": 30607,
+          "shared_reads": 233
+        },
+        {
+          "rows": 175518,
+          "calls": 1791,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.217,
+          "total_ms": 389.005,
+          "wal_bytes": 0,
+          "shared_hits": 7164,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1029,
+          "calls": 1029,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.370,
+          "total_ms": 380.380,
+          "wal_bytes": 1869849,
+          "shared_hits": 41565,
+          "shared_reads": 314
+        },
+        {
+          "rows": 1791,
+          "calls": 3582,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.091,
+          "total_ms": 324.262,
+          "wal_bytes": 3073008,
+          "shared_hits": 44564,
+          "shared_reads": 547
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 16,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1909,
+        "P50MS": 29.2151,
+        "P95MS": 51.8381,
+        "P99MS": 82.1867,
+        "MaxMS": 141.7514
+      },
+      "Statuses": {
+        "201:": 1909
+      },
+      "Successes": 1909,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 625.7475823411213,
+      "ElapsedSeconds": 3.0507509,
+      "GuardCalls": 2677,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 105,
+        "Client:ClientRead": 7,
+        "IO:DataFileRead": 3,
+        "IO:DataFileWrite": 2,
+        "IO:WalWrite": 3,
+        "LWLock:pg_stat_statements": 12,
+        "Lock:transactionid": 74,
+        "Lock:tuple": 732
+      },
+      "TopSQL": [
+        {
+          "rows": 1141,
+          "calls": 1141,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 19.635,
+          "total_ms": 22403.838,
+          "wal_bytes": 14941378,
+          "shared_hits": 897476,
+          "shared_reads": 5097
+        },
+        {
+          "rows": 768,
+          "calls": 768,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 28.010,
+          "total_ms": 21511.370,
+          "wal_bytes": 5500757,
+          "shared_hits": 312720,
+          "shared_reads": 2226
+        },
+        {
+          "rows": 768,
+          "calls": 768,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 26.591,
+          "total_ms": 20422.225,
+          "wal_bytes": 41992,
+          "shared_hits": 32539,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1514,
+          "calls": 1141,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 17.541,
+          "total_ms": 20014.574,
+          "wal_bytes": 82114,
+          "shared_hits": 41367,
+          "shared_reads": 0
+        },
+        {
+          "rows": 768,
+          "calls": 768,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.621,
+          "total_ms": 477.254,
+          "wal_bytes": 1181664,
+          "shared_hits": 28810,
+          "shared_reads": 287
+        },
+        {
+          "rows": 200445,
+          "calls": 1909,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,$3),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.219,
+          "total_ms": 418.766,
+          "wal_bytes": 0,
+          "shared_hits": 9545,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1141,
+          "calls": 1141,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.360,
+          "total_ms": 410.908,
+          "wal_bytes": 1848066,
+          "shared_hits": 42955,
+          "shared_reads": 410
+        },
+        {
+          "rows": 1909,
+          "calls": 3818,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.076,
+          "total_ms": 291.638,
+          "wal_bytes": 2825982,
+          "shared_hits": 42922,
+          "shared_reads": 697
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 16,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1954,
+        "P50MS": 22.5418,
+        "P95MS": 53.1851,
+        "P99MS": 81.9998,
+        "MaxMS": 106.1171
+      },
+      "Statuses": {
+        "201:": 1954
+      },
+      "Successes": 1954,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 640.9803890180181,
+      "ElapsedSeconds": 3.0484552,
+      "GuardCalls": 2791,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 104,
+        "Client:ClientRead": 16,
+        "IO:DataFileRead": 6,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 7,
+        "LWLock:WALWrite": 1,
+        "Lock:transactionid": 127,
+        "Lock:tuple": 689
+      },
+      "TopSQL": [
+        {
+          "rows": 1117,
+          "calls": 1117,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 24.124,
+          "total_ms": 26946.667,
+          "wal_bytes": 13497913,
+          "shared_hits": 898267,
+          "shared_reads": 5012
+        },
+        {
+          "rows": 1397,
+          "calls": 1117,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 22.038,
+          "total_ms": 24616.523,
+          "wal_bytes": 76006,
+          "shared_hits": 39701,
+          "shared_reads": 0
+        },
+        {
+          "rows": 837,
+          "calls": 837,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 20.499,
+          "total_ms": 17157.338,
+          "wal_bytes": 5840216,
+          "shared_hits": 363274,
+          "shared_reads": 2459
+        },
+        {
+          "rows": 837,
+          "calls": 837,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 19.130,
+          "total_ms": 16011.444,
+          "wal_bytes": 45538,
+          "shared_hits": 29390,
+          "shared_reads": 0
+        },
+        {
+          "rows": 837,
+          "calls": 837,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.591,
+          "total_ms": 494.510,
+          "wal_bytes": 1354303,
+          "shared_hits": 33410,
+          "shared_reads": 312
+        },
+        {
+          "rows": 218848,
+          "calls": 1954,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.227,
+          "total_ms": 442.586,
+          "wal_bytes": 0,
+          "shared_hits": 9770,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1117,
+          "calls": 1117,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.357,
+          "total_ms": 398.760,
+          "wal_bytes": 1780146,
+          "shared_hits": 44683,
+          "shared_reads": 404
+        },
+        {
+          "rows": 1954,
+          "calls": 3908,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.089,
+          "total_ms": 346.935,
+          "wal_bytes": 2926373,
+          "shared_hits": 48537,
+          "shared_reads": 716
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1820,
+        "P50MS": 97.0438,
+        "P95MS": 195.8741,
+        "P99MS": 269.8966,
+        "MaxMS": 337.2825
+      },
+      "Statuses": {
+        "201:": 1820
+      },
+      "Successes": 1820,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 564.315852915972,
+      "ElapsedSeconds": 3.2251442,
+      "GuardCalls": 2600,
+      "PoolWaitMS": 135105.3486,
+      "PoolEmptyAcquires": 3597,
+      "DBWaitSamples": {
+        "CPU:running": 137,
+        "Client:ClientRead": 12,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 3,
+        "LWLock:pg_stat_statements": 13,
+        "Lock:transactionid": 135,
+        "Lock:tuple": 962
+      },
+      "TopSQL": [
+        {
+          "rows": 1040,
+          "calls": 1040,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 42.958,
+          "total_ms": 44676.170,
+          "wal_bytes": 11566318,
+          "shared_hits": 1646756,
+          "shared_reads": 4635
+        },
+        {
+          "rows": 1300,
+          "calls": 1040,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 40.591,
+          "total_ms": 42214.547,
+          "wal_bytes": 70662,
+          "shared_hits": 61298,
+          "shared_reads": 0
+        },
+        {
+          "rows": 780,
+          "calls": 780,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 19.228,
+          "total_ms": 14997.827,
+          "wal_bytes": 5129040,
+          "shared_hits": 651271,
+          "shared_reads": 2282
+        },
+        {
+          "rows": 780,
+          "calls": 780,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 17.682,
+          "total_ms": 13791.913,
+          "wal_bytes": 42224,
+          "shared_hits": 28866,
+          "shared_reads": 0
+        },
+        {
+          "rows": 780,
+          "calls": 780,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.789,
+          "total_ms": 615.445,
+          "wal_bytes": 1144165,
+          "shared_hits": 31481,
+          "shared_reads": 278
+        },
+        {
+          "rows": 216580,
+          "calls": 1820,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.250,
+          "total_ms": 455.331,
+          "wal_bytes": 0,
+          "shared_hits": 9100,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1040,
+          "calls": 1040,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.388,
+          "total_ms": 403.577,
+          "wal_bytes": 1680272,
+          "shared_hits": 41676,
+          "shared_reads": 390
+        },
+        {
+          "rows": 1040,
+          "calls": 1040,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.335,
+          "total_ms": 348.480,
+          "wal_bytes": 1308744,
+          "shared_hits": 607162,
+          "shared_reads": 4
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 64,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1758,
+        "P50MS": 101.4984,
+        "P95MS": 190.4439,
+        "P99MS": 240.5113,
+        "MaxMS": 312.3184
+      },
+      "Statuses": {
+        "201:": 1758
+      },
+      "Successes": 1758,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 548.8794818952352,
+      "ElapsedSeconds": 3.2028889,
+      "GuardCalls": 2482,
+      "PoolWaitMS": 135297.457,
+      "PoolEmptyAcquires": 3471,
+      "DBWaitSamples": {
+        "CPU:running": 122,
+        "Client:ClientRead": 14,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 4,
+        "LWLock:BufferContent": 1,
+        "LWLock:pg_stat_statements": 31,
+        "Lock:transactionid": 80,
+        "Lock:tuple": 999
+      },
+      "TopSQL": [
+        {
+          "rows": 1034,
+          "calls": 1034,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 32.134,
+          "total_ms": 33226.396,
+          "wal_bytes": 11256695,
+          "shared_hits": 1798602,
+          "shared_reads": 4606
+        },
+        {
+          "rows": 1344,
+          "calls": 1034,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 29.697,
+          "total_ms": 30706.816,
+          "wal_bytes": 73030,
+          "shared_hits": 58004,
+          "shared_reads": 0
+        },
+        {
+          "rows": 724,
+          "calls": 724,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 36.062,
+          "total_ms": 26108.878,
+          "wal_bytes": 4579969,
+          "shared_hits": 662436,
+          "shared_reads": 2118
+        },
+        {
+          "rows": 724,
+          "calls": 724,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 34.442,
+          "total_ms": 24935.948,
+          "wal_bytes": 39356,
+          "shared_hits": 41455,
+          "shared_reads": 0
+        },
+        {
+          "rows": 724,
+          "calls": 724,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.651,
+          "total_ms": 471.517,
+          "wal_bytes": 980521,
+          "shared_hits": 28880,
+          "shared_reads": 247
+        },
+        {
+          "rows": 221508,
+          "calls": 1758,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.258,
+          "total_ms": 454.230,
+          "wal_bytes": 0,
+          "shared_hits": 8790,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1034,
+          "calls": 1034,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.428,
+          "total_ms": 442.273,
+          "wal_bytes": 1601150,
+          "shared_hits": 41391,
+          "shared_reads": 344
+        },
+        {
+          "rows": 1034,
+          "calls": 1034,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.347,
+          "total_ms": 358.894,
+          "wal_bytes": 1296551,
+          "shared_hits": 646574,
+          "shared_reads": 7
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "mixed_hot",
+      "Concurrency": 64,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1714,
+        "P50MS": 104.2533,
+        "P95MS": 206.6297,
+        "P99MS": 271.672,
+        "MaxMS": 360.4042
+      },
+      "Statuses": {
+        "201:": 1714
+      },
+      "Successes": 1714,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 533.463290053608,
+      "ElapsedSeconds": 3.2129671,
+      "GuardCalls": 2417,
+      "PoolWaitMS": 135235.9436,
+      "PoolEmptyAcquires": 3392,
+      "DBWaitSamples": {
+        "CPU:running": 121,
+        "Client:ClientRead": 7,
+        "IO:DataFileRead": 2,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 5,
+        "LWLock:pg_stat_statements": 18,
+        "Lock:transactionid": 94,
+        "Lock:tuple": 1012
+      },
+      "TopSQL": [
+        {
+          "rows": 1011,
+          "calls": 1011,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 31.575,
+          "total_ms": 31921.908,
+          "wal_bytes": 10326011,
+          "shared_hits": 1948790,
+          "shared_reads": 4596
+        },
+        {
+          "rows": 1319,
+          "calls": 1011,
+          "query": "SELECT id FROM inventory.stock_balances WHERE id IN (p_source, p_target) ORDER BY id FOR UPDATE",
+          "mean_ms": 29.062,
+          "total_ms": 29381.531,
+          "wal_bytes": 71764,
+          "shared_hits": 55038,
+          "shared_reads": 0
+        },
+        {
+          "rows": 703,
+          "calls": 703,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 38.884,
+          "total_ms": 27335.608,
+          "wal_bytes": 4288694,
+          "shared_hits": 640917,
+          "shared_reads": 2057
+        },
+        {
+          "rows": 703,
+          "calls": 703,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 37.335,
+          "total_ms": 26246.230,
+          "wal_bytes": 37962,
+          "shared_hits": 39977,
+          "shared_reads": 0
+        },
+        {
+          "rows": 703,
+          "calls": 703,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.897,
+          "total_ms": 630.445,
+          "wal_bytes": 925223,
+          "shared_hits": 26467,
+          "shared_reads": 242
+        },
+        {
+          "rows": 227962,
+          "calls": 1714,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.283,
+          "total_ms": 484.922,
+          "wal_bytes": 0,
+          "shared_hits": 8570,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1011,
+          "calls": 1011,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.420,
+          "total_ms": 424.425,
+          "wal_bytes": 1416359,
+          "shared_hits": 38368,
+          "shared_reads": 304
+        },
+        {
+          "rows": 1011,
+          "calls": 1011,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.362,
+          "total_ms": 366.363,
+          "wal_bytes": 1266217,
+          "shared_hits": 676736,
+          "shared_reads": 4
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 1,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1144,
+        "P50MS": 2.5651,
+        "P95MS": 3.4505,
+        "P99MS": 4.1002,
+        "MaxMS": 41.8393
+      },
+      "Statuses": {
+        "201:": 1144
+      },
+      "Successes": 1144,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 380.91248851893465,
+      "ElapsedSeconds": 3.0033145,
+      "GuardCalls": 1716,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 40,
+        "Client:ClientRead": 4,
+        "IO:DataFileRead": 3,
+        "IO:DataFileWrite": 2,
+        "IO:WalInitSync": 1,
+        "IO:WalWrite": 3
+      },
+      "TopSQL": [
+        {
+          "rows": 572,
+          "calls": 572,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.246,
+          "total_ms": 712.761,
+          "wal_bytes": 5024644,
+          "shared_hits": 157846,
+          "shared_reads": 2481
+        },
+        {
+          "rows": 572,
+          "calls": 572,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.787,
+          "total_ms": 449.891,
+          "wal_bytes": 3334890,
+          "shared_hits": 94092,
+          "shared_reads": 1685
+        },
+        {
+          "rows": 160160,
+          "calls": 1144,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.229,
+          "total_ms": 261.814,
+          "wal_bytes": 0,
+          "shared_hits": 6864,
+          "shared_reads": 0
+        },
+        {
+          "rows": 572,
+          "calls": 572,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.257,
+          "total_ms": 146.941,
+          "wal_bytes": 709985,
+          "shared_hits": 22711,
+          "shared_reads": 209
+        },
+        {
+          "rows": 572,
+          "calls": 572,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.228,
+          "total_ms": 130.386,
+          "wal_bytes": 690750,
+          "shared_hits": 22723,
+          "shared_reads": 198
+        },
+        {
+          "rows": 1144,
+          "calls": 2288,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.048,
+          "total_ms": 110.676,
+          "wal_bytes": 1277185,
+          "shared_hits": 28274,
+          "shared_reads": 407
+        },
+        {
+          "rows": 1144,
+          "calls": 1144,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.085,
+          "total_ms": 97.626,
+          "wal_bytes": 2244828,
+          "shared_hits": 16050,
+          "shared_reads": 1523
+        },
+        {
+          "rows": 572,
+          "calls": 572,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.159,
+          "total_ms": 91.065,
+          "wal_bytes": 736546,
+          "shared_hits": 30124,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 1,
+      "Repetition": 2,
+      "Latency": {
+        "count": 1104,
+        "P50MS": 2.6392,
+        "P95MS": 3.7122,
+        "P99MS": 4.5368,
+        "MaxMS": 19.9711
+      },
+      "Statuses": {
+        "201:": 1104
+      },
+      "Successes": 1104,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 367.54874815027097,
+      "ElapsedSeconds": 3.0036832,
+      "GuardCalls": 1656,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 44,
+        "Client:ClientRead": 4,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileWrite": 2,
+        "IO:WalWrite": 3
+      },
+      "TopSQL": [
+        {
+          "rows": 552,
+          "calls": 552,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.316,
+          "total_ms": 726.519,
+          "wal_bytes": 4777332,
+          "shared_hits": 154206,
+          "shared_reads": 2426
+        },
+        {
+          "rows": 552,
+          "calls": 552,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.843,
+          "total_ms": 465.064,
+          "wal_bytes": 3110812,
+          "shared_hits": 92062,
+          "shared_reads": 1644
+        },
+        {
+          "rows": 162288,
+          "calls": 1104,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.242,
+          "total_ms": 267.486,
+          "wal_bytes": 0,
+          "shared_hits": 6624,
+          "shared_reads": 0
+        },
+        {
+          "rows": 552,
+          "calls": 552,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.268,
+          "total_ms": 147.798,
+          "wal_bytes": 641235,
+          "shared_hits": 21924,
+          "shared_reads": 180
+        },
+        {
+          "rows": 552,
+          "calls": 552,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.242,
+          "total_ms": 133.418,
+          "wal_bytes": 666424,
+          "shared_hits": 21937,
+          "shared_reads": 197
+        },
+        {
+          "rows": 1104,
+          "calls": 2208,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.051,
+          "total_ms": 111.574,
+          "wal_bytes": 1196337,
+          "shared_hits": 27301,
+          "shared_reads": 377
+        },
+        {
+          "rows": 1104,
+          "calls": 1104,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.092,
+          "total_ms": 101.116,
+          "wal_bytes": 2067178,
+          "shared_hits": 15486,
+          "shared_reads": 1488
+        },
+        {
+          "rows": 552,
+          "calls": 552,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.173,
+          "total_ms": 95.644,
+          "wal_bytes": 720292,
+          "shared_hits": 30198,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 1,
+      "Repetition": 3,
+      "Latency": {
+        "count": 1070,
+        "P50MS": 2.688,
+        "P95MS": 4.0793,
+        "P99MS": 4.8325,
+        "MaxMS": 18.4555
+      },
+      "Statuses": {
+        "201:": 1070
+      },
+      "Successes": 1070,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 356.018712609717,
+      "ElapsedSeconds": 3.00546,
+      "GuardCalls": 1605,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 41,
+        "Client:ClientRead": 6,
+        "IO:DataFileRead": 1,
+        "IO:DataFileWrite": 1,
+        "IO:WalWrite": 3
+      },
+      "TopSQL": [
+        {
+          "rows": 535,
+          "calls": 535,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 1.349,
+          "total_ms": 721.597,
+          "wal_bytes": 4711184,
+          "shared_hits": 149825,
+          "shared_reads": 2312
+        },
+        {
+          "rows": 535,
+          "calls": 535,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.857,
+          "total_ms": 458.663,
+          "wal_bytes": 3083152,
+          "shared_hits": 89443,
+          "shared_reads": 1583
+        },
+        {
+          "rows": 164780,
+          "calls": 1070,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.255,
+          "total_ms": 272.964,
+          "wal_bytes": 0,
+          "shared_hits": 6420,
+          "shared_reads": 0
+        },
+        {
+          "rows": 535,
+          "calls": 535,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.267,
+          "total_ms": 143.022,
+          "wal_bytes": 617971,
+          "shared_hits": 21264,
+          "shared_reads": 158
+        },
+        {
+          "rows": 535,
+          "calls": 535,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.240,
+          "total_ms": 128.583,
+          "wal_bytes": 613530,
+          "shared_hits": 21275,
+          "shared_reads": 175
+        },
+        {
+          "rows": 1070,
+          "calls": 2140,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.050,
+          "total_ms": 106.238,
+          "wal_bytes": 1125465,
+          "shared_hits": 26489,
+          "shared_reads": 333
+        },
+        {
+          "rows": 1070,
+          "calls": 1070,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.094,
+          "total_ms": 100.853,
+          "wal_bytes": 2119735,
+          "shared_hits": 14969,
+          "shared_reads": 1487
+        },
+        {
+          "rows": 535,
+          "calls": 535,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.177,
+          "total_ms": 94.594,
+          "wal_bytes": 713388,
+          "shared_hits": 29600,
+          "shared_reads": 4
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 16,
+      "Repetition": 1,
+      "Latency": {
+        "count": 5068,
+        "P50MS": 7.5566,
+        "P95MS": 18.2862,
+        "P99MS": 45.8652,
+        "MaxMS": 99.3361
+      },
+      "Statuses": {
+        "201:": 5068
+      },
+      "Successes": 5068,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1684.1276946292344,
+      "ElapsedSeconds": 3.009273,
+      "GuardCalls": 7602,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 323,
+        "Client:ClientRead": 238,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 4,
+        "IO:DataFileWrite": 22,
+        "IO:WalInitWrite": 2,
+        "IO:WalWrite": 16,
+        "LWLock:BufferContent": 22,
+        "LWLock:LockManager": 5,
+        "LWLock:MultiXactGen": 1,
+        "LWLock:ProcArray": 1,
+        "LWLock:WALWrite": 70,
+        "LWLock:pg_stat_statements": 20
+      },
+      "TopSQL": [
+        {
+          "rows": 2534,
+          "calls": 2534,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 2.667,
+          "total_ms": 6758.017,
+          "wal_bytes": 20918691,
+          "shared_hits": 751627,
+          "shared_reads": 11227
+        },
+        {
+          "rows": 2534,
+          "calls": 2534,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 1.730,
+          "total_ms": 4384.891,
+          "wal_bytes": 13709446,
+          "shared_hits": 449179,
+          "shared_reads": 7385
+        },
+        {
+          "rows": 815948,
+          "calls": 5068,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.451,
+          "total_ms": 2287.919,
+          "wal_bytes": 0,
+          "shared_hits": 30408,
+          "shared_reads": 0
+        },
+        {
+          "rows": 2534,
+          "calls": 2534,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.520,
+          "total_ms": 1317.147,
+          "wal_bytes": 3147097,
+          "shared_hits": 95067,
+          "shared_reads": 833
+        },
+        {
+          "rows": 2534,
+          "calls": 2534,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.515,
+          "total_ms": 1304.435,
+          "wal_bytes": 2900496,
+          "shared_hits": 95073,
+          "shared_reads": 805
+        },
+        {
+          "rows": 5068,
+          "calls": 10136,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.111,
+          "total_ms": 1128.051,
+          "wal_bytes": 5540443,
+          "shared_hits": 114086,
+          "shared_reads": 1638
+        },
+        {
+          "rows": 2534,
+          "calls": 2534,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.374,
+          "total_ms": 948.825,
+          "wal_bytes": 3405319,
+          "shared_hits": 140436,
+          "shared_reads": 5
+        },
+        {
+          "rows": 5068,
+          "calls": 5068,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.157,
+          "total_ms": 793.260,
+          "wal_bytes": 8982477,
+          "shared_hits": 71276,
+          "shared_reads": 6766
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 16,
+      "Repetition": 2,
+      "Latency": {
+        "count": 5080,
+        "P50MS": 7.5738,
+        "P95MS": 17.9646,
+        "P99MS": 34.0287,
+        "MaxMS": 126.4532
+      },
+      "Statuses": {
+        "201:": 5080
+      },
+      "Successes": 5080,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1687.5715141649039,
+      "ElapsedSeconds": 3.0102428,
+      "GuardCalls": 7620,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 314,
+        "Client:ClientRead": 245,
+        "IO:DataFileRead": 6,
+        "IO:DataFileWrite": 10,
+        "IO:WalWrite": 16,
+        "LWLock:BufferContent": 15,
+        "LWLock:LockManager": 2,
+        "LWLock:WALWrite": 26,
+        "LWLock:pg_stat_statements": 43,
+        "Timeout:SpinDelay": 1
+      },
+      "TopSQL": [
+        {
+          "rows": 2540,
+          "calls": 2540,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 2.766,
+          "total_ms": 7024.480,
+          "wal_bytes": 20060221,
+          "shared_hits": 880192,
+          "shared_reads": 11332
+        },
+        {
+          "rows": 2540,
+          "calls": 2540,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 1.854,
+          "total_ms": 4709.722,
+          "wal_bytes": 13229945,
+          "shared_hits": 507637,
+          "shared_reads": 7616
+        },
+        {
+          "rows": 853440,
+          "calls": 5080,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.464,
+          "total_ms": 2359.184,
+          "wal_bytes": 0,
+          "shared_hits": 30480,
+          "shared_reads": 0
+        },
+        {
+          "rows": 2540,
+          "calls": 2540,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.556,
+          "total_ms": 1413.471,
+          "wal_bytes": 2899271,
+          "shared_hits": 105159,
+          "shared_reads": 829
+        },
+        {
+          "rows": 2540,
+          "calls": 2540,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.511,
+          "total_ms": 1298.748,
+          "wal_bytes": 3230003,
+          "shared_hits": 103307,
+          "shared_reads": 833
+        },
+        {
+          "rows": 5080,
+          "calls": 10160,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.104,
+          "total_ms": 1052.172,
+          "wal_bytes": 5611328,
+          "shared_hits": 126184,
+          "shared_reads": 1662
+        },
+        {
+          "rows": 2540,
+          "calls": 2540,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + $9 WHERE id = p_source",
+          "mean_ms": 0.370,
+          "total_ms": 940.985,
+          "wal_bytes": 3404444,
+          "shared_hits": 164282,
+          "shared_reads": 4
+        },
+        {
+          "rows": 5080,
+          "calls": 5080,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.150,
+          "total_ms": 759.646,
+          "wal_bytes": 8116994,
+          "shared_hits": 71487,
+          "shared_reads": 6764
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 16,
+      "Repetition": 3,
+      "Latency": {
+        "count": 5266,
+        "P50MS": 7.4669,
+        "P95MS": 17.3858,
+        "P99MS": 32.5855,
+        "MaxMS": 106.7491
+      },
+      "Statuses": {
+        "201:": 5266
+      },
+      "Successes": 5266,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1747.8504940598475,
+      "ElapsedSeconds": 3.0128435,
+      "GuardCalls": 7899,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 305,
+        "Client:ClientRead": 250,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 6,
+        "IO:DataFileWrite": 5,
+        "IO:SlruWrite": 1,
+        "IO:WalWrite": 17,
+        "LWLock:BufferContent": 18,
+        "LWLock:LockManager": 2,
+        "LWLock:MultiXactGen": 1,
+        "LWLock:WALWrite": 27,
+        "LWLock:pg_stat_statements": 24,
+        "Timeout:SpinDelay": 6
+      },
+      "TopSQL": [
+        {
+          "rows": 2633,
+          "calls": 2633,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 2.620,
+          "total_ms": 6898.313,
+          "wal_bytes": 19749851,
+          "shared_hits": 774140,
+          "shared_reads": 11784
+        },
+        {
+          "rows": 2633,
+          "calls": 2633,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 1.724,
+          "total_ms": 4540.411,
+          "wal_bytes": 13184293,
+          "shared_hits": 461294,
+          "shared_reads": 7884
+        },
+        {
+          "rows": 921550,
+          "calls": 5266,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,$3),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.476,
+          "total_ms": 2505.965,
+          "wal_bytes": 0,
+          "shared_hits": 43446,
+          "shared_reads": 1
+        },
+        {
+          "rows": 2633,
+          "calls": 2633,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.538,
+          "total_ms": 1415.436,
+          "wal_bytes": 2847827,
+          "shared_hits": 99259,
+          "shared_reads": 884
+        },
+        {
+          "rows": 2633,
+          "calls": 2633,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.494,
+          "total_ms": 1301.715,
+          "wal_bytes": 3097816,
+          "shared_hits": 98667,
+          "shared_reads": 859
+        },
+        {
+          "rows": 5266,
+          "calls": 10532,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.101,
+          "total_ms": 1066.339,
+          "wal_bytes": 5417617,
+          "shared_hits": 118454,
+          "shared_reads": 1743
+        },
+        {
+          "rows": 2633,
+          "calls": 2633,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + $9 WHERE id = p_source",
+          "mean_ms": 0.344,
+          "total_ms": 905.051,
+          "wal_bytes": 3530686,
+          "shared_hits": 140543,
+          "shared_reads": 4
+        },
+        {
+          "rows": 5266,
+          "calls": 5266,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.145,
+          "total_ms": 763.708,
+          "wal_bytes": 7759289,
+          "shared_hits": 74032,
+          "shared_reads": 7010
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 5320,
+        "P50MS": 33.3657,
+        "P95MS": 53.7213,
+        "P99MS": 102.1611,
+        "MaxMS": 203.9563
+      },
+      "Statuses": {
+        "201:": 5320
+      },
+      "Successes": 5320,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1745.5095045453297,
+      "ElapsedSeconds": 3.0478207,
+      "GuardCalls": 7980,
+      "PoolWaitMS": 119305.7377,
+      "PoolEmptyAcquires": 10602,
+      "DBWaitSamples": {
+        "CPU:running": 310,
+        "Client:ClientRead": 422,
+        "IO:DataFileRead": 6,
+        "IO:DataFileWrite": 6,
+        "IO:WalWrite": 20,
+        "LWLock:BufferContent": 11,
+        "LWLock:LockManager": 5,
+        "LWLock:WALBufMapping": 1,
+        "LWLock:WALInsert": 2,
+        "LWLock:WALWrite": 73,
+        "LWLock:pg_stat_statements": 35,
+        "Timeout:SpinDelay": 1
+      },
+      "TopSQL": [
+        {
+          "rows": 2660,
+          "calls": 2660,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 2.855,
+          "total_ms": 7595.207,
+          "wal_bytes": 101715404,
+          "shared_hits": 923028,
+          "shared_reads": 11844
+        },
+        {
+          "rows": 2660,
+          "calls": 2660,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 1.874,
+          "total_ms": 4985.451,
+          "wal_bytes": 75890513,
+          "shared_hits": 593073,
+          "shared_reads": 8014
+        },
+        {
+          "rows": 968240,
+          "calls": 5320,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.487,
+          "total_ms": 2593.019,
+          "wal_bytes": 0,
+          "shared_hits": 42910,
+          "shared_reads": 0
+        },
+        {
+          "rows": 2660,
+          "calls": 2660,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.517,
+          "total_ms": 1374.204,
+          "wal_bytes": 14100714,
+          "shared_hits": 106085,
+          "shared_reads": 892
+        },
+        {
+          "rows": 2660,
+          "calls": 2660,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.506,
+          "total_ms": 1345.296,
+          "wal_bytes": 13840487,
+          "shared_hits": 105953,
+          "shared_reads": 909
+        },
+        {
+          "rows": 5320,
+          "calls": 10640,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.107,
+          "total_ms": 1143.148,
+          "wal_bytes": 27307167,
+          "shared_hits": 132170,
+          "shared_reads": 1801
+        },
+        {
+          "rows": 2660,
+          "calls": 2660,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.429,
+          "total_ms": 1142.140,
+          "wal_bytes": 3689688,
+          "shared_hits": 151511,
+          "shared_reads": 4
+        },
+        {
+          "rows": 5320,
+          "calls": 5320,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.152,
+          "total_ms": 808.374,
+          "wal_bytes": 52935667,
+          "shared_hits": 74917,
+          "shared_reads": 7015
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 64,
+      "Repetition": 2,
+      "Latency": {
+        "count": 5112,
+        "P50MS": 35.0157,
+        "P95MS": 57.0281,
+        "P99MS": 100.6786,
+        "MaxMS": 128.8698
+      },
+      "Statuses": {
+        "201:": 5112
+      },
+      "Successes": 5112,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1676.7089352350508,
+      "ElapsedSeconds": 3.0488297,
+      "GuardCalls": 7668,
+      "PoolWaitMS": 120039.247,
+      "PoolEmptyAcquires": 10203,
+      "DBWaitSamples": {
+        "CPU:running": 345,
+        "Client:ClientRead": 451,
+        "IO:DataFileRead": 6,
+        "IO:DataFileWrite": 10,
+        "IO:WalWrite": 25,
+        "LWLock:BufferContent": 16,
+        "LWLock:LockManager": 2,
+        "LWLock:WALWrite": 84,
+        "LWLock:pg_stat_statements": 31
+      },
+      "TopSQL": [
+        {
+          "rows": 2556,
+          "calls": 2556,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 2.761,
+          "total_ms": 7057.935,
+          "wal_bytes": 63858285,
+          "shared_hits": 885725,
+          "shared_reads": 11617
+        },
+        {
+          "rows": 2556,
+          "calls": 2556,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 1.851,
+          "total_ms": 4730.970,
+          "wal_bytes": 42005026,
+          "shared_hits": 560280,
+          "shared_reads": 7881
+        },
+        {
+          "rows": 966168,
+          "calls": 5112,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.516,
+          "total_ms": 2638.935,
+          "wal_bytes": 0,
+          "shared_hits": 41988,
+          "shared_reads": 0
+        },
+        {
+          "rows": 2556,
+          "calls": 2556,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.541,
+          "total_ms": 1381.790,
+          "wal_bytes": 8166109,
+          "shared_hits": 101732,
+          "shared_reads": 910
+        },
+        {
+          "rows": 2556,
+          "calls": 2556,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.537,
+          "total_ms": 1371.493,
+          "wal_bytes": 8399741,
+          "shared_hits": 101938,
+          "shared_reads": 883
+        },
+        {
+          "rows": 5112,
+          "calls": 10224,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.123,
+          "total_ms": 1253.209,
+          "wal_bytes": 16041490,
+          "shared_hits": 126906,
+          "shared_reads": 1793
+        },
+        {
+          "rows": 2556,
+          "calls": 2556,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + 1 WHERE id = p_source",
+          "mean_ms": 0.352,
+          "total_ms": 900.560,
+          "wal_bytes": 3492549,
+          "shared_hits": 144590,
+          "shared_reads": 4
+        },
+        {
+          "rows": 5112,
+          "calls": 5112,
+          "query": "INSERT INTO platform.outbox(id, operation_id, event_type, aggregate_id, created_at, payload)\n  VALUES (v_event, p_id, p_event, p_aggregate, v_occurred,\n    jsonb_build_object('event_id', v_event, 'event_type', p_event, 'event_version', 1,\n      'aggregate_id', p_aggregate, 'aggregate_version', p_result-\u003e'document_version',\n      'organization_id', v_op.organization_id, 'warehouse_id', v_op.warehouse_id,\n      'actor_id', v_op.actor_id, 'occurred_at', v_occurred, 'correlation_id', p_id,\n      'ca",
+          "mean_ms": 0.147,
+          "total_ms": 752.150,
+          "wal_bytes": 33261445,
+          "shared_hits": 71736,
+          "shared_reads": 6907
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "sku_distributed",
+      "Concurrency": 64,
+      "Repetition": 3,
+      "Latency": {
+        "count": 4214,
+        "P50MS": 38.7404,
+        "P95MS": 99.4314,
+        "P99MS": 178.4216,
+        "MaxMS": 244.396
+      },
+      "Statuses": {
+        "201:": 4214
+      },
+      "Successes": 4214,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1376.0474034289182,
+      "ElapsedSeconds": 3.0623945,
+      "GuardCalls": 6321,
+      "PoolWaitMS": 119039.4924,
+      "PoolEmptyAcquires": 8407,
+      "DBWaitSamples": {
+        "CPU:running": 312,
+        "Client:ClientRead": 465,
+        "IO:DataFileExtend": 1,
+        "IO:DataFileRead": 3,
+        "IO:DataFileWrite": 4,
+        "IO:WalWrite": 18,
+        "LWLock:BufferContent": 35,
+        "LWLock:LockManager": 4,
+        "LWLock:WALInsert": 2,
+        "LWLock:WALWrite": 64,
+        "LWLock:pg_stat_statements": 42,
+        "Timeout:SpinDelay": 1
+      },
+      "TopSQL": [
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "SELECT inventory.post_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 3.357,
+          "total_ms": 7072.417,
+          "wal_bytes": 38209587,
+          "shared_hits": 743624,
+          "shared_reads": 9692
+        },
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 2.272,
+          "total_ms": 4786.232,
+          "wal_bytes": 23880111,
+          "shared_hits": 463234,
+          "shared_reads": 6667
+        },
+        {
+          "rows": 825944,
+          "calls": 4214,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.552,
+          "total_ms": 2326.518,
+          "wal_bytes": 0,
+          "shared_hits": 34154,
+          "shared_reads": 0
+        },
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 0.765,
+          "total_ms": 1610.810,
+          "wal_bytes": 4824930,
+          "shared_hits": 86153,
+          "shared_reads": 801
+        },
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "SELECT inventory.prepare_movement($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text,$6::text::uuid,$7::text::uuid,$8::text::numeric,$9::text::uuid,$10::text,$11::text::uuid)",
+          "mean_ms": 0.597,
+          "total_ms": 1258.356,
+          "wal_bytes": 4864795,
+          "shared_hits": 84005,
+          "shared_reads": 746
+        },
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "UPDATE inventory.stock_balances SET on_hand = on_hand - p_qty, version = version + $9 WHERE id = p_source",
+          "mean_ms": 0.558,
+          "total_ms": 1176.436,
+          "wal_bytes": 2893575,
+          "shared_hits": 121394,
+          "shared_reads": 2
+        },
+        {
+          "rows": 4214,
+          "calls": 8428,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.138,
+          "total_ms": 1159.889,
+          "wal_bytes": 9252839,
+          "shared_hits": 104505,
+          "shared_reads": 1547
+        },
+        {
+          "rows": 2107,
+          "calls": 2107,
+          "query": "INSERT INTO inventory.reservations(organization_id, warehouse_id, owner_id, item_id, document_line_id, balance_id, quantity, expires_at)\n  VALUES (v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id, p_line, p_balance, p_qty, p_expires_at)\n  RETURNING id",
+          "mean_ms": 0.321,
+          "total_ms": 676.905,
+          "wal_bytes": 1789276,
+          "shared_hits": 160231,
+          "shared_reads": 184
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "last_units",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 64,
+        "P50MS": 82.6728,
+        "P95MS": 88.9592,
+        "P99MS": 89.1997,
+        "MaxMS": 89.1997
+      },
+      "Statuses": {
+        "201:": 10,
+        "409:insufficient_available_stock": 54
+      },
+      "Successes": 10,
+      "Conflicts": 54,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 702.836384082513,
+      "ElapsedSeconds": 0.0910596,
+      "GuardCalls": 64,
+      "PoolWaitMS": 3371.4831,
+      "PoolEmptyAcquires": 108,
+      "DBWaitSamples": {
+        "CPU:running": 5,
+        "LWLock:pg_stat_statements": 15
+      },
+      "TopSQL": [
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT *                       FROM inventory.stock_balances WHERE id = p_balance FOR UPDATE",
+          "mean_ms": 6.999,
+          "total_ms": 447.912,
+          "wal_bytes": 3456,
+          "shared_hits": 699,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 4.840,
+          "total_ms": 309.786,
+          "wal_bytes": 121596,
+          "shared_hits": 2545,
+          "shared_reads": 19
+        },
+        {
+          "rows": 10,
+          "calls": 10,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 10.620,
+          "total_ms": 106.203,
+          "wal_bytes": 140601,
+          "shared_hits": 2086,
+          "shared_reads": 33
+        },
+        {
+          "rows": 64,
+          "calls": 128,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 0.805,
+          "total_ms": 103.077,
+          "wal_bytes": 115030,
+          "shared_hits": 1585,
+          "shared_reads": 19
+        },
+        {
+          "rows": 12992,
+          "calls": 64,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.503,
+          "total_ms": 32.222,
+          "wal_bytes": 0,
+          "shared_hits": 526,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT inventory.assert_quantity(v_line.item_id, p_qty)",
+          "mean_ms": 0.146,
+          "total_ms": 9.319,
+          "wal_bytes": 0,
+          "shared_hits": 64,
+          "shared_reads": 0
+        },
+        {
+          "rows": 10,
+          "calls": 10,
+          "query": "UPDATE inventory.stock_balances SET reserved_qty = reserved_qty + p_qty, version = version + 1 WHERE id = p_balance",
+          "mean_ms": 0.224,
+          "total_ms": 2.240,
+          "wal_bytes": 9501,
+          "shared_hits": 455,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT id::text FROM contracts_v1.stock_balances WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND id=$5::text::uuid",
+          "mean_ms": 0.032,
+          "total_ms": 2.040,
+          "wal_bytes": 0,
+          "shared_hits": 326,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "same_command",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 64,
+        "P50MS": 50.8094,
+        "P95MS": 53.6267,
+        "P99MS": 54.3817,
+        "MaxMS": 54.3817
+      },
+      "Statuses": {
+        "201:": 64
+      },
+      "Successes": 64,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 1176.8664826586885,
+      "ElapsedSeconds": 0.0543817,
+      "GuardCalls": 1,
+      "PoolWaitMS": 2152.7279,
+      "PoolEmptyAcquires": 108,
+      "DBWaitSamples": {
+        "CPU:running": 2,
+        "Client:ClientRead": 16
+      },
+      "TopSQL": [
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 5.994,
+          "total_ms": 383.644,
+          "wal_bytes": 871,
+          "shared_hits": 809,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 65,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 3.960,
+          "total_ms": 257.429,
+          "wal_bytes": 763,
+          "shared_hits": 353,
+          "shared_reads": 0
+        },
+        {
+          "rows": 13440,
+          "calls": 64,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.529,
+          "total_ms": 33.879,
+          "wal_bytes": 0,
+          "shared_hits": 590,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 8.014,
+          "total_ms": 8.014,
+          "wal_bytes": 13560,
+          "shared_hits": 201,
+          "shared_reads": 6
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT id::text FROM contracts_v1.stock_balances WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND id=$5::text::uuid",
+          "mean_ms": 0.036,
+          "total_ms": 2.310,
+          "wal_bytes": 0,
+          "shared_hits": 325,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT document_id::text FROM contracts_v1.document_lines WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND id=$5::text::uuid",
+          "mean_ms": 0.021,
+          "total_ms": 1.314,
+          "wal_bytes": 58,
+          "shared_hits": 192,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "INSERT INTO inventory.reservations(organization_id, warehouse_id, owner_id, item_id, document_line_id, balance_id, quantity, expires_at)\n  VALUES (v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id, p_line, p_balance, p_qty, p_expires_at)\n  RETURNING id",
+          "mean_ms": 0.919,
+          "total_ms": 0.919,
+          "wal_bytes": 9177,
+          "shared_hits": 49,
+          "shared_reads": 2
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "INSERT INTO inventory.reservation_events(operation_id, reservation_id, kind, quantity)\n    VALUES (p_command, v_reservation, 'reserved', p_qty)",
+          "mean_ms": 0.912,
+          "total_ms": 0.912,
+          "wal_bytes": 475,
+          "shared_hits": 19,
+          "shared_reads": 2
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "same_document",
+      "Concurrency": 64,
+      "Repetition": 1,
+      "Latency": {
+        "count": 64,
+        "P50MS": 58.3785,
+        "P95MS": 63.6619,
+        "P99MS": 64.1665,
+        "MaxMS": 64.1665
+      },
+      "Statuses": {
+        "201:": 1,
+        "409:document_version_conflict": 63
+      },
+      "Successes": 1,
+      "Conflicts": 63,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 997.4051880654235,
+      "ElapsedSeconds": 0.0641665,
+      "GuardCalls": 1,
+      "PoolWaitMS": 2436.1258,
+      "PoolEmptyAcquires": 108,
+      "DBWaitSamples": {
+        "CPU:running": 4,
+        "LWLock:pg_stat_statements": 3,
+        "Lock:transactionid": 1,
+        "Lock:tuple": 12
+      },
+      "TopSQL": [
+        {
+          "rows": 65,
+          "calls": 65,
+          "query": "SELECT *                   FROM warehouse.documents WHERE id = v_line.document_id FOR UPDATE",
+          "mean_ms": 5.233,
+          "total_ms": 340.172,
+          "wal_bytes": 3512,
+          "shared_hits": 301,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 65,
+          "query": "INSERT INTO platform.operations(id, actor_id, organization_id, warehouse_id, operation_type, request)\n  VALUES (p_id, p_actor, v_line.organization_id, v_line.warehouse_id, p_type, p_request)\n  ON CONFLICT (id) DO NOTHING RETURNING id",
+          "mean_ms": 1.225,
+          "total_ms": 79.656,
+          "wal_bytes": 124944,
+          "shared_hits": 1345,
+          "shared_reads": 19
+        },
+        {
+          "rows": 13888,
+          "calls": 64,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.526,
+          "total_ms": 33.638,
+          "wal_bytes": 0,
+          "shared_hits": 602,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "SELECT inventory.prepare_reservation($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 11.215,
+          "total_ms": 11.215,
+          "wal_bytes": 1115,
+          "shared_hits": 40,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "SELECT inventory.reserve_stock($1::text::uuid,$2::text::uuid,$3::text::uuid,$4::bigint,$5::text::uuid,$6::text::numeric,$7::timestamptz)",
+          "mean_ms": 8.340,
+          "total_ms": 8.340,
+          "wal_bytes": 13456,
+          "shared_hits": 208,
+          "shared_reads": 6
+        },
+        {
+          "rows": 65,
+          "calls": 65,
+          "query": "SELECT 1 FROM ONLY \"platform\".\"actors\" x WHERE \"id\" OPERATOR(pg_catalog.=) $1 FOR KEY SHARE OF x",
+          "mean_ms": 0.085,
+          "total_ms": 5.505,
+          "wal_bytes": 11830,
+          "shared_hits": 130,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT id::text FROM contracts_v1.stock_balances WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND id=$5::text::uuid",
+          "mean_ms": 0.032,
+          "total_ms": 2.055,
+          "wal_bytes": 0,
+          "shared_hits": 326,
+          "shared_reads": 0
+        },
+        {
+          "rows": 64,
+          "calls": 64,
+          "query": "SELECT document_id::text FROM contracts_v1.document_lines WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND id=$5::text::uuid",
+          "mean_ms": 0.022,
+          "total_ms": 1.428,
+          "wal_bytes": 114,
+          "shared_hits": 199,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "read_MovementsOwnerDeep",
+      "Concurrency": 16,
+      "Repetition": 1,
+      "Latency": {
+        "count": 1756,
+        "P50MS": 25.8411,
+        "P95MS": 46.0635,
+        "P99MS": 61.015,
+        "MaxMS": 88.5438
+      },
+      "Statuses": {
+        "200:": 1756
+      },
+      "Successes": 1756,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 581.9377266980503,
+      "ElapsedSeconds": 3.017505,
+      "GuardCalls": 0,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 383,
+        "Client:ClientRead": 7
+      },
+      "TopSQL": [
+        {
+          "rows": 89556,
+          "calls": 1756,
+          "query": "SELECT jsonb_build_object($7,id,$8,organization_id,$9,warehouse_id,\n      $10,owner_id,$11,item_id,$12,operation_id,$13,document_line_id,$14,kind,$15,reason,\n      $16,correction_of,$17,created_at,$18,lines) FROM contracts_v1.movements WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND ($5::text IS NULL OR id\u003e$5::text::uuid) ORDER BY id LIMIT $6",
+          "mean_ms": 12.284,
+          "total_ms": 21570.171,
+          "wal_bytes": 0,
+          "shared_hits": 2181577,
+          "shared_reads": 1131
+        },
+        {
+          "rows": 381052,
+          "calls": 1756,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.571,
+          "total_ms": 1003.502,
+          "wal_bytes": 0,
+          "shared_hits": 16694,
+          "shared_reads": 0
+        },
+        {
+          "rows": 66,
+          "calls": 60,
+          "query": "SELECT coalesce(wait_event_type,'CPU'),coalesce(wait_event,'running'),count(*) FROM pg_stat_activity WHERE application_name='wms-load-api' AND state\u003c\u003e'idle' GROUP BY 1,2",
+          "mean_ms": 0.151,
+          "total_ms": 9.064,
+          "wal_bytes": 0,
+          "shared_hits": 0,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "SELECT pg_stat_statements_reset()",
+          "mean_ms": 0.576,
+          "total_ms": 0.576,
+          "wal_bytes": 0,
+          "shared_hits": 0,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    },
+    {
+      "Name": "read_MovementsAllDeep",
+      "Concurrency": 16,
+      "Repetition": 1,
+      "Latency": {
+        "count": 9180,
+        "P50MS": 4.6152,
+        "P95MS": 9.5093,
+        "P99MS": 13.1736,
+        "MaxMS": 27.8643
+      },
+      "Statuses": {
+        "200:": 9180
+      },
+      "Successes": 9180,
+      "Conflicts": 0,
+      "TechnicalErrors": 0,
+      "RequestsPerSecond": 3057.7311634767007,
+      "ElapsedSeconds": 3.002226,
+      "GuardCalls": 0,
+      "PoolWaitMS": 0,
+      "PoolEmptyAcquires": 0,
+      "DBWaitSamples": {
+        "CPU:running": 239,
+        "Client:ClientRead": 14
+      },
+      "TopSQL": [
+        {
+          "rows": 468180,
+          "calls": 9180,
+          "query": "SELECT jsonb_build_object('id',id,'organization_id',organization_id,'warehouse_id',warehouse_id,\n      'owner_id',owner_id,'item_id',item_id,'operation_id',operation_id,'document_line_id',document_line_id,'kind',kind,'reason',reason,\n      'correction_of',correction_of,'created_at',created_at,'lines',lines) FROM contracts_v1.movements WHERE organization_id=$1::text::uuid AND warehouse_id=$2::text::uuid AND ($3::boolean OR owner_id=ANY($4::text[]::uuid[])) AND ($5::text IS NULL OR id\u003e$5::text::uu",
+          "mean_ms": 1.183,
+          "total_ms": 10856.968,
+          "wal_bytes": 0,
+          "shared_hits": 2909923,
+          "shared_reads": 137
+        },
+        {
+          "rows": 27540,
+          "calls": 9180,
+          "query": "SELECT actor_id::text, organization_id::text, warehouse_id::text,\n      coalesce(owner_id::text,''),permission FROM contracts_v1.actor_grants WHERE issuer=$1 AND subject=$2\n      ORDER BY organization_id,warehouse_id,permission,owner_id",
+          "mean_ms": 0.080,
+          "total_ms": 730.531,
+          "wal_bytes": 0,
+          "shared_hits": 63960,
+          "shared_reads": 0
+        },
+        {
+          "rows": 68,
+          "calls": 60,
+          "query": "SELECT coalesce(wait_event_type,'CPU'),coalesce(wait_event,'running'),count(*) FROM pg_stat_activity WHERE application_name='wms-load-api' AND state\u003c\u003e'idle' GROUP BY 1,2",
+          "mean_ms": 0.159,
+          "total_ms": 9.539,
+          "wal_bytes": 0,
+          "shared_hits": 0,
+          "shared_reads": 0
+        },
+        {
+          "rows": 1,
+          "calls": 1,
+          "query": "SELECT pg_stat_statements_reset()",
+          "mean_ms": 0.486,
+          "total_ms": 0.486,
+          "wal_bytes": 0,
+          "shared_hits": 0,
+          "shared_reads": 0
+        }
+      ],
+      "Reconciled": true
+    }
+  ],
+  "environment": {
+    "driver": "closed-loop real loopback HTTP, real RSA OIDC JWT verification, runtime PostgreSQL role, required synthetic pure guards",
+    "go": "go1.27.3",
+    "goarch": "amd64",
+    "gomaxprocs": 12,
+    "goos": "windows",
+    "limitations": "App, driver, OIDC fixture and PostgreSQL share one host. Warm-cache local measurement; no ingress, real customer guards, external IdP or failover.",
+    "logical_cpus": 12
+  },
+  "fixture": {
+    "Org": "124af02f-21dc-44fd-9bf4-86ff6dbeac82",
+    "Warehouse": "1e252784-f1e4-439b-b9bc-3f1103731418",
+    "Owner": "f623575b-d86c-467a-85ba-1f7b1a5daf04",
+    "Actor": "720c8d64-fa10-4a4b-a37d-8e021c6de915",
+    "AllActor": "ca110330-bb40-4682-9fcb-d76e49791e51",
+    "Item": "7d744546-7bfd-4a8f-ad1d-68b97c2b9a0e",
+    "Source": "14ec7eab-73b0-4972-ac48-c167d6b4ba3c",
+    "Target": "ef7c9d11-3163-475d-a7a9-2bd69f318375",
+    "Foreign": "385895a7-576b-4648-9b4d-5c94c268e768",
+    "Movements": 1000000,
+    "Reservations": 250000,
+    "Balances": 100000,
+    "DeepIDs": {
+      "movements": "e64f2781-c2b1-1e88-35ce-836397c1c181",
+      "movements_all": "e68382ff-bf64-5697-efda-82638fa54fc6",
+      "reservations": "e3633fff-2a69-6707-33a4-496d0b7d9b03",
+      "reservations_all": "e66379e9-6b29-96a8-dc77-8c2a4166e196",
+      "stock_balances": "e21b5f36-bbb7-f648-2e94-8b87db1f49a2",
+      "stock_balances_all": "e6827a90-4203-4027-a413-f41ecec519cb"
+    }
+  },
+  "passed": true
+}

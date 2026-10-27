@@ -1,0 +1,36 @@
+=== RUN   TestLoadPercentileStatistics
+--- PASS: TestLoadPercentileStatistics (0.00s)
+=== RUN   TestLoadResultClassifiesExpectedConflictSeparately
+--- PASS: TestLoadResultClassifiesExpectedConflictSeparately (0.00s)
+=== RUN   TestLoadConcurrent
+=== RUN   TestLoadConcurrent/hot_balance/c1/run1
+=== RUN   TestLoadConcurrent/hot_balance/c16/run1
+=== RUN   TestLoadConcurrent/hot_balance/c64/run1
+=== RUN   TestLoadConcurrent/mixed_hot/c1/run1
+=== RUN   TestLoadConcurrent/mixed_hot/c16/run1
+=== RUN   TestLoadConcurrent/mixed_hot/c64/run1
+=== RUN   TestLoadConcurrent/sku_distributed/c1/run1
+=== RUN   TestLoadConcurrent/sku_distributed/c16/run1
+=== RUN   TestLoadConcurrent/sku_distributed/c64/run1
+=== RUN   TestLoadConcurrent/last_units
+=== RUN   TestLoadConcurrent/same_command
+=== RUN   TestLoadConcurrent/same_document
+=== RUN   TestLoadConcurrent/read_MovementsOwnerDeep
+=== RUN   TestLoadConcurrent/read_MovementsAllDeep
+--- PASS: TestLoadConcurrent (17.44s)
+    --- PASS: TestLoadConcurrent/hot_balance/c1/run1 (1.32s)
+    --- PASS: TestLoadConcurrent/hot_balance/c16/run1 (1.36s)
+    --- PASS: TestLoadConcurrent/hot_balance/c64/run1 (1.64s)
+    --- PASS: TestLoadConcurrent/mixed_hot/c1/run1 (1.28s)
+    --- PASS: TestLoadConcurrent/mixed_hot/c16/run1 (1.37s)
+    --- PASS: TestLoadConcurrent/mixed_hot/c64/run1 (1.78s)
+    --- PASS: TestLoadConcurrent/sku_distributed/c1/run1 (1.26s)
+    --- PASS: TestLoadConcurrent/sku_distributed/c16/run1 (1.55s)
+    --- PASS: TestLoadConcurrent/sku_distributed/c64/run1 (1.86s)
+    --- PASS: TestLoadConcurrent/last_units (0.38s)
+    --- PASS: TestLoadConcurrent/same_command (0.36s)
+    --- PASS: TestLoadConcurrent/same_document (0.40s)
+    --- PASS: TestLoadConcurrent/read_MovementsOwnerDeep (1.06s)
+    --- PASS: TestLoadConcurrent/read_MovementsAllDeep (1.06s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	18.513s

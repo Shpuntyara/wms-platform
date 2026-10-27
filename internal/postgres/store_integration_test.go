@@ -43,7 +43,7 @@ func (a tokenAuth) Authenticate(_ context.Context, token string) (auth.Identity,
 }
 
 type fixture struct {
-	t                                                                                *testing.T
+	t                                                                                testing.TB
 	admin, runtime                                                                   *pgxpool.Pool
 	store                                                                            *postgres.Store
 	org, wh, owner, otherOwner, actor, item, source, target, foreign, document, line string

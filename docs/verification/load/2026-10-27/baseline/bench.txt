@@ -1,0 +1,56 @@
+goos: windows
+goarch: amd64
+pkg: github.com/Shpuntyara/wms-platform/internal/postgres
+cpu: AMD Ryzen 5 5600X 6-Core Processor
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   5991465 ns/op	  427473 B/op	    2906 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   5208020 ns/op	  389148 B/op	    2888 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   6811050 ns/op	  401041 B/op	    2908 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   6780825 ns/op	  401178 B/op	    2897 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   7436225 ns/op	  452315 B/op	    2917 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   4615125 ns/op	  440628 B/op	    2915 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   4464950 ns/op	  415536 B/op	    2920 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   6381685 ns/op	  418549 B/op	    2926 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   6019630 ns/op	  422302 B/op	    2916 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerFirst-12         	      20	   6745710 ns/op	  439904 B/op	    2920 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9107860 ns/op	  414263 B/op	    2911 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9403490 ns/op	  440990 B/op	    2928 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9558955 ns/op	  364809 B/op	    2889 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   8858075 ns/op	  420856 B/op	    2906 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9684140 ns/op	  372711 B/op	    2895 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9373325 ns/op	  428480 B/op	    2918 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   8808965 ns/op	  370161 B/op	    2895 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   9626445 ns/op	  411196 B/op	    2918 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   8891255 ns/op	  391588 B/op	    2896 allocs/op
+BenchmarkHistoryHTTP/MovementsOwnerDeep-12          	      20	   8947005 ns/op	  433850 B/op	    2926 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1988050 ns/op	  462985 B/op	    3023 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1902550 ns/op	  429127 B/op	    3012 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1969625 ns/op	  430049 B/op	    2998 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1987760 ns/op	  428503 B/op	    3000 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   2062305 ns/op	  349886 B/op	    2977 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   2010040 ns/op	  398612 B/op	    2991 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1969565 ns/op	  430870 B/op	    3010 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1942815 ns/op	  389574 B/op	    2986 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   1911020 ns/op	  392627 B/op	    2993 allocs/op
+BenchmarkHistoryHTTP/MovementsAllDeep-12            	      20	   2117625 ns/op	  389962 B/op	    2989 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3311805 ns/op	  367961 B/op	    2660 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3509730 ns/op	  356186 B/op	    2653 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3420470 ns/op	  362373 B/op	    2662 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3440410 ns/op	  368448 B/op	    2654 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3344600 ns/op	  381336 B/op	    2663 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3474920 ns/op	  375087 B/op	    2653 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3530150 ns/op	  363215 B/op	    2654 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3445775 ns/op	  347870 B/op	    2648 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3366130 ns/op	  361138 B/op	    2659 allocs/op
+BenchmarkHistoryHTTP/ReservationsOwnerDeep-12       	      20	   3491935 ns/op	  359260 B/op	    2649 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1615090 ns/op	  325747 B/op	    2290 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1584630 ns/op	  312522 B/op	    2267 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1606520 ns/op	  342764 B/op	    2298 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1872220 ns/op	  310767 B/op	    2277 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1592305 ns/op	  336120 B/op	    2287 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1612615 ns/op	  287142 B/op	    2268 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1672665 ns/op	  324327 B/op	    2276 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1556080 ns/op	  299790 B/op	    2271 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1610815 ns/op	  314322 B/op	    2265 allocs/op
+BenchmarkHistoryHTTP/StockOwnerDeep-12              	      20	   1629940 ns/op	  319396 B/op	    2267 allocs/op
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	24.563s

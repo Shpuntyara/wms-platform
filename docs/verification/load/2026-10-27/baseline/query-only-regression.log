@@ -1,0 +1,32 @@
+=== RUN   TestLoadPageWorkStaysBounded
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerFirst
+    store_load_bench_test.go:218: force_custom_plan reads 6706 shared blocks for at most 51 rows; pagination scans history
+    store_load_bench_test.go:218: force_generic_plan reads 5213 shared blocks for at most 51 rows; pagination scans history
+=== RUN   TestLoadPageWorkStaysBounded/MovementsOwnerDeep
+    store_load_bench_test.go:218: force_generic_plan reads 5213 shared blocks for at most 51 rows; pagination scans history
+=== RUN   TestLoadPageWorkStaysBounded/MovementsAllDeep
+=== RUN   TestLoadPageWorkStaysBounded/ReservationsOwnerDeep
+=== RUN   TestLoadPageWorkStaysBounded/StockOwnerDeep
+--- FAIL: TestLoadPageWorkStaysBounded (0.54s)
+    --- FAIL: TestLoadPageWorkStaysBounded/MovementsOwnerFirst (0.08s)
+    --- FAIL: TestLoadPageWorkStaysBounded/MovementsOwnerDeep (0.06s)
+    --- PASS: TestLoadPageWorkStaysBounded/MovementsAllDeep (0.03s)
+    --- PASS: TestLoadPageWorkStaysBounded/ReservationsOwnerDeep (0.06s)
+    --- PASS: TestLoadPageWorkStaysBounded/StockOwnerDeep (0.03s)
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/empty_scope
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/single_owner
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/multiple_owners
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/all_owners
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/authorized_owner_filter
+=== RUN   TestPaginationPreservesEveryOwnerScopeShape/forbidden_owner_filter
+--- PASS: TestPaginationPreservesEveryOwnerScopeShape (0.21s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/empty_scope (0.00s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/single_owner (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/multiple_owners (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/all_owners (0.01s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/authorized_owner_filter (0.00s)
+    --- PASS: TestPaginationPreservesEveryOwnerScopeShape/forbidden_owner_filter (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	0.773s
+FAIL

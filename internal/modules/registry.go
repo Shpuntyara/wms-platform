@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	CoreVersion      = "0.3.0"
+	CoreVersion      = "0.3.1"
 	SDKVersion       = "2.0.0"
 	ReservationPoint = "inventory.before_reservation.v1"
 	ReleasePoint     = "inventory.before_release.v1"

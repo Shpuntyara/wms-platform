@@ -1,0 +1,292 @@
+{
+  "status": "passed",
+  "baseline_adapter_commit": "e0ab625c190a80e78492d377379fbecb0c649b13",
+  "optimized_adapter_sha256": "28b7063c23bf106d1b96ef6d9bf97315547309b80321feedaf9b202d47c0cb71",
+  "migration_sha256": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+  "environment": {
+    "driver": "closed-loop real loopback HTTP, real RSA OIDC JWT verification, runtime PostgreSQL role, required synthetic pure guards",
+    "go": "go1.27.3",
+    "goarch": "amd64",
+    "gomaxprocs": 12,
+    "goos": "windows",
+    "limitations": "App, driver, OIDC fixture and PostgreSQL share one host. Warm-cache local measurement; no ingress, real customer guards, external IdP or failover.",
+    "logical_cpus": 12
+  },
+  "seed_movements": 1000000,
+  "seed_reservations": 250000,
+  "seed_balances": 100000,
+  "history_http_benchmarks": {
+    "MovementsOwnerFirst": {
+      "baseline_median_mean_request_ms": 6.2006575,
+      "optimized_median_mean_request_ms": 1.9296075,
+      "change_percent": -68.88059854942803,
+      "baseline_samples": 10,
+      "optimized_samples": 10
+    },
+    "MovementsOwnerDeep": {
+      "baseline_median_mean_request_ms": 9.2405925,
+      "optimized_median_mean_request_ms": 1.93783,
+      "change_percent": -79.02915857397672,
+      "baseline_samples": 10,
+      "optimized_samples": 10
+    },
+    "MovementsAllDeep": {
+      "baseline_median_mean_request_ms": 1.9786925,
+      "optimized_median_mean_request_ms": 1.92005,
+      "change_percent": -2.963699513694018,
+      "baseline_samples": 10,
+      "optimized_samples": 10
+    },
+    "ReservationsOwnerDeep": {
+      "baseline_median_mean_request_ms": 3.4430925,
+      "optimized_median_mean_request_ms": 1.38104,
+      "change_percent": -59.88954696976627,
+      "baseline_samples": 10,
+      "optimized_samples": 10
+    },
+    "StockOwnerDeep": {
+      "baseline_median_mean_request_ms": 1.611715,
+      "optimized_median_mean_request_ms": 1.4040075,
+      "change_percent": -12.887359117461838,
+      "baseline_samples": 10,
+      "optimized_samples": 10
+    }
+  },
+  "concurrency": {
+    "baseline": {
+      "hot_balance/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 390.701620905878,
+        "median_run_p95_ms": 3.4942,
+        "worst_run_p99_ms": 4.1051,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "hot_balance/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 578.7421680926011,
+        "median_run_p95_ms": 55.6033,
+        "worst_run_p99_ms": 214.1102,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "hot_balance/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 508.4584834790619,
+        "median_run_p95_ms": 207.3094,
+        "worst_run_p99_ms": 322.9479,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 341.20402787031657,
+        "median_run_p95_ms": 4.1461,
+        "worst_run_p99_ms": 5.3343,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 625.7475823411213,
+        "median_run_p95_ms": 53.1851,
+        "worst_run_p99_ms": 111.474,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 548.8794818952352,
+        "median_run_p95_ms": 195.8741,
+        "worst_run_p99_ms": 271.672,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 367.54874815027097,
+        "median_run_p95_ms": 3.7122,
+        "worst_run_p99_ms": 4.8325,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 1687.5715141649039,
+        "median_run_p95_ms": 17.9646,
+        "worst_run_p99_ms": 45.8652,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 1676.7089352350508,
+        "median_run_p95_ms": 57.0281,
+        "worst_run_p99_ms": 178.4216,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "last_units/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 702.836384082513,
+        "median_run_p95_ms": 88.9592,
+        "worst_run_p99_ms": 89.1997,
+        "technical_errors": 0,
+        "expected_conflicts": 54
+      },
+      "same_command/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 1176.8664826586885,
+        "median_run_p95_ms": 53.6267,
+        "worst_run_p99_ms": 54.3817,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "same_document/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 997.4051880654235,
+        "median_run_p95_ms": 63.6619,
+        "worst_run_p99_ms": 64.1665,
+        "technical_errors": 0,
+        "expected_conflicts": 63
+      },
+      "read_MovementsOwnerDeep/clients=16": {
+        "samples": 1,
+        "median_http_requests_per_second": 581.9377266980503,
+        "median_run_p95_ms": 46.0635,
+        "worst_run_p99_ms": 61.015,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "read_MovementsAllDeep/clients=16": {
+        "samples": 1,
+        "median_http_requests_per_second": 3057.7311634767007,
+        "median_run_p95_ms": 9.5093,
+        "worst_run_p99_ms": 13.1736,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      }
+    },
+    "optimized": {
+      "hot_balance/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 388.6914910965647,
+        "median_run_p95_ms": 3.3629,
+        "worst_run_p99_ms": 4.3052,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "hot_balance/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 585.525025323135,
+        "median_run_p95_ms": 55.6057,
+        "worst_run_p99_ms": 263.8707,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "hot_balance/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 497.7548439059593,
+        "median_run_p95_ms": 215.6779,
+        "worst_run_p99_ms": 274.3019,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 359.4123368683977,
+        "median_run_p95_ms": 3.8822,
+        "worst_run_p99_ms": 5.1815,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 631.5581456230474,
+        "median_run_p95_ms": 54.1989,
+        "worst_run_p99_ms": 110.0784,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "mixed_hot/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 547.9532728611404,
+        "median_run_p95_ms": 190.2325,
+        "worst_run_p99_ms": 259.2167,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=1": {
+        "samples": 3,
+        "median_http_requests_per_second": 363.88101090943263,
+        "median_run_p95_ms": 3.7714,
+        "worst_run_p99_ms": 4.5623,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=16": {
+        "samples": 3,
+        "median_http_requests_per_second": 1699.7006387299582,
+        "median_run_p95_ms": 17.6767,
+        "worst_run_p99_ms": 43.1983,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "sku_distributed/clients=64": {
+        "samples": 3,
+        "median_http_requests_per_second": 1658.9808867938884,
+        "median_run_p95_ms": 56.8562,
+        "worst_run_p99_ms": 145.3594,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "last_units/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 728.1059121062398,
+        "median_run_p95_ms": 87.0533,
+        "worst_run_p99_ms": 87.8993,
+        "technical_errors": 0,
+        "expected_conflicts": 54
+      },
+      "same_command/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 1143.6883592182176,
+        "median_run_p95_ms": 55.4538,
+        "worst_run_p99_ms": 55.9593,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "same_document/clients=64": {
+        "samples": 1,
+        "median_http_requests_per_second": 817.5371947488563,
+        "median_run_p95_ms": 77.1334,
+        "worst_run_p99_ms": 78.2839,
+        "technical_errors": 0,
+        "expected_conflicts": 63
+      },
+      "read_MovementsOwnerDeep/clients=16": {
+        "samples": 1,
+        "median_http_requests_per_second": 2009.5394037157007,
+        "median_run_p95_ms": 14.1743,
+        "worst_run_p99_ms": 19.8287,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      },
+      "read_MovementsAllDeep/clients=16": {
+        "samples": 1,
+        "median_http_requests_per_second": 2758.636030976779,
+        "median_run_p95_ms": 10.8399,
+        "worst_run_p99_ms": 19.4794,
+        "technical_errors": 0,
+        "expected_conflicts": 0
+      }
+    }
+  },
+  "verification": {
+    "all_reconciled": true,
+    "technical_errors": 0,
+    "bounded_page_regression": "failed before, passed after",
+    "statistics": "benchstat.txt contains significance and confidence intervals; write profiles are descriptive repeated bursts, not a statistical improvement claim"
+  },
+  "limits": "Local warm-cache closed-loop bursts. Driver/API/OIDC/PostgreSQL share a machine. No production SLA, long-duration soak, external IdP, customer guard or failover validation."
+}
