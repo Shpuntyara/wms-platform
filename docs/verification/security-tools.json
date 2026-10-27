@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-27",
+  "checks": [
+    {
+      "command": "go vet -tags=integration ./...",
+      "status": "passed"
+    },
+    {
+      "command": "go mod verify",
+      "status": "passed"
+    },
+    {
+      "command": "go fix -diff ./cmd/wms-api ./internal/clientmodules/dispatchquality ./internal/modules ./internal/postgres ./internal/jobs",
+      "status": "passed_no_changes"
+    },
+    {
+      "command": "go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...",
+      "status": "passed",
+      "output": "No vulnerabilities found."
+    },
+    {
+      "command": "go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 .github/workflows/security.yml",
+      "status": "passed"
+    }
+  ]
+}

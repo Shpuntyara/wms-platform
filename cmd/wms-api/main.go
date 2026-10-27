@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -17,6 +18,7 @@ import (
 	"github.com/Shpuntyara/wms-platform/internal/api"
 	"github.com/Shpuntyara/wms-platform/internal/auth"
 	"github.com/Shpuntyara/wms-platform/internal/clientmodules/dispatchquality"
+	"github.com/Shpuntyara/wms-platform/internal/jobs"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
 	"github.com/Shpuntyara/wms-platform/internal/postgres"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -92,6 +94,19 @@ func run(logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	relayKey, err := base64.StdEncoding.DecodeString(os.Getenv("WMS_OUTBOX_HMAC_KEY"))
+	if err != nil {
+		return errors.New("invalid WMS_OUTBOX_HMAC_KEY: expected base64")
+	}
+	sender, err := jobs.NewSender(os.Getenv("WMS_OUTBOX_URL"), relayKey, os.Getenv("WMS_OUTBOX_ALLOW_PRIVATE") == "true")
+	if err != nil {
+		return err
+	}
+	workerCtx, stopWorkers := context.WithCancel(ctx)
+	workerDone := make(chan struct{})
+	worker := jobs.Worker{Store: store, Sender: sender, Logger: logger}
+	go func() { defer close(workerDone); worker.Run(workerCtx) }()
+	defer func() { stopWorkers(); <-workerDone }()
 	address := os.Getenv("WMS_HTTP_ADDR")
 	if address == "" {
 		address = "127.0.0.1:8080"

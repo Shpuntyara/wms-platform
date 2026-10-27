@@ -35,12 +35,13 @@ func New(ctx context.Context, pool *pgxpool.Pool) (*Store, error) {
         r.rolsuper OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication OR r.rolbypassrls
         OR EXISTS (
           SELECT 1 FROM pg_namespace n
-          WHERE n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1')
+          WHERE (n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1') OR left(n.nspname,4)='mod_')
             AND has_schema_privilege(r.oid,n.oid,'CREATE')
         )
+        OR EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE p.proowner=r.oid AND (n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1') OR left(n.nspname,4)='mod_'))
         OR EXISTS (
           SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
-          WHERE n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1')
+          WHERE (n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1') OR left(n.nspname,4)='mod_')
             AND c.relkind IN ('r','p','v','m','f')
             AND (c.relowner=r.oid
               OR has_table_privilege(r.oid,c.oid,'INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER')
@@ -52,7 +53,7 @@ func New(ctx context.Context, pool *pgxpool.Pool) (*Store, error) {
 		return nil, fmt.Errorf("check application database role: %w", err)
 	}
 	if privileged {
-		return nil, errors.New("unsafe database role: application must not own, write or administer core objects")
+		return nil, errors.New("unsafe database role: application must not own, write or administer core or module objects")
 	}
 	for _, view := range []string{"stock_balances", "documents", "document_lines", "reservations", "movements", "operations", "actor_grants", "active_modules", "module_migrations"} {
 		if _, err := pool.Exec(ctx, "SELECT 1 FROM contracts_v1."+view+" LIMIT 0"); err != nil {
@@ -115,6 +116,12 @@ func (s *Store) InstalledModules(ctx context.Context) ([]modules.Manifest, error
 }
 
 func (s *Store) ValidateModules(ctx context.Context, r *modules.Registry) error {
+	if _, err := s.pool.Exec(ctx, `SELECT platform.lock_module_configuration()`); err != nil {
+		return err
+	}
+	if err := validateRegistry(ctx, s.pool, r); err != nil {
+		return err
+	}
 	for _, installation := range r.Installations() {
 		if installation.SchemaVersion == 0 && len(installation.Migrations) == 0 {
 			continue
@@ -416,6 +423,12 @@ func (s *Store) execute(ctx context.Context, p inventory.Principal, scope invent
 	if prepared.Replayed {
 		result = prepared.Result
 	} else {
+		if _, err := tx.Exec(ctx, `SELECT platform.lock_module_configuration()`); err != nil {
+			return nil, err
+		}
+		if err := validateRegistry(ctx, tx, registry); err != nil {
+			return nil, err
+		}
 		check := modules.Check{Document: prepared.Document, ActorID: p.ActorID, CommandID: c.ID, Kind: c.Kind, MovementKind: c.MovementKind, Quantity: c.Quantity}
 		load := func(ctx context.Context, view string, doc modules.Document) (json.RawMessage, error) {
 			return readModuleFact(ctx, tx, view, doc)
@@ -527,6 +540,12 @@ func translate(err error) error {
 	case "22P02", "22003", "22007", "22008":
 		return inventory.Invalid("invalid_value")
 	case "P0001":
+		if pgerr.Message == "required_guard_unavailable" {
+			return &modules.Unavailable{}
+		}
+		if pgerr.Message == "module_guard_denied" {
+			return &inventory.Problem{Status: 409, Code: "module_guard_denied", Detail: "A required module policy denied this operation."}
+		}
 		allowed := map[string]bool{"document_version_conflict": true, "document_not_active": true, "insufficient_available_stock": true, "insufficient_active_reservation": true, "reservation_mismatch": true, "reservation_expired": true, "reservation_expiry_in_past": true, "stock_scope_mismatch": true, "stock_state_not_allocatable": true, "target_state_not_allocatable": true, "stock_state_not_shippable": true, "document_kind_mismatch": true, "invalid_movement_shape": true, "invalid_movement_kind": true, "adjustment_reason_required": true, "release_reason_required": true, "reservation_requires_shipment": true, "correction_requires_adjustment": true, "correction_scope_mismatch": true, "transfer_tracking_mismatch": true}
 		if allowed[pgerr.Message] {
 			return &inventory.Problem{Status: 409, Code: pgerr.Message, Detail: "The operation conflicts with the current inventory or document state."}
@@ -537,4 +556,31 @@ func translate(err error) error {
 		return &inventory.Problem{Status: 503, Code: "database_busy", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
 	return errors.New("unexpected database error")
+}
+
+type moduleQuerier interface {
+	Query(context.Context, string, ...any) (pgx.Rows, error)
+}
+
+func validateRegistry(ctx context.Context, q moduleQuerier, r *modules.Registry) error {
+	if r == nil {
+		return &modules.Unavailable{}
+	}
+	rows, err := q.Query(ctx, `SELECT manifest,state FROM contracts_v1.required_modules UNION SELECT manifest,'active' FROM contracts_v1.active_modules`)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var raw []byte
+		var state string
+		var m modules.Manifest
+		if err := rows.Scan(&raw, &state); err != nil {
+			return err
+		}
+		if state != "active" || json.Unmarshal(raw, &m) != nil || !r.AcceptsManifest(m) {
+			return &modules.Unavailable{}
+		}
+	}
+	return rows.Err()
 }

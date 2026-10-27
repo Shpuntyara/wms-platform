@@ -22,7 +22,8 @@
     "runtime": {
       "enum": [
         "in_process_compiled",
-        "external_worker"
+        "external_worker",
+        "declarative_v1"
       ]
     },
     "compatibility": {
@@ -148,28 +149,50 @@
     },
     "policies": {
       "type": "array",
+      "maxItems": 32,
       "items": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "handler",
+          "conditions"
+        ],
         "properties": {
-          "point": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+\\.v[1-9][0-9]*$"
-          },
-          "strategy_id": {
-            "type": "string",
-            "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
-          },
           "handler": {
             "type": "string",
             "pattern": "^[A-Z][A-Za-z0-9]*$"
+          },
+          "conditions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "field",
+                "op"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,62}$"
+                },
+                "op": {
+                  "enum": [
+                    "eq",
+                    "nonempty",
+                    "future",
+                    "not_actor"
+                  ]
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
           }
-        },
-        "required": [
-          "point",
-          "strategy_id",
-          "handler"
-        ]
+        }
       }
     },
     "subscribers": {
@@ -289,6 +312,10 @@
           },
           "resumable": {
             "type": "boolean"
+          },
+          "checksum": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
           }
         },
         "required": [

@@ -27,7 +27,7 @@ pg_ctl -D work/test-pg -m fast -w stop
 
 ## Go API и guards
 
-Для backend предпочтителен `scripts/test-postgres.ps1`: он поднимает отдельный кластер на свободном локальном порту, применяет миграции `0001`–`0005`, выдаёт backend права и проверяет Go API, OIDC, guards, конкуренцию и прежние SQL-сценарии вместе. В отличие от старого примера выше, он сам останавливает кластер в `finally`.
+Для backend предпочтителен `scripts/test-postgres.ps1`: он поднимает отдельный кластер на свободном локальном порту, применяет миграции `0001`–`0007`, выдаёт backend права и проверяет Go API, OIDC, guards, конкуренцию и прежние SQL-сценарии вместе. В отличие от старого примера выше, он сам останавливает кластер в `finally`.
 
 Полный прогон включает контроль истории модулей, потерю подтверждения `COMMIT` и обновление пакета dispatch-quality с сохранением данных. Итоговый summarizer требует выполнения этих сценариев и не засчитывает пропуски как успех.
 
@@ -40,3 +40,6 @@ pg_ctl -D work/test-pg -m fast -w stop
 При ручном запуске Go integration tests передайте `WMS_TEST_ADMIN_DSN` и `WMS_TEST_RUNTIME_DSN` для подготовленной локальной тестовой базы. `go test -race ./...` запускает unit tests; `go test -race -tags=integration ./...` включает БД. Итоговый скрипт не считает пропущенные интеграционные тесты успешной проверкой.
 
 Большой набор истории и нагрузка имеют отдельные теги `integration,load`, отдельный жизненный цикл и сохраняемые измерения: [нагрузочные проверки](../docs/load-testing.md). Не смешивайте race detector или параллельные benchmark-процессы с замерами скорости.
+
+
+Security CI использует тот же `scripts/prepare-test-db.py`; workflow находится в `.github/workflows/security.yml`. Для успеха нужны все критические тесты summarizer, включая SQL bypass, disabled module, runtime schema privileges, декларативные правила, истечение резервов, независимое согласование и токены доставки. Отчёты security-red/security-green находятся в docs/verification.

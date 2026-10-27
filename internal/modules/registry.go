@@ -1,7 +1,9 @@
-// Package modules hosts trusted, compiled client extensions. It is not a sandbox.
+// Package modules hosts trusted compiled guards and bounded declarative policies.
+// Compiled extensions share the host process and are not sandboxed.
 package modules
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -16,7 +18,7 @@ import (
 )
 
 const (
-	CoreVersion      = "0.3.1"
+	CoreVersion      = "0.4.0"
 	SDKVersion       = "2.0.0"
 	ReservationPoint = "inventory.before_reservation.v1"
 	ReleasePoint     = "inventory.before_release.v1"
@@ -44,7 +46,8 @@ type ManifestData struct {
 	TargetSchemaVersion int    `json:"target_schema_version"`
 }
 type ManifestMigration struct {
-	ID string `json:"id"`
+	ID       string `json:"id"`
+	Checksum string `json:"checksum,omitempty"`
 }
 
 // Manifest is the executable projection of the full package manifest.
@@ -108,6 +111,7 @@ type Registry struct {
 	guards        map[string][]registeredGuard
 	factViews     []string
 	installations []Installation
+	manifests     map[string]Manifest
 }
 
 var moduleID = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`)
@@ -175,7 +179,16 @@ func inRange(version, rule string) bool {
 }
 
 func NewRegistry(installed []Manifest, compiled []Module, required []string) (*Registry, error) {
-	r := &Registry{guards: make(map[string][]registeredGuard)}
+	for _, m := range installed {
+		if m.Runtime == "declarative_v1" {
+			code, err := declarativeModule(m)
+			if err != nil {
+				return nil, err
+			}
+			compiled = append(compiled, code)
+		}
+	}
+	r := &Registry{guards: make(map[string][]registeredGuard), manifests: make(map[string]Manifest)}
 	codes := make(map[string]Module)
 	bindings := make(map[string]map[string]bool)
 	schemas := map[string]string{}
@@ -212,7 +225,7 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 	}
 	capabilities := map[string]bool{ReservationPoint: true, ReleasePoint: true, MovementPoint: true, DispatchPoint: true, "platform.aggregate_transaction.v1": true, "platform.outbox.v1": true}
 	for _, m := range installed {
-		if (m.Runtime != "" && m.Runtime != "in_process_compiled") || len(m.Policies) > 0 || len(m.Subscribers) > 0 {
+		if (m.Runtime != "declarative_v1" && ((m.Runtime != "" && m.Runtime != "in_process_compiled") || len(m.Policies) > 0)) || len(m.Subscribers) > 0 {
 			return nil, fmt.Errorf("unsupported executable extension in module %q", m.ID)
 		}
 		if _, exists := manifests[m.ID]; exists {
@@ -234,6 +247,7 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 			}
 		}
 		manifests[m.ID] = m
+		r.manifests[m.ID] = m
 	}
 	for _, id := range required {
 		if _, exists := manifests[id]; !exists {
@@ -359,4 +373,27 @@ func invoke(ctx context.Context, guard Guard, check Check) (err error) {
 		}
 	}()
 	return guard(ctx, check)
+}
+
+// AcceptsManifest checks the complete executable projection, including guard policy.
+func (r *Registry) AcceptsManifest(m Manifest) bool {
+	if r == nil {
+		return false
+	}
+	expected, ok := r.manifests[m.ID]
+	if !ok {
+		return false
+	}
+	canonical := func(value Manifest) string {
+		raw, _ := json.Marshal(value)
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		decoder.UseNumber()
+		var object any
+		if decoder.Decode(&object) != nil {
+			return ""
+		}
+		normalized, _ := json.Marshal(object)
+		return string(normalized)
+	}
+	return canonical(expected) == canonical(m)
 }

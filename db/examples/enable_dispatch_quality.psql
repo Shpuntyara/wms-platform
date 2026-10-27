@@ -3,14 +3,14 @@
 -- Active backend processes require a coordinated restart; no hot reload.
 BEGIN;
 INSERT INTO platform.modules(id,version,schema_name,state,manifest)
-VALUES ('example.dispatch_quality','1.1.0','mod_example_dispatch_quality','active',
+VALUES ('example.dispatch_quality','1.2.0','mod_example_dispatch_quality','active',
 $manifest${
   "manifest_version": 1,
   "id": "example.dispatch_quality",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "runtime": "in_process_compiled",
   "compatibility": {
-    "core": ">=0.3.0 <1.0.0",
+    "core": ">=0.4.0 <1.0.0",
     "sdk": ">=2.0.0 <3.0.0"
   },
   "requires_capabilities": [
@@ -22,7 +22,7 @@ $manifest${
   "data": {
     "schema": "mod_example_dispatch_quality",
     "read_contracts": [],
-    "target_schema_version": 2
+    "target_schema_version": 3
   },
   "guards": [
     {
@@ -51,6 +51,13 @@ $manifest${
       "resource": "migrations/002_document_facts.sql",
       "transactional": true,
       "resumable": false
+    },
+    {
+      "id": "003_authoritative_guard",
+      "phase": "expand",
+      "resource": "migrations/003_authoritative_guard.sql",
+      "transactional": true,
+      "resumable": false
     }
   ],
   "config_schema": {
@@ -61,7 +68,9 @@ $manifest${
     "disable": "drain_and_check_dependencies",
     "uninstall_data": "retain"
   }
-}$manifest$::jsonb);
+}
+$manifest$::jsonb);
 INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES ('example.dispatch_quality','001_create_checks','8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4');
 INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES ('example.dispatch_quality','002_document_facts','0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d');
+INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES ('example.dispatch_quality','003_authoritative_guard','84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343');
 COMMIT;

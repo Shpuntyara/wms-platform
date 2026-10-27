@@ -1,10 +1,10 @@
 {
   "manifest_version": 1,
   "id": "example.dispatch_quality",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "runtime": "in_process_compiled",
   "compatibility": {
-    "core": ">=0.3.0 <1.0.0",
+    "core": ">=0.4.0 <1.0.0",
     "sdk": ">=2.0.0 <3.0.0"
   },
   "requires_capabilities": [
@@ -16,7 +16,7 @@
   "data": {
     "schema": "mod_example_dispatch_quality",
     "read_contracts": [],
-    "target_schema_version": 2
+    "target_schema_version": 3
   },
   "guards": [
     {
@@ -43,6 +43,13 @@
       "id": "002_document_facts",
       "phase": "expand",
       "resource": "migrations/002_document_facts.sql",
+      "transactional": true,
+      "resumable": false
+    },
+    {
+      "id": "003_authoritative_guard",
+      "phase": "expand",
+      "resource": "migrations/003_authoritative_guard.sql",
       "transactional": true,
       "resumable": false
     }

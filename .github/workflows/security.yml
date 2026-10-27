@@ -1,0 +1,68 @@
+name: WMS security and correctness
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: wms_test_admin
+          POSTGRES_PASSWORD: unused-disposable-ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U wms_test_admin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      WMS_TEST_ADMIN_DSN: postgres://wms_test_admin@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
+      WMS_TEST_RUNTIME_DSN: postgres://wms_go_runtime@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Prepare disposable database
+        run: python3 scripts/prepare-test-db.py --psql psql --port 5432
+      - name: Formatting and static analysis
+        run: |
+          test -z "$(gofmt -l cmd internal)"
+          go vet -tags=integration ./...
+          go mod verify
+          go fix ./cmd/wms-api ./internal/clientmodules/dispatchquality ./internal/modules ./internal/postgres ./internal/jobs
+          git diff --exit-code
+      - name: Race, integration and security regressions
+        run: |
+          mkdir -p work
+          set -o pipefail
+          go test -race -tags=integration ./... -count=1 -timeout=120s -json | tee work/go-tests.jsonl
+      - name: SQL kernel regressions and complete report
+        run: |
+          python3 tests/postgres_kernel.py --psql psql --port 5432 --database wms_kernel_test_backend --admin wms_test_admin --report work/postgres-kernel.json
+          python3 scripts/summarize-tests.py --events work/go-tests.jsonl --legacy work/postgres-kernel.json --output work/verification.json --go "$(go version)" --postgres "$(psql -h 127.0.0.1 -U wms_test_admin -d wms_kernel_test_backend -Atc 'SHOW server_version')"
+      - name: Known vulnerability scan
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+      - name: Test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: security-test-evidence
+          path: |
+            work/go-tests.jsonl
+            work/postgres-kernel.json
+            work/verification.json
+          if-no-files-found: error

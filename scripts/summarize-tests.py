@@ -18,6 +18,19 @@ packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
 required = [
+    'TestSecurityRuntimeCannotOwnModuleExecutionSurface',
+    'TestSecurityDeclarativePolicyEnforcedByAPIAndSQL',
+    'TestSecurityDispatchUpgradeTo12',
+    'TestSecurityDirectSQLCannotBypassDispatchGuard',
+    'TestSecurityDisabledModuleStillBlocksSQL',
+    'TestSecurityRegistryCannotOmitInstalledModule',
+    'TestSecurityExpiryReleasesExactlyOnce',
+    'TestSecurityQualityRequiresAuthorizedIndependentReviewerAndCurrentPolicy',
+    'TestSecurityOutboxLeaseFencesStaleAcknowledgement',
+    'TestDeclarativeModuleDoesNotNeedCompiledBuild',
+    'TestSenderSignsExactEventAndRejectsRedirect',
+    'TestSenderConfigurationAndNetworkBoundary',
+    'TestDeliveryFailureSchedulesRetry',
     'TestOIDCSecureRedirects',
     'TestRegistryRejectsRelocatedGuard',
     'TestStoreRejectsDirectCoreWrites',
@@ -34,7 +47,8 @@ critical = {name: name in observed for name in required}
 passed = not failed and not skipped and 'fail' not in packages.values() and integration_ran and all(critical.values()) and legacy['status'] == 'passed'
 report = {
     'status': 'passed' if passed else 'failed',
-    'tdd_test_commit': '8c4a2d9',
+    'tdd_test_commit': '8032682',
+    'tdd_evidence': 'docs/verification/security-red.json',
     'go': args.go.strip(),
     'postgresql': args.postgres.strip(),
     'command': 'go test -race -tags=integration ./... -count=1 -timeout=120s -json',

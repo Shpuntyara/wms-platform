@@ -1,0 +1,90 @@
+\set ON_ERROR_STOP on
+-- Apply 003_authoritative_guard.sql once before this atomic package activation.
+BEGIN;
+DO $upgrade$
+DECLARE m platform.modules; target jsonb := $manifest${
+  "manifest_version": 1,
+  "id": "example.dispatch_quality",
+  "version": "1.2.0",
+  "runtime": "in_process_compiled",
+  "compatibility": {
+    "core": ">=0.4.0 <1.0.0",
+    "sdk": ">=2.0.0 <3.0.0"
+  },
+  "requires_capabilities": [
+    "outbound.shipment_dispatch_guard.v1",
+    "platform.aggregate_transaction.v1"
+  ],
+  "requires_modules": [],
+  "conflicts_with": [],
+  "data": {
+    "schema": "mod_example_dispatch_quality",
+    "read_contracts": [],
+    "target_schema_version": 3
+  },
+  "guards": [
+    {
+      "point": "outbound.shipment_dispatch_guard.v1",
+      "handler": "CheckApproval",
+      "required": true,
+      "failure_policy": "deny",
+      "timeout_ms": 100
+    }
+  ],
+  "policies": [],
+  "subscribers": [],
+  "permissions": [],
+  "ui": [],
+  "migrations": [
+    {
+      "id": "001_create_checks",
+      "phase": "expand",
+      "resource": "migrations/001_create_checks.sql",
+      "transactional": true,
+      "resumable": false
+    },
+    {
+      "id": "002_document_facts",
+      "phase": "expand",
+      "resource": "migrations/002_document_facts.sql",
+      "transactional": true,
+      "resumable": false
+    },
+    {
+      "id": "003_authoritative_guard",
+      "phase": "expand",
+      "resource": "migrations/003_authoritative_guard.sql",
+      "transactional": true,
+      "resumable": false
+    }
+  ],
+  "config_schema": {
+    "type": "object",
+    "additionalProperties": false
+  },
+  "lifecycle": {
+    "disable": "drain_and_check_dependencies",
+    "uninstall_data": "retain"
+  }
+}
+$manifest$::jsonb;
+BEGIN
+ SELECT * INTO m FROM platform.modules WHERE id='example.dispatch_quality' FOR UPDATE;
+ IF NOT FOUND OR m.state<>'active' OR m.schema_name::text<>'mod_example_dispatch_quality' OR m.version NOT IN ('1.1.0','1.2.0') THEN RAISE EXCEPTION 'dispatch_quality_upgrade_unexpected_installation'; END IF;
+ IF m.manifest->>'id' IS DISTINCT FROM m.id OR m.manifest->>'version' IS DISTINCT FROM m.version THEN RAISE EXCEPTION 'dispatch_quality_upgrade_source_manifest_mismatch'; END IF;
+ IF to_regprocedure('mod_example_dispatch_quality.check_dispatch(uuid,uuid)') IS NULL OR to_regclass('mod_example_dispatch_quality.policies') IS NULL THEN RAISE EXCEPTION 'dispatch_quality_upgrade_missing_migration'; END IF;
+ IF EXISTS (
+  WITH expected(id,checksum) AS (VALUES
+   ('001_create_checks','8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4'),
+   ('002_document_facts','0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d'),
+   ('003_authoritative_guard','84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343')),
+  actual AS (SELECT migration_id AS id,checksum FROM platform.module_migrations WHERE module_id=m.id)
+  SELECT 1 FROM expected FULL JOIN actual USING(id) WHERE expected.id IS NULL
+   OR (actual.id IS NULL AND expected.id<>'003_authoritative_guard')
+   OR (actual.id IS NOT NULL AND expected.checksum IS DISTINCT FROM actual.checksum)
+ ) THEN RAISE EXCEPTION 'dispatch_quality_upgrade_migration_history_mismatch'; END IF;
+ IF m.version='1.2.0' AND m.manifest IS DISTINCT FROM target THEN RAISE EXCEPTION 'dispatch_quality_upgrade_target_manifest_mismatch'; END IF;
+ INSERT INTO platform.module_migrations(module_id,migration_id,checksum) VALUES(m.id,'003_authoritative_guard','84315257a239ac1f58c46892c6761c40bcfc79f26bd4f5574878c8f2b8f94343') ON CONFLICT DO NOTHING;
+ UPDATE platform.modules SET version='1.2.0',manifest=target WHERE id=m.id;
+END $upgrade$;
+COMMIT;
