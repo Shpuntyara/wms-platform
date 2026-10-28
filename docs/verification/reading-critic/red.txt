@@ -1,0 +1,23 @@
+=== RUN   TestDocumentAdversarialOwnerFanoutHydratesOnlyPage
+    documents_read_adversarial_integration_test.go:107: owners=32 documents=1024 lines=204800 mode=force_custom_plan hydrated_documents=672 blocks=6088 row_work=406699
+    documents_read_adversarial_integration_test.go:117: hydrated 672 documents for a page needing only 21 including lookahead; per-owner candidate selection must precede document line aggregation
+    documents_read_adversarial_integration_test.go:107: owners=32 documents=1024 lines=204800 mode=force_generic_plan hydrated_documents=672 blocks=25862 row_work=426859
+    documents_read_adversarial_integration_test.go:117: hydrated 672 documents for a page needing only 21 including lookahead; per-owner candidate selection must precede document line aggregation
+--- FAIL: TestDocumentAdversarialOwnerFanoutHydratesOnlyPage (11.69s)
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/revoked_owner
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_actor
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_warehouse
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_organization
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/all_owner_grant
+=== RUN   TestDocumentAdversarialCursorCannotCrossAuthorizationScope/explicit_owner_filter
+--- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope (0.19s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/revoked_owner (0.00s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_actor (0.00s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_warehouse (0.00s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/different_organization (0.00s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/all_owner_grant (0.00s)
+    --- PASS: TestDocumentAdversarialCursorCannotCrossAuthorizationScope/explicit_owner_filter (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	11.914s
+FAIL

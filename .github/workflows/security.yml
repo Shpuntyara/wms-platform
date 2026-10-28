@@ -10,7 +10,7 @@ concurrency:
 jobs:
   security:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     services:
       postgres:
         image: postgres:17.11
@@ -28,6 +28,8 @@ jobs:
     env:
       WMS_TEST_ADMIN_DSN: postgres://wms_test_admin@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
       WMS_TEST_RUNTIME_DSN: postgres://wms_go_runtime@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
+      WMS_DOCUMENT_PLAN_DIR: work/document-plans
+      WMS_DOCUMENT_CRITIC_PLAN_DIR: work/document-critic-plans
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -36,11 +38,15 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - name: Verification gate and migration recipe unit regressions
+        run: |
+          mkdir -p work
+          set -o pipefail
+          python3 -m unittest discover -s scripts -p 'test_*.py' 2>&1 | tee work/python-tests.txt
       - name: Prepare disposable database
         run: python3 scripts/prepare-test-db.py --psql psql --port 5432
       - name: Migration recipes and database upgrade regressions
         run: |
-          python3 -m unittest discover -s scripts -p 'test_*migrat*.py'
           python3 scripts/verify-migrations.py --psql psql --port 5432
       - name: Formatting and static analysis
         run: |
@@ -58,6 +64,8 @@ jobs:
         run: |
           python3 tests/postgres_kernel.py --psql psql --port 5432 --database wms_kernel_test_backend --admin wms_test_admin --report work/postgres-kernel.json
           python3 scripts/summarize-tests.py --events work/go-tests.jsonl --legacy work/postgres-kernel.json --output work/verification.json --go "$(go version)" --postgres "$(psql -h 127.0.0.1 -U wms_test_admin -d wms_kernel_test_backend -Atc 'SHOW server_version')"
+      - name: Document and migration mutation gate
+        run: python3 scripts/mutation_runner.py --go go --psql psql --report work/document-mutations.json
       - name: Known vulnerability scan
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
       - name: Test evidence
@@ -70,4 +78,14 @@ jobs:
             work/postgres-kernel.json
             work/verification.json
             work/migration-verification.json
+            work/python-tests.txt
+            work/document-mutations.json
+            work/mutations-*/**/*.jsonl
+            work/mutations-*/**/stderr.txt
+            work/mutations-*/**/mutant.txt
+            work/mutations-*/**/python-events.json
+            work/mutations-*/**/scripts/migrate_core.py
+            work/windows-migration-verification.json
+            work/document-plans/
+            work/document-critic-plans/
           if-no-files-found: error

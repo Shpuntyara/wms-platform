@@ -39,7 +39,7 @@ try {
     Invoke-Checked $PythonExe @('scripts/prepare-test-db.py','--psql',$psql,'--port',"$testPort",'--admin','wms_test_admin')
     $env:WMS_TEST_ADMIN_DSN = "postgres://wms_test_admin@127.0.0.1:$testPort/wms_kernel_test_backend?sslmode=disable"
     $env:WMS_TEST_RUNTIME_DSN = "postgres://wms_go_runtime@127.0.0.1:$testPort/wms_kernel_test_backend?sslmode=disable"
-    Invoke-Checked $PythonExe @('-m','unittest','discover','-s','scripts','-p','test_*migrat*.py')
+    Invoke-Checked $PythonExe @('-m','unittest','discover','-s','scripts','-p','test_*.py')
     Invoke-Checked $PythonExe @('scripts/verify-migrations.py','--psql',$psql,'--port',"$testPort",'--admin','wms_test_admin')
     Write-Host 'Running vet and Go unit/integration tests with race detection'
     Invoke-Checked $GoExe @('vet','-tags=integration','./...')

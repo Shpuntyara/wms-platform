@@ -1,0 +1,57 @@
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/owner_first
+    documents_read_integration_test.go:344: documents=10000 case=owner_first mode=force_custom_plan blocks=109 row_work=126
+    documents_read_integration_test.go:344: documents=10000 case=owner_first mode=force_generic_plan blocks=109 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/owner_deep
+    documents_read_integration_test.go:344: documents=10000 case=owner_deep mode=force_custom_plan blocks=38 row_work=35
+    documents_read_integration_test.go:344: documents=10000 case=owner_deep mode=force_generic_plan blocks=38 row_work=35
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/owners_first
+    documents_read_integration_test.go:344: documents=10000 case=owners_first mode=force_custom_plan blocks=196 row_work=249
+    documents_read_integration_test.go:344: documents=10000 case=owners_first mode=force_generic_plan blocks=125 row_work=1106
+    documents_read_integration_test.go:347: document page scanned history: blocks=125 row_work=1106 for at most 21 documents
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/owners_deep
+    documents_read_integration_test.go:344: documents=10000 case=owners_deep mode=force_custom_plan blocks=157 row_work=186
+    documents_read_integration_test.go:344: documents=10000 case=owners_deep mode=force_generic_plan blocks=73 row_work=562
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/all_deep
+    documents_read_integration_test.go:344: documents=10000 case=all_deep mode=force_custom_plan blocks=90 row_work=126
+    documents_read_integration_test.go:344: documents=10000 case=all_deep mode=force_generic_plan blocks=90 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/10000/filtered_owner
+    documents_read_integration_test.go:344: documents=10000 case=filtered_owner mode=force_custom_plan blocks=109 row_work=126
+    documents_read_integration_test.go:344: documents=10000 case=filtered_owner mode=force_generic_plan blocks=109 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/owner_first
+    documents_read_integration_test.go:344: documents=100000 case=owner_first mode=force_custom_plan blocks=109 row_work=126
+    documents_read_integration_test.go:344: documents=100000 case=owner_first mode=force_generic_plan blocks=109 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/owner_deep
+    documents_read_integration_test.go:344: documents=100000 case=owner_deep mode=force_custom_plan blocks=108 row_work=126
+    documents_read_integration_test.go:344: documents=100000 case=owner_deep mode=force_generic_plan blocks=108 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/owners_first
+    documents_read_integration_test.go:344: documents=100000 case=owners_first mode=force_custom_plan blocks=355 row_work=1151
+    documents_read_integration_test.go:347: document page scanned history: blocks=355 row_work=1151 for at most 21 documents
+    documents_read_integration_test.go:344: documents=100000 case=owners_first mode=force_generic_plan blocks=125 row_work=1106
+    documents_read_integration_test.go:347: document page scanned history: blocks=125 row_work=1106 for at most 21 documents
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/owners_deep
+    documents_read_integration_test.go:344: documents=100000 case=owners_deep mode=force_custom_plan blocks=192 row_work=249
+    documents_read_integration_test.go:344: documents=100000 case=owners_deep mode=force_generic_plan blocks=124 row_work=1106
+    documents_read_integration_test.go:347: document page scanned history: blocks=124 row_work=1106 for at most 21 documents
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/all_deep
+    documents_read_integration_test.go:344: documents=100000 case=all_deep mode=force_custom_plan blocks=90 row_work=126
+    documents_read_integration_test.go:344: documents=100000 case=all_deep mode=force_generic_plan blocks=90 row_work=126
+=== RUN   TestDocumentReadsStayBoundedAsHistoryGrows/100000/filtered_owner
+    documents_read_integration_test.go:344: documents=100000 case=filtered_owner mode=force_custom_plan blocks=109 row_work=126
+    documents_read_integration_test.go:344: documents=100000 case=filtered_owner mode=force_generic_plan blocks=109 row_work=126
+--- FAIL: TestDocumentReadsStayBoundedAsHistoryGrows (14.73s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/10000/owner_first (0.02s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/10000/owner_deep (0.00s)
+    --- FAIL: TestDocumentReadsStayBoundedAsHistoryGrows/10000/owners_first (0.01s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/10000/owners_deep (0.01s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/10000/all_deep (0.01s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/10000/filtered_owner (0.00s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/100000/owner_first (0.02s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/100000/owner_deep (0.01s)
+    --- FAIL: TestDocumentReadsStayBoundedAsHistoryGrows/100000/owners_first (0.01s)
+    --- FAIL: TestDocumentReadsStayBoundedAsHistoryGrows/100000/owners_deep (0.01s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/100000/all_deep (0.01s)
+    --- PASS: TestDocumentReadsStayBoundedAsHistoryGrows/100000/filtered_owner (0.01s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	14.763s
+FAIL

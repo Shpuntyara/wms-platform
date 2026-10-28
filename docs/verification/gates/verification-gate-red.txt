@@ -1,0 +1,69 @@
+FFFFFFFF
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentCommandsRecoverFromCommitTransportFailure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentCommandsRecoverFromCommitTransportFailure
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentCommandsPreserveDefinitiveCommitRejection')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentCommandsPreserveDefinitiveCommitRejection
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentCommandProperties')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentCommandProperties
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentInvalidGeneratedLineRollsBackWholeCreate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentInvalidGeneratedLineRollsBackWholeCreate
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentReadsStayBoundedAsHistoryGrows')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentReadsStayBoundedAsHistoryGrows
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentPaginationProperties')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentPaginationProperties
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentAdversarialCommandIdentityAndAuthorization')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentAdversarialCommandIdentityAndAuthorization
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentAdversarialConcurrentCommands')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 33, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentAdversarialConcurrentCommands
+
+----------------------------------------------------------------------
+Ran 1 test in 1.468s
+
+FAILED (failures=8)

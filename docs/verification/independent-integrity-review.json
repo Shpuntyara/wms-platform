@@ -1,0 +1,102 @@
+{
+  "role": "independent adversarial reviewer",
+  "utc": "2026-10-28T10:49:39.209305+00:00",
+  "base_revision": "ea0eb2f6e41d096d02fdb4e0f81f1c175dffb86a",
+  "implementation_changed_by_reviewer": false,
+  "red": [
+    {
+      "test_file": "scripts/test_mutation_runner.py",
+      "sha256": "042986ff3174ed8e12fbb7fca916c4b109bfd3fe0a54b8b819f4fd266cba19ad",
+      "command": "python -m unittest discover -s scripts -p test_mutation_runner.py",
+      "summary": [
+        "Ran 7 tests in 0.005s",
+        "FAILED (failures=14)"
+      ]
+    },
+    {
+      "test_file": "scripts/test_migration_adversarial.py",
+      "sha256": "1ae16a9ebd626327625a4f942904f6a90522d56316462824b2cf6ce48ad12052",
+      "command": "python -m unittest discover -s scripts -p test_migration_adversarial.py",
+      "summary": [
+        "Ran 3 tests in 0.020s",
+        "FAILED (failures=2)"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "area": "mutation isolation",
+      "counterexample": "Database-name prefix admitted SQL punctuation; DSN query and inherited libpq options could escape intended connection settings."
+    },
+    {
+      "area": "mutation score",
+      "counterexample": "Prior assertion failure followed by suite timeout was classified as a killed mutant."
+    },
+    {
+      "area": "migration package integrity",
+      "counterexample": "Missing published 0005 or empty migration package still generated a successful no-op migration plan."
+    }
+  ],
+  "resisted": [
+    "Published 0006 BOM rejected",
+    "Bare CR replacement rejected",
+    "Unicode whitespace replacement rejected",
+    "NUL suffix rejected",
+    "SQL keyword-case change rejected"
+  ],
+  "limitations": [
+    "No production database used.",
+    "Remote CI has not been independently verified in this audit record.",
+    "Legacy adoption markers intentionally remain accepted by the existing migration contract; this audit does not prove their origin from ledger text alone."
+  ],
+  "followup_red": {
+    "utc": "2026-10-28T10:55:03.863744+00:00",
+    "windows_receipts": {
+      "command": "python scripts/verify_windows_migrations.py --psql <PG17 psql> --port <isolated loopback port>",
+      "result": "Migration checksum mismatch: 0001_inventory_schema.sql",
+      "golden_manifest": "scripts/testdata/windows_ledger_ea0eb2f.json",
+      "golden_manifest_sha256_canonical_lf": "18d61ed69ce466390b0b29bf32a2c74554509cc3e09cda738924755bc6f5410e",
+      "test_file": "scripts/verify_windows_migrations.py",
+      "test_sha256": "f4181be8b64bf4d5e75a0a36e43351cd0aaf2aad71fa5b592885c60e67ecb45c",
+      "method": "Golden receipts generated using the original unmodified ea0eb2f runner, with LF pinned 0005/0008 and CRLF other migrations. Real PostgreSQL rejects these original correlated receipts with the current normalizer. No production data touched."
+    },
+    "missing_baseline_evidence": {
+      "command": "python -m unittest discover -s scripts -p test_mutation_runner.py",
+      "result": "FAILED test_missing_go_executable_still_writes_failed_evidence",
+      "test_sha256": "0d748df8e60cdc4a1b7ae74d682171fbf5477ec0f4ba9e3f9245361937866da1"
+    }
+  },
+  "followup_green": {
+    "utc": "2026-10-28T10:56:58.013781+00:00",
+    "commands": [
+      "python -m unittest discover -s scripts -p test_*.py",
+      "python scripts/verify_windows_migrations.py --psql <PG17 psql> --port <isolated loopback port>"
+    ],
+    "python_summary": [
+      "Ran 20 tests in 1.583s",
+      "",
+      "OK"
+    ],
+    "real_postgres_windows_check": {
+      "status": "passed",
+      "original_revision": "ea0eb2f6e41d096d02fdb4e0f81f1c175dffb86a",
+      "original_runner_git_blob": "b2d19b997855f3455e5e1da91ef7bf506e38a51a",
+      "golden_manifest_sha256": "eb3ba85cbda328a1f78b8b441e7e5839547608448381df86c1aef7bbc36c260d",
+      "historical_receipts": 9,
+      "checks": [
+        "original mixed Windows checkout receipts accepted",
+        "all historical receipt rows unchanged across repeated upgrades",
+        "source and execution drift rejected",
+        "LF-source/CRLF-execution mismatched pair rejected",
+        "CRLF-source/LF-execution mismatched pair rejected",
+        "refused upgrade preserves damaged evidence"
+      ]
+    },
+    "production_file_sha256": {
+      "scripts\\migrate_core.py": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5",
+      "scripts\\mutation_runner.py": "c2624133f820e042cf8d2d7cb04d7bc6bc7acf61e87b7c4fa3916e8996e9a892"
+    },
+    "cluster_stopped": true,
+    "inspection": "Current migration loader accepts correlated canonical OR exact historical mixed-Windows source/execution pairs; no production receipt UPDATE. Existing published SHA pins unchanged. Runner rejects unsafe DSNs and inherited PG options, classifies timeout invalid, and preserves failed baseline artifacts including launch errors."
+  }
+}

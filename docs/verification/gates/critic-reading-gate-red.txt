@@ -1,0 +1,21 @@
+FF
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentAdversarialOwnerFanoutHydratesOnlyPage')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 35, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentAdversarialOwnerFanoutHydratesOnlyPage
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDocumentAdversarialCursorCannotCrossAuthorizationScope')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 35, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDocumentAdversarialCursorCannotCrossAuthorizationScope
+
+----------------------------------------------------------------------
+Ran 1 test in 1.653s
+
+FAILED (failures=2)

@@ -1,0 +1,555 @@
+{
+  "status": "passed",
+  "scope": "Focused non-equivalent document command, pagination and migration-integrity mutations; not a whole-repository mutation score.",
+  "source_head": "01b1edfd426ec0903a4944e92e391b2fc6431f09",
+  "mutants": [
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/another_authorized_actor_cannot_reuse_the_same_input_and_ID",
+        "TestDocumentAdversarialConcurrentCommands",
+        "TestDocumentAdversarialConcurrentCommands/eight_identical_retries_and_competing_transitions",
+        "TestDocumentCommandProperties",
+        "TestDocumentCommandsRejectScopeAndInvalidLines",
+        "TestDocumentRetryIsAtomicAndSQLChecksPermissions",
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.484,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_replay_runs_twice",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "RETURN previous.result;",
+      "after": "NULL;",
+      "mutant_sha256": "85ed173cf3c285d6fdcd82c7b7135124077c2c755a70d5c6c353d88778bdae65"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/ID_binds_warehouse_owner_and_document_as_well_as_input",
+        "TestDocumentAdversarialConcurrentCommands",
+        "TestDocumentAdversarialConcurrentCommands/conflicting_requests_with_same_ID_cannot_both_succeed",
+        "TestDocumentCommandProperties",
+        "TestDocumentRetryIsAtomicAndSQLChecksPermissions"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.406,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_request_reuse_accepted",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "previous.request<>request",
+      "after": "false",
+      "mutant_sha256": "7ddd8ca504dbf1426183f27296e604a0f582a716ff2acac63e607f470703311d"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/another_authorized_actor_cannot_reuse_the_same_input_and_ID"
+      ],
+      "completed_test_events": 14,
+      "seconds": 4.734,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_actor_reuse_accepted",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "previous.actor_id<>p_actor",
+      "after": "false",
+      "mutant_sha256": "2651f633d1965bf634fe4e2acd7fdff07f25fb75f7fce7783b014f711534944a"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialConcurrentCommands",
+        "TestDocumentAdversarialConcurrentCommands/eight_identical_retries_and_competing_transitions",
+        "TestDocumentCommandProperties"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.968,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_stale_version_accepted",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "(p_input->>'expected_document_version')::bigint IS DISTINCT FROM d.version",
+      "after": "false",
+      "mutant_sha256": "628d41e50fde85d242a9af05b6256fe9b0fc608c78d551320604e6dd27d10d6a"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentCommandProperties",
+        "TestDocumentCommandsRejectScopeAndInvalidLines"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.625,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_invalid_transition_accepted",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "IF target IS NULL OR NOT((d.state='draft' AND target IN('active','cancelled')) OR (d.state='active' AND target IN('closed','cancelled'))) THEN",
+      "after": "IF false THEN",
+      "mutant_sha256": "6a70c8d1c0d444da188e3ece93309756e9a21ae188702c7469a3dbf01dd25ebf"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialConcurrentCommands",
+        "TestDocumentAdversarialConcurrentCommands/eight_identical_retries_and_competing_transitions",
+        "TestDocumentCommandProperties",
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.718,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_version_increment_twice",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "version=version+1",
+      "after": "version=version+2",
+      "mutant_sha256": "f1fdb7dfb15f24d7d9bb167b3d43f8542c7c802be48da35b30a9ec46ad60f7d4"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentCommandsRejectScopeAndInvalidLines",
+        "TestDocumentInvalidGeneratedLineRollsBackWholeCreate"
+      ],
+      "completed_test_events": 14,
+      "seconds": 4.469,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_quantity_precision_unchecked",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "PERFORM inventory.assert_quantity(item,qty);",
+      "after": "NULL;",
+      "mutant_sha256": "6e7b36263bc221559bd4c00c2c87e51de071a53ae9f21b631efc06319c47bb6c"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentCommandProperties",
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.734,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_incomplete_document_closes",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "IF target='closed' AND EXISTS",
+      "after": "IF false AND EXISTS",
+      "mutant_sha256": "c37336e9929efe0634e649a7a00c4cf86b24559a9f477b8e94739733db83f957"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "completed_test_events": 14,
+      "seconds": 4.594,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_active_document_cancels",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "IF target='cancelled' AND EXISTS",
+      "after": "IF false AND EXISTS",
+      "mutant_sha256": "310333648472f67563474864d2d042fa464b30e03b6aa538a1ff8391ea15a1a6"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/runtime_SQL_enforces_owner_on_create_and_transition"
+      ],
+      "completed_test_events": 14,
+      "seconds": 4.531,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_owner_authorization_removed",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "(g.owner_id IS NULL OR g.owner_id=v_owner)",
+      "after": "true",
+      "mutant_sha256": "6dc973f6b78fe9809384cc03d51ccb131fce78bfa4939116dc6bce592f411deb"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/ID_binds_warehouse_owner_and_document_as_well_as_input",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/another_authorized_actor_cannot_reuse_the_same_input_and_ID",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/revoked_permission_blocks_replay_create",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/revoked_permission_blocks_replay_transition",
+        "TestDocumentAdversarialConcurrentCommands",
+        "TestDocumentAdversarialConcurrentCommands/conflicting_requests_with_same_ID_cannot_both_succeed",
+        "TestDocumentAdversarialConcurrentCommands/eight_identical_retries_and_competing_transitions",
+        "TestDocumentCommandProperties",
+        "TestDocumentCommandsRejectScopeAndInvalidLines",
+        "TestDocumentInvalidGeneratedLineRollsBackWholeCreate",
+        "TestDocumentRetryIsAtomicAndSQLChecksPermissions",
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "completed_test_events": 14,
+      "seconds": 3.157,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "sql_audit_outbox_removed",
+      "kind": "sql",
+      "source": "db/migrations/0009_warehouse_documents.sql",
+      "before": "RETURN platform.finish_operation(p_command,result,d.id,CASE WHEN p_document IS NULL THEN 'wms.document.created' ELSE 'wms.document.state_changed' END);",
+      "after": "RETURN result;",
+      "mutant_sha256": "50d64064cfd8b2d093a7b488edb01accf86b3463494edf39b3437a870028c091"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentCommandsRecoverFromCommitTransportFailure",
+        "TestDocumentCommandsRecoverFromCommitTransportFailure/create/before_send",
+        "TestDocumentCommandsRecoverFromCommitTransportFailure/transition/before_send"
+      ],
+      "completed_test_events": 7,
+      "seconds": 3.328,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3\\go_commit_error_loses_retry_guidance\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentCommandsRecoverFromCommitTransportFailure$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_commit_error_loses_retry_guidance",
+      "kind": "go",
+      "source": "internal/postgres/documents.go",
+      "before": "return nil, &inventory.Problem{Status: 503, Code: \"operation_interrupted\", Detail: \"The operation could not be confirmed. Retry with the same command identifier.\"}",
+      "after": "return nil, translate(err)",
+      "mutant_sha256": "aae9c4e7ea4aa61a0abaf1b794fca8226845a4837047e9f4f8cd14d1b4da51e8"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentCommandsPreserveDefinitiveCommitRejection",
+        "TestDocumentCommandsPreserveDefinitiveCommitRejection/create",
+        "TestDocumentCommandsPreserveDefinitiveCommitRejection/transition"
+      ],
+      "completed_test_events": 3,
+      "seconds": 1.953,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3\\go_definitive_commit_rejection_becomes_retry\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentCommandsPreserveDefinitiveCommitRejection$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_definitive_commit_rejection_becomes_retry",
+      "kind": "go",
+      "source": "internal/postgres/documents.go",
+      "before": "if _, ok := errors.AsType[*pgconn.PgError](err); ok {",
+      "after": "if _, ok := errors.AsType[*pgconn.PgError](err); ok && false {",
+      "mutant_sha256": "6e3f5c11083d95b15a9f075e88e039ad9ea761acde73daebb1aef8a2018326c1"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentPaginationProperties"
+      ],
+      "completed_test_events": 1,
+      "seconds": 3.438,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3\\go_document_lookahead_removed\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentPaginationProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_document_lookahead_removed",
+      "kind": "go",
+      "source": "internal/postgres/store.go",
+      "before": "args = append(args, f.Limit+1)",
+      "after": "args = append(args, f.Limit)",
+      "mutant_sha256": "6bc03f793b0422ace19151700f413014e7afc8e45d6b99c95dfc9a1486d344d8"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentPaginationProperties"
+      ],
+      "completed_test_events": 1,
+      "seconds": 2.437,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3\\go_single_owner_scope_removed\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentPaginationProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_single_owner_scope_removed",
+      "kind": "go",
+      "source": "internal/postgres/store.go",
+      "before": "where.WriteString(\" AND owner_id=$3::text::uuid\")",
+      "after": "where.WriteString(\" AND $3::text IS NOT NULL\")",
+      "mutant_sha256": "57d2bbf023d985f27c9b2e65f2ae9df0ff62876fe75c2854f773af8f41f3d318"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialOwnerFanoutHydratesOnlyPage"
+      ],
+      "completed_test_events": 1,
+      "seconds": 12.531,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3\\go_global_document_candidate_limit_removed\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_global_document_candidate_limit_removed",
+      "kind": "go",
+      "source": "internal/postgres/store.go",
+      "before": "fmt.Sprintf(\" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) \", len(args), len(args))",
+      "after": "fmt.Sprintf(\" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id) \", len(args))",
+      "mutant_sha256": "39b2228ba3f54dc7fd767365977d857bd97f0a8d4a65225dfec315021470c20f"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "test_legacy_adoption_requires_explicit_known_version (test_legacy_migrations.LegacyPlanTests.test_legacy_adoption_requires_explicit_known_version)",
+        "test_entire_plan_and_execution_receipts_are_newline_independent (test_migrate_core.MigrationPlanTests.test_entire_plan_and_execution_receipts_are_newline_independent)",
+        "test_online_health_upgrade_preserves_guard_identity (test_migrate_core.MigrationPlanTests.test_online_health_upgrade_preserves_guard_identity)",
+        "test_published_sources_use_canonical_lf_on_every_checkout (test_migrate_core.MigrationPlanTests.test_published_sources_use_canonical_lf_on_every_checkout) (migration='0005_inventory_pagination.sql', checkout='CRLF')",
+        "test_published_sources_use_canonical_lf_on_every_checkout (test_migrate_core.MigrationPlanTests.test_published_sources_use_canonical_lf_on_every_checkout) (migration='0006_security_boundary.sql', checkout='CRLF')",
+        "test_published_sources_use_canonical_lf_on_every_checkout (test_migrate_core.MigrationPlanTests.test_published_sources_use_canonical_lf_on_every_checkout) (migration='0008_background_health_and_policy_v2.sql', checkout='CRLF')",
+        "test_runner_serializes_records_checksums_and_bounds_locks (test_migrate_core.MigrationPlanTests.test_runner_serializes_records_checksums_and_bounds_locks)"
+      ],
+      "completed_test_events": 10,
+      "mutant_sha256": "a9fd9045b21a09c027d7a78854706691571cd2552f626f4f14a52a7556f45efb",
+      "name": "migration_newline_normalization_removed",
+      "kind": "python",
+      "source": "scripts/migrate_core.py",
+      "before": "raw = path.read_bytes().replace(b'\\r\\n', b'\\n')",
+      "after": "raw = path.read_bytes()"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0005_inventory_pagination.sql', digest='a37fd1762302bb46396ac6c8c2ebec386f6cfe99d0018b0c9dd3830afffd7967')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0005_inventory_pagination.sql', digest='1774f7372f383d16d14cf418a794a73b5cd4ad3f9bbdcd6c606576128dbad5e8')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0005_inventory_pagination.sql', digest='056700f22d6afff4b212fbed3ed256d368e18e875f643051d48cf110490fa368')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0005_inventory_pagination.sql', digest='d62459fdbd2bcd328c0324eb282d851e285675a60097f9b477da4e8d19a706ca')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0006_security_boundary.sql', digest='28e7aa28200491c1e875e6cb6b37c08053b721dffa5700bd5f6c38b2cba49351')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0006_security_boundary.sql', digest='e228abd392677d4c2d5754913ccbd06d92ee1af1ff99559d9634563b4555cf9b')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0006_security_boundary.sql', digest='df99651d78c01d8319360aea8ac4386f5f420169caf33ee4ffe85ec5df7dd5fc')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0006_security_boundary.sql', digest='384de7b6ff3accf1d37fe81f3e7dab63d934cc73986f782364fe8a5655eba448')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0008_background_health_and_policy_v2.sql', digest='d1555f412575087c5fb0a038f182ecd15ba617bc6ffe79628b3a4b6b46df5555')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0008_background_health_and_policy_v2.sql', digest='3d1e81281ada907f9a445823f9db27436e907590121d2291fa2f1c7a10595b9d')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0008_background_health_and_policy_v2.sql', digest='9fc61f7e469b5ba8338e5cc8944e3e9753ff42d3ba1666bea2f44d2a6db5c402')",
+        "test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) (migration='0008_background_health_and_policy_v2.sql', digest='b23aa839d46fbdcb12eeb78612d6b646f799312c9d9634dfee30ad667cc1a3a4')",
+        "test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content (test_migration_adversarial.PublishedMigrationAdversarialTests.test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content) (digest='bda4143096e6caf85ecb2f4e0b674a59e90d3c2551dd56b8e77f25bef2e4aa61')",
+        "test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content (test_migration_adversarial.PublishedMigrationAdversarialTests.test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content) (digest='140b8a9f2e4f3af8894ca1667c2aa639a4847c354888ba033e3f99fdc974219d')",
+        "test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content (test_migration_adversarial.PublishedMigrationAdversarialTests.test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content) (digest='44290021ea9cccebf1590259ebdbea137681bd4fa6dd7f4b10afcc27ef9f599f')",
+        "test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content (test_migration_adversarial.PublishedMigrationAdversarialTests.test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content) (digest='cfa0f39687d68cb7759d2151565c2e7763c9f4b7cf3f0ffdbf0ddc2688bf3681')",
+        "test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content (test_migration_adversarial.PublishedMigrationAdversarialTests.test_bom_bare_cr_and_unicode_whitespace_do_not_launder_content) (digest='bb28c95058235cc4833f525b332e5bc9e34bc43ea0e60194cd2cc1b8981950db')"
+      ],
+      "completed_test_events": 10,
+      "mutant_sha256": "5938323d633a4ec002c7bb90ca93e55de0f3bd23e668e0bc996301e771bc4c2e",
+      "name": "migration_published_pin_guard_removed",
+      "kind": "python",
+      "source": "scripts/migrate_core.py",
+      "before": "if path.name in PINNED and hashlib.sha256(pinned_raw).hexdigest() != PINNED[path.name]:",
+      "after": "if False:"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "test_an_empty_package_is_not_a_successful_migration_plan (test_migration_adversarial.PublishedMigrationAdversarialTests.test_an_empty_package_is_not_a_successful_migration_plan)",
+        "test_published_migration_cannot_disappear_from_a_package (test_migration_adversarial.PublishedMigrationAdversarialTests.test_published_migration_cannot_disappear_from_a_package)"
+      ],
+      "completed_test_events": 10,
+      "mutant_sha256": "66adb419f0b27a354f75271b499ccb33a31164c7ea934ed6eacdab8ec3770c62",
+      "name": "migration_missing_sources_allowed",
+      "kind": "python",
+      "source": "scripts/migrate_core.py",
+      "before": "if missing:",
+      "after": "if False:"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "historical_crosspair_rejection"
+      ],
+      "mutant_sha256": "0753b13c08d0efea110a31547b43c8ef1f3b595f9bb249ea9818cb7d07db80d2",
+      "name": "migration_historical_crosspair_accepted",
+      "kind": "python",
+      "source": "scripts/migrate_core.py",
+      "before": "execution_checksum IN ('{historical_execution}','legacy_baseline:{historical_digest}')",
+      "after": "execution_checksum IN ('{historical_execution}','{execution}','legacy_baseline:{historical_digest}')"
+    }
+  ],
+  "work_directory": "work\\mutations-7f4a1eb44ec94b64986f75c549d8e2c3",
+  "baseline": {
+    "status": "survived",
+    "failed_tests": [],
+    "completed_test_events": 22,
+    "seconds": 7.406,
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "test",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$|^TestDocumentCommandsRecoverFromCommitTransportFailure$|^TestDocumentPaginationProperties$",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ]
+  },
+  "source_sha256_lf": {
+    "internal/postgres/documents.go": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "internal/postgres/store.go": "b7d7dea55b4311ee300caed09c6f50f4b9bb910a02b1daecd7317c9eaa87e8b8",
+    "scripts/migrate_core.py": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5"
+  },
+  "killed": 20,
+  "survived": 0,
+  "invalid": 0
+}

@@ -1,0 +1,120 @@
+.FFFFFFFFFFFFF..F
+======================================================================
+FAIL: test_database_name_is_a_safe_sql_identifier_not_just_a_prefix (test_mutation_runner.MutationRunnerTests.test_database_name_is_a_safe_sql_identifier_not_just_a_prefix) (name='wms_kernel_test_good;DROP DATABASE production;--')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 45, in test_database_name_is_a_safe_sql_identifier_not_just_a_prefix
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_database_name_is_a_safe_sql_identifier_not_just_a_prefix (test_mutation_runner.MutationRunnerTests.test_database_name_is_a_safe_sql_identifier_not_just_a_prefix) (name='wms_kernel_test_good/other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 45, in test_database_name_is_a_safe_sql_identifier_not_just_a_prefix
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_database_name_is_a_safe_sql_identifier_not_just_a_prefix (test_mutation_runner.MutationRunnerTests.test_database_name_is_a_safe_sql_identifier_not_just_a_prefix) (name='wms_kernel_test_good%3BDROP_DATABASE_production')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 45, in test_database_name_is_a_safe_sql_identifier_not_just_a_prefix
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_database_name_is_a_safe_sql_identifier_not_just_a_prefix (test_mutation_runner.MutationRunnerTests.test_database_name_is_a_safe_sql_identifier_not_just_a_prefix) (name='wms_kernel_test_good"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 45, in test_database_name_is_a_safe_sql_identifier_not_just_a_prefix
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_database_name_is_a_safe_sql_identifier_not_just_a_prefix (test_mutation_runner.MutationRunnerTests.test_database_name_is_a_safe_sql_identifier_not_just_a_prefix) (name='wms_kernel_test_good another')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 45, in test_database_name_is_a_safe_sql_identifier_not_just_a_prefix
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_dsn_options_cannot_redirect_go_or_libpq_connections (test_mutation_runner.MutationRunnerTests.test_dsn_options_cannot_redirect_go_or_libpq_connections) (query='host=outside.invalid')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 51, in test_dsn_options_cannot_redirect_go_or_libpq_connections
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_dsn_options_cannot_redirect_go_or_libpq_connections (test_mutation_runner.MutationRunnerTests.test_dsn_options_cannot_redirect_go_or_libpq_connections) (query='hostaddr=192.0.2.1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 51, in test_dsn_options_cannot_redirect_go_or_libpq_connections
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_dsn_options_cannot_redirect_go_or_libpq_connections (test_mutation_runner.MutationRunnerTests.test_dsn_options_cannot_redirect_go_or_libpq_connections) (query='service=production')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 51, in test_dsn_options_cannot_redirect_go_or_libpq_connections
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_dsn_options_cannot_redirect_go_or_libpq_connections (test_mutation_runner.MutationRunnerTests.test_dsn_options_cannot_redirect_go_or_libpq_connections) (query='options=-csearch_path=public')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 51, in test_dsn_options_cannot_redirect_go_or_libpq_connections
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_inherited_libpq_options_cannot_escape_the_isolated_server (test_mutation_runner.MutationRunnerTests.test_inherited_libpq_options_cannot_escape_the_isolated_server) (key='PGHOSTADDR')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 66, in test_inherited_libpq_options_cannot_escape_the_isolated_server
+    self.assertTrue(key not in environment, 'unsafe libpq option was inherited: ' + key)
+AssertionError: False is not true : unsafe libpq option was inherited: PGHOSTADDR
+
+======================================================================
+FAIL: test_inherited_libpq_options_cannot_escape_the_isolated_server (test_mutation_runner.MutationRunnerTests.test_inherited_libpq_options_cannot_escape_the_isolated_server) (key='PGSERVICE')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 66, in test_inherited_libpq_options_cannot_escape_the_isolated_server
+    self.assertTrue(key not in environment, 'unsafe libpq option was inherited: ' + key)
+AssertionError: False is not true : unsafe libpq option was inherited: PGSERVICE
+
+======================================================================
+FAIL: test_inherited_libpq_options_cannot_escape_the_isolated_server (test_mutation_runner.MutationRunnerTests.test_inherited_libpq_options_cannot_escape_the_isolated_server) (key='PGSERVICEFILE')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 66, in test_inherited_libpq_options_cannot_escape_the_isolated_server
+    self.assertTrue(key not in environment, 'unsafe libpq option was inherited: ' + key)
+AssertionError: False is not true : unsafe libpq option was inherited: PGSERVICEFILE
+
+======================================================================
+FAIL: test_inherited_libpq_options_cannot_escape_the_isolated_server (test_mutation_runner.MutationRunnerTests.test_inherited_libpq_options_cannot_escape_the_isolated_server) (key='PGOPTIONS')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 66, in test_inherited_libpq_options_cannot_escape_the_isolated_server
+    self.assertTrue(key not in environment, 'unsafe libpq option was inherited: ' + key)
+AssertionError: False is not true : unsafe libpq option was inherited: PGOPTIONS
+
+======================================================================
+FAIL: test_timeout_after_an_assertion_failure_is_an_invalid_run (test_mutation_runner.MutationRunnerTests.test_timeout_after_an_assertion_failure_is_an_invalid_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 75, in test_timeout_after_an_assertion_failure_is_an_invalid_run
+    self.assertEqual(classify_go_run(1, events)['status'], 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.005s
+
+FAILED (failures=14)

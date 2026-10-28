@@ -1,0 +1,28 @@
+......F....
+======================================================================
+FAIL: test_mutant_plans_cannot_overwrite_unmutated_plan_evidence (test_mutation_runner.MutationRunnerTests.test_mutant_plans_cannot_overwrite_unmutated_plan_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 21, in test_mutant_plans_cannot_overwrite_unmutated_plan_evidence
+    outcome = run_go('go', '^TestDocumentPlan$', Path(directory), {'WMS_DOCUMENT_PLAN_DIR': 'green/plans', 'WMS_DOCUMENT_CRITIC_PLAN_DIR': 'green/critic-plans'})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\mutation_runner.py", line 82, in run_go
+    result = subprocess.run(command, cwd=ROOT, env=environment, stdout=out, stderr=err, timeout=210)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\mock.py", line 1124, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\mock.py", line 1128, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\mock.py", line 1189, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 15, in fake_go
+    self.assertNotEqual(kwargs['env']['WMS_DOCUMENT_PLAN_DIR'], 'green/plans')
+AssertionError: 'green/plans' == 'green/plans'
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.036s
+
+FAILED (failures=1)

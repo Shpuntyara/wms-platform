@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-28",
+  "base_revision": "ea0eb2f",
+  "scope": "warehouse.command_document creation and transition COMMIT recovery",
+  "test_file": "internal/postgres/store_documents_recovery_integration_test.go",
+  "test_sha256_before_implementation": "3d87762dcfc6fae6ad7c14c0d52d18c51829c478c2706d775a0787f4d800c93e",
+  "test_sha256_after_implementation": "3d87762dcfc6fae6ad7c14c0d52d18c51829c478c2706d775a0787f4d800c93e",
+  "test_command": "go test -race -tags=integration ./internal/postgres -count=1 -timeout=180s -run 'TestDocument(CommandsRecoverFromCommitTransportFailure|CommandsPreserveDefinitiveCommitRejection|CommandProperties|InvalidGeneratedLineRollsBackWholeCreate)' -v",
+  "database": "PostgreSQL 17, disposable cluster bound to 127.0.0.1 and a dynamically allocated port, prepared with scripts/prepare-test-db.py",
+  "red": {
+    "exit_code": 1,
+    "failing_subtests": [
+      "TestDocumentCommandsRecoverFromCommitTransportFailure/create/before_send",
+      "TestDocumentCommandsRecoverFromCommitTransportFailure/transition/before_send"
+    ],
+    "observed": "A real pgx socket's COMMIT Write returned a generic transport error before sending the commit. HTTP 500 internal_error was returned, without the same-command retry contract. An independent admin connection confirmed zero committed operation receipts.",
+    "expected": "HTTP 503 operation_interrupted with Retry-After and instruction to retry the same command identifier",
+    "already_passing_characterization": [
+      "Server committed and its acknowledgement was discarded as EOF (both commands)",
+      "Server committed and its acknowledgement was discarded as a generic read error (both commands)",
+      "Deferred PostgreSQL constraint rejection at COMMIT remains a definitive HTTP 409 rollback (both commands)",
+      "64 generated create/transition/idempotency cases",
+      "40 generated invalid-line atomicity cases"
+    ],
+    "raw_log": "work/document-red-final.log"
+  },
+  "implementation": {
+    "file": "internal/postgres/documents.go",
+    "sha256": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "change": "Translate explicit PostgreSQL COMMIT errors normally; classify every other COMMIT failure as an unconfirmed operation and require recovery with the original command ID. Matches the existing inventory command contract."
+  },
+  "green": {
+    "exit_code": 0,
+    "top_level_tests": 4,
+    "commit_transport_cases": 6,
+    "definitive_commit_rejection_cases": 2,
+    "generated_cases": 104,
+    "race_detector": true,
+    "skipped_tests": 0,
+    "raw_log": "work/document-green.log"
+  },
+  "asserted_invariants": [
+    "Before-send transport loss rolls back documents and operation receipts",
+    "Lost acknowledgement occurs after the server durably commits, independently observed through an admin connection",
+    "Recovery returns exactly the durable original response on repeated retries",
+    "Create/transition modifies document state, version and content_revision exactly once",
+    "Recovery leaves exactly one operation, audit entry and outbox event and does not change inventory",
+    "Explicit deferred PostgreSQL constraint rejection is not hidden as transport uncertainty",
+    "Generated kinds, line counts and decimal quantities preserve document lines and quantities",
+    "Mismatched optimistic versions reject without operation receipts or state changes",
+    "Incomplete documents cannot close and cancelled documents cannot reactivate",
+    "Replaying creation after later transitions returns its original snapshot",
+    "Reusing a successful command ID with changed input rejects",
+    "Invalid precision after a generated valid prefix rolls back the entire create and leaves its command ID reusable"
+  ],
+  "additional_checks": [
+    "go vet -tags=integration ./internal/postgres: exit 0",
+    "go fix -diff -tags=integration ./internal/postgres: exit 0, empty diff",
+    "git diff --check: exit 0"
+  ],
+  "honesty_notes": [
+    "Initial test harness errors (uppercase matching while pgx sends lowercase commit, and expecting version conflict instead of input validation for version zero) were corrected before the recorded final RED run; neither was attributed to production code.",
+    "Property checks characterized existing correct behavior and are not presented as red-to-green production fixes.",
+    "This local evidence does not substitute for successful CI on the final pushed revision."
+  ]
+}

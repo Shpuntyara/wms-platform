@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-28T10:52:00.383163+00:00",
+  "independent_critic": true,
+  "production_code_changed": false,
+  "mutation_scope": "Only the function in a private isolated PostgreSQL test database; published source files untouched",
+  "baseline": {
+    "status": "passed",
+    "race_detector": true,
+    "command": "go test -race -tags=integration ./internal/postgres -count=1 -timeout=180s -run ^TestDocumentAdversarial(CommandIdentityAndAuthorization|ConcurrentCommands)$ -v",
+    "top_level_tests": 2,
+    "subtests": 7,
+    "additional_checks": [
+      "cross-organization command identity",
+      "permission revocation before creation replay",
+      "permission revocation before transition replay"
+    ],
+    "log": "work/document-critic-command-final.log"
+  },
+  "mutants": [
+    {
+      "name": "cross_actor_replay_allowed",
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/another_authorized_actor_cannot_reuse_the_same_input_and_ID",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization"
+      ],
+      "source_sha256": "2651f633d1965bf634fe4e2acd7fdff07f25fb75f7fce7783b014f711534944a"
+    },
+    {
+      "name": "owner_authorization_bypassed",
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialCommandIdentityAndAuthorization/runtime_SQL_enforces_owner_on_create_and_transition",
+        "TestDocumentAdversarialCommandIdentityAndAuthorization"
+      ],
+      "source_sha256": "6dc973f6b78fe9809384cc03d51ccb131fce78bfa4939116dc6bce592f411deb"
+    }
+  ],
+  "status": "passed",
+  "isolated_cluster_stopped": true,
+  "test_file": "internal/postgres/documents_adversarial_integration_test.go",
+  "test_file_sha256": "69bd6d823d16d5f212d8d62d445636190ece8c91a751e98ea66f8c0d88a71a7e",
+  "no_new_production_bug_found": true,
+  "limitations": "Independent focused review, not proof against arbitrary transport interleavings or linearizability of every warehouse command. Mutation score covers the two listed non-equivalent security mutations only.",
+  "test_first": "Independent adversarial tests added before any implementation adjustment; unmutated implementation passed them. No artificial baseline RED claimed."
+}

@@ -1,0 +1,21 @@
+F.F
+======================================================================
+FAIL: test_an_empty_package_is_not_a_successful_migration_plan (test_migration_adversarial.PublishedMigrationAdversarialTests.test_an_empty_package_is_not_a_successful_migration_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_migration_adversarial.py", line 24, in test_an_empty_package_is_not_a_successful_migration_plan
+    with self.assertRaisesRegex(ValueError, 'Missing published migration'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_published_migration_cannot_disappear_from_a_package (test_migration_adversarial.PublishedMigrationAdversarialTests.test_published_migration_cannot_disappear_from_a_package)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_migration_adversarial.py", line 19, in test_published_migration_cannot_disappear_from_a_package
+    with self.assertRaisesRegex(ValueError, 'Missing published migration'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.105s
+
+FAILED (failures=2)

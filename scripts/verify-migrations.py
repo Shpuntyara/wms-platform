@@ -5,6 +5,7 @@ import subprocess
 import time
 from pathlib import Path
 from migrate_core import build_script
+from verify_windows_migrations import verify as verify_windows_migrations
 
 
 def verify(psql, port, admin):
@@ -32,10 +33,17 @@ def verify(psql, port, admin):
     run(build_script(root,legacy_through='0007'))
     assert value("SELECT guard::oid FROM contracts_v1.guard_dependency_probe") == oid
     run(build_script(root))
-    assert value('SELECT count(*) FROM wms_migrations.history') == '9'
+    assert value('SELECT count(*) FROM wms_migrations.history') == str(len(list((root/'db/migrations').glob('*.sql'))))
+    source_checksum = value("SELECT checksum FROM wms_migrations.history WHERE name='0009_warehouse_documents.sql'")
+    execution_checksum = value("SELECT execution_checksum FROM wms_migrations.history WHERE name='0009_warehouse_documents.sql'")
     run("UPDATE wms_migrations.history SET checksum='tampered' WHERE name LIKE '0009%';")
     assert b'checksum mismatch' in run(build_script(root),ok=False).stderr
-    run("UPDATE wms_migrations.history SET checksum='" + __import__('hashlib').sha256((root/'db/migrations/0009_warehouse_documents.sql').read_bytes()).hexdigest() + "' WHERE name LIKE '0009%';")
+    # Restore the receipt captured before fault injection, never a fresh hash of
+    # whatever source happens to exist after the test has corrupted the ledger.
+    run("UPDATE wms_migrations.history SET checksum='" + source_checksum + "' WHERE name LIKE '0009%';")
+    run("UPDATE wms_migrations.history SET execution_checksum='tampered' WHERE name LIKE '0009%';")
+    assert b'checksum mismatch' in run(build_script(root),ok=False).stderr
+    run("UPDATE wms_migrations.history SET execution_checksum='" + execution_checksum + "' WHERE name LIKE '0009%';")
     # A second migrator must fail promptly instead of racing DDL.
     holder = subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     holder.stdin.write(b'SELECT pg_advisory_lock(19890627,1001);SELECT pg_sleep(3);');holder.stdin.close()
@@ -66,7 +74,8 @@ def verify(psql, port, admin):
     run(build_script(root))
     assert value("SELECT 'platform.check_declarative_guard(text,text,uuid,uuid)'::regprocedure::oid") == oid8
     command = old_command
-    report = {'status':'passed','checks':['legacy database refused without declaration','explicit 0007 adoption and upgrade to 0009','guard OID and dependent view preserved','repeat all migrations','checksum drift refused','simultaneous migrator refused','wrong index definition refused','partial concurrent migration resumed','explicit 0008 adoption and upgrade to 0009']}
+    report = {'status':'passed','checks':['legacy database refused without declaration','explicit 0007 adoption and upgrade through latest migration','guard OID and dependent view preserved','repeat all migrations','source checksum drift refused','execution checksum drift refused','simultaneous migrator refused','wrong index definition refused','partial concurrent migration resumed','explicit 0008 adoption and upgrade through latest migration']}
+    report['windows_receipts'] = verify_windows_migrations(psql, port, admin)
     target=root/'work/migration-verification.json';target.parent.mkdir(exist_ok=True);target.write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report))
 

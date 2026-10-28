@@ -3,10 +3,12 @@ package postgres
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/Shpuntyara/wms-platform/internal/inventory"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 func (s *Store) CommandDocument(ctx context.Context, p inventory.Principal, command, document string, input inventory.DocumentInput, registry *modules.Registry) (json.RawMessage, error) {
@@ -55,7 +57,11 @@ func (s *Store) CommandDocument(ctx context.Context, p inventory.Principal, comm
 		return nil, translate(err)
 	}
 	if err = tx.Commit(ctx); err != nil {
-		return nil, translate(err)
+		if _, ok := errors.AsType[*pgconn.PgError](err); ok {
+			return nil, translate(err)
+		}
+		// A client/transport error cannot establish whether COMMIT took effect.
+		return nil, &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
 	}
 	return json.RawMessage(result), nil
 }

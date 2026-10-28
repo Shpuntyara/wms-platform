@@ -1,0 +1,101 @@
+{
+  "reviewer": "independent critic_reading (not the original read implementation author)",
+  "recorded_before_production_fix": true,
+  "utc": "2026-10-28T10:54:12.375789+00:00",
+  "tests_sha256": "f4bd704d24e57a263233945888e761975b539b0b91cc27619fbca03a5c97cd12",
+  "production_sha256_at_red": "973b64f1f856a6838f953b0793d94fcae5e7ec511d00245c7eefb5d2dce044d7",
+  "red": {
+    "command": "go test -race -tags=integration ./internal/postgres -count=1 -timeout=180s -run ^TestDocumentAdversarial(OwnerFanoutHydratesOnlyPage|CursorCannotCrossAuthorizationScope)$ -v",
+    "exit_code": 1,
+    "test": "TestDocumentAdversarialOwnerFanoutHydratesOnlyPage",
+    "fixture": {
+      "owners": 32,
+      "documents_per_owner": 32,
+      "lines_per_document": 200,
+      "total_documents": 1024,
+      "total_lines": 204800,
+      "page_size": 20,
+      "lookahead_size": 21
+    },
+    "failure": "Line aggregation executed 672 times before the global 21-candidate limit. Expected at most 21 document-line aggregates.",
+    "modes": {
+      "force_custom_plan": {
+        "hydrated_documents": 672,
+        "blocks": 6088,
+        "row_work": 406699
+      },
+      "force_generic_plan": {
+        "hydrated_documents": 672,
+        "blocks": 25862,
+        "row_work": 426859
+      }
+    },
+    "log": "reading-critic/red.txt",
+    "plans": [
+      "reading-critic/red-force_custom_plan.json",
+      "reading-critic/red-force_generic_plan.json"
+    ]
+  },
+  "resisted_attempts": [
+    "Exact ID page equals a separate ORDER BY/LIMIT SQL query over the independent fixture",
+    "Every returned document contains all 200 lines",
+    "Cursor rejected after revoked owner, actor, warehouse, organization, all-owner mode or explicit filter changes (six cases)"
+  ],
+  "measurement_audit": {
+    "row_work_formula": "sum((Actual Rows+Rows Removed by Filter)*Actual Loops) across plan nodes",
+    "line_hydration_metric": "Actual Loops of line Aggregate nodes whose subtree reads document_lines",
+    "buffers": "root Shared Hit Blocks + Shared Read Blocks (inclusive, no descendant double counting)",
+    "query": "SQL and args captured by pgx tracer from actual Store.List invocation",
+    "planner": "custom and generic prepared plans; no disabling sequential scans/indexes"
+  },
+  "honest_harness_note": "The first attempt had a SQL fixture cast error (42804). It was fixed in the test before the recorded production red; this setup error is not claimed as a regression.",
+  "limitations": [
+    "This is a bounded SQL read adapter check, not concurrent HTTP throughput or maximum-owner scalability measurement.",
+    "Owner candidate scans still scale with the number of authorized owners; the invariant bounds costly line hydration to the final page."
+  ],
+  "green": {
+    "utc": "2026-10-28T10:57:59.949790+00:00",
+    "status": "passed",
+    "exit_code": 0,
+    "race_detector": true,
+    "skipped_tests": 0,
+    "command": "go test -race -tags=integration ./internal/postgres -count=1 -timeout=180s -run ^Test(DocumentAdversarial(OwnerFanoutHydratesOnlyPage|CursorCannotCrossAuthorizationScope)|DocumentReadsStayBoundedAsHistoryGrows|DocumentPaginationProperties|PaginationPreservesEveryOwnerScopeShape)$ -v",
+    "elapsed_package_seconds": 22.105,
+    "tests_sha256": "f4bd704d24e57a263233945888e761975b539b0b91cc27619fbca03a5c97cd12",
+    "production_sha256": "b7d7dea55b4311ee300caed09c6f50f4b9bb910a02b1daecd7317c9eaa87e8b8",
+    "test_invariants_unchanged_since_red": true,
+    "capture_harness_change": "TraceQueryStart now accepts the actual WITH document_page query shape by requiring both SELECT to_jsonb(document_details) and contracts_v1.document_details. No assertion or budget changed.",
+    "modes": {
+      "force_custom_plan": {
+        "hydrated_documents": 21,
+        "blocks": 490,
+        "row_work": 15865
+      },
+      "force_generic_plan": {
+        "hydrated_documents": 21,
+        "blocks": 525,
+        "row_work": 14839
+      }
+    },
+    "original_large_fixture": {
+      "inserted_documents": 100000,
+      "inserted_lines": 300000,
+      "executed_plans": 28,
+      "maximum_row_work": 450,
+      "maximum_blocks": 260
+    },
+    "properties": {
+      "cases": 64,
+      "seed": 20261028
+    },
+    "cursor_changed_scope_cases": 6,
+    "existing_pagination_scope_cases": 6,
+    "log": "reading-critic/green.txt",
+    "plans": [
+      "reading-critic/green-force_custom_plan.json",
+      "reading-critic/green-force_generic_plan.json",
+      "reading-critic/green-100k-plans.json"
+    ],
+    "cluster_stopped": true
+  }
+}

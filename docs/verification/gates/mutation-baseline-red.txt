@@ -1,0 +1,13 @@
+...F....
+======================================================================
+FAIL: test_failed_baseline_still_writes_a_failed_evidence_artifact (test_mutation_runner.MutationRunnerTests.test_failed_baseline_still_writes_a_failed_evidence_artifact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 93, in test_failed_baseline_still_writes_a_failed_evidence_artifact
+    self.assertTrue(target.is_file(), 'A failed baseline lost the mutation evidence artifact')
+AssertionError: False is not true : A failed baseline lost the mutation evidence artifact
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.010s
+
+FAILED (failures=1)

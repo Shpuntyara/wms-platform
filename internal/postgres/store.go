@@ -285,7 +285,17 @@ func (s *Store) List(ctx context.Context, resource inventory.Resource, scope inv
 		where.WriteString(fmt.Sprintf(" AND id>$%d::text::uuid", len(args)))
 	}
 	args = append(args, f.Limit+1)
-	rows, err := s.pool.Query(ctx, "SELECT "+definition.projection+" FROM contracts_v1."+definition.view+" WHERE "+where.String()+fmt.Sprintf(" ORDER BY id LIMIT $%d", len(args)), args...)
+	query := "SELECT " + definition.projection + " FROM contracts_v1." + definition.view + " WHERE " + where.String() + fmt.Sprintf(" ORDER BY id LIMIT $%d", len(args))
+	if resource == inventory.DocumentResource && !scope.AllOwners && f.OwnerID == "" && len(scope.OwnerIDs) > 1 {
+		// Bound each owner's ordered candidates before merging them. A generic
+		// ANY(owner) plan can otherwise walk unrelated owners to fill one page.
+		ownerWhere := strings.Replace(where.String(), "owner_id=ANY($3::text[]::uuid[])", "owner_id=permitted_owner.owner_id", 1)
+		query = "WITH document_page AS MATERIALIZED (SELECT candidates.id FROM (SELECT DISTINCT unnest($3::text[])::uuid AS owner_id) AS permitted_owner" +
+			" CROSS JOIN LATERAL (SELECT id FROM contracts_v1.documents WHERE " + ownerWhere +
+			fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args)) +
+			"SELECT " + definition.projection + " FROM document_page JOIN contracts_v1.document_details USING (id) ORDER BY document_details.id"
+	}
+	rows, err := s.pool.Query(ctx, query, args...)
 	if err != nil {
 		return page, translate(err)
 	}

@@ -10,21 +10,42 @@ PINNED = {
  '0006_security_boundary.sql': 'd905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574',
  '0008_background_health_and_policy_v2.sql': '95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213',
 }
+PUBLISHED_MIGRATIONS = (
+    '0001_inventory_schema.sql',
+    '0002_inventory_commands.sql',
+    '0003_backend_api.sql',
+    '0004_module_integrity.sql',
+    '0005_inventory_pagination.sql',
+    '0006_security_boundary.sql',
+    '0007_background_jobs.sql',
+    '0008_background_health_and_policy_v2.sql',
+    '0009_warehouse_documents.sql',
+)
 
 def source(path):
-    raw = path.read_bytes()
+    raw = path.read_bytes().replace(b'\r\n', b'\n')
     digest = hashlib.sha256(raw).hexdigest()
-    if path.name in PINNED and digest != PINNED[path.name]:
+    # The published 0006 pin was calculated from a Windows CRLF checkout.
+    # Preserve that trust root, validating the exact historical representation;
+    # execute and record canonical LF bytes on every platform. Other whitespace
+    # and SQL edits still change the verified digest and remain rejected.
+    # Historical Git blob: 9e2cc5798b490173058694227190980c162bd2fe (316247b).
+    pinned_raw = raw.replace(b'\n', b'\r\n') if path.name == '0006_security_boundary.sql' else raw
+    if path.name in PINNED and hashlib.sha256(pinned_raw).hexdigest() != PINNED[path.name]:
         raise ValueError('Published migration checksum changed: ' + path.name)
     return raw.decode('utf8'), digest
 
 
-def migration_sql(path):
+def migration_sql(path, legacy_windows=False):
     sql, _ = source(path)
+    if legacy_windows and path.name not in ('0005_inventory_pagination.sql', '0008_background_health_and_policy_v2.sql'):
+        sql = sql.replace('\n', '\r\n')
     if path.name.startswith('0005_'):
         sql = sql.replace('CREATE INDEX CONCURRENTLY ', 'CREATE INDEX CONCURRENTLY IF NOT EXISTS ')
     if path.name.startswith('0008_'):
         old, _ = source(path.parent / '0006_security_boundary.sql')
+        if legacy_windows:
+            old = old.replace('\n', '\r\n')
         signature = 'CREATE FUNCTION platform.check_declarative_guard('
         start = old.index(signature)
         end = old.index('END $$;', start) + len('END $$;')
@@ -38,6 +59,10 @@ def migration_sql(path):
 
 
 def build_script(root, through=None, legacy_through=None):
+    available = {path.name for path in (root / 'db/migrations').glob('*.sql')}
+    missing = set(PUBLISHED_MIGRATIONS) - available
+    if missing:
+        raise ValueError('Missing published migration: ' + ', '.join(sorted(missing)))
     if legacy_through not in (None, "0007", "0008"):
         raise ValueError("Only released legacy versions 0007 and 0008 are supported")
     parts = [r'''\set ON_ERROR_STOP on
@@ -85,10 +110,19 @@ END $$;
         _, digest = source(path)
         sql = migration_sql(path)
         execution = hashlib.sha256(sql.encode()).hexdigest()
+        # Reproduce the original accepted mixed Windows checkout, including
+        # 0008's embedded CRLF guard copied from 0006. Accept correlated pairs
+        # only; never rewrite historical receipts or accept independent hashes.
+        historical_source, _ = source(path)
+        if path.name not in ('0005_inventory_pagination.sql', '0008_background_health_and_policy_v2.sql'):
+            historical_source = historical_source.replace('\n', '\r\n')
+        historical_digest = hashlib.sha256(historical_source.encode()).hexdigest()
+        historical_execution = hashlib.sha256(migration_sql(path, legacy_windows=True).encode()).hexdigest()
         name = path.name
-        parts.append(f"""DO $$ BEGIN
+        parts.append(fr"""DO $$ BEGIN
  IF EXISTS(SELECT 1 FROM wms_migrations.history WHERE name='{name}' AND
- (checksum<>'{digest}' OR execution_checksum NOT IN ('{execution}','legacy_baseline:{digest}'))) THEN
+ NOT ((checksum='{digest}' AND execution_checksum IN ('{execution}','legacy_baseline:{digest}'))
+ OR (checksum='{historical_digest}' AND execution_checksum IN ('{historical_execution}','legacy_baseline:{historical_digest}')))) THEN
  RAISE EXCEPTION 'Migration checksum mismatch: {name}'; END IF;
 END $$;
 SELECT NOT EXISTS(SELECT 1 FROM wms_migrations.history WHERE name='{name}') AS apply_step \gset

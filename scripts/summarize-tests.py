@@ -18,6 +18,16 @@ packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
 required = [
+    'TestDocumentCommandsRecoverFromCommitTransportFailure',
+    'TestDocumentCommandsPreserveDefinitiveCommitRejection',
+    'TestDocumentCommandProperties',
+    'TestDocumentInvalidGeneratedLineRollsBackWholeCreate',
+    'TestDocumentReadsStayBoundedAsHistoryGrows',
+    'TestDocumentPaginationProperties',
+    'TestDocumentAdversarialCommandIdentityAndAuthorization',
+    'TestDocumentAdversarialConcurrentCommands',
+    'TestDocumentAdversarialOwnerFanoutHydratesOnlyPage',
+    'TestDocumentAdversarialCursorCannotCrossAuthorizationScope',
     'TestRelayDrainsBurstWithoutPerEventPollingDelay',
     'TestSlowDeliveryDoesNotHoldOtherSlots',
     'TestBackgroundReadinessDetectsStallsAndBacklogs',
@@ -69,7 +79,12 @@ report = {
     'tdd_test_commit': '8032682',
     'tdd_evidence': 'docs/verification/security-red.json',
     'additional_tdd_evidence': 'docs/verification/background-red.json',
-    'current_change_tdd_evidence': 'docs/verification/warehouse-red.json',
+    'current_change_tdd_evidence': [
+        'docs/verification/migration-checksum-tdd.json',
+        'docs/verification/document-commands-tdd.json',
+        'docs/verification/document-reads/tdd.json',
+    ],
+    'current_change_test_commit': 'a6ffe19',
     'go': args.go.strip(),
     'postgresql': args.postgres.strip(),
     'command': 'go test -race -tags=integration ./... -count=1 -timeout=600s -json',

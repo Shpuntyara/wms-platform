@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_mutation_runner (unittest.loader._FailedTest.test_mutation_runner)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_mutation_runner
+Traceback (most recent call last):
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\loader.py", line 419, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\loader.py", line 362, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_runner.py", line 9, in <module>
+    from mutation_runner import classify_go_run, classify_python_run, database_environment, replace_once, run
+ImportError: cannot import name 'classify_python_run' from 'mutation_runner' (C:\Users\sashk\Documents\WMS\wms-platform\scripts\mutation_runner.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

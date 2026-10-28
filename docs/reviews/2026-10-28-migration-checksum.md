@@ -1,0 +1,13 @@
+# Migration checksum investigation
+
+The failing run is [40590325705](https://github.com/Shpuntyara/wms-platform/actions/runs/40590325705), revision `ea0eb2f6e41d096d02fdb4e0f81f1c175dffb86a`. `Prepare disposable database` failed before integration, SQL and vulnerability checks ran. That run is a failure, not successful validation.
+
+`0006_security_boundary.sql` is unchanged from commit `316247bb0552e4e2b2557ec7738f3f1bfd6d3204`, Git blob `9e2cc5798b490173058694227190980c162bd2fe`. Its committed LF bytes hash to `043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72`. The published pin `d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574` is exactly the hash of the same historical bytes with CRLF newlines. The pin was calculated from a stale Windows checkout; Linux correctly rejected those inconsistent packaging assumptions.
+
+The fix preserves every published pin and migration file. For validation of this one historical pin, the loader reconstructs its CRLF representation. New executions and receipts use canonical LF bytes. Published source edits, added comments and other whitespace changes remain rejected.
+
+The independent critic also reproduced a real compatibility failure in the first fix: an existing Windows ledger could contain legitimate CRLF receipts. The runner now recreates the original accepted Windows recipe, including the CRLF guard copied into migration 0008's otherwise LF execution. It accepts only correlated source/execution pairs and preserves the entire history row, including timestamps. It rejects changed receipts and cross-paired LF/CRLF hashes. The independent fixture is frozen from the original runner at `ea0eb2f`; no production receipt is repaired or overwritten. Missing published migration files also fail before execution.
+
+Tests were added before the loader changed. The recorded red run failed with one failure and four errors; the green run passes all seven Python migration tests. The new tests cover both newline representations, preservation of the historical pin, real content drift, and byte-for-byte equality of complete generated plans and their execution receipts across LF and CRLF checkouts. The PostgreSQL verifier separately rejects source and execution receipt corruption, restores only receipts captured before fault injection, and tests legacy upgrades, repeat execution, guard identity/dependent views, concurrent migration exclusion and partial index recovery.
+
+Machine-readable red/green and historical blob provenance are in `docs/verification/migration-checksum-tdd.json`. Remote CI must still pass on the final revision; local results do not replace it.
