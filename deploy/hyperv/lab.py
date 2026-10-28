@@ -76,6 +76,7 @@ def make_plan(*, root, key_root, repository=REPOSITORY, public_keys, switch="Def
         instance_id = str(uuid.uuid4())
         directory = ntpath.join(root, name)
         vms.append(dict(name=name, hostname=name.lower(), instance_id=instance_id,
+                        cloud_config_revision=2,
                         ownership_note=f"wms-lab:{lab_id}:{instance_id}",
                         directory=directory, disk_path=ntpath.join(directory, "system.vhdx"),
                         seed_path=ntpath.join(directory, "seed.iso"),
@@ -104,6 +105,8 @@ def validate_plan(plan):
     if [vm["name"] for vm in plan["vms"]] != list(NAMES):
         raise ValueError("Only the two dedicated lab VM names are permitted")
     for index, vm in enumerate(plan["vms"]):
+        if vm.get("cloud_config_revision", 1) not in (1, 2):
+            raise ValueError("Unknown cloud-config revision")
         instance_id = str(uuid.UUID(vm["instance_id"]))
         if vm["ownership_note"] != f"wms-lab:{plan['lab_id']}:{instance_id}":
             raise ValueError("VM ownership marker mismatch")
@@ -130,14 +133,25 @@ def validate_plan(plan):
 def cloud_config(vm):
     key = public_key(vm["public_key"])
     # JSON string syntax is valid YAML; it prevents public-key/comment injection.
-    user_data = "\n".join([
+    lines = [
         "#cloud-config", "users:", "  - name: wmsadmin", "    shell: /bin/bash",
         "    groups: [adm, sudo]", "    lock_passwd: true", "    sudo: ALL=(ALL) NOPASSWD:ALL",
         "    ssh_authorized_keys:", "      - " + json.dumps(key), "disable_root: true",
-        "ssh_pwauth: false", "package_update: true", "package_upgrade: false",
-        "packages: [python3, ca-certificates, openssh-server, hyperv-daemons]",
-        "runcmd:", "  - [systemctl, enable, --now, ssh]",
-        "  - [systemctl, enable, --now, hv-kvp-daemon.service]", ""])
+        "ssh_pwauth: false", "package_update: true", "package_upgrade: false"]
+    if vm.get("cloud_config_revision", 1) == 1:
+        # Freeze original bytes to verify existing receipts; provisioning this version is denied.
+        lines.extend(["packages: [python3, ca-certificates, openssh-server, hyperv-daemons]",
+                      "runcmd:", "  - [systemctl, enable, --now, ssh]"])
+    else:
+        lines.extend([
+            "packages: [python3, ca-certificates, openssh-server]",
+            "runcmd:", "  - [systemctl, enable, --now, ssh]",
+            "  - " + json.dumps(["bash", "-eu", "-o", "pipefail", "-c", 'apt-get install -y --no-install-recommends linux-cloud-tools-common "linux-cloud-tools-$(uname -r)"']),
+            "  - [udevadm, control, --reload-rules]",
+            "  - " + json.dumps(["udevadm", "trigger", "--action=add", "--subsystem-match=misc", "--sysname-match=vmbus!hv_kvp"]),
+            "  - [udevadm, settle, --timeout=30]"])
+    lines.extend(["  - [systemctl, enable, --now, hv-kvp-daemon.service]", ""])
+    user_data = "\n".join(lines)
     meta_data = json.dumps({"instance-id": vm["instance_id"], "local-hostname": vm["hostname"]}, indent=2) + "\n"
     return user_data, meta_data
 
@@ -180,6 +194,8 @@ def assert_no_reparse(path):
 
 
 def create_seed(vm):
+    if vm.get("cloud_config_revision", 1) != 2:
+        raise ValueError("Legacy cloud-config can be verified but cannot provision a new guest")
     import pycdlib
     target = Path(vm["seed_path"])
     assert_no_reparse(target)

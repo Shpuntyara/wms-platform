@@ -283,7 +283,9 @@ def configuration(value, address):
     realm = 'wms-' + value['instance_id'][:8]
     client = 'wms-api-' + value['instance_id'][:8]
     issuer = 'https://' + address + '/auth/realms/' + realm
-    private_write(CONFIG / 'postgres-password', value['db_admin_password'] + '\n', 0o444)
+    # The official PG entrypoint reads *_FILE as root, exports the value,
+    # unsets *_FILE, and only then re-execs as postgres. No group read needed.
+    private_write(CONFIG / 'postgres-password', value['db_admin_password'] + '\n', 0o400)
     private_write(CONFIG / 'keycloak.env', '\n'.join([
         'KC_DB=postgres', 'KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak', 'KC_DB_USERNAME=keycloak',
         'KC_DB_PASSWORD=' + value['keycloak_password'], 'KC_HTTP_ENABLED=true', 'KC_HTTP_RELATIVE_PATH=/auth',
@@ -297,7 +299,11 @@ def configuration(value, address):
             'protocolMappers': [{'name': 'wms-audience', 'protocol': 'openid-connect',
                 'protocolMapper': 'oidc-audience-mapper', 'consentRequired': False,
                 'config': {'included.client.audience': client, 'id.token.claim': 'false', 'access.token.claim': 'true'}}]}]}
-    private_write(CONFIG / 'keycloak/realm.json', json.dumps(realm_config), 0o644)
+    private_write(CONFIG / 'keycloak/realm.json', json.dumps(realm_config), 0o400)
+    # Only the image's UID 1000 can read the single mounted file. The host
+    # parent stays root:root 0700, so Caddy's traversal of /etc/wms is harmless.
+    run(['chown', '1000:0', CONFIG / 'keycloak/realm.json'])
+    os.chmod(CONFIG / 'keycloak', 0o700)
     private_write(CONFIG / 'grafana.env', '\n'.join([
         'GF_SECURITY_ADMIN_USER=wms-admin', 'GF_SECURITY_ADMIN_PASSWORD=' + value['grafana_password'],
         'GF_USERS_ALLOW_SIGN_UP=false', 'GF_AUTH_ANONYMOUS_ENABLED=true', 'GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer',
@@ -332,7 +338,7 @@ def configuration(value, address):
     env_file: /etc/wms/keycloak.env
     command: [start, --import-realm]
     ports: ['127.0.0.1:8081:8080']
-    volumes: [/etc/wms/keycloak:/opt/keycloak/data/import:ro]
+    volumes: [/etc/wms/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro]
     depends_on:
       postgres:
         condition: service_healthy
@@ -384,7 +390,7 @@ scrape_configs:
         annotations: {summary: 'Outbox dead letters require operator investigation'}
 ''', 0o644)
     dashboard(value)
-    for directory in (CONFIG / 'keycloak', CONFIG / 'grafana', CONFIG / 'grafana/datasources', CONFIG / 'grafana/dashboards'):
+    for directory in (CONFIG / 'grafana', CONFIG / 'grafana/datasources', CONFIG / 'grafana/dashboards'):
         os.chmod(directory, 0o755)
     monitor_hash = run(['caddy', 'hash-password'], value['monitor_password'] + '\n', sensitive=True)
     private_write('/etc/caddy/Caddyfile', f'''{{

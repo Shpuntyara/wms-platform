@@ -64,8 +64,32 @@ class InstallerAdversarial(unittest.TestCase):
                  patch.object(wms.os, 'chmod') as chmod:
                 wms.configuration(value, '192.168.50.11')
             chmod.assert_any_call(config, 0o750)
-            for directory in ('keycloak', 'grafana', 'grafana/datasources', 'grafana/dashboards'):
+            chmod.assert_any_call(config / 'keycloak', 0o700)
+            for directory in ('grafana', 'grafana/datasources', 'grafana/dashboards'):
                 chmod.assert_any_call(config / directory, 0o755)
+
+    def test_database_and_oidc_secret_leaves_are_not_readable_by_caddy_group(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            config = base / 'config'
+            value = wms.ensure_secrets(config / 'secrets.json')
+            writes, commands = {}, []
+            actual_write = wms.private_write
+            def write(path, data, mode=0o600):
+                writes[Path(path)] = mode
+                if config in Path(path).parents:
+                    actual_write(path, data, mode)
+            def command(argv, *args, **kwargs):
+                commands.append([str(item) for item in argv])
+                return '172.17.0.1'
+            with patch.object(wms, 'CONFIG', config), patch.object(wms, 'STATE', base / 'state'), \
+                 patch.object(wms, 'private_write', side_effect=write), patch.object(wms, 'run', side_effect=command):
+                wms.configuration(value, '192.168.50.11')
+            for leaf in ('postgres-password', 'keycloak/realm.json'):
+                self.assertEqual(writes[config / leaf] & 0o077, 0, leaf + ' readable by caddy group/others')
+            self.assertIn(['chown', '1000:0', str(config / 'keycloak/realm.json')], commands)
+            compose = (config / 'compose.yaml').read_text()
+            self.assertIn('/etc/wms/keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro', compose)
 
     def test_archive_reopen_cannot_install_unverified_changed_bytes(self):
         with tempfile.TemporaryDirectory() as tmp:

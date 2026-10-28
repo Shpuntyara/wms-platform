@@ -65,6 +65,12 @@ source image hash, tool hash/version, conversion commands, resulting base hash
 and UTC timestamp as public provenance. Native commands must fail the operation
 on a nonzero exit code.
 
+Some QEMU-created VHDX files have the Windows sparse-file attribute and native
+`Resize-VHD` rejects them with `0xC03A001A`. If encountered, copy the checked
+converted VHDX to a **new** filename using `FileMode.CreateNew` and a normal
+`FileStream`, confirm SHA256 equality and that the copy has no sparse attribute,
+then resize that copy with Hyper-V. Never reuse or overwrite a pre-existing disk.
+
 Microsoft documents [Ubuntu 24.04 support and built-in integration services](https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/supported-ubuntu-virtual-machines-on-hyper-v).
 The driver enables Secure Boot using `MicrosoftUEFICertificateAuthority`.
 Do not disable Secure Boot as a boot-failure workaround.
@@ -104,6 +110,35 @@ and installs Python, CA certificates, OpenSSH and Hyper-V guest daemons.
 No application password, private key, deployment secret or service credential
 belongs in the ISO, public plan or receipt.
 
+Ubuntu 24.04 supplies the KVP daemon through `linux-cloud-tools-common` and
+`linux-cloud-tools-$(uname -r)`. The seed installs the tools for the **running**
+kernel, reloads udev rules, retriggers only `vmbus!hv_kvp`, and starts the daemon.
+[Canonical's package record](https://packages.ubuntu.com/en/noble/linux-cloud-tools-common)
+and [KVP man page](https://manpages.ubuntu.com/manpages/jammy/man8/hv_kvp_daemon.8.html)
+describe this package/daemon relationship. The older seed incorrectly requested
+`hyperv-daemons`; actual first boot exposed the missing package and absent unit.
+Retain that first-boot failure as evidence instead of rewriting its status.
+
+An existing lab guest can receive the narrow repair without replaying cloud-init:
+
+```bash
+sudo python3 deploy/hyperv/repair_guest.py --instance-id PLANNED-INSTANCE-UUID \
+  --inspect-only --output /root/kvp-before-unique.json
+sudo python3 deploy/hyperv/repair_guest.py --instance-id PLANNED-INSTANCE-UUID \
+  --output /root/kvp-repair-unique.json
+```
+
+The helper installs only the matching KVP tools, reloads/retriggers the one KVP
+device, verifies dpkg and the running service, and checks that the NoCloud instance
+ID and every SSH host public-key hash remain unchanged. It does not clear
+cloud-init, regenerate SSH keys, touch application data or format a disk.
+`status=repaired` proves that targeted repair; the old cloud-init error remains a
+historical first-boot failure. Both before/after status snapshots are public.
+New plans freeze `cloud_config_revision=2`. Legacy plans keep their original
+bytes for verification and already configured VM lookup, but cannot generate a
+new seed, create a VM or resume an incomplete bootstrap. This preserves existing
+receipts while preventing another known-bad first boot.
+
 ## Create and connect
 
 ```powershell
@@ -119,7 +154,11 @@ If Hyper-V denies creation, report the exact missing permission and stop; never
 alter UAC, group membership or security policy to bypass the denial. If creation
 fails partway, inspect the new VM and its dedicated files before recovery. The
 driver deliberately refuses to adopt an unreceipted VM or overwrite partial
-media. `Create` returns an existing VM only when receipt UUID, name, ownership
+media. After `New-VM` returns, the UUID, base hash and seed hash are receipted
+before any configuration setter. A setter failure leaves `status=created`;
+`Create` can resume that same UUID only while it is off and its name, generation,
+empty/owned notes, disk, switch and both media hashes agree. Other operations
+require `status=configured`. `Create` returns an existing VM only when receipt UUID, name, ownership
 note, disk, switch and MAC agree. `Start` and all later commands look up that
 receipt UUID before operating on the VM.
 
@@ -131,6 +170,11 @@ the unique instance ID alias. This is initial enrollment based on the local
 Hyper-V/MAC trust boundary; it is not a cryptographic guest attestation.
 Subsequent SSH and SCP always use strict checking and the per-VM known-host file;
 an existing pin is verified and never replaced automatically.
+If Windows' installed `ssh-keyscan` cannot negotiate the guest's KEX, supply an
+already trusted newer executable with `-SSHKeyscanPath`, for example the one in
+an existing Git installation. The default also discovers existing Git clients.
+Only exit zero and exactly one ed25519 key are accepted; server algorithms and
+host-key verification remain unchanged.
 
 ```powershell
 pwsh -NoProfile -File deploy/hyperv/lab.ps1 -Action Upload -PlanPath $planPath `
@@ -159,3 +203,28 @@ foreign-VM ownership rejection. It never creates or mutates a VM. Actual VM boot
 guest network, SSH, installer, upgrade, monitoring and application verification
 must be collected separately; a passing offline test is not evidence of those
 operations succeeding.
+
+`scripts/vm_lab_verify.py` supplies the guest-local application proof:
+
+```bash
+sudo python3 scripts/vm_lab_verify.py smoke --output /root/smoke-unique.json
+```
+
+Every run creates a fresh synthetic organization, warehouse, stock owner and SKU,
+binds the issuer/subject returned by the guest's own OIDC service account to that
+scope, and exercises API document creation, activation, reservation and release.
+Each command is replayed with the same ID and must return the identical result.
+API reads and independent SQL checks reconcile stock, document, reservation,
+operation and event invariants. The retained fixture contains synthetic data and
+remains as evidence. The public receipt includes a fresh run UUID, the actual
+installation UUID and public CA/JWK fingerprints. It also requires verified-CA
+HTTPS readiness and an unauthenticated monitoring response of 401.
+
+To prove separation, run `export-probe --output /root/peer-probe.json` on the source
+guest. It writes a new root-only file containing the source client credential and
+a short-lived token; stdout contains only public file/instance metadata. Transfer
+that file through the established private management channel into a root-only
+file on the other guest and run `probe --input /root/peer-probe.json` before token
+expiry. The target must reject the source client credential as `invalid_client`
+and the source token as API HTTP 401. Repeat in the other direction. Do not commit,
+attach, log or publish the probe bundle; only publish the resulting receipt.

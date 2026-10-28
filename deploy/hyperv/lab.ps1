@@ -10,7 +10,8 @@ param(
     [string]$LocalPath,
     [string]$RemotePath,
     [string]$RemoteCommand,
-    [string]$InputFile
+    [string]$InputFile,
+    [string]$SSHKeyscanPath
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -161,6 +162,34 @@ function Get-SSHArguments {
              '-o',"HostKeyAlias=$($Definition.instance_id)",'-o','ConnectTimeout=15','-i',$Definition.private_key_path)
 }
 
+function Get-SSHKeyscanCandidates {
+    if ($SSHKeyscanPath) {
+        Assert-NoReparse $SSHKeyscanPath
+        if (-not (Test-Path -LiteralPath $SSHKeyscanPath -PathType Leaf)) { throw 'Explicit SSH keyscan executable is missing' }
+        return @([IO.Path]::GetFullPath($SSHKeyscanPath))
+    }
+    $candidates = [Collections.Generic.List[string]]::new()
+    # A current, already installed Git client can handle KEX algorithms missing in Windows keyscan.
+    foreach ($git in @(Get-Command git.exe -All -ErrorAction SilentlyContinue)) {
+        $gitRoot = Split-Path (Split-Path $git.Source -Parent) -Parent
+        $candidate = Join-Path $gitRoot 'usr/bin/ssh-keyscan.exe'
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) { $candidates.Add($candidate) }
+    }
+    foreach ($command in @(Get-Command ssh-keyscan.exe -All -ErrorAction SilentlyContinue)) { $candidates.Add($command.Source) }
+    return @($candidates | Select-Object -Unique)
+}
+
+function Invoke-SSHKeyscan {
+    param([string]$Address, [string[]]$Candidates)
+    foreach ($candidate in $Candidates) {
+        $scan = @(& $candidate -T 15 -t ed25519 $Address 2>$null | Where-Object { $_ -match '^[^#]\S+ ssh-ed25519 [A-Za-z0-9+/=]+$' })
+        if ($LASTEXITCODE -eq 0 -and $scan.Count -eq 1) {
+            return [pscustomobject]@{tool=$candidate; line=$scan[0]}
+        }
+    }
+    throw 'No installed SSH keyscan candidate returned exactly one ed25519 host key'
+}
+
 # Python validates all names, paths, collisions, resources and ownership markers before Hyper-V is loaded.
 $validation = & $PythonPath (Join-Path $PSScriptRoot 'lab.py') validate --plan $PlanPath
 if ($LASTEXITCODE -ne 0) { throw 'Plan validation failed' }
@@ -198,11 +227,17 @@ if ($Action -eq 'Create') {
         if ($existing.Count -gt 0) {
             $receipt = Get-Receipt $definition
             if ($receipt.status -eq 'created') {
+                if (-not $definition.PSObject.Properties['cloud_config_revision'] -or $definition.cloud_config_revision -ne 2) {
+                    throw 'Legacy pending bootstrap cannot be resumed; inspect the recorded UUID and prepare corrected media'
+                }
                 $vm = Get-PendingVM $definition $BaseDiskSha256 $seedHash
                 Initialize-LabVM $definition $vm $BaseDiskSha256 $seedHash
             }
             Get-OwnedVM $definition | Select-Object Name,Id,State
             continue
+        }
+        if (-not $definition.PSObject.Properties['cloud_config_revision'] -or $definition.cloud_config_revision -ne 2) {
+            throw 'Legacy bootstrap cannot create a new VM; generate a new revision 2 plan and seed'
         }
         if (Test-Path -LiteralPath $definition.receipt_path) { throw 'Receipt exists but its VM is absent; manual investigation required' }
         $drive = [IO.DriveInfo]::new([IO.Path]::GetPathRoot($plan.root))
@@ -252,10 +287,9 @@ foreach ($definition in $definitions) {
                 Write-Output '{"status":"existing_pin_verified"}'
                 continue
             }
-            $scan = @(& ssh-keyscan -T 15 -t ed25519 $address 2>$null | Where-Object { $_ -match '^[^#]\S+ ssh-ed25519 [A-Za-z0-9+/=]+$' })
-            if ($LASTEXITCODE -ne 0 -or $scan.Count -ne 1) { throw 'Expected exactly one SSH ed25519 host key from the MAC-attested guest' }
+            $scan = Invoke-SSHKeyscan $address (Get-SSHKeyscanCandidates)
             if ((Get-AttestedAddress $definition) -ne $address) { throw 'Guest endpoint changed while enrolling host key' }
-            $fields = $scan[0] -split ' '
+            $fields = $scan.line -split ' '
             $line = "$($definition.instance_id) $($fields[1]) $($fields[2])`n"
             $stream = [IO.File]::Open($definition.known_hosts_path, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write)
             try { $stream.Write([Text.Encoding]::ASCII.GetBytes($line)) } finally { $stream.Dispose() }
@@ -265,6 +299,7 @@ foreach ($definition in $definitions) {
             $receipt | Add-Member -Force NoteProperty ip_address $address
             $receipt | Add-Member -Force NoteProperty known_hosts_sha256 ((Get-FileHash -LiteralPath $definition.known_hosts_path -Algorithm SHA256).Hash.ToLowerInvariant())
             $receipt | Add-Member -Force NoteProperty host_key_enrolled_at ([DateTime]::UtcNow.ToString('o'))
+            $receipt | Add-Member -Force NoteProperty ssh_keyscan_tool $scan.tool
             Write-Receipt $definition $receipt
             [ordered]@{status='host_key_pinned'; name=$definition.name; ip_address=$address; instance_id=$definition.instance_id} | ConvertTo-Json
         }

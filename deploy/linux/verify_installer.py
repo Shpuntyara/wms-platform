@@ -26,8 +26,11 @@ MUTANTS = [
      'test_archive_reopen_cannot_install_unverified_changed_bytes'),
     ('premigration_recovery', "if recovery['resume'] and not recovery['migration_started']:", 'if False:',
      'test_failed_backup_before_migration_restarts_existing_writer'),
-    ('mount_permissions', "for directory in (CONFIG / 'keycloak', CONFIG / 'grafana',", "for directory in (CONFIG / 'grafana',",
+    ('mount_permissions', "os.chmod(CONFIG / 'keycloak', 0o700)", "os.chmod(CONFIG / 'keycloak', 0o755)",
      'test_keycloak_and_grafana_mount_roots_are_traversable'),
+    ('secret_file_boundary', "private_write(CONFIG / 'postgres-password', value['db_admin_password'] + '\\n', 0o400)",
+     "private_write(CONFIG / 'postgres-password', value['db_admin_password'] + '\\n', 0o444)",
+     'test_database_and_oidc_secret_leaves_are_not_readable_by_caddy_group'),
     ('semantic_health', 'def verify_health_payload(value, kind):\n',
      'def verify_health_payload(value, kind):\n    return value\n',
      'test_http_health_rejects_empty_false_and_stale_payload'),
@@ -61,7 +64,7 @@ def main():
         output = result.stdout + result.stderr
         (args.output / (name + '.txt')).write_text(output)
         if name == 'baseline':
-            valid = result.returncode == 0 and 'Ran 11 tests' in output and 'OK' in output
+            valid = result.returncode == 0 and 'Ran 12 tests' in output and 'OK' in output
         else:
             valid = (result.returncode == 1 and 'FAIL: ' + required in output and
                      'FAILED (failures=' in output and 'errors=' not in output)

@@ -11,6 +11,10 @@ request/outbox HMAC-ключи, private TLS CA/leaf key и Keycloak realm/client
 OIDC signing keys Keycloak генерирует самостоятельно и сохраняет в своей БД.
 API и worker имеют разные непривилегированные SQL logins одной установки;
 один процесс обслуживает несколько организаций/складов согласно DB grants.
+DB admin secret имеет mode 0400/root. Keycloak получает только один read-only
+realm file 0400 с владельцем UID 1000 образа; его родитель на госте остаётся
+root-only 0700. Пользователь Caddy может читать TLS leaf key и публичный
+сертификат, но не SQL/OIDC/HMAC credentials или private CA key.
 
 ## Состав и порты
 

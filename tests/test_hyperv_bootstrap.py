@@ -15,6 +15,7 @@ spec = importlib.util.spec_from_file_location("hyperv_lab", MODULE_PATH)
 lab = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = lab
 spec.loader.exec_module(lab)
+repair_spec = importlib.util.spec_from_file_location("hyperv_repair", MODULE_PATH.with_name("repair_guest.py"))
 
 PUBLIC_A = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA vm-a"
 PUBLIC_B = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEB vm-b"
@@ -67,12 +68,44 @@ class BootstrapTests(unittest.TestCase):
         plan = self.plan()
         user_data, meta_data = lab.cloud_config(plan["vms"][0])
         self.assertTrue(user_data.startswith("#cloud-config\n"))
-        for required in ["wmsadmin", "NOPASSWD:ALL", "ssh_pwauth: false", "lock_passwd: true", "hyperv-daemons", "python3", PUBLIC_A]:
+        for required in ["wmsadmin", "NOPASSWD:ALL", "ssh_pwauth: false", "lock_passwd: true", "linux-cloud-tools-common", "linux-cloud-tools-$(uname -r)", "python3", PUBLIC_A]:
             self.assertIn(required, user_data)
+        self.assertNotIn("hyperv-daemons", user_data)
         for forbidden in ["PRIVATE KEY", "password:", "passwd:", "chpasswd:"]:
             if forbidden != "passwd:":
                 self.assertNotIn(forbidden, user_data)
         self.assertIn(plan["vms"][0]["instance_id"], meta_data)
+
+    def test_cloud_config_revision_is_frozen_and_legacy_seed_cannot_be_created(self):
+        vm = self.plan()["vms"][0]
+        self.assertEqual(vm["cloud_config_revision"], 2)
+        legacy = dict(vm)
+        legacy.pop("cloud_config_revision")
+        self.assertIn("hyperv-daemons", lab.cloud_config(legacy)[0])
+        with self.assertRaisesRegex(ValueError, "Legacy"):
+            lab.create_seed(legacy)
+
+    def test_kvp_repair_is_targeted_and_preserves_guest_identity(self):
+        repair = importlib.util.module_from_spec(repair_spec)
+        repair_spec.loader.exec_module(repair)
+        instance = str(uuid.uuid4())
+        before = dict(instance_id=instance, ssh_host_key_sha256={"ed25519": "a" * 64}, cloud_init_status={"returncode": 1, "status": "error"})
+        commands = []
+        def runner(command):
+            commands.append(command)
+            return "installed" if command[0] == "dpkg-query" else ""
+        result = repair.repair_guest(runner, lambda: before, "6.8.0-147-generic", instance)
+        self.assertEqual(result["status"], "repaired")
+        flattened = " ".join(" ".join(command) for command in commands)
+        self.assertIn("linux-cloud-tools-6.8.0-147-generic", flattened)
+        self.assertIn("hv-kvp-daemon.service", flattened)
+        for forbidden in ["cloud-init clean", "ssh-keygen", "mkfs", "reboot", "rm "]:
+            self.assertNotIn(forbidden, flattened)
+        self.assertEqual(result["before"], result["after"])
+        changed = dict(before, ssh_host_key_sha256={"ed25519": "b" * 64})
+        snapshots = iter([before, changed])
+        with self.assertRaisesRegex(RuntimeError, "identity"):
+            repair.repair_guest(runner, lambda: next(snapshots), "6.8.0-147-generic", instance)
 
     def test_checksum_parser_fails_closed(self):
         digest = "a" * 64
@@ -162,6 +195,28 @@ catch { if($_.Exception.Message -ne 'simulated notes setter failure') { throw } 
             self.assertEqual(result["events"], ["receipt", "notes"])
             self.assertEqual(result["receipt"]["vm_id"], "7a7b26ab-0c95-4b9e-a116-43b93a1617a2")
             self.assertEqual(result["receipt"]["status"], "created")
+
+    def test_keyscan_uses_working_installed_client_after_kex_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            script = Path(directory) / "test.ps1"
+            script.write_text('''param($Driver)
+$ErrorActionPreference='Stop'
+$ast=[System.Management.Automation.Language.Parser]::ParseFile($Driver,[ref]$null,[ref]$null)
+$node=$ast.FindAll({param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Invoke-SSHKeyscan'},$true)[0]
+if(-not $node) { throw 'Invoke-SSHKeyscan missing' }
+. ([scriptblock]::Create($node.Extent.Text))
+function old-keyscan { $global:LASTEXITCODE=1 }
+function malformed-keyscan { $global:LASTEXITCODE=0; 'not-a-host-key' }
+function good-keyscan { $global:LASTEXITCODE=0; '192.0.2.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' }
+$result=Invoke-SSHKeyscan '192.0.2.1' @('old-keyscan','malformed-keyscan','good-keyscan')
+if($result.tool -ne 'good-keyscan') { throw 'Wrong client selected' }
+try { Invoke-SSHKeyscan '192.0.2.1' @('old-keyscan','malformed-keyscan'); throw 'Unexpected acceptance' }
+catch { if($_.Exception.Message -notmatch 'No installed SSH keyscan candidate') { throw } }
+$result | ConvertTo-Json
+''', encoding="utf-8")
+            result = subprocess.run([shutil.which("pwsh"), "-NoProfile", "-File", str(script), str(MODULE_PATH.with_name("lab.ps1"))], text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)["tool"], "good-keyscan")
 
     def test_owned_vm_lookup_uses_receipt_id_and_rejects_foreign_notes(self):
         with tempfile.TemporaryDirectory() as directory:
