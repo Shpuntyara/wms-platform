@@ -52,6 +52,8 @@ DOCUMENT_REGRESSIONS = (
     'TestWorkerCancellationReleasesEveryActiveSender',
     'TestWorkerFreshHealthExpiresDuringMonitoringFailure',
     'TestWorkerRejectsPartialFailedClaim',
+    'TestQueryFiltersCannotDisappearOnMalformedEncoding',
+    'TestRequestBodySizeBoundaryIsExact',
 )
 
 

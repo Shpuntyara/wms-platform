@@ -13,7 +13,7 @@ class CoreMutationCatalogTests(unittest.TestCase):
         directory.mkdir(parents=True)
         cases = []
         for domain in ('inventory', 'authorization', 'background', 'boundary'):
-            cases.extend({'name': f'core_{domain}_{index}', 'kind': 'go', 'domain': domain, 'source': 'internal/api/server.go', 'before': 'before', 'after': 'after', 'pattern': '^TestCoreBehavior$', 'package': './internal/api'} for index in range(8))
+            cases.extend({'name': f'core_{domain}_{index}', 'kind': 'go', 'domain': domain, 'source': 'internal/api/server.go', 'before': f'{domain}_before_{index}', 'after': f'{domain}_after_{index}', 'pattern': '^TestCoreBehavior$', 'package': './internal/api'} for index in range(8))
         (directory / 'core-cases.json').write_text(json.dumps(cases))
         return directory, cases
 
@@ -47,7 +47,7 @@ class CoreMutationCatalogTests(unittest.TestCase):
             {'source': '../outside.go'},
             {'source': 'internal/api/../../outside.go'},
             {'kind': 'shell'},
-            {'after': 'before'},
+            {'before': 'same', 'after': 'same'},
             {'before': ''},
             {'pattern': ''},
             {'package': './...'},

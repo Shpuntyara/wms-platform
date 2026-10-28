@@ -158,5 +158,15 @@
     "after": "context.WithCancel(r.Context())",
     "pattern": "^TestRequestDeadlineIsShorterThanTheCallerContext$",
     "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_malformed_query_filters_discarded",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/server.go",
+    "before": "if err != nil {\n\t\treturn \"\", \"\", inventory.Invalid(\"invalid_query_parameter\")\n\t}",
+    "after": "if err != nil {\n\t\tquery = r.URL.Query()\n\t}",
+    "pattern": "^TestQueryFiltersCannotDisappearOnMalformedEncoding$",
+    "package": "./internal/api"
   }
 ]
