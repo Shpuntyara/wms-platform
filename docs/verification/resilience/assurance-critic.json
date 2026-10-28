@@ -1,0 +1,92 @@
+{
+  "reviewer": "independent assurance critic",
+  "recorded_before_author_fix": true,
+  "utc": "2026-10-28T12:17:05.187230+00:00",
+  "scope": "main crash_restore.py only; security arena copies not read",
+  "test_file": "scripts/test_resilience_assurance_critic.py",
+  "command": "python -m unittest discover -s scripts -p test_resilience_assurance_critic.py",
+  "red_exit": 1,
+  "red_summary": "Ran 5 tests; 5 failing assertions spanning two ownership defects; no errors",
+  "findings": [
+    {
+      "id": "cluster-label-escape",
+      "severity": "P2",
+      "behavior": "Cluster constructor accepts ../ and absolute outside labels and creates directories outside owned work root before kill validation",
+      "resolution": "Author fixed; independent regression test passes"
+    },
+    {
+      "id": "foreign-readiness",
+      "severity": "P2",
+      "behavior": "SELECT1 readiness does not bind the connected endpoint to spawned cluster data_directory before schema creation",
+      "resolution": "Author fixed; independent regression test passes"
+    }
+  ],
+  "passing_controls": [
+    "previous-cycle WAL text cannot satisfy current recovery",
+    "already terminated Popen handle is not killed",
+    "native forced termination syscall/flags are used",
+    "successful late writer result is checked before replay can repair it",
+    "intact command receipts cannot hide reverted live nonzero canary totals"
+  ],
+  "limitations": [
+    "Mocked process ownership checks do not replace the author actual kill/restart/restore experiment.",
+    "An initial test double omitted taskkill stdout/stderr fields; corrected before the preserved red run and not counted as a product defect.",
+    "No production deployment, physical disk power-loss or HA guarantee."
+  ],
+  "red_test_sha256_lf": "bb0a85e8fb4bbb7466fc0132e62624545e6002dba7d9a066bec0555fd4b79d13",
+  "red_source_sha256_lf": "7653df79491fa59bd32c92fe01cd0de5eb858f38e09672cc2ba2c0352eec648c",
+  "green": {
+    "utc": "2026-10-28T12:23:27.763603+00:00",
+    "exit": 0,
+    "summary": "7 tests passed; includes characterization of author fixes, no invented RED for later tests",
+    "test_sha256_lf": "93f7ee4bad608eecd98c45a899550a7b44b16b60d53bbe808cf7a761b712b0d9",
+    "source_sha256_lf": "8b4b8cde2c57b06dfcded80489304c867676a6be5c29d2ed481e4de6ed378bc8"
+  },
+  "inspected_author_experiment": {
+    "path": "work\\crash-restore-smoke-canary.json",
+    "observer": "Critic independently read artifacts and recomputed witness/archive digests; did not perform a second real kill experiment",
+    "cycles": 2,
+    "witness_commands": 581,
+    "canary_units": 2,
+    "restore_status": "passed",
+    "digests_and_per_cycle_wal_log_presence_verified": true,
+    "restored_on_hand": "20.000000",
+    "restored_active_reserved": "6.000000"
+  },
+  "coverage_gap_addressed": "After-CHECKPOINT nonzero canary per cycle; checks acknowledged command results plus live quantities and balance/document/line identities before replay and on isolated restore.",
+  "remaining_verification": [
+    "Full required CI remains separately required on the integrated final revision; this artifact review makes no remote pipeline success claim.",
+    "SQL command workload does not itself exercise the Go HTTP/OIDC request path.",
+    "The committed result without an external application witness is not a literal TCP COMMIT-ACK-loss test.",
+    "Hardware power loss, disk-cache honesty, PITR, replication and HA remain outside this bounded process-crash experiment."
+  ],
+  "final_independent_artifact_review": {
+    "utc": "2026-10-28T12:39:08.944216+00:00",
+    "status": "passed",
+    "observer": "Independent artifact and frozen-source review of the author final Windows run. Critic did not start a cluster or perform this real kill experiment.",
+    "report": "docs/verification/resilience/windows-final.json",
+    "receipt": "docs/verification/resilience/windows-receipt.json",
+    "report_sha256_bytes": "fcda85d6edf3bf9ab1357d80038ba442e74f37eb8d9fd9360662c11f07931054",
+    "current_source_and_test_raw_and_lf_hashes_match_frozen_manifest": true,
+    "verified_source_files": 17,
+    "cycles": 3,
+    "minimum_workload_seconds_per_cycle": 10,
+    "normal_units": 401,
+    "nonzero_canary_units": 3,
+    "final_command_receipts": 3630,
+    "actual_owned_work_artifact_sha256_and_sizes_match": true,
+    "unique_command_ids_and_original_result_stage_sets_verified": true,
+    "per_cycle_copied_and_work_wal_logs_equal": true,
+    "per_cycle_new_pid_chain_unclean_start_redo_start_done_and_ready_verified": true,
+    "stable_all_joined_writer_witness_verified_before_replay_in_current_code": true,
+    "nonzero_canary_written_after_checkpoint_and_checked_before_replay_in_current_code": true,
+    "restored_on_hand": "30.000000",
+    "restored_active_reserved": "9.000000",
+    "restore_exact_counts_match_final_source_and_post_replay": true,
+    "corrupt_archive_differs_by_one_midpoint_bit": true,
+    "offline_checksums_both_stopped_clusters_zero_bad_blocks": true,
+    "author_read_only_owned_process_check_reports_zero": true,
+    "native_kill_tool_nonzero_return": "Cycle 3 taskkill tree tool returned255, retained honestly; owned process abnormal exit1, fresh PID and current-cycle WAL redo are additional recorded evidence.",
+    "prior_evidence_boundary": "The earlier green field records the critic own mocked/synthetic 7-test run at its earlier source hash. inspected_author_experiment records the prior 2-cycle smoke artifact review. Neither is relabeled as an independent real kill run."
+  }
+}

@@ -1,0 +1,26 @@
+PASS stolen API cannot enumerate foreign documents
+PASS stolen API cannot forge actor via legacy command
+PASS stolen API cannot claim outbox
+PASS stolen API cannot acknowledge outbox
+PASS stolen API cannot run expiry
+PASS API cannot read signing secret
+PASS API cannot read binding registry
+PASS API cannot call hardened worker
+PASS API cannot call HMAC signer
+PASS API cannot change owner role
+PASS unsigned identity lookup rejected
+PASS worker cannot read API
+PASS missing request context rejected
+PASS freely set actor GUC rejected
+PASS fabricated signed context rejected
+FAIL tampered actor signature rejected: invalid signed context not rejected
+PASS expired signed context rejected
+PASS excessive context lifetime rejected
+PASS signed context for another scope rejected
+PASS signed context replay in another transaction rejected
+PASS signed context replay on another connection rejected
+PASS signature binds exact raw argument bytes
+PASS signature for read cannot authorize a command
+PASS valid signed scoped read returns only local document
+PASS valid signed command retries identically and rollback persists nothing
+PASS separate scoped worker surface works

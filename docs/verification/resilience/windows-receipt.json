@@ -1,0 +1,76 @@
+{
+  "recorded_at_utc": "2026-10-28T12:35:00.435581+00:00",
+  "baseline_git_head": "074ee0a0ff1ce75aa2ee137395b333bbb4fe0488",
+  "source_snapshot": "windows-final.json:source_files; these working-tree inputs, not a clean committed revision",
+  "command": "python scripts/crash_restore.py --pg-bin 'C:\\Program Files\\PostgreSQL\\17\\bin' --cycles 3 --seconds 10 --report work/crash-restore-final-windows.json",
+  "command_exit": 0,
+  "unit_commands": [
+    {
+      "command": "python -m unittest discover -s scripts -p test_crash_restore.py",
+      "exit": 0,
+      "tests": 11
+    },
+    {
+      "command": "python -m unittest discover -s scripts -p test_resilience_assurance_critic.py",
+      "exit": 0,
+      "tests": 7
+    }
+  ],
+  "actual_backup_and_witness_artifacts": {
+    "acknowledged.jsonl": {
+      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a\\acknowledged.jsonl",
+      "bytes": 1515379,
+      "sha256_bytes": "c2890f658ffb672e256cbe7075768717f18cf829d69de96926ebe43326f10868"
+    },
+    "candidates.jsonl": {
+      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a\\candidates.jsonl",
+      "bytes": 305161,
+      "sha256_bytes": "2dd907f3ac576385506dcab216e1347e359db5b8c2f4bd4c18a2556a9a8ec57b"
+    },
+    "canaries.jsonl": {
+      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a\\canaries.jsonl",
+      "bytes": 9402,
+      "sha256_bytes": "54045f42a7331e11c20a74f46d5c0027526ccbbbf1dbf5eea2f9becb4fb4d0f7"
+    },
+    "synthetic-wms.dump": {
+      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a\\synthetic-wms.dump",
+      "bytes": 1305475,
+      "sha256_bytes": "60d84de8764e33168586347dad80675897909f1aa7a61c7f146f57a4e270fc5d"
+    },
+    "corrupt-negative-control.dump": {
+      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a\\corrupt-negative-control.dump",
+      "bytes": 1305475,
+      "sha256_bytes": "f0a67f757a256ba726430f60fc523ee9b025ef2b6885c1cfbd885181eeb8637a"
+    }
+  },
+  "tdd_provenance": {
+    "fully_hashed_red_green": [
+      "assurance-critic.json: two independently discovered ownership defects",
+      "source-portability-red.json and author-final-green.json: socket behavior red plus missing-manifest scaffold red"
+    ],
+    "behavior_red_without_contemporaneous_hashes": [
+      "empty-witness-red.txt",
+      "canary-identity-red.txt"
+    ],
+    "missing_helper_scaffold_only": [
+      "initial-scaffold-red.txt",
+      "termination-scaffold-red.txt",
+      "canary-scaffold-red.txt",
+      "cleanup-scaffold-red.txt"
+    ],
+    "actual_smoke_failures": [
+      "failed-smoke-taskkill.json: tree-tool result was overstrict despite owned abnormal exit; raw status retained",
+      "failed-smoke-backup-fsync.json: read-only Windows backup FD could not be fsynced; changed to r+b"
+    ],
+    "already_passing_characterizations": "Do not count independent old-cycle WAL/dead process/forced primitive/late acknowledgement/canary controls as discovered product defects."
+  },
+  "offline_checksums": "Both clusters stopped; pg_checksums --check found 0 bad blocks. See offline-checksums.json and two raw text files.",
+  "required_final_ci": "Still separately required on integrated final revision; this receipt does not assert remote pipeline success.",
+  "limits": [
+    "Not hardware power-loss, disk-cache honesty, disk failure, PITR, replication or HA evidence.",
+    "Workload and latency measurements are a bounded local/container experiment, not a production throughput SLA.",
+    "SQL kernel workload with nine commands in one transaction per normal unit; no HTTP/OIDC path.",
+    "Committed-without-application-witness is not literal TCP COMMIT ACK loss.",
+    "No production credentials or production data were used."
+  ]
+}

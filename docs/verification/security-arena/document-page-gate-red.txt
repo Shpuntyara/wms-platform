@@ -1,0 +1,15 @@
+E....
+======================================================================
+ERROR: test_document_page_mutant_requires_the_large_fixture_plan_assertion (test_hardened_gate.HardenedGateTests.test_document_page_mutant_requires_the_large_fixture_plan_assertion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 56, in test_document_page_mutant_requires_the_large_fixture_plan_assertion
+    validate_receipt('document_page', 1, receipt, output)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\hardened_gate.py", line 41, in validate_receipt
+    raise ValueError('Missing or invalid behavioral evidence for ' + kind)
+ValueError: Missing or invalid behavioral evidence for document_page
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.009s
+
+FAILED (errors=1)

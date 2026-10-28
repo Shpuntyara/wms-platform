@@ -1,0 +1,33 @@
+{
+  "profile": "baseline",
+  "postgres": "17.11",
+  "test_sha256": "2760c5380586e349e20f87a5a8a897d14f5b07f2a1636b766e50dbbf01e322a8",
+  "results": [
+    {
+      "name": "stolen API cannot enumerate foreign documents",
+      "status": "fail",
+      "detail": "stolen login accepted forbidden SQL; result=af070604-dc9e-40b1-95b5-df91492fbc95"
+    },
+    {
+      "name": "stolen API cannot forge actor via legacy command",
+      "status": "fail",
+      "detail": "stolen login accepted forbidden SQL; result={\"document_id\": \"f17bcdf8-e50a-4208-be8f-b13d184cebe0\", \"operation_id\": \"fa266c08-9e44-4a96-b072-7e2f8a9afa1e\", \"reservation_id\": \"3dc21506-004a-4c8a-9ba1-16f318372e23\", \"content_revision\": 2, \"document_version\": 2}"
+    },
+    {
+      "name": "stolen API cannot claim outbox",
+      "status": "fail",
+      "detail": "stolen login accepted forbidden SQL; result="
+    },
+    {
+      "name": "stolen API cannot acknowledge outbox",
+      "status": "fail",
+      "detail": "stolen login accepted forbidden SQL; result=f"
+    },
+    {
+      "name": "stolen API cannot run expiry",
+      "status": "fail",
+      "detail": "stolen login accepted forbidden SQL; result=0"
+    }
+  ],
+  "passed": false
+}

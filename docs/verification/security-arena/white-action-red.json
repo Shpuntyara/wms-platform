@@ -1,0 +1,93 @@
+{
+  "profile": "hardened",
+  "postgres": "17.11",
+  "test_sha256": "52799e7d78eedb73ddf58c9e74ef94b6bc6d38c9d6eb1680bf2fa61b6aa33f0f",
+  "results": [
+    {
+      "name": "stolen API cannot enumerate foreign documents",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot forge actor via legacy command",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot claim outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot acknowledge outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot run expiry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read signing secret",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read binding registry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot call hardened worker",
+      "status": "pass"
+    },
+    {
+      "name": "worker cannot read API",
+      "status": "pass"
+    },
+    {
+      "name": "missing request context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "freely set actor GUC rejected",
+      "status": "pass"
+    },
+    {
+      "name": "fabricated signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "tampered actor signature rejected",
+      "status": "pass"
+    },
+    {
+      "name": "expired signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "excessive context lifetime rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context for another scope rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context replay in another transaction rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signature for read cannot authorize a command",
+      "status": "fail",
+      "detail": "read signature authorized a different write action"
+    },
+    {
+      "name": "valid signed scoped read returns only local document",
+      "status": "pass"
+    },
+    {
+      "name": "valid signed command retries identically and rollback persists nothing",
+      "status": "pass"
+    },
+    {
+      "name": "separate scoped worker surface works",
+      "status": "pass"
+    }
+  ],
+  "passed": false
+}

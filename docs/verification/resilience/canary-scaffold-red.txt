@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_crash_restore (unittest.loader._FailedTest.test_crash_restore)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_crash_restore
+Traceback (most recent call last):
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\loader.py", line 419, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\unittest\loader.py", line 362, in _get_module_from_name
+    __import__(name)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_crash_restore.py", line 8, in <module>
+    from crash_restore import (
+ImportError: cannot import name 'verify_canary_state' from 'crash_restore' (C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

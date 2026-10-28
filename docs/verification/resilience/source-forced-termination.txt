@@ -1,0 +1,10 @@
+SUCCESS: The process with PID 33436 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 22912 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 41640 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 27456 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 19764 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 25028 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 33984 (child process of PID 10052) has been terminated.
+SUCCESS: The process with PID 10052 (child process of PID 28268) has been terminated.
+ERROR: The process with PID 34156 (child process of PID 10052) could not be terminated.
+Reason: The operation attempted is not supported.

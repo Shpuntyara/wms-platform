@@ -1,0 +1,6 @@
+{
+  "test_exit": 1,
+  "test_sha256_bytes": "8B2314EF1B4AF1B1C4C85E0CB2208D6C221A996CCC63F82DD8DB5DF02BB076D6",
+  "source_sha256_bytes": "5F320F078F49F53011ADDA0DA0504E955220B550C910C01A520EE841B808025A",
+  "note": "Tests added first. Missing manifest export is scaffold red; socket assertion is behavioral red."
+}

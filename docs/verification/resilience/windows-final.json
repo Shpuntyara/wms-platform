@@ -1,0 +1,320 @@
+{
+  "status": "passed",
+  "scope": "Bounded PostgreSQL process-crash recovery and isolated logical backup restore using synthetic WMS data.",
+  "cycles": [
+    {
+      "cycle": 1,
+      "kill": {
+        "pid": 25160,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 0,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 31728,
+      "recovery_seconds": 1.813,
+      "workload_seconds": 10.187,
+      "writers": 2,
+      "acknowledged_units_before_kill": 124,
+      "acknowledged_units_verified_before_replay": 126,
+      "new_acknowledged_units": 126,
+      "read_requests": 99,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.141,
+      "unit_latency_p95_seconds": 0.265,
+      "same_id_replayed_units": 128,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 1,
+        "on_hand": 10,
+        "active_reserved": 3,
+        "all_original_results_and_live_states": "passed"
+      },
+      "checks": {
+        "exact_counts": {
+          "audit": 1159,
+          "lines": 258,
+          "active": "3.000000",
+          "closed": 257,
+          "outbox": 1159,
+          "on_hand": "10.000000",
+          "reserved": "3.000000",
+          "documents": 258,
+          "movements": 257,
+          "incomplete": 0,
+          "operations": 1159,
+          "reservations": 129
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed"
+      }
+    },
+    {
+      "cycle": 2,
+      "kill": {
+        "pid": 31728,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 0,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 10052,
+      "recovery_seconds": 1.656,
+      "workload_seconds": 10.187,
+      "writers": 2,
+      "acknowledged_units_before_kill": 255,
+      "acknowledged_units_verified_before_replay": 257,
+      "new_acknowledged_units": 129,
+      "read_requests": 102,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.141,
+      "unit_latency_p95_seconds": 0.25,
+      "same_id_replayed_units": 259,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 2,
+        "on_hand": 20,
+        "active_reserved": 6,
+        "all_original_results_and_live_states": "passed"
+      },
+      "checks": {
+        "exact_counts": {
+          "audit": 2345,
+          "lines": 522,
+          "active": "6.000000",
+          "closed": 520,
+          "outbox": 2345,
+          "on_hand": "20.000000",
+          "reserved": "6.000000",
+          "documents": 522,
+          "movements": 520,
+          "incomplete": 0,
+          "operations": 2345,
+          "reservations": 261
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed"
+      }
+    },
+    {
+      "cycle": 3,
+      "kill": {
+        "pid": 10052,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 255,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 25356,
+      "recovery_seconds": 1.578,
+      "workload_seconds": 10.204,
+      "writers": 2,
+      "acknowledged_units_before_kill": 397,
+      "acknowledged_units_verified_before_replay": 399,
+      "new_acknowledged_units": 140,
+      "read_requests": 108,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.125,
+      "unit_latency_p95_seconds": 0.25,
+      "same_id_replayed_units": 401,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 3,
+        "on_hand": 30,
+        "active_reserved": 9,
+        "all_original_results_and_live_states": "passed"
+      },
+      "checks": {
+        "exact_counts": {
+          "audit": 3630,
+          "lines": 808,
+          "active": "9.000000",
+          "closed": 805,
+          "outbox": 3630,
+          "on_hand": "30.000000",
+          "reserved": "9.000000",
+          "documents": 808,
+          "movements": 805,
+          "incomplete": 0,
+          "operations": 3630,
+          "reservations": 404
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed"
+      }
+    }
+  ],
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-22c4e06b3820480ea7cc40f83326ff0a",
+  "postgresql_tools": "C:\\Program Files\\PostgreSQL\\17\\bin",
+  "source_files": {
+    "scripts/crash_restore.py": {
+      "sha256_bytes": "00236f0ef1920dc426a43b8fdc870c7fe590db4f100ae7e5dcfb8f28c2ea4177",
+      "sha256_lf": "00236f0ef1920dc426a43b8fdc870c7fe590db4f100ae7e5dcfb8f28c2ea4177"
+    },
+    "scripts/migrate_core.py": {
+      "sha256_bytes": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5",
+      "sha256_lf": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5"
+    },
+    "scripts/test_crash_restore.py": {
+      "sha256_bytes": "8b2314ef1b4af1b1c4c85e0cb2208d6c221a996ccc63f82dd8db5df02bb076d6",
+      "sha256_lf": "8b2314ef1b4af1b1c4c85e0cb2208d6c221a996ccc63f82dd8db5df02bb076d6"
+    },
+    "scripts/test_resilience_assurance_critic.py": {
+      "sha256_bytes": "93f7ee4bad608eecd98c45a899550a7b44b16b60d53bbe808cf7a761b712b0d9",
+      "sha256_lf": "93f7ee4bad608eecd98c45a899550a7b44b16b60d53bbe808cf7a761b712b0d9"
+    },
+    "db/migrations/0001_inventory_schema.sql": {
+      "sha256_bytes": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+      "sha256_lf": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+    },
+    "db/migrations/0002_inventory_commands.sql": {
+      "sha256_bytes": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+      "sha256_lf": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+    },
+    "db/migrations/0003_backend_api.sql": {
+      "sha256_bytes": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+      "sha256_lf": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+    },
+    "db/migrations/0004_module_integrity.sql": {
+      "sha256_bytes": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+      "sha256_lf": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+    },
+    "db/migrations/0005_inventory_pagination.sql": {
+      "sha256_bytes": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+      "sha256_lf": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045"
+    },
+    "db/migrations/0006_security_boundary.sql": {
+      "sha256_bytes": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+      "sha256_lf": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72"
+    },
+    "db/migrations/0007_background_jobs.sql": {
+      "sha256_bytes": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261",
+      "sha256_lf": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817"
+    },
+    "db/migrations/0008_background_health_and_policy_v2.sql": {
+      "sha256_bytes": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+      "sha256_lf": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213"
+    },
+    "db/migrations/0009_warehouse_documents.sql": {
+      "sha256_bytes": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431",
+      "sha256_lf": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+    },
+    "db/bootstrap/backend-grants.psql": {
+      "sha256_bytes": "960cd9f4a8ed10567b10b3ba4f87f344b17e86beaadb18c219b281a1767fca3f",
+      "sha256_lf": "960cd9f4a8ed10567b10b3ba4f87f344b17e86beaadb18c219b281a1767fca3f"
+    },
+    "db/bootstrap/dispatch-quality-grants.psql": {
+      "sha256_bytes": "c24354b41348091999ebe6ae4511a1c9244802fe6831a44d7096c9b5b461c7bc",
+      "sha256_lf": "c24354b41348091999ebe6ae4511a1c9244802fe6831a44d7096c9b5b461c7bc"
+    },
+    "db/bootstrap/grants.psql": {
+      "sha256_bytes": "44caab192acd64df668f6cf672c60a1ee8dc6d6cc9647712ddbfdc6017dd23ad",
+      "sha256_lf": "44caab192acd64df668f6cf672c60a1ee8dc6d6cc9647712ddbfdc6017dd23ad"
+    },
+    "db/bootstrap/hardened-grants.psql": {
+      "sha256_bytes": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05",
+      "sha256_lf": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05"
+    }
+  },
+  "production_data_or_consumers_used": false,
+  "limitations": [
+    "Not hardware power-loss, disk-cache honesty, disk failure, PITR, replication or HA evidence.",
+    "Workload and latency measurements are a bounded local/container experiment, not a production throughput SLA."
+  ],
+  "settings": {
+    "fsync": "on",
+    "data_checksums": "on",
+    "full_page_writes": "on",
+    "synchronous_commit": "on"
+  },
+  "postgres_version": "17.11",
+  "witness_units": 401,
+  "canary_units": 3,
+  "witness_commands": 3630,
+  "witness_sha256": "c2890f658ffb672e256cbe7075768717f18cf829d69de96926ebe43326f10868",
+  "canary_witness_sha256": "54045f42a7331e11c20a74f46d5c0027526ccbbbf1dbf5eea2f9becb4fb4d0f7",
+  "restore": {
+    "status": "passed",
+    "backup_sha256": "60d84de8764e33168586347dad80675897909f1aa7a61c7f146f57a4e270fc5d",
+    "backup_bytes": 1305475,
+    "backup_restore_total_seconds": 39.75,
+    "restore_verify_replay_seconds": 33.187,
+    "corrupt_archive_refused_before_restore": true,
+    "separate_pgdata": true,
+    "migration_history_preserved": true,
+    "checks": {
+      "exact_counts": {
+        "audit": 3630,
+        "lines": 808,
+        "active": "9.000000",
+        "closed": 805,
+        "outbox": 3630,
+        "on_hand": "30.000000",
+        "reserved": "9.000000",
+        "documents": 808,
+        "movements": 805,
+        "incomplete": 0,
+        "operations": 3630,
+        "reservations": 404
+      },
+      "reconciliation": {
+        "movement_ledger": 0,
+        "balance_reservations": 0,
+        "document_reservations": 0
+      },
+      "runtime_read_contract": "passed"
+    },
+    "checks_after_replay": {
+      "exact_counts": {
+        "audit": 3630,
+        "lines": 808,
+        "active": "9.000000",
+        "closed": 805,
+        "outbox": 3630,
+        "on_hand": "30.000000",
+        "reserved": "9.000000",
+        "documents": 808,
+        "movements": 805,
+        "incomplete": 0,
+        "operations": 3630,
+        "reservations": 404
+      },
+      "reconciliation": {
+        "movement_ledger": 0,
+        "balance_reservations": 0,
+        "document_reservations": 0
+      },
+      "runtime_read_contract": "passed"
+    },
+    "nonzero_canaries_verified_before_replay": {
+      "acknowledged_nonzero_canaries": 3,
+      "on_hand": 30,
+      "active_reserved": 9,
+      "all_original_results_and_live_states": "passed"
+    },
+    "quarantine": "Synthetic database, loopback only, no application relay/consumer started."
+  },
+  "source_unchanged_during_run": true,
+  "clusters_stopped": true
+}

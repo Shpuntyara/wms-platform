@@ -1,0 +1,122 @@
+{
+  "status": "failed",
+  "scope": "Bounded PostgreSQL process-crash recovery and isolated logical backup restore using synthetic WMS data.",
+  "cycles": [
+    {
+      "cycle": 1,
+      "kill": {
+        "pid": 1904,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 128,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 19640,
+      "recovery_seconds": 1.422,
+      "workload_seconds": 4.234,
+      "writers": 2,
+      "acknowledged_units_before_kill": 29,
+      "new_acknowledged_units": 32,
+      "read_requests": 25,
+      "interrupted_writes": 2,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.125,
+      "unit_latency_p95_seconds": 0.141,
+      "same_id_replayed_units": 36,
+      "newly_confirmed_after_replay": 7,
+      "known_uncommitted_absent_before_replay": true,
+      "known_lost_ack_commit_survived": true,
+      "checks": {
+        "exact_counts": {
+          "audit": 324,
+          "lines": 72,
+          "active": "0.000000",
+          "closed": 72,
+          "outbox": 324,
+          "on_hand": "0.000000",
+          "reserved": "0.000000",
+          "documents": 72,
+          "movements": 72,
+          "incomplete": 0,
+          "operations": 324,
+          "reservations": 36
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed"
+      }
+    },
+    {
+      "cycle": 2,
+      "kill": {
+        "pid": 19640,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 255,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 40580,
+      "recovery_seconds": 1.312,
+      "workload_seconds": 2.203,
+      "writers": 2,
+      "acknowledged_units_before_kill": 64,
+      "new_acknowledged_units": 31,
+      "read_requests": 24,
+      "interrupted_writes": 2,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.125,
+      "unit_latency_p95_seconds": 0.156,
+      "same_id_replayed_units": 71,
+      "newly_confirmed_after_replay": 7,
+      "known_uncommitted_absent_before_replay": true,
+      "known_lost_ack_commit_survived": true,
+      "checks": {
+        "exact_counts": {
+          "audit": 639,
+          "lines": 142,
+          "active": "0.000000",
+          "closed": 142,
+          "outbox": 639,
+          "on_hand": "0.000000",
+          "reserved": "0.000000",
+          "documents": 142,
+          "movements": 142,
+          "incomplete": 0,
+          "operations": 639,
+          "reservations": 71
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed"
+      }
+    }
+  ],
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-6c4f74e8ac7a400683f7c311a2eb5b96",
+  "postgresql_tools": "C:\\Program Files\\PostgreSQL\\17\\bin",
+  "production_data_or_consumers_used": false,
+  "limitations": [
+    "Not hardware power-loss, disk-cache honesty, disk failure, PITR, replication or HA evidence.",
+    "Workload and latency measurements are a bounded local/container experiment, not a production throughput SLA."
+  ],
+  "settings": {
+    "fsync": "on",
+    "data_checksums": "on",
+    "full_page_writes": "on",
+    "synchronous_commit": "on"
+  },
+  "postgres_version": "17.11",
+  "witness_units": 71,
+  "witness_commands": 639,
+  "witness_sha256": "a9cc7c35d807b19f87c573d7688b8de1af8e75e2f52bed3c58eb14914ac85ad7",
+  "error": {
+    "type": "OSError",
+    "message": "[Errno 9] Bad file descriptor"
+  },
+  "clusters_stopped": true
+}

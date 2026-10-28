@@ -1,0 +1,153 @@
+PASS stolen API cannot enumerate foreign documents
+PASS stolen API cannot forge actor via legacy command
+PASS stolen API cannot claim outbox
+PASS stolen API cannot acknowledge outbox
+PASS stolen API cannot run expiry
+PASS API cannot read signing secret
+PASS API cannot read binding registry
+PASS API cannot call hardened worker
+PASS API cannot call HMAC signer
+PASS API cannot change owner role
+PASS unsigned identity lookup rejected
+PASS worker cannot read API
+PASS missing request context rejected
+PASS freely set actor GUC rejected
+PASS fabricated signed context rejected
+PASS tampered actor signature rejected
+PASS expired signed context rejected
+PASS excessive context lifetime rejected
+PASS signed context for another scope rejected
+PASS signed context replay in another transaction rejected
+PASS signed context replay on another connection rejected
+PASS signature binds exact raw argument bytes
+PASS signature for read cannot authorize a command
+PASS valid signed scoped read returns only local document
+PASS valid signed command retries identically and rollback persists nothing
+PASS separate scoped worker surface works
+=== RUN   TestHardenedHTTPAndContainment
+=== RUN   TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval
+=== RUN   TestHardenedHTTPAndContainment/HTTP_release
+=== RUN   TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement
+=== RUN   TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution
+=== RUN   TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse_and_stale_ack_fenced
+=== RUN   TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation
+=== RUN   TestHardenedHTTPAndContainment/expiry_and_acknowledgement_stay_in_worker_warehouse
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic
+=== RUN   TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access
+--- PASS: TestHardenedHTTPAndContainment (0.67s)
+    --- PASS: TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion (0.05s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.04s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse_and_stale_ack_fenced (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation (0.06s)
+    --- PASS: TestHardenedHTTPAndContainment/expiry_and_acknowledgement_stay_in_worker_warehouse (0.07s)
+    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.27s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send (0.09s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof (0.09s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic (0.09s)
+    --- PASS: TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access (0.02s)
+=== RUN   TestHardenedDocumentReadsAtScale
+panic: test timed out after 3m0s
+	running tests:
+		TestHardenedDocumentReadsAtScale (2m59s)
+
+goroutine 59 [running]:
+testing.(*M).startAlarm.func1()
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2961 +0x605
+created by time.goFunc
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/time/sleep.go:182 +0x45
+
+goroutine 1 [chan receive, 2 minutes]:
+testing.(*T).Run(0xc000244200, {0x140ad586b, 0x20}, 0x1411c4078)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2268 +0xb56
+testing.runTests.func1(0xc000244200)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2744 +0x85
+testing.tRunner(0xc000244200, 0xc000227a40)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2195 +0x1cb
+testing.runTests({0x140ad796b, 0x22}, {0x140ae58fc, 0x34}, 0xc000114210, {0x140ab5c68, 0x4c, 0x4c}, {0xc2b0990c605f79c0, 0x29e91d5139, ...})
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2742 +0x9f8
+testing.(*M).Run(0xc000110e60)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2602 +0xf45
+main.main()
+	_testmain.go:198 +0x165
+
+goroutine 86 [IO wait, 2 minutes]:
+internal/poll.runtime_pollWait(0x4737c600, 0x72)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0xc0001ec638, 0x72, 0x0)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/internal/poll/fd_poll_runtime.go:84 +0xb1
+internal/poll.(*FD).waitIO(0xc0001ec620, 0xc0004131a0)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/internal/poll/fd_windows.go:233 +0xc5
+internal/poll.(*FD).execIO(0xc0001ec620, 0x72, 0xc00027ab20, {0xc00027aae0, 0x1, 0x1400fb66c?})
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/internal/poll/fd_windows.go:310 +0x532
+internal/poll.(*FD).Read(0xc0001ec620, {0xc0000cc000, 0x2000, 0x2000})
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/internal/poll/fd_windows.go:633 +0x3a6
+net.(*netFD).Read(0xc0001ec620, {0xc0000cc000, 0x2000, 0x2000})
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/net/fd_posix.go:68 +0x4b
+net.(*conn).Read(0xc0003ec440, {0xc0000cc000, 0x2000, 0x2000})
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/net/net.go:196 +0xad
+github.com/jackc/pgx/v5/pgconn/internal/bgreader.(*BGReader).Read(0xc0004f6500, {0xc0000cc000, 0x2000, 0x2000})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/internal/bgreader/bgreader.go:100 +0x1db
+io.ReadAtLeast({0x1411bb020, 0xc0004f6500}, {0xc0000cc000, 0x2000, 0x2000}, 0x5)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/io/io.go:335 +0xc7
+github.com/jackc/pgx/v5/pgproto3.(*chunkReader).Next(0xc000411a40, 0x5)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgproto3/chunkreader.go:80 +0x82f
+github.com/jackc/pgx/v5/pgproto3.(*Frontend).Receive(0xc000004488)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgproto3/frontend.go:313 +0x85
+github.com/jackc/pgx/v5/pgconn.(*PgConn).peekMessage(0xc0001cd608)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:643 +0x1f8
+github.com/jackc/pgx/v5/pgconn.(*PgConn).receiveMessage(0xc0001cd608)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:667 +0xc6
+github.com/jackc/pgx/v5/pgconn.(*ResultReader).receiveMessage(0xc0001cd6c0)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:1921 +0x95
+github.com/jackc/pgx/v5/pgconn.(*ResultReader).readUntilRowDescription(0xc0001cd6c0, 0xc0002e0460, {0xc00010e178, 0x0, 0x4})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:1888 +0x85
+github.com/jackc/pgx/v5/pgconn.(*PgConn).execExtendedSuffix(0xc0001cd608, 0xc0001cd6c0, 0xc0002e0460, {0xc00010e178, 0x0, 0x4})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:1388 +0x365
+github.com/jackc/pgx/v5/pgconn.(*PgConn).ExecStatement(0xc0001cd608, {0x1411c1b40, 0xc0002079a0}, 0xc0002e0460, {0xc0001530e0, 0x2, 0x4}, {0xc00010e168, 0x2, 0x4}, ...)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgconn/pgconn.go:1328 +0x267
+github.com/jackc/pgx/v5.(*Conn).execPrepared(0xc000414500, {0x1411c1b40, 0xc0002079a0}, 0xc0002e0460, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/conn.go:622 +0x231
+github.com/jackc/pgx/v5.(*Conn).exec(0xc000414500, {0x1411c1b40, 0xc0002079a0}, {0x140af78fd, 0x113}, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/conn.go:559 +0x99d
+github.com/jackc/pgx/v5.(*Conn).Exec(0xc000414500, {0x1411c1b40, 0xc0002079a0}, {0x140af78fd, 0x113}, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/conn.go:490 +0x278
+github.com/jackc/pgx/v5/pgxpool.(*Conn).Exec(0xc000004c78, {0x1411c1b40, 0xc0002079a0}, {0x140af78fd, 0x113}, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/conn.go:86 +0x112
+github.com/jackc/pgx/v5/pgxpool.(*Pool).Exec(0xc0001ec380, {0x1411c1b40, 0xc0002079a0}, {0x140af78fd, 0x113}, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:751 +0x14a
+github.com/Shpuntyara/wms-platform/internal/postgres_test.TestHardenedDocumentReadsAtScale.func2({0x140af78fd, 0x113}, {0xc000198360, 0x2, 0x2})
+	C:/Users/sashk/Documents/WMS/wms-platform/internal/postgres/hardened_load_integration_test.go:59 +0xea
+github.com/Shpuntyara/wms-platform/internal/postgres_test.TestHardenedDocumentReadsAtScale(0xc000244800)
+	C:/Users/sashk/Documents/WMS/wms-platform/internal/postgres/hardened_load_integration_test.go:89 +0x1647
+testing.tRunner(0xc000244800, 0x1411c4078)
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2195 +0x1cb
+created by testing.(*T).Run in goroutine 1
+	C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/src/testing/testing.go:2260 +0xb2b
+
+goroutine 88 [select, 2 minutes]:
+github.com/jackc/pgx/v5/pgxpool.(*Pool).backgroundHealthCheck(0xc0001ec460)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:510 +0x1cc
+github.com/jackc/pgx/v5/pgxpool.NewWithConfig.func5()
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:337 +0x8f
+created by github.com/jackc/pgx/v5/pgxpool.NewWithConfig in goroutine 86
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:334 +0xc1d
+
+goroutine 87 [select, 2 minutes]:
+github.com/jackc/pgx/v5/pgxpool.(*Pool).backgroundHealthCheck(0xc0001ec380)
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:510 +0x1cc
+github.com/jackc/pgx/v5/pgxpool.NewWithConfig.func5()
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:337 +0x8f
+created by github.com/jackc/pgx/v5/pgxpool.NewWithConfig in goroutine 86
+	C:/Users/sashk/go/pkg/mod/github.com/jackc/pgx/v5@v5.11.0/pgxpool/pool.go:334 +0xc1d
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	180.050s
+FAIL
+

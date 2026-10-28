@@ -1,0 +1,21 @@
+.........EF
+======================================================================
+ERROR: test_source_manifest_records_raw_and_lf_bytes_and_refuses_drift (test_crash_restore.CrashRestoreGateTests.test_source_manifest_records_raw_and_lf_bytes_and_refuses_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_crash_restore.py", line 21, in test_source_manifest_records_raw_and_lf_bytes_and_refuses_drift
+    from crash_restore import source_manifest, verify_source_manifest
+ImportError: cannot import name 'source_manifest' from 'crash_restore' (C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py)
+
+======================================================================
+FAIL: test_start_disables_default_unix_socket_directory_for_nonroot_ci (test_crash_restore.CrashRestoreGateTests.test_start_disables_default_unix_socket_directory_for_nonroot_ci)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_crash_restore.py", line 56, in test_start_disables_default_unix_socket_directory_for_nonroot_ci
+    self.assertIn('unix_socket_directories=', command)
+AssertionError: 'unix_socket_directories=' not found in ['unexecuted-postgres-test-double', '-D', 'C:\\Users\\sashk\\AppData\\Local\\Temp\\tmprpe6stay\\source\\pgdata', '-h', '127.0.0.1', '-p', '57344', '-c', 'fsync=on', '-c', 'synchronous_commit=on', '-c', 'full_page_writes=on', '-c', 'shared_buffers=32MB', '-c', 'max_connections=40', '-c', 'log_checkpoints=on']
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.020s
+
+FAILED (failures=1, errors=1)

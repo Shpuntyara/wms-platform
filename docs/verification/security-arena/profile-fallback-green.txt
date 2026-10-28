@@ -1,0 +1,1 @@
+ok  	github.com/Shpuntyara/wms-platform/cmd/wms-api	1.049s

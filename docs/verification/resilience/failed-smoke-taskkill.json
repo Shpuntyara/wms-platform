@@ -1,0 +1,24 @@
+{
+  "status": "failed",
+  "scope": "Bounded PostgreSQL process-crash recovery and isolated logical backup restore using synthetic WMS data.",
+  "cycles": [],
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\crash-restore-043c2c952e7847bcb5979bfaef665cc7",
+  "postgresql_tools": "C:\\Program Files\\PostgreSQL\\17\\bin",
+  "production_data_or_consumers_used": false,
+  "limitations": [
+    "Not hardware power-loss, disk-cache honesty, disk failure, PITR, replication or HA evidence.",
+    "Workload and latency measurements are a bounded local/container experiment, not a production throughput SLA."
+  ],
+  "settings": {
+    "fsync": "on",
+    "data_checksums": "on",
+    "full_page_writes": "on",
+    "synchronous_commit": "on"
+  },
+  "postgres_version": "17.11",
+  "error": {
+    "type": "RuntimeError",
+    "message": "Failed to terminate the owned PostgreSQL tree"
+  },
+  "clusters_stopped": true
+}

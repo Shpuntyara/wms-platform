@@ -1,0 +1,595 @@
+{
+  "scope": "isolated synthetic local PostgreSQL permission regression only",
+  "started_at": "2026-10-28T12:07:51.505712+00:00",
+  "snapshot": "074ee0a0ff1ce75aa2ee137395b333bbb4fe0488",
+  "work": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\security-arena\\red\\work\\arena-red-aeef0d8efa564938",
+  "host": "127.0.0.1",
+  "port": 65078,
+  "matrix": [
+    {
+      "case": "read_foreign_organization_stock_balances",
+      "query": "SELECT count(*) FROM contracts_v1.stock_balances WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_documents",
+      "query": "SELECT count(*) FROM contracts_v1.documents WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 2,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_document_details",
+      "query": "SELECT count(*) FROM contracts_v1.document_details WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 2,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_document_lines",
+      "query": "SELECT count(*) FROM contracts_v1.document_lines WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 2,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_reservations",
+      "query": "SELECT count(*) FROM contracts_v1.reservations WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_movements",
+      "query": "SELECT count(*) FROM contracts_v1.movements WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_operations",
+      "query": "SELECT count(*) FROM contracts_v1.operations WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "read_foreign_organization_actor_grants",
+      "query": "SELECT count(*) FROM contracts_v1.actor_grants WHERE organization_id=$1",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 10,
+      "durable_side_effects": false
+    },
+    {
+      "case": "reserve_without_actor_grants",
+      "query": "SELECT count(*) FROM inventory.reserve_stock($1,$2,$3,1,$4,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "reserve_with_supplied_granted_actor",
+      "query": "SELECT count(*) FROM inventory.reserve_stock($1,$2,$3,1,$4,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "release_without_actor_grants",
+      "query": "SELECT count(*) FROM inventory.release_reservation($1,$2,$3,1,1,'arena permission regression')",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "movement_without_actor_grants",
+      "query": "SELECT count(*) FROM inventory.post_movement($1,$2,$3,1,'receipt',NULL,$4,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "prepare_reservation_without_context",
+      "query": "SELECT count(*) FROM inventory.prepare_reservation($1,$2,$3,1,$4,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "P0001",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "prepare_release_without_context",
+      "query": "SELECT count(*) FROM inventory.prepare_release($1,$2,$3,1,1,'arena permission regression')",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "P0001",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "prepare_movement_without_context",
+      "query": "SELECT count(*) FROM inventory.prepare_movement($1,$2,$3,1,'receipt',NULL,$4,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "P0001",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "ensure_balance_without_context",
+      "query": "SELECT count(*) FROM inventory.ensure_balance($1,$2,$3,$4,$5,'quarantine')",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "lock_document_without_context",
+      "query": "SELECT count(*) FROM warehouse.lock_document($1,1)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "operation_result_supplied_actor_without_context",
+      "query": "SELECT count(*) FROM platform.get_operation_result($1,$2,$3,$4)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": false
+    },
+    {
+      "case": "document_create_supplied_actor_without_context",
+      "query": "SELECT count(*) FROM warehouse.command_document($1,$2,NULL,$3::jsonb)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "background_claim_without_worker_identity",
+      "query": "SELECT count(*) FROM platform.claim_outbox(100)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 25,
+      "durable_side_effects": true
+    },
+    {
+      "case": "background_complete_without_worker_identity",
+      "query": "SELECT count(*) FROM platform.complete_outbox($1,$2,true)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "background_expiry_without_worker_identity",
+      "query": "SELECT count(*) FROM inventory.expire_reservations(1000)",
+      "expected": "denied_without_authenticated_API_or_worker_context",
+      "actual": "allowed",
+      "sqlstate": "00000",
+      "commit_sqlstate": "00000",
+      "rows": 1,
+      "durable_side_effects": true
+    },
+    {
+      "case": "base_table_platform.actor_grants",
+      "query": "SELECT count(*) FROM platform.actor_grants",
+      "expected": "existing_deny",
+      "actual": "denied",
+      "sqlstate": "42501",
+      "rows": 0,
+      "durable_side_effects": false
+    },
+    {
+      "case": "base_table_platform.operations",
+      "query": "SELECT count(*) FROM platform.operations",
+      "expected": "existing_deny",
+      "actual": "denied",
+      "sqlstate": "42501",
+      "rows": 0,
+      "durable_side_effects": false
+    },
+    {
+      "case": "base_table_platform.outbox",
+      "query": "SELECT count(*) FROM platform.outbox",
+      "expected": "existing_deny",
+      "actual": "denied",
+      "sqlstate": "42501",
+      "rows": 0,
+      "durable_side_effects": false
+    },
+    {
+      "case": "base_table_inventory.stock_balances",
+      "query": "SELECT count(*) FROM inventory.stock_balances",
+      "expected": "existing_deny",
+      "actual": "denied",
+      "sqlstate": "42501",
+      "rows": 0,
+      "durable_side_effects": false
+    }
+  ],
+  "classification": "New reduced-trust requirements; baseline explicitly documents trusted SQL runtime. Failures do not establish a violation of that legacy contract.",
+  "postgres_version": "17.11",
+  "go_version": "go version go1.27.3 windows/amd64",
+  "vet": {
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "vet",
+      "-tags=integration",
+      "./internal/postgres"
+    ],
+    "exit_code": 0,
+    "output": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\security-arena\\red\\work\\arena-red-aeef0d8efa564938\\vet.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "tests": {
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "test",
+      "-race",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^TestRedTeamCredentials",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ],
+    "exit_code": 1,
+    "output": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\security-arena\\red\\work\\arena-red-aeef0d8efa564938\\tests.jsonl",
+    "sha256": "525422991327d50f9618a5b6f883c28e555968f162c0409d2746308399a13fc2"
+  },
+  "test_results": [
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_stock_balances",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_documents",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_document_details",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_document_lines",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_reservations",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_movements",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_operations",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/reserve_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/reserve_with_supplied_granted_actor",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/release_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/movement_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_reservation_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_release_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_movement_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/ensure_balance_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/lock_document_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/operation_result_supplied_actor_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/document_create_supplied_actor_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_claim_without_worker_identity",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_complete_without_worker_identity",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_expiry_without_worker_identity",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_wms_test_owner",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_read_server_files",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_write_server_files",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_execute_server_program",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.actor_grants",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.operations",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.outbox",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_inventory.stock_balances",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization",
+      "result": "pass"
+    }
+  ],
+  "source_hashes": {
+    "internal/postgres/store_redteam_credentials_integration_test.go": "122e16389cd121e3a89b2c2412b981ea159533f0d9840b8422f52503d1a6cc58",
+    "internal/postgres/store_integration_test.go": "e5d1f5f638aa7b01f9f628ef59a20b4543ea41d8e7d3da6d29a32bc75bb910e6",
+    "internal/postgres/store_review_integration_test.go": "a504cad969b735857e06040770dbcadc07a6e7b0494af2388cde14b3fe69cec8",
+    "scripts/test_security_arena_red.py": "b08e8d44dda20b7bd9cb98728dd8c90fe3fee5f7e6cd7dd35009a99989f09c34",
+    "scripts/prepare-test-db.py": "cccd696945e9cefb0f86e3fd7c533b6581a67ba61eff0af95ceb1316839ed563",
+    "scripts/migrate_core.py": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5",
+    "docs/security-hardening.md": "6840d63dfb515f91e31ad6bdf4769e7c44c1bdcaf36c77176dac9b6d91152363",
+    "db/migrations/0001_inventory_schema.sql": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+    "db/migrations/0002_inventory_commands.sql": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+    "db/migrations/0003_backend_api.sql": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+    "db/migrations/0004_module_integrity.sql": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+    "db/migrations/0005_inventory_pagination.sql": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+    "db/migrations/0006_security_boundary.sql": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72",
+    "db/migrations/0007_background_jobs.sql": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817",
+    "db/migrations/0008_background_health_and_policy_v2.sql": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+    "db/migrations/0009_warehouse_documents.sql": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431",
+    "db/bootstrap/backend-grants.psql": "960cd9f4a8ed10567b10b3ba4f87f344b17e86beaadb18c219b281a1767fca3f",
+    "db/bootstrap/dispatch-quality-grants.psql": "c24354b41348091999ebe6ae4511a1c9244802fe6831a44d7096c9b5b461c7bc",
+    "db/bootstrap/grants.psql": "44caab192acd64df668f6cf672c60a1ee8dc6d6cc9647712ddbfdc6017dd23ad",
+    "modules/dispatch-quality/migrations/001_create_checks.sql": "8a6e79c10f2178a5b84c22f8e481bf71f8e1de0ca51be56c9731ee02f6a7b8e4",
+    "modules/dispatch-quality/migrations/002_document_facts.sql": "0564a3ff4b1dc6ce3feece08a601b269a90d24312ac31eac0e5af4c9fa3c0c6d",
+    "modules/dispatch-quality/migrations/003_authoritative_guard.sql": "8af9d832c46bdd07a709b4572cf968ff6b7a8fcf62a1bfc75e726833afbaf11e"
+  },
+  "new_requirement_results": [
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_stock_balances",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_documents",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_document_details",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_document_lines",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_reservations",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_movements",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_operations",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/read_foreign_organization_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/reserve_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/reserve_with_supplied_granted_actor",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/release_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/movement_without_actor_grants",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_reservation_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_release_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/prepare_movement_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/ensure_balance_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/lock_document_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/operation_result_supplied_actor_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/document_create_supplied_actor_without_context",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_claim_without_worker_identity",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_complete_without_worker_identity",
+      "result": "fail"
+    },
+    {
+      "test": "TestRedTeamCredentialsDeniedWithoutAPIContext/background_expiry_without_worker_identity",
+      "result": "fail"
+    }
+  ],
+  "existing_characterization_results": [
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_wms_test_owner",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_read_server_files",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_write_server_files",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/not_member_pg_execute_server_program",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.actor_grants",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.operations",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_platform.outbox",
+      "result": "pass"
+    },
+    {
+      "test": "TestRedTeamCredentialsExistingPrivilegeCharacterization/base_table_inventory.stock_balances",
+      "result": "pass"
+    }
+  ],
+  "summary": {
+    "matrix_cases": 26,
+    "new_requirement_cases": 22,
+    "new_requirement_failures": 22,
+    "existing_characterization_cases": 8,
+    "existing_characterization_passes": 8,
+    "skipped": 0,
+    "allowed_without_context": 22,
+    "durable_side_effect_cases": 9
+  },
+  "interpretation": [
+    "Ordinary runtime SELECT/EXECUTE only. Administrative fixture inserts belong to setup, not to the role under test.",
+    "Eight seeded cross-organization contract reads are independently checked against base-table fixture existence.",
+    "Three prepare calls succeed but their uncompleted transactions fail COMMIT with P0001; this is existing operation-integrity protection, not credential authentication.",
+    "The complete_outbox scenario is supplied an administrator-seeded synthetic valid lease token; no token extraction or exploit chain is attempted.",
+    "The existing privileged-role membership and direct-base-table denials are characterization, not red TDD evidence.",
+    "No product implementation was edited, so no later passing implementation run is claimed."
+  ],
+  "cluster_stopped": true,
+  "finished_at": "2026-10-28T12:08:06.332939+00:00"
+}

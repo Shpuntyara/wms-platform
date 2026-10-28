@@ -1,0 +1,27 @@
+PASS baseline
+PASS green
+PASS signature
+PASS action
+PASS worker_scope
+PASS document_page
+.F.F..
+======================================================================
+FAIL: test_green_requires_all_sql_and_go_tests (test_hardened_gate.HardenedGateTests.test_green_requires_all_sql_and_go_tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 31, in test_green_requires_all_sql_and_go_tests
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_mutations_cannot_overwrite_the_unmutated_query_plans (test_hardened_gate.HardenedGateTests.test_mutations_cannot_overwrite_the_unmutated_query_plans)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 91, in test_mutations_cannot_overwrite_the_unmutated_query_plans
+    self.assertNotIn(None, plans, 'Missing plan directory lets children share the caller directory')
+AssertionError: None unexpectedly found in [None, None, None, None, None, None] : Missing plan directory lets children share the caller directory
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.024s
+
+FAILED (failures=2)

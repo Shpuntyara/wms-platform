@@ -1,0 +1,14 @@
+PASS baseline
+..F.
+======================================================================
+FAIL: test_stale_receipt_cannot_turn_setup_failure_into_a_baseline_proof (test_hardened_gate.HardenedGateTests.test_stale_receipt_cannot_turn_setup_failure_into_a_baseline_proof)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 21, in test_stale_receipt_cannot_turn_setup_failure_into_a_baseline_proof
+    self.assertEqual(run.call_count, 1, 'Stale baseline was consumed as a fresh behavioral proof')
+AssertionError: 2 != 1 : Stale baseline was consumed as a fresh behavioral proof
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.009s
+
+FAILED (failures=1)

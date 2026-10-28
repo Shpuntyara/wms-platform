@@ -1,0 +1,29 @@
+FFF
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDatabaseProfileConfigurationFailsClosed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 74, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDatabaseProfileConfigurationFailsClosed
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 74, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestHardenedDeploymentRejectsMismatchedBinding')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 74, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestHardenedDeploymentRejectsMismatchedBinding
+
+----------------------------------------------------------------------
+Ran 1 test in 9.957s
+
+FAILED (failures=3)

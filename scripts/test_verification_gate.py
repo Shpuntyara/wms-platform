@@ -8,6 +8,10 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCUMENT_REGRESSIONS = (
+    'TestDatabaseProfileConfigurationFailsClosed',
+    'TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase',
+    'TestHardenedDeploymentRejectsMismatchedBinding',
+    'TestHardenedAPIRejectsFallbackToAnotherEndpoint',
     'TestDocumentCommandsRecoverFromCommitTransportFailure',
     'TestDocumentCommandsPreserveDefinitiveCommitRejection',
     'TestDocumentCommandProperties',

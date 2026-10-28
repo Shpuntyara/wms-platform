@@ -1,0 +1,38 @@
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is starting up
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.
+psql: error: connection to server at "127.0.0.1", port 57358 failed: FATAL:  the database system is not yet accepting connections
+DETAIL:  Consistent recovery state has not been yet reached.

@@ -1,0 +1,132 @@
+{
+  "agent": "white",
+  "baseline": "074ee0a",
+  "generated_at_utc": "2026-10-28T12:21:10.333582+00:00",
+  "status": "local_candidate_ready_for_root_integration_and_independent_review",
+  "implementation_files": [
+    "db/profiles/hardened-v1.sql",
+    "db/bootstrap/hardened-grants.psql",
+    "internal/postgres/hardened.go",
+    "internal/postgres/hardened_jobs.go",
+    "internal/postgres/hardened_integration_test.go",
+    "tests/hardened_profile.py",
+    "scripts/test-hardened-profile.ps1",
+    "docs/security-hardened-profile.md"
+  ],
+  "sources_sha256": {
+    "db/profiles/hardened-v1.sql": "61f0adfb5a26ba7ab15160d5dad218e0e1691afe1f2482e5d817c6080be6cd23",
+    "db/bootstrap/hardened-grants.psql": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05",
+    "internal/postgres/hardened.go": "e1bd34cc45987c30cc817edc8150558bee6b35e4e0968277e8999d9f0f48974a",
+    "internal/postgres/hardened_jobs.go": "0f120103995e3d07b9833c7617880f4c735e76080fb265053e826ea66578bc22",
+    "internal/postgres/hardened_integration_test.go": "5727c0239db52c470be121d618c794282f5e8792bf0fb9fd54d51369e05bd754",
+    "tests/hardened_profile.py": "c62b04de5546d48f0f3e5cf1bb553cfa7008c0b6c21cf9faef314185ad85f3fa",
+    "scripts/test-hardened-profile.ps1": "256ae10335a4137655f17413d5e330dc70b910d41f999429e3e551243f6bd21b",
+    "docs/security-hardened-profile.md": "5acdb83aed7f9f7dfafdbc271ed8b4649e8ac35dd71d396867a5a79d3b5f8005"
+  },
+  "published_core_migrations_unchanged": true,
+  "source_evidence": {
+    "initial_behavioral_red_before_implementation": "white-red.json",
+    "initial_red_failures": 5,
+    "additional_actual_action_binding_red": "white-action-red.json",
+    "current_same_test_source_red": "white-red-current.json",
+    "green": "white-green.json"
+  },
+  "verification": {
+    "postgres": "17.11",
+    "go": "go1.27.3 windows/amd64",
+    "sql_assertions_passed": 26,
+    "go_real_http_integration_race_exit_code": 0,
+    "go_real_http_integration_output": "white-green.go.txt",
+    "vet_changed_package_exit_code": 0,
+    "go_fix_diff_changed_package": "empty",
+    "unit_race_changed_package_exit_code": 0,
+    "runner": "scripts/test-hardened-profile.ps1 -IncludeMutations",
+    "mutation_results": [
+      {
+        "name": "signature",
+        "behavior": "tampered actor signature rejected",
+        "killed": true,
+        "receipt": "white-mutant-signature.json"
+      },
+      {
+        "name": "action",
+        "behavior": "signature for read cannot authorize a command",
+        "killed": true,
+        "receipt": "white-mutant-action.json"
+      },
+      {
+        "name": "worker_scope",
+        "behavior": "worker_sees_only_own_warehouse_and_stale_ack_fenced",
+        "killed": true,
+        "receipt": "white-mutant-worker_scope.json"
+      }
+    ],
+    "full_integrated_ci": "pending_root_integration",
+    "independent_black_box_attack": "pending_root"
+  },
+  "security_boundary": {
+    "stolen_credential_only": true,
+    "separate_request_key_required": true,
+    "api_and_worker_distinct_logins": true,
+    "one_organization_warehouse_binding_per_login": true,
+    "actor_guc_is_not_identity": true,
+    "signed_payload": "protocol/login/backend_pid/full_xact_id/actor/org/warehouse/expiry/SHA256(exact action bytes)",
+    "ttl_seconds_application": 20,
+    "ttl_seconds_database_max": 30,
+    "database_current_actor_grants": true,
+    "no_runtime_key_read_or_signer_oracle": true,
+    "worker_scope_applied_to": [
+      "claim",
+      "expiry",
+      "complete",
+      "queue_health"
+    ],
+    "module_metadata_only_with_owner_zero_row_projection_check": true
+  },
+  "threat_limits": [
+    "Legacy remains the trusted caller/default contract and accepts caller actor IDs with global views/worker privileges.",
+    "An SQL login alone cannot establish OIDC identity; independent application signing key is a necessary extra trust boundary.",
+    "Stolen API login can still connect, consume resources, inspect allowed metadata and disrupt same-role sessions.",
+    "Stolen worker login can read/acknowledge/discard leased events in its own warehouse and run legitimate expiry there.",
+    "OIDC/key/owner compromise, application RCE or injection into a legitimate signed request are outside the password-only claim.",
+    "The exact same signed action is reusable within its original transaction until expiry; command IDs supply durable idempotency.",
+    "No large-fixture performance, HA, broker trust, independent audit, or production-proof claim is made."
+  ],
+  "integration_notes": [
+    "Root owns cmd/wms-api and CI wiring; white did not edit them.",
+    "Use NewHardened(ctx,pool,key32) and NewHardenedWorker(ctx,pool); compare distinct RuntimeLogin and equal DeploymentScope.",
+    "Unknown profile, missing separate worker DSN/key, unsafe role, missing profile, or key mismatch must fail startup.",
+    "Keep legacy default only as an explicitly documented compatibility/trusted-SQL mode."
+  ],
+  "test_secret_handling": {
+    "real_credentials_used": false,
+    "test_keys_in_sources_or_receipts": false,
+    "synthetic_key_locations_during_test": [
+      "Python/Go process memory and child environment",
+      "disposable PostgreSQL private signing_keys table"
+    ],
+    "final_runner_pgdata_removed_after_stop": true,
+    "early_scratch_cleanup": "Two earlier isolated clusters are stopped; recursive cleanup was rejected twice by automatic tool policy (blocked by policy). Root instructed not to retry or copy work/.",
+    "early_stopped_scratch_paths": [
+      "work/hardened/pgdata",
+      "work/hardened-profile-58df075803f2463a9c79575f0602a2ed/pgdata"
+    ]
+  },
+  "receipt_sha256": {
+    "white-action-red.json": "ea86d7fd21f657f17c7fa780036645af802fa40f331f2521d45b3d283fd3dcbb",
+    "white-go.txt": "7d7d57039d704bc2267c15fa61ba5645b61898013393e1fb013621ca29cc27d7",
+    "white-green.go.txt": "8320ea32bb4e0bbadf5bcf2f1906b10d5b1224c456b1f2f408b0578755585aec",
+    "white-green.json": "261b9bbc553e8e6c0f8e6d171bcb7be8b1f3499c40c7f01319586f2a4c9cb8af",
+    "white-green.txt": "a1a8e7eddfe0b651448ba6104f8982f46e89261fa60466053fd45b66f631df25",
+    "white-mutant-action.json": "9e0bc9ccc163dd52e218c3704feed64017f8a786287979691c039d5131947f7d",
+    "white-mutant-action.txt": "a7f336cbd5823623b3bc908a7846665d383181c0719e58f1028395ec7c555a8c",
+    "white-mutant-signature.json": "2b4d9871164fadf98d21a1f0fcf087d1bfdcfbebc0c49a3c9e61f7e6f84b0451",
+    "white-mutant-signature.txt": "9cbb6586a9044e5fb891d2f26fb422c7ec5c447a8b94b66de029e1d1e7c05ccc",
+    "white-mutant-worker_scope.go.txt": "b5423f11306fcd1559e3644d2c841f8e5ba9d8002a99fec9c566e5f4ab14517a",
+    "white-mutant-worker_scope.json": "f4cacc4772bb9dfae6f23fe2945aea9c1ee1e66cfe3c56762e74cd851ea2e760",
+    "white-mutant-worker_scope.txt": "b1473c0c7401a28ceb5b3184ae635ab3b487f055ff7abf2a76533b295295c26b",
+    "white-red-current.json": "0629569ece51388b01387177d5801d10e81e7fa1d41c0e504074158dfef9778a",
+    "white-red-current.txt": "7c652d256d1668e244d574c18190a4a86750e661c29da98a23673f9ed6b38288",
+    "white-red.json": "402652b57975dc642f7ba1e002fd7eba2ea36b9f76148e8dc66400ec3fed6bd6"
+  }
+}

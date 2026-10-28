@@ -1,0 +1,118 @@
+{
+  "assurance-critic-green.txt": {
+    "bytes": 110,
+    "sha256_bytes": "9557945a5ef35119cec9cec577fb48b2bacf474498abf1700898d56b8bae14a9"
+  },
+  "assurance-critic-red.txt": {
+    "bytes": 3625,
+    "sha256_bytes": "ccb7ad9e4e65dbdbe0d9c619fd20ea6d4c5b298d492c2eb87fac6568d8dddcab"
+  },
+  "assurance-critic.json": {
+    "bytes": 5641,
+    "sha256_bytes": "ecafdc9eb9227e5fe72f992a1e435b7337d3e2b868bf3c9f2a11700ea4179956"
+  },
+  "author-final-green.json": {
+    "bytes": 253,
+    "sha256_bytes": "6d4b77fd6ebdb710161781caa3c59db281b307274d8b5cf37cd03a9b84a781b0"
+  },
+  "author-final-green.txt": {
+    "bytes": 115,
+    "sha256_bytes": "c81e9b2b79f54e47e6a37f9678bf28ac273bfb78ccd6d5d92713f894f09cf275"
+  },
+  "canary-identity-red.txt": {
+    "bytes": 1016,
+    "sha256_bytes": "16bc42c03d8bdf686aa11cca6a5b2bfcb0b0c70b64adcf2ea1797d97ba623fbd"
+  },
+  "canary-scaffold-red.txt": {
+    "bytes": 1118,
+    "sha256_bytes": "8b52f5d99234908dfdc395305b37dffa28f8a67326312f182ef3e2b591a195c4"
+  },
+  "cleanup-scaffold-red.txt": {
+    "bytes": 1115,
+    "sha256_bytes": "c278daa98aa53f25ec1929ce17d8e8c78eeef2b18448d9d5d9f0ec0662dd527d"
+  },
+  "critic-final-green.txt": {
+    "bytes": 110,
+    "sha256_bytes": "9557945a5ef35119cec9cec577fb48b2bacf474498abf1700898d56b8bae14a9"
+  },
+  "cycle-1-wal-recovery.txt": {
+    "bytes": 2509,
+    "sha256_bytes": "e9bb2813025044f55d4a5ceb0a02832a26457715df53821efdf4ce6667162e5d"
+  },
+  "cycle-2-wal-recovery.txt": {
+    "bytes": 2310,
+    "sha256_bytes": "ae7cc0737cbe6966dc3be26d6ca4c0aede27a35acdc68e3525a29dfccde7378a"
+  },
+  "cycle-3-wal-recovery.txt": {
+    "bytes": 2312,
+    "sha256_bytes": "e6e050dc8c299d438832115143b355045db7c91e508f42fe6b3c73546eb8d9d2"
+  },
+  "empty-witness-red.txt": {
+    "bytes": 695,
+    "sha256_bytes": "4c1dea4682bca56766393eda31206ff3d0edd22c8d752aab4bc418f8ca16249c"
+  },
+  "failed-smoke-backup-fsync.json": {
+    "bytes": 3901,
+    "sha256_bytes": "0e6b8d559cbd4e09f847b7f030f27fdb51cd0d50fb4421e38d4bb18334482e42"
+  },
+  "failed-smoke-taskkill.json": {
+    "bytes": 953,
+    "sha256_bytes": "acb683991d788fd8e9f10ef5a5565e7310a9a54c88cff9895b414479c68cda8b"
+  },
+  "initial-scaffold-red.txt": {
+    "bytes": 1027,
+    "sha256_bytes": "7087ba569171b74e12b14cc8c17b24f6e408032ecde1c980f5b0cf5df3d6717f"
+  },
+  "offline-checksums.json": {
+    "bytes": 89,
+    "sha256_bytes": "02100be48d55401b90a3fef1b354cb0ca0c99f87a2229de7ede16a806cf0a1ab"
+  },
+  "owned-processes-after.json": {
+    "bytes": 241,
+    "sha256_bytes": "c71e335987fa1b1f60d28d5e52fa7d5ff144bc6301127fa16833f3adb36ebc95"
+  },
+  "restored-offline-checksums.txt": {
+    "bytes": 121,
+    "sha256_bytes": "1ef180640fbf44c825ae70f6e428534af87f9c21dd938e605fb77e50543014c8"
+  },
+  "restored-postgres.log": {
+    "bytes": 1196,
+    "sha256_bytes": "32f5ff9c083a86a68b219aa7ed11f390aff66668a2e6695548246055c50bc8c5"
+  },
+  "source-client-errors.txt": {
+    "bytes": 3964,
+    "sha256_bytes": "5fb81e1ef273e02c4185a37471f75ce1c86cddbb8485231a24a65e6d7c7fc1e4"
+  },
+  "source-forced-termination.txt": {
+    "bytes": 837,
+    "sha256_bytes": "5024af594cd259dc10083d6c8216a37528b86a6e5f9874d9e08a5cd9537548d3"
+  },
+  "source-offline-checksums.txt": {
+    "bytes": 121,
+    "sha256_bytes": "856cbde6f66b9513cf96f0f310eaab86e7ad137e5bf186c598cd033d96e19c22"
+  },
+  "source-portability-red.json": {
+    "bytes": 320,
+    "sha256_bytes": "c23b5479e951caa7d3678230e144989325e27295bbb75c7a46e88151e074fc7d"
+  },
+  "source-portability-red.txt": {
+    "bytes": 1819,
+    "sha256_bytes": "91fe32e48bd022de53edf0fd43df6744a39c38b809284d65222abef4fddb49aa"
+  },
+  "source-postgres.log": {
+    "bytes": 9875,
+    "sha256_bytes": "a907a8c5013f84e6a4bd032c4249775fe78a151d63a985d3d510250b3149b186"
+  },
+  "termination-scaffold-red.txt": {
+    "bytes": 1125,
+    "sha256_bytes": "f4381d721ba18f50189834fb47ab8436d4b074ad32de27355185fe53803d001c"
+  },
+  "windows-final.json": {
+    "bytes": 12145,
+    "sha256_bytes": "fcda85d6edf3bf9ab1357d80038ba442e74f37eb8d9fd9360662c11f07931054"
+  },
+  "windows-receipt.json": {
+    "bytes": 4061,
+    "sha256_bytes": "1631380246d9a08b3470e1ef377de3ed2f2bb1345f40e4d0f65f435abcefae42"
+  }
+}

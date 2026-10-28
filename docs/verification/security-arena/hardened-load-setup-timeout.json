@@ -1,0 +1,133 @@
+{
+  "profile": "hardened",
+  "mutant": null,
+  "postgres": "17.11",
+  "test_sha256": "5e5b6d6db941e4f86c46313271eb2c6eee5507750034a6463f5ee4436fca6047",
+  "sources_sha256": {
+    "tests/hardened_profile.py": "5e5b6d6db941e4f86c46313271eb2c6eee5507750034a6463f5ee4436fca6047",
+    "db/profiles/hardened-v1.sql": "4e6894e346f5270a3243f1fb54794a521eccf68a444f0b93b79c67d4750e0603",
+    "db/bootstrap/hardened-grants.psql": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05",
+    "internal/postgres/hardened.go": "e1bd34cc45987c30cc817edc8150558bee6b35e4e0968277e8999d9f0f48974a",
+    "internal/postgres/hardened_jobs.go": "0f120103995e3d07b9833c7617880f4c735e76080fb265053e826ea66578bc22",
+    "internal/postgres/hardened_integration_test.go": "cda34565aaf5ce59dbb90211a500512829b4f6d37a08fe6ceb233d7a77c0e6f0",
+    "db/migrations/0001_inventory_schema.sql": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+    "db/migrations/0002_inventory_commands.sql": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+    "db/migrations/0003_backend_api.sql": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+    "db/migrations/0004_module_integrity.sql": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+    "db/migrations/0005_inventory_pagination.sql": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+    "db/migrations/0006_security_boundary.sql": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+    "db/migrations/0007_background_jobs.sql": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261",
+    "db/migrations/0008_background_health_and_policy_v2.sql": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+    "db/migrations/0009_warehouse_documents.sql": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+  },
+  "executed_profile_sha256": "4e6894e346f5270a3243f1fb54794a521eccf68a444f0b93b79c67d4750e0603",
+  "results": [
+    {
+      "name": "stolen API cannot enumerate foreign documents",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot forge actor via legacy command",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot claim outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot acknowledge outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot run expiry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read signing secret",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read binding registry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot call hardened worker",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot call HMAC signer",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot change owner role",
+      "status": "pass"
+    },
+    {
+      "name": "unsigned identity lookup rejected",
+      "status": "pass"
+    },
+    {
+      "name": "worker cannot read API",
+      "status": "pass"
+    },
+    {
+      "name": "missing request context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "freely set actor GUC rejected",
+      "status": "pass"
+    },
+    {
+      "name": "fabricated signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "tampered actor signature rejected",
+      "status": "pass"
+    },
+    {
+      "name": "expired signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "excessive context lifetime rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context for another scope rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context replay in another transaction rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context replay on another connection rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signature binds exact raw argument bytes",
+      "status": "pass"
+    },
+    {
+      "name": "signature for read cannot authorize a command",
+      "status": "pass"
+    },
+    {
+      "name": "valid signed scoped read returns only local document",
+      "status": "pass"
+    },
+    {
+      "name": "valid signed command retries identically and rollback persists nothing",
+      "status": "pass"
+    },
+    {
+      "name": "separate scoped worker surface works",
+      "status": "pass"
+    }
+  ],
+  "passed": false,
+  "go_exit_code": 1,
+  "go_passed": false
+}

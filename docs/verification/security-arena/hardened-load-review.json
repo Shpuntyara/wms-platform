@@ -1,0 +1,59 @@
+{
+  "status": "local_green_pending_root_portable_gate_and_full_ci",
+  "source_fix": "Only mutable profile read SQL; existing core UNIQUE FK page indexes reused; new indexes=0",
+  "changed_files": [
+    "db/profiles/hardened-v1.sql",
+    "internal/postgres/hardened_load_integration_test.go",
+    "docs/security-hardened-profile.md"
+  ],
+  "sources_sha256": {
+    "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
+    "internal/postgres/hardened_load_integration_test.go": "8599aee584ae29da5354e453c5748719b72086e95e8ddb73c1a91e317013b59e",
+    "docs/security-hardened-profile.md": "4358450f628a31d6bf66d67d529e1321fb14cc5b784587ecf06d6ba72587662a"
+  },
+  "red": {
+    "receipt": "hardened-load-red-fixed-harness.json",
+    "plan_receipt": "hardened-load-red-fixed-harness/hardened-read-plans.json",
+    "property_cases": 30,
+    "executed_plans": 14,
+    "max_row_work": 99690,
+    "max_blocks": 101627
+  },
+  "green": {
+    "receipt": "hardened-load-green.json",
+    "plan_receipt": "hardened-load-green/hardened-read-plans.json",
+    "property_cases": 30,
+    "executed_plans": 14,
+    "max_row_work": 585,
+    "max_blocks": 250,
+    "max_line_hydrations": 21,
+    "rpc_calls": 1064,
+    "rpc_p95_ms": 2.213,
+    "executed_test_source_sha256": "4b27dccdff99d43acbb3949eaac69ffb6e9fa282b9da4026cf111f73bc5ba4a2",
+    "executed_profile_source_sha256": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798"
+  },
+  "static_checks": {
+    "fulltags_vet_exit_code": 0,
+    "fulltags_go_fix_diff": "empty after changing only new test bounded for-loop to range1000; behavior unchanged",
+    "old_recursive_plan_helper": "root-owned previous slices.ContainsFunc change; untouched by this task"
+  },
+  "failed_setup": {
+    "receipt": "hardened-load-setup-timeout.json",
+    "go_output": "hardened-load-setup-timeout.go.txt",
+    "classification": "failed fixture construction, not behavioral RED or mutation kill",
+    "diagnostic": "Own backend active193s on300k document_lines INSERT, no wait event or blocking PIDs; parent100007 rows; documents autoanalyzed, child bulk uncommitted. Cached small-parent RI plan is an inference, not proven root cause. Added explicit ANALYZE documents before child insert; rerun completed15.2s."
+  },
+  "runtime_wiring_review": {
+    "cmd_changed": false,
+    "confirmed": "Hardened default, explicit warned legacy, separate worker DSN/TLS, requested endpoint/db/login check, actual distinct login and matching administrative scope checks.",
+    "remaining_configuration_limit": "Requested primary endpoints are compared; actual fallback-server identity is not attested. This was not exercised as a runtime defect in this task."
+  },
+  "limits": [
+    "No production SLA, HA, throughput or latency claim",
+    "Plan row-work bounds scale with configured permitted owners; fixture has five owners",
+    "Read performance claim is for documents; other resource RPC performance was not load-audited",
+    "Test owner-only SQL instrumentation returns the identical generated statement and changes no query parameters",
+    "All executed test runs had no skipped tests; one setup timeout retained and excluded",
+    "Own loopback cluster stopped; scratch PGdata not copied or deleted around prior tool rejection"
+  ]
+}

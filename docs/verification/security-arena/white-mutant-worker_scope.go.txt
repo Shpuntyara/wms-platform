@@ -1,0 +1,34 @@
+=== RUN   TestHardenedHTTPAndContainment
+=== RUN   TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval
+=== RUN   TestHardenedHTTPAndContainment/HTTP_release
+=== RUN   TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement
+=== RUN   TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution
+=== RUN   TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse_and_stale_ack_fenced
+    hardened_integration_test.go:202: worker leaked foreign warehouse event
+=== RUN   TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation
+=== RUN   TestHardenedHTTPAndContainment/expiry_and_acknowledgement_stay_in_worker_warehouse
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic
+=== RUN   TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access
+--- FAIL: TestHardenedHTTPAndContainment (0.76s)
+    --- PASS: TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion (0.04s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.04s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution (0.01s)
+    --- FAIL: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse_and_stale_ack_fenced (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation (0.05s)
+    --- PASS: TestHardenedHTTPAndContainment/expiry_and_acknowledgement_stay_in_worker_warehouse (0.06s)
+    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.29s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send (0.10s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof (0.10s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic (0.09s)
+    --- PASS: TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access (0.02s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	0.800s
+FAIL

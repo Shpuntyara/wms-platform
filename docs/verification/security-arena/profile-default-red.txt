@@ -1,0 +1,8 @@
+--- FAIL: TestDatabaseProfileConfigurationFailsClosed (0.00s)
+    --- FAIL: TestDatabaseProfileConfigurationFailsClosed/default_requires_hardened_configuration (0.00s)
+        runtime_profile_test.go:32: accepted=true want=false
+    --- FAIL: TestDatabaseProfileConfigurationFailsClosed/hardened_default (0.00s)
+        runtime_profile_test.go:32: accepted=false want=true
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/cmd/wms-api	0.020s
+FAIL

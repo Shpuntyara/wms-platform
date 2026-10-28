@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "kind": "baseline",
+      "status": "pass",
+      "report": "baseline.json"
+    },
+    {
+      "kind": "green",
+      "status": "pass",
+      "report": "green.json"
+    },
+    {
+      "kind": "signature",
+      "status": "pass",
+      "report": "signature.json"
+    },
+    {
+      "kind": "action",
+      "status": "pass",
+      "report": "action.json"
+    },
+    {
+      "kind": "worker_scope",
+      "status": "pass",
+      "report": "worker_scope.json"
+    },
+    {
+      "kind": "document_page",
+      "status": "pass",
+      "report": "document_page.json"
+    }
+  ],
+  "mutants": 4,
+  "killed": 4,
+  "survived": 0,
+  "invalid": 0,
+  "skipped": 0
+}

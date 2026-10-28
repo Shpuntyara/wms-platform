@@ -1,0 +1,8 @@
+--- FAIL: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase (0.00s)
+    --- FAIL: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/worker_fallback_targets_another_endpoint (0.00s)
+        runtime_profile_test.go:67: accepted=true want=false
+--- FAIL: TestHardenedAPIRejectsFallbackToAnotherEndpoint (0.00s)
+    runtime_profile_test.go:83: API fallback can redirect the pool to another database endpoint
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/cmd/wms-api	0.029s
+FAIL

@@ -1,0 +1,13 @@
+.....F..
+======================================================================
+FAIL: test_nonzero_stock_and_active_reservation_must_survive (test_crash_restore.CrashRestoreGateTests.test_nonzero_stock_and_active_reservation_must_survive) (observed={'one': {'on_hand': '10.000000', 'reserved_qty': '3.000000', 'active_qty': '3.000000', 'line_reserved': '3.000000', 'fulfilled_qty': '0.000000', 'requested_qty': '10.000000', 'state': 'active', 'version': 3, 'balance_id': 'another-balance', 'document_id': 'document', 'document_line_id': 'line'}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_crash_restore.py", line 31, in test_nonzero_stock_and_active_reservation_must_survive
+    with self.assertRaises(AssertionError):
+AssertionError: AssertionError not raised
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.016s
+
+FAILED (failures=1)

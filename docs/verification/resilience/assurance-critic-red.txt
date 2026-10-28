@@ -1,0 +1,45 @@
+.FFFFF..
+======================================================================
+FAIL: test_cluster_directory_cannot_escape_the_owned_work_root (test_resilience_assurance_critic.ResilienceAssuranceCriticTests.test_cluster_directory_cannot_escape_the_owned_work_root) (label='../escaped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_resilience_assurance_critic.py", line 20, in test_cluster_directory_cannot_escape_the_owned_work_root
+    with self.assertRaisesRegex(ValueError, 'owned|outside|directory|label'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_cluster_directory_cannot_escape_the_owned_work_root (test_resilience_assurance_critic.ResilienceAssuranceCriticTests.test_cluster_directory_cannot_escape_the_owned_work_root) (label='C:\\Users\\sashk\\AppData\\Local\\Temp\\tmpjaq21vvm\\absolute-target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_resilience_assurance_critic.py", line 20, in test_cluster_directory_cannot_escape_the_owned_work_root
+    with self.assertRaisesRegex(ValueError, 'owned|outside|directory|label'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_cluster_directory_cannot_escape_the_owned_work_root (test_resilience_assurance_critic.ResilienceAssuranceCriticTests.test_cluster_directory_cannot_escape_the_owned_work_root) (label='../owned-sibling/target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_resilience_assurance_critic.py", line 20, in test_cluster_directory_cannot_escape_the_owned_work_root
+    with self.assertRaisesRegex(ValueError, 'owned|outside|directory|label'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_cluster_directory_cannot_escape_the_owned_work_root (test_resilience_assurance_critic.ResilienceAssuranceCriticTests.test_cluster_directory_cannot_escape_the_owned_work_root)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_resilience_assurance_critic.py", line 22, in test_cluster_directory_cannot_escape_the_owned_work_root
+    self.assertFalse((outer / 'escaped').exists(), 'Rejected labels must not create an external directory')
+AssertionError: True is not false : Rejected labels must not create an external directory
+
+======================================================================
+FAIL: test_readiness_from_a_different_pgdata_is_not_the_owned_server (test_resilience_assurance_critic.ResilienceAssuranceCriticTests.test_readiness_from_a_different_pgdata_is_not_the_owned_server)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_resilience_assurance_critic.py", line 40, in test_readiness_from_a_different_pgdata_is_not_the_owned_server
+    with self.assertRaisesRegex(ValueError, 'owned|PGDATA|data.directory'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.020s
+
+FAILED (failures=5)
