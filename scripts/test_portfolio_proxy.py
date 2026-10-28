@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import urllib.request
 
 spec = importlib.util.spec_from_file_location('portfolio_proxy', Path(__file__).parents[1] / 'deploy/hyperv/portfolio_proxy.py')
 proxy = importlib.util.module_from_spec(spec)
@@ -10,7 +11,8 @@ spec.loader.exec_module(proxy)
 class PortfolioProxyTests(unittest.TestCase):
     def test_only_monitoring_reads_and_grafana_queries_are_forwarded(self):
         for method, path in [('GET', '/monitor/d/wms-operations'), ('GET', '/monitor/public/app.js'),
-                             ('POST', '/monitor/api/ds/query')]:
+                             ('POST', '/monitor/api/ds/query'),
+                             ('POST', '/monitor/api/ds/query?ds_type=prometheus&requestId=Q100')]:
             self.assertTrue(proxy.allowed(method, path))
         for method, path in [('GET', '/auth/'), ('GET', '/etc/wms/secrets.json'),
                              ('POST', '/monitor/api/admin/users'), ('DELETE', '/monitor/api/dashboards/uid/x'),
@@ -28,6 +30,16 @@ class PortfolioProxyTests(unittest.TestCase):
         body = b'{"appUrl":"https://192.168.1.4/monitor/","up":1}'
         self.assertEqual(proxy.rewrite(body, '192.168.1.4', 18081),
                          b'{"appUrl":"http://127.0.0.1:18081/monitor/","up":1}')
+
+    def test_redirects_cannot_forward_viewer_credentials_to_another_origin(self):
+        request = urllib.request.Request('https://192.168.1.4/monitor/', headers={'Authorization': 'Basic viewer'})
+        self.assertIsNone(proxy.NoRedirect().redirect_request(request, None, 302, 'redirect', {}, 'https://outside.example/'))
+        self.assertEqual(proxy.local_location('/monitor/d/example', '192.168.1.4', 18081), '/monitor/d/example')
+        self.assertEqual(proxy.local_location('https://192.168.1.4/monitor/d/example', '192.168.1.4', 18081),
+                         'http://127.0.0.1:18081/monitor/d/example')
+        for target in ('https://outside.example/', '//outside.example/monitor/', '/auth/', 'https://192.168.1.4:443/other'):
+            with self.assertRaises(ValueError):
+                proxy.local_location(target, '192.168.1.4', 18081)
 
 
 if __name__ == '__main__':

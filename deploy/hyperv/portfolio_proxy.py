@@ -9,6 +9,7 @@ import http.server
 import ipaddress
 import json
 from pathlib import Path
+import re
 import ssl
 import subprocess
 import urllib.error
@@ -24,7 +25,14 @@ def allowed(method, path):
     if (parsed.scheme or parsed.netloc or not parsed.path.startswith('/monitor/')
             or '\\' in decoded or '..' in parsed.path.split('/') or '\x00' in decoded):
         return False
-    return method == 'GET' or (method == 'POST' and path == '/monitor/api/ds/query')
+    if method == 'GET':
+        return True
+    if method != 'POST' or parsed.path != '/monitor/api/ds/query':
+        return False
+    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True, max_num_fields=4)
+    return all(key in ('ds_type', 'requestId') and len(values) == 1
+               and re.fullmatch('[A-Za-z0-9_-]{1,80}', values[0])
+               for key, values in query.items())
 
 
 def upstream_headers(client, credential, address):
@@ -36,6 +44,21 @@ def upstream_headers(client, credential, address):
 
 def rewrite(body, address, port):
     return body.replace(('https://' + address).encode(), ('http://127.0.0.1:' + str(port)).encode())
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, file, code, message, headers, new_url):
+        return None
+
+
+def local_location(location, address, port):
+    parsed = urllib.parse.urlsplit(location)
+    if parsed.scheme or parsed.netloc:
+        if parsed.scheme != 'https' or parsed.netloc != address:
+            raise ValueError('Unexpected monitoring redirect origin')
+    if not allowed('GET', parsed.path):
+        raise ValueError('Unexpected monitoring redirect path')
+    return rewrite(location.encode(), address, port).decode()
 
 
 def main():
@@ -57,7 +80,7 @@ def main():
         stderr=subprocess.PIPE).decode().strip()
     credential = base64.b64encode(('wms-viewer:' + password).encode()).decode()
     context = ssl.create_default_context(cadata=ca)
-    opener = urllib.request.build_opener(urllib.request.HTTPSHandler(context=context), urllib.request.ProxyHandler({}))
+    opener = urllib.request.build_opener(urllib.request.HTTPSHandler(context=context), urllib.request.ProxyHandler({}), NoRedirect())
 
     class Viewer(http.server.BaseHTTPRequestHandler):
         def log_message(self, *_args):
@@ -86,10 +109,13 @@ def main():
                     content_type = response.headers.get('Content-Type', 'application/octet-stream')
                     if any(kind in content_type for kind in ('text', 'json', 'javascript')):
                         body = rewrite(body, address, args.port)
+                    location = response.headers.get('Location')
+                    if location:
+                        location = local_location(location, address, args.port)
                     self.send_response(response.status)
                     self.send_header('Content-Type', content_type)
-                    if response.headers.get('Location'):
-                        self.send_header('Location', rewrite(response.headers['Location'].encode(), address, args.port).decode())
+                    if location:
+                        self.send_header('Location', location)
                     self.send_header('Content-Length', str(len(body)))
                     self.send_header('Cache-Control', 'no-store')
                     self.send_header('X-Content-Type-Options', 'nosniff')

@@ -13,6 +13,7 @@ from pathlib import Path
 import ssl
 import stat
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -20,6 +21,8 @@ import urllib.request
 import uuid
 
 INVARIANTS = ("operations_once", "one_document", "one_reservation", "balanced_quantity", "events_once", "document_unchanged_stock")
+MAX_INPUT_BYTES = 64 * 1024
+SECRET_FIELDS = ("api_password", "worker_password", "request_key", "outbox_key", "oidc_client_secret", "db_admin_password", "keycloak_password", "grafana_password", "monitor_password")
 
 
 class VerificationFailure(RuntimeError):
@@ -27,6 +30,12 @@ class VerificationFailure(RuntimeError):
     def __init__(self, check):
         self.check = check
         super().__init__(check)
+
+
+class WatchFailure(VerificationFailure):
+    def __init__(self, receipt):
+        self.receipt = receipt
+        super().__init__("Authenticated availability watch recorded errors")
 
 
 def require(condition, message):
@@ -80,6 +89,27 @@ def read_protected(path):
     if not stat.S_ISREG(info.st_mode) or (os.name == "posix" and (info.st_uid != 0 or info.st_mode & 0o077)):
         raise ValueError("Secret input must be a regular root-owned file with no group/other access")
     return json.loads(path.read_text())
+
+
+def read_input(path, stream=None):
+    if str(path) != "-":
+        if Path(path).stat().st_size > MAX_INPUT_BYTES:
+            raise ValueError("Verification input exceeds its size limit")
+        return read_protected(path)
+    contents = (stream or sys.stdin.buffer).read(MAX_INPUT_BYTES + 1)
+    if len(contents) > MAX_INPUT_BYTES:
+        raise ValueError("Verification stdin exceeds its size limit")
+    return json.loads(contents.decode("utf-8"))
+
+
+def secret_fingerprints(credentials):
+    required = ("api_password", "worker_password", "request_key", "outbox_key", "oidc_client_secret")
+    require(all(isinstance(credentials.get(name), str) and credentials[name] for name in required), "Required secret fingerprint inputs are missing")
+    return {name: hashlib.sha256(credentials[name].encode("utf-8")).hexdigest() for name in SECRET_FIELDS if name in credentials}
+
+
+def result_digest(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
 def write_protected(path, value):
@@ -152,6 +182,21 @@ class Runtime:
         require(result.returncode == 0, "Guest database verification failed")
         return result.stdout.strip()
 
+    def probe_database_password(self, role, foreign_password):
+        names = {"wms_api": "api_password", "wms_worker": "worker_password"}
+        if role not in names or not isinstance(foreign_password, str) or not foreign_password:
+            raise ValueError("Unexpected database password probe target")
+        command = ["docker", "exec", "--env", "PGPASSWORD", "wms-postgres", "psql", "-X", "-w", "-At", "-v", "ON_ERROR_STOP=1",
+                   "-h", "127.0.0.1", "-p", "5432", "-U", role, "-d", "wms", "-c", "SELECT 1"]
+        def attempt(password):
+            environment = os.environ.copy()
+            environment["PGPASSWORD"] = password
+            return subprocess.run(command, env=environment, text=True, encoding="utf-8", capture_output=True, timeout=20)
+        local = attempt(self.credentials[names[role]])
+        require(local.returncode == 0 and local.stdout.strip() == "1", "Local database positive-control login failed")
+        foreign = attempt(foreign_password)
+        return foreign.returncode != 0 and f'password authentication failed for user "{role}"' in foreign.stderr
+
     def fingerprints(self, token):
         issuer = self.identity["issuer"]
         status, discovery = self.request("GET", issuer + "/.well-known/openid-configuration")
@@ -219,6 +264,7 @@ def run_smoke(runtime):
     fingerprints = runtime.fingerprints(token)
     ids = {name: str(uuid.uuid4()) for name in ("run_id", "organization_id", "warehouse_id", "owner_id", "item_id", "location_id", "position_id", "balance_id", "actor_id")}
     commands = [str(uuid.uuid4()) for _ in range(4)]
+    results = {}
     runtime.sql(fixture_sql(ids, claims))
     scope = {name: ids[name] for name in ("organization_id", "warehouse_id")}
     query = "?" + urllib.parse.urlencode(scope)
@@ -228,6 +274,7 @@ def run_smoke(runtime):
         result = runtime.api("POST", path, token, body, key)
         replay = runtime.api("POST", path, token, body, key)
         require(result == replay and result.get("operation_id") == key, "Command replay changed the committed result")
+        results[key] = result_digest(result)
         return result
 
     created = command("/api/v1/documents", create, commands[0])
@@ -249,8 +296,141 @@ def run_smoke(runtime):
     invariants = json.loads(runtime.sql(reconcile_sql(ids, commands, document_id, reservation_id)))
     require(set(invariants) == set(INVARIANTS) and all(value is True for value in invariants.values()), "Database reconciliation failed")
     return dict(status="verified", run_id=ids["run_id"], instance_id=actual, issuer=runtime.identity["issuer"], audience=runtime.identity["audience"],
-                fingerprints=fingerprints, fixture=ids, command_ids=commands, document_id=document_id, reservation_id=reservation_id,
+                fingerprints=fingerprints, secret_sha256=secret_fingerprints(runtime.credentials), secret_fingerprint_encoding="sha256-utf8-json-secret-value",
+                operation_result_sha256=results, fixture=ids, command_ids=commands, document_id=document_id, reservation_id=reservation_id,
                 invariants=invariants, tls_readiness=True, monitoring_requires_auth=True, completed_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+
+
+def validate_baseline(runtime, baseline):
+    require(baseline.get("status") == "verified", "A successful existing smoke receipt is required")
+    require(baseline["instance_id"] == runtime.identity["instance_id"] and baseline["issuer"] == runtime.identity["issuer"]
+            and baseline["audience"] == runtime.identity["audience"], "Baseline installation identity changed")
+    for value in baseline["fixture"].values():
+        uuid.UUID(value)
+    uuid.UUID(baseline["document_id"])
+    uuid.UUID(baseline["reservation_id"])
+    require(len(baseline["command_ids"]) == 4 and len(set(baseline["command_ids"])) == 4, "Four unique existing command IDs are required")
+    for command in baseline["command_ids"]:
+        uuid.UUID(command)
+    require(runtime.sql("SELECT id::text FROM hardened_private.installation WHERE singleton;") == baseline["instance_id"], "Database installation UUID changed")
+    token, claims = runtime.token()
+    fingerprints = runtime.fingerprints(token)
+    require(fingerprints == baseline["fingerprints"], "Baseline TLS or OIDC public key fingerprint changed")
+    secrets = secret_fingerprints(runtime.credentials)
+    if "secret_sha256" in baseline:
+        require(secrets == baseline["secret_sha256"], "Baseline secret fingerprints changed")
+    return token, claims, fingerprints, secrets
+
+
+def existing_scope(baseline):
+    scope = {name: baseline["fixture"][name] for name in ("organization_id", "warehouse_id")}
+    return scope, "?" + urllib.parse.urlencode(scope)
+
+
+def check_existing_fixture(runtime, baseline, token):
+    _, query = existing_scope(baseline)
+    document = runtime.api("GET", "/api/v1/documents/" + baseline["document_id"] + query, token)
+    balance = runtime.api("GET", "/api/v1/stock-balances/" + baseline["fixture"]["balance_id"] + query, token)
+    reservation = runtime.api("GET", "/api/v1/reservations/" + baseline["reservation_id"] + query, token)
+    require(document["id"] == baseline["document_id"] and document["version"] == 4 and document["state"] == "active", "Existing document read changed")
+    require(balance["on_hand"] == "10.000000" and balance["reserved_qty"] == "0.000000", "Existing stock read changed")
+    require(reservation["active_qty"] == "0.000000" and reservation["released_qty"] == "3.000000", "Existing reservation read changed")
+    return check_existing_invariants(runtime, baseline)
+
+
+def check_existing_invariants(runtime, baseline):
+    invariants = json.loads(runtime.sql(reconcile_sql(baseline["fixture"], baseline["command_ids"], baseline["document_id"], baseline["reservation_id"])))
+    require(set(invariants) == set(INVARIANTS) and all(value is True for value in invariants.values()), "Existing fixture database reconciliation failed")
+    return invariants
+
+
+def run_replay(runtime, baseline):
+    token, _, fingerprints, secrets = validate_baseline(runtime, baseline)
+    check_existing_fixture(runtime, baseline, token)
+    scope, query = existing_scope(baseline)
+    saved = {}
+    for key in baseline["command_ids"]:
+        operation = runtime.api("GET", "/api/v1/operations/" + key + query, token)
+        require(operation["id"] == key and operation["status"] == "completed" and operation["result"]["operation_id"] == key, "Stored operation replay witness changed")
+        saved[key] = operation["result"]
+    hashes = {key: result_digest(value) for key, value in saved.items()}
+    if "operation_result_sha256" in baseline:
+        require(hashes == baseline["operation_result_sha256"], "Stored operation replay result changed from the baseline")
+    ids, keys = baseline["fixture"], baseline["command_ids"]
+    line_id = str(uuid.UUID(saved[keys[0]]["lines"][0]["id"]))
+    require(saved[keys[0]]["document_id"] == baseline["document_id"], "Original document replay witness changed")
+    bodies = [
+        ("/api/v1/documents", dict(scope, owner_id=ids["owner_id"], kind="shipment", number="lab-" + ids["run_id"], lines=[dict(item_id=ids["item_id"], quantity="10")])),
+        ("/api/v1/documents/" + baseline["document_id"] + "/transitions", dict(scope, expected_document_version=1, state="active")),
+        ("/api/v1/reservations", dict(scope, expected_document_version=2, quantity="3", document_line_id=line_id, balance_id=ids["balance_id"])),
+        ("/api/v1/reservations/" + baseline["reservation_id"] + "/releases", dict(scope, expected_document_version=3, quantity="3", reason="Hyper-V lab verification")),
+    ]
+    for key, (path, body) in zip(keys, bodies):
+        require(runtime.api("POST", path, token, body, key) == saved[key], "Maintenance replay changed the original committed result")
+    invariants = check_existing_fixture(runtime, baseline, token)
+    return dict(baseline, status="verified", verification_mode="replay", verification_id=str(uuid.uuid4()), replayed_commands=4,
+                fingerprints=fingerprints, secret_sha256=secrets, secret_fingerprint_encoding="sha256-utf8-json-secret-value",
+                secret_baseline_present="secret_sha256" in baseline, operation_result_sha256=hashes,
+                operation_result_baseline_present="operation_result_sha256" in baseline,
+                invariants=invariants, completed_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+
+
+def run_watch(runtime, baseline, *, seconds, interval=1.0, clock=time.monotonic, sleeper=time.sleep):
+    if not 0 < seconds <= 3600 or not 0 < interval <= 60:
+        raise ValueError("Watch duration must be at most one hour, with a positive interval up to 60 seconds")
+    token, claims, fingerprints, secrets = validate_baseline(runtime, baseline)
+    check_existing_invariants(runtime, baseline)
+    _, query = existing_scope(baseline)
+    paths = [("document_reads", "/api/v1/documents/" + baseline["document_id"] + query),
+             ("stock_reads", "/api/v1/stock-balances/" + baseline["fixture"]["balance_id"] + query)]
+    started = clock()
+    deadline = started + seconds
+    receipt = dict(status="verified", verification_mode="watch", verification_id=str(uuid.uuid4()), run_id=baseline["run_id"], instance_id=baseline["instance_id"],
+                   requested_seconds=seconds, interval_seconds=interval, request_count=0, error_count=0, document_reads=0, stock_reads=0,
+                   token_refreshes=0, error_classes={}, fingerprints=fingerprints, secret_sha256=secrets)
+    latencies = []
+    def failed(error):
+        receipt["error_count"] += 1
+        name = type(error).__name__
+        receipt["error_classes"][name] = receipt["error_classes"].get(name, 0) + 1
+    while clock() < deadline:
+        if time.time() >= claims["exp"] - 30:
+            try:
+                token, claims = runtime.token()
+                receipt["token_refreshes"] += 1
+            except Exception as error:
+                failed(error)
+                sleeper(min(interval, max(0, deadline - clock())))
+                continue
+        for name, path in paths:
+            receipt["request_count"] += 1
+            began = clock()
+            try:
+                data = runtime.api("GET", path, token)
+                if name == "document_reads":
+                    require(data["id"] == baseline["document_id"] and data["version"] == 4 and data["state"] == "active", "Watched document changed")
+                else:
+                    require(data["on_hand"] == "10.000000" and data["reserved_qty"] == "0.000000", "Watched stock changed")
+                receipt[name] += 1
+            except Exception as error:
+                failed(error)
+            finally:
+                latencies.append(max(0.0, (clock() - began) * 1000))
+        sleeper(min(interval, max(0, deadline - clock())))
+    try:
+        receipt["invariants"] = check_existing_invariants(runtime, baseline)
+    except Exception as error:
+        failed(error)
+    ordered = sorted(latencies)
+    receipt.update(elapsed_seconds=round(clock() - started, 6), latency_ms=dict(
+        minimum=round(min(latencies), 3) if latencies else None, maximum=round(max(latencies), 3) if latencies else None,
+        mean=round(sum(latencies) / len(latencies), 3) if latencies else None,
+        p95=round(ordered[min(len(ordered) - 1, int(len(ordered) * 0.95))], 3) if ordered else None),
+        completed_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
+    if receipt["error_count"]:
+        receipt["status"] = "failed"
+        raise WatchFailure(receipt)
+    return receipt
 
 
 def run_probe(runtime, bundle):
@@ -265,38 +445,55 @@ def run_probe(runtime, bundle):
     query = urllib.parse.urlencode(dict(organization_id=str(uuid.uuid4()), warehouse_id=str(uuid.uuid4())))
     status, _ = runtime.request("GET", "/api/v1/documents?" + query, headers={"Authorization": "Bearer " + bundle["access_token"]})
     require(status == 401, "Foreign OIDC token was not rejected as unauthenticated")
-    return dict(status="verified", source_instance_id=source_id, target_instance_id=runtime.identity["instance_id"], foreign_client_rejected=True, foreign_token_rejected=True)
+    database = {}
+    for role, name in (("wms_api", "api_password"), ("wms_worker", "worker_password")):
+        database[role] = runtime.probe_database_password(role, bundle[name])
+        require(database[role], "Foreign database password was not explicitly rejected")
+    return dict(status="verified", source_instance_id=source_id, target_instance_id=runtime.identity["instance_id"], foreign_client_rejected=True,
+                foreign_token_rejected=True, foreign_database_passwords_rejected=database, local_database_positive_controls=True)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("smoke", "export-probe", "probe"))
+    parser.add_argument("action", choices=("smoke", "replay", "watch", "export-probe", "probe"))
     parser.add_argument("--config", type=Path, default=Path("/etc/wms"))
     parser.add_argument("--output", type=Path)
     parser.add_argument("--input", type=Path)
+    parser.add_argument("--seconds", type=float, default=120)
+    parser.add_argument("--interval", type=float, default=1)
     args = parser.parse_args()
     try:
         runtime = Runtime(args.config)
         if args.action == "smoke":
             receipt = run_smoke(runtime)
+        elif args.action in ("replay", "watch"):
+            if not args.input or str(args.input) == "-":
+                raise ValueError("Maintenance verification requires a protected existing smoke receipt file")
+            baseline = read_input(args.input)
+            receipt = run_replay(runtime, baseline) if args.action == "replay" else run_watch(runtime, baseline, seconds=args.seconds, interval=args.interval)
         elif args.action == "export-probe":
             if not args.output:
                 raise ValueError("export-probe requires an explicit protected output file")
             token, _ = runtime.token()
             bundle = dict(source_instance_id=runtime.identity["instance_id"], source_issuer=runtime.identity["issuer"], client_id=runtime.identity["audience"],
-                          client_secret=runtime.credentials["oidc_client_secret"], access_token=token)
+                          client_secret=runtime.credentials["oidc_client_secret"], access_token=token,
+                          api_password=runtime.credentials["api_password"], worker_password=runtime.credentials["worker_password"])
             write_protected(args.output, bundle)
             receipt = dict(status="exported", source_instance_id=runtime.identity["instance_id"], protected_file=str(args.output))
         else:
             if not args.input:
                 raise ValueError("probe requires a root-only peer bundle file")
-            receipt = run_probe(runtime, read_protected(args.input))
+            receipt = run_probe(runtime, read_input(args.input))
         if args.output and args.action != "export-probe":
             write_protected(args.output, receipt)
         print(json.dumps(receipt, sort_keys=True))
     except Exception as error:
         # Never echo exception text: HTTP/SQL libraries may embed sensitive request material.
         receipt = dict(status="failed", action=args.action, error_class=type(error).__name__)
+        if isinstance(error, WatchFailure):
+            receipt = error.receipt
+            if args.output:
+                write_protected(args.output, receipt)
         if isinstance(error, VerificationFailure):
             receipt["check"] = error.check
         print(json.dumps(receipt))
