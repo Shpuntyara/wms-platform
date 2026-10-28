@@ -56,7 +56,7 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	if !profile.hardened {
-		logger.Warn("legacy database profile trusts SQL service credentials; use hardened-v1 to require signed user context")
+		logger.Warn("legacy database profile trusts SQL service credentials; use onprem-v1 to require signed user context")
 	}
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
@@ -148,9 +148,7 @@ func run(logger *slog.Logger) error {
 		var workerStore *postgres.HardenedWorker
 		workerStore, err = postgres.NewHardenedWorker(startup, jobPool)
 		if err == nil {
-			apiOrg, apiWarehouse := hardenedAPI.DeploymentScope()
-			workerOrg, workerWarehouse := workerStore.DeploymentScope()
-			err = validateHardenedBinding(hardenedAPI.RuntimeLogin(), workerStore.RuntimeLogin(), apiOrg, apiWarehouse, workerOrg, workerWarehouse)
+			err = validateOnPremBinding(hardenedAPI.RuntimeLogin(), workerStore.RuntimeLogin(), hardenedAPI.InstallationID(), workerStore.InstallationID())
 		}
 		jobStore = workerStore
 	} else {

@@ -44,16 +44,21 @@ def validate_receipt(kind, exit_code, report, go_output):
                  and '--- FAIL:' not in go_output
                  and all('--- PASS: ' + name in go_output for name in (
                      'TestHardenedHTTPAndContainment', 'TestHardenedDocumentReadsAtScale',
+                     'TestHardenedOnPremiseMultiWarehouse',
+                     'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey',
+                     'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
+                     'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
                      'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle')))
     elif kind == 'baseline':
         valid = exit_code == 1 and failed == BASELINE_FAILURES and report.get('passed') is False
-    elif kind in ('signature', 'action'):
+    elif kind in ('signature', 'action', 'installation'):
         expected = {'signature': 'tampered actor signature rejected',
-                    'action': 'signature for read cannot authorize a command'}[kind]
+                    'action': 'signature for read cannot authorize a command',
+                    'installation': 'signed context for another installation rejected'}[kind]
         valid = exit_code == 1 and report.get('passed') is False and expected in failed
-    elif kind == 'worker_scope':
+    elif kind == 'worker_fence':
         valid = (exit_code == 1 and report.get('passed') is False and report.get('go_exit_code') == 1
-                 and '--- FAIL: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse' in go_output)
+                 and '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced' in go_output)
     elif kind == 'document_page':
         valid = (exit_code == 1 and report.get('passed') is False and report.get('go_exit_code') == 1
                  and '--- FAIL: TestHardenedDocumentReadsAtScale/one-owner-first' in go_output
@@ -77,7 +82,7 @@ def main():
     output = (root / args.output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     runs = []
-    for kind in ('baseline', 'green', 'signature', 'action', 'worker_scope', 'document_page'):
+    for kind in ('baseline', 'green', 'signature', 'action', 'installation', 'worker_fence', 'document_page'):
         path = output / (kind + '.json')
         go_path = path.with_suffix('.go.txt')
         # An infrastructure failure must never reuse an earlier behavioral kill.
@@ -104,12 +109,12 @@ def main():
         validate_receipt(kind, result.returncode, report, go_output)
         if kind == 'green':
             validate_plan_evidence(plan_file,
-                hashlib.sha256((root / 'db/profiles/hardened-v1.sql').read_bytes()).hexdigest(),
+                hashlib.sha256((root / 'db/profiles/hardened-v1.sql').read_bytes() + (root / 'db/profiles/onprem-v1.sql').read_bytes()).hexdigest(),
                 hashlib.sha256((root / 'internal/postgres/hardened_load_integration_test.go').read_bytes()).hexdigest())
         runs.append({'kind': kind, 'status': 'pass', 'report': path.name})
         print('PASS ' + kind, flush=True)
     (output / 'summary.json').write_text(json.dumps({'passed': True, 'runs': runs,
-        'mutants': 4, 'killed': 4, 'survived': 0, 'invalid': 0, 'skipped': 0}, indent=2) + '\n')
+        'mutants': 5, 'killed': 5, 'survived': 0, 'invalid': 0, 'skipped': 0}, indent=2) + '\n')
 
 
 if __name__ == '__main__':

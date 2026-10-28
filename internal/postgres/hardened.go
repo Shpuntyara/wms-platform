@@ -26,11 +26,10 @@ const contextProbeActor = "00000000-0000-0000-0000-000000000000"
 type hardenedProfile struct {
 	Profile        string `json:"profile"`
 	Login          string `json:"login"`
-	OrganizationID string `json:"organization_id"`
-	WarehouseID    string `json:"warehouse_id"`
+	InstallationID string `json:"installation_id"`
 }
 
-// HardenedStore implements api.Backend through the opt-in hardened-v1 RPCs.
+// HardenedStore implements api.Backend for one dedicated onprem-v1 installation.
 // key is a separate 32-byte request-context secret, never the SQL password or
 // outbox relay key. Caller identities must come from verified OIDC middleware.
 type HardenedStore struct {
@@ -44,12 +43,18 @@ func loadHardenedProfile(ctx context.Context, pool *pgxpool.Pool, kind string) (
 	if pool == nil {
 		return p, errors.New("database pool required")
 	}
+	if err := requireDurablePostgres(ctx, pool); err != nil {
+		return p, err
+	}
 	var raw []byte
 	if err := pool.QueryRow(ctx, "SELECT hardened_"+kind+".profile()").Scan(&raw); err != nil {
 		return p, fmt.Errorf("hardened profile preflight: %w", err)
 	}
-	if err := json.Unmarshal(raw, &p); err != nil || p.Profile != "hardened-v1" || p.Login == "" || strings.Contains(p.Login, "|") {
-		return p, errors.New("invalid hardened profile")
+	if err := json.Unmarshal(raw, &p); err != nil || p.Profile != "onprem-v1" || p.Login == "" || strings.Contains(p.Login, "|") {
+		return p, errors.New("onprem-v1 profile required; apply the forward installation profile")
+	}
+	if _, err := inventory.NormalizeID(p.InstallationID); err != nil {
+		return p, errors.New("invalid on-premise installation identifier")
 	}
 	return p, nil
 }
@@ -65,7 +70,14 @@ func NewHardened(ctx context.Context, pool *pgxpool.Pool, key []byte) (*Hardened
 	s := &HardenedStore{pool: pool, profile: p}
 	copy(s.key[:], key)
 	// A signed empty lookup proves the app key matches the owner-provisioned key.
-	err = s.transaction(ctx, contextProbeActor, `resolve|["wms:startup","wms:startup"]`, func(tx pgx.Tx) error {
+	if err := s.verifyContext(ctx); err != nil {
+		return nil, fmt.Errorf("hardened signing key preflight: %w", err)
+	}
+	return s, nil
+}
+
+func (s *HardenedStore) verifyContext(ctx context.Context) error {
+	return s.transaction(ctx, contextProbeActor, contextProbeActor, contextProbeActor, `resolve|["wms:startup","wms:startup"]`, func(tx pgx.Tx) error {
 		rows, err := tx.Query(ctx, `SELECT * FROM hardened_api.resolve($1)`, `["wms:startup","wms:startup"]`)
 		if err != nil {
 			return err
@@ -75,23 +87,23 @@ func NewHardened(ctx context.Context, pool *pgxpool.Pool, key []byte) (*Hardened
 		}
 		return rows.Err()
 	})
-	if err != nil {
-		return nil, fmt.Errorf("hardened signing key preflight: %w", err)
-	}
-	return s, nil
 }
 
-func (s *HardenedStore) RuntimeLogin() string { return s.profile.Login }
-func (s *HardenedStore) DeploymentScope() (string, string) {
-	return s.profile.OrganizationID, s.profile.WarehouseID
-}
+func (s *HardenedStore) RuntimeLogin() string   { return s.profile.Login }
+func (s *HardenedStore) InstallationID() string { return s.profile.InstallationID }
 func (s *HardenedStore) Ping(ctx context.Context) error {
-	_, err := loadHardenedProfile(ctx, s.pool, "api")
-	return err
+	current, err := loadHardenedProfile(ctx, s.pool, "api")
+	if err != nil {
+		return err
+	}
+	if current.InstallationID != s.profile.InstallationID || current.Login != s.profile.Login {
+		return errors.New("on-premise installation identity changed")
+	}
+	return s.verifyContext(ctx)
 }
 
-func (s *HardenedStore) transaction(ctx context.Context, actor, action string, fn func(pgx.Tx) error) error {
-	tx, err := s.pool.BeginTx(ctx, pgx.TxOptions{IsoLevel: pgx.ReadCommitted})
+func (s *HardenedStore) transaction(ctx context.Context, actor, organization, warehouse, action string, fn func(pgx.Tx) error) error {
+	tx, err := beginDurableTransaction(ctx, s.pool)
 	if err != nil {
 		return translate(err)
 	}
@@ -107,8 +119,8 @@ func (s *HardenedStore) transaction(ctx context.Context, actor, action string, f
 		return translate(err)
 	}
 	digest := sha256.Sum256([]byte(action))
-	payload := fmt.Sprintf("1|%s|%d|%s|%s|%s|%s|%d|%x", s.profile.Login, pid, xid, actor,
-		s.profile.OrganizationID, s.profile.WarehouseID, time.Now().Unix()+20, digest)
+	payload := fmt.Sprintf("2|%s|%s|%d|%s|%s|%s|%s|%d|%x", s.profile.InstallationID, s.profile.Login, pid, xid, actor,
+		organization, warehouse, time.Now().Unix()+20, digest)
 	mac := hmac.New(sha256.New, s.key[:])
 	_, _ = mac.Write([]byte(payload))
 	_, err = tx.Exec(ctx, `SELECT set_config('wms.context',$1,true),set_config('wms.context_mac',$2,true),
@@ -131,7 +143,7 @@ func (s *HardenedStore) transaction(ctx context.Context, actor, action string, f
 func (s *HardenedStore) ResolvePrincipal(ctx context.Context, identity auth.Identity) (inventory.Principal, error) {
 	raw, _ := json.Marshal([]string{identity.Issuer, identity.Subject})
 	var p inventory.Principal
-	err := s.transaction(ctx, contextProbeActor, "resolve|"+string(raw), func(tx pgx.Tx) error {
+	err := s.transaction(ctx, contextProbeActor, contextProbeActor, contextProbeActor, "resolve|"+string(raw), func(tx pgx.Tx) error {
 		rows, err := tx.Query(ctx, `SELECT * FROM hardened_api.resolve($1)`, string(raw))
 		if err != nil {
 			return err
@@ -235,8 +247,10 @@ func (s *HardenedStore) ValidateModules(ctx context.Context, registry *modules.R
 }
 
 func (s *HardenedStore) scope(scope inventory.Scope) error {
-	if scope.OrganizationID != s.profile.OrganizationID || scope.WarehouseID != s.profile.WarehouseID {
-		return inventory.Forbidden()
+	for _, value := range []string{scope.ActorID, scope.OrganizationID, scope.WarehouseID} {
+		if _, err := inventory.NormalizeID(value); err != nil {
+			return inventory.Forbidden()
+		}
 	}
 	return nil
 }
@@ -247,7 +261,7 @@ func (s *HardenedStore) read(ctx context.Context, resource inventory.Resource, s
 	}
 	raw, _ := json.Marshal(input)
 	result := []json.RawMessage{}
-	err := s.transaction(ctx, scope.ActorID, "read|"+string(resource)+"|"+string(raw), func(tx pgx.Tx) error {
+	err := s.transaction(ctx, scope.ActorID, scope.OrganizationID, scope.WarehouseID, "read|"+string(resource)+"|"+string(raw), func(tx pgx.Tx) error {
 		rows, err := tx.Query(ctx, `SELECT * FROM hardened_api.read($1,$2)`, string(resource), string(raw))
 		if err != nil {
 			return err
@@ -328,13 +342,13 @@ func (s *HardenedStore) Get(ctx context.Context, resource inventory.Resource, sc
 	return rows[0], nil
 }
 
-func (s *HardenedStore) command(ctx context.Context, actor, command, kind string, input any, registry *modules.Registry) (json.RawMessage, error) {
+func (s *HardenedStore) command(ctx context.Context, actor, organization, warehouse, command, kind string, input any, registry *modules.Registry) (json.RawMessage, error) {
 	raw, err := json.Marshal(input)
 	if err != nil {
 		return nil, err
 	}
 	var result []byte
-	err = s.transaction(ctx, actor, "command|"+command+"|"+kind+"|"+string(raw), func(tx pgx.Tx) error {
+	err = s.transaction(ctx, actor, organization, warehouse, "command|"+command+"|"+kind+"|"+string(raw), func(tx pgx.Tx) error {
 		if err := validateHardenedModules(ctx, tx, registry); err != nil {
 			return err
 		}
@@ -357,7 +371,7 @@ func (s *HardenedStore) Execute(ctx context.Context, p inventory.Principal, c in
 	input := map[string]any{"line": optional(c.DocumentLineID), "balance": optional(c.BalanceID), "expected_version": c.ExpectedDocumentVersion,
 		"quantity": c.Quantity, "expires_at": c.ExpiresAt, "reservation": optional(c.ReservationID), "reason": optional(c.Reason),
 		"kind": optional(c.MovementKind), "source": optional(c.SourceBalanceID), "target": optional(c.TargetBalanceID), "correction_of": optional(c.CorrectionOf)}
-	return s.command(ctx, p.ActorID, c.ID, c.Kind, input, registry)
+	return s.command(ctx, p.ActorID, c.OrganizationID, c.WarehouseID, c.ID, c.Kind, input, registry)
 }
 
 func (s *HardenedStore) CommandDocument(ctx context.Context, p inventory.Principal, command, document string, input inventory.DocumentInput, registry *modules.Registry) (json.RawMessage, error) {
@@ -378,5 +392,5 @@ func (s *HardenedStore) CommandDocument(ctx context.Context, p inventory.Princip
 		return nil, err
 	}
 	body["document_id"], _ = json.Marshal(optional(document))
-	return s.command(ctx, p.ActorID, command, "document", body, registry)
+	return s.command(ctx, p.ActorID, input.OrganizationID, input.WarehouseID, command, "document", body, registry)
 }

@@ -2,7 +2,7 @@
 
 Ядро 0.6.0, SDK 2.0.0, Go 1.27.3, стандартный `net/http`, pgxpool и PostgreSQL kernel. API содержит чтение остатков, резервов, движений и результатов команд; создание/освобождение резервов и проведение движений. Полный контракт — `api/openapi.json`. [Аудит структуры](reviews/2026-10-27-backend-audit.md) и [нагрузочная проверка](load-testing.md).
 
-Актуальный запуск по умолчанию требует [защищённый SQL-профиль](security-hardened-profile.md). Прежний доверенный runtime и relay описаны в [документе безопасности](security-hardening.md).
+Актуальный запуск по умолчанию требует [on-premise профиль](on-premise.md): одна клиентская установка с несколькими складами. Прежний доверенный runtime и relay описаны в [документе безопасности](security-hardening.md).
 
 ## Доступные API
 
@@ -40,11 +40,11 @@ OIDC используется для проверки личности. Прав
 
 1. Подготовить отдельную базу и владельца схемы `NOLOGIN/NOSUPERUSER`. Создать отдельный runtime login, не входящий в роль владельца. Backend откажется стартовать при административных полномочиях, доступе к опасной роли через `SET ROLE`, CREATE в схемах ядра и mod_* или прямой записи в таблицы, колонки и опубликованные представления ядра.
 2. Применить core до `0009` владельцем схемы через `python scripts/migrate_core.py --database <имя_БД>`. Учет повторов, контрольные суммы и online-рецепты `0005`/`0008` описаны в [порядке обновления](warehouse-workflow.md). Для старой установки без журнала требуется явное подтверждение версии по журналу релизов через `--legacy-through`; автоматического определения истории нет.
-3. Для запуска по умолчанию установить `db/profiles/hardened-v1.sql`, подготовить отдельные API/worker logins, их одинаковую привязку к организации/складу и независимый signing key по [инструкции профиля](security-hardened-profile.md). Прежние `grants.psql`/`backend-grants.psql` относятся к явному `WMS_DATABASE_PROFILE=legacy`; hardened startup отвергает такие runtime grants.
+3. Для запуска по умолчанию установить исторический `db/profiles/hardened-v1.sql`, затем forward `db/profiles/onprem-v1.sql`; подготовить отдельные API/worker logins одной клиентской установки и независимый signing key по [инструкции перехода](on-premise.md). Прежние runtime grants относятся к явному `WMS_DATABASE_PROFILE=legacy`; on-premise startup их отвергает.
 4. Настроить `.env.example` через менеджер конфигурации/секретов. Приложение читает переменные окружения; `.env` автоматически не загружается.
 5. Выполнить `go build -o work/wms-api ./cmd/wms-api` и запустить полученный файл.
 
-`WMS_DATABASE_URL`, `WMS_OIDC_ISSUER` и `WMS_OIDC_AUDIENCE`, `WMS_OUTBOX_URL` и `WMS_OUTBOX_HMAC_KEY` обязательны. По умолчанию также нужны `WMS_WORKER_DATABASE_URL` и `WMS_REQUEST_CONTEXT_KEY`; отсутствие профиля выбирает `hardened-v1`, а не legacy. По умолчанию HTTP слушает `127.0.0.1:8080`. Для production нужен HTTPS ingress перед backend. Для удалённого PostgreSQL запрещены plaintext и TLS без проверки сервера; локальный loopback/Unix socket допускает локальное подключение. При доступе с другого хоста нельзя использовать пример `sslmode=disable`.
+`WMS_DATABASE_URL`, `WMS_OIDC_ISSUER` и `WMS_OIDC_AUDIENCE`, `WMS_OUTBOX_URL` и `WMS_OUTBOX_HMAC_KEY` обязательны. По умолчанию также нужны `WMS_WORKER_DATABASE_URL` и `WMS_REQUEST_CONTEXT_KEY`; отсутствие профиля выбирает `onprem-v1`. По умолчанию HTTP слушает `127.0.0.1:8080`. Для production нужен HTTPS ingress перед backend. Для удалённого PostgreSQL запрещены plaintext и TLS без проверки сервера; локальный loopback/Unix socket допускает локальное подключение. При доступе с другого хоста нельзя использовать пример `sslmode=disable`.
 
 `WMS_DB_MAX_CONNS` ограничивает пул (по умолчанию 20); бюджет соединений рассчитывается на все экземпляры приложения. На запрос установлен контекстный бюджет 5 секунд; блокировки БД ограничены 2 секундами, SQL — 5 секундами. Legacy adapter повторяет deadlock/serialization failure до трёх попыток с тем же ID и откатом целой транзакции; hardened adapter возвращает повторяемую ошибку клиенту. Бизнес-конфликт версии не повторяется автоматически.
 

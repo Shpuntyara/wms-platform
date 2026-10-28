@@ -29,7 +29,8 @@ def main():
     parser.add_argument('--profile', choices=['baseline', 'hardened'], required=True)
     parser.add_argument('--report', required=True)
     parser.add_argument('--go', help='Optional Go executable for real HTTP/backend integration tests')
-    parser.add_argument('--mutant', choices=['signature', 'action', 'worker_scope', 'document_page'], help='Only mutate the profile installed in this disposable database')
+    parser.add_argument('--mutant', choices=['signature', 'action', 'worker_fence', 'document_page', 'installation'], help='Only mutate the profile installed in this disposable database')
+    parser.add_argument('--legacy-profile', action='store_true', help='SQL-only historical warehouse-bound profile characterization; new adapters require onprem-v1')
     args = parser.parse_args()
     db = 'white_' + secrets.token_hex(5)
     suffix = secrets.token_hex(4)
@@ -68,22 +69,31 @@ def main():
     """)
     key = secrets.token_bytes(32)
     profile_source = ''
+    installation = None
     if args.profile == 'hardened':
-        profile_source = (ROOT / 'db/profiles/hardened-v1.sql').read_text()
+        historical = (ROOT / 'db/profiles/hardened-v1.sql').read_text()
+        forward = '' if args.legacy_profile else (ROOT / 'db/profiles/onprem-v1.sql').read_text()
+        original = historical + forward
         if args.mutant == 'signature':
-            profile_source = profile_source.replace('IF difference<>0 OR parts[9]', 'IF false OR parts[9]')
+            forward = forward.replace('IF difference<>0 OR parts[10]', 'IF false OR parts[10]')
         elif args.mutant == 'action':
-            profile_source = profile_source.replace("parts[9] IS DISTINCT FROM encode(hardened_crypto.digest(convert_to(p_action,'UTF8'),'sha256'),'hex')", 'false')
-        elif args.mutant == 'worker_scope':
-            profile_source = profile_source.replace('WHERE op.organization_id=b.organization_id AND op.warehouse_id=b.warehouse_id\n  AND o.delivered_at', 'WHERE true\n  AND o.delivered_at')
+            forward = forward.replace("parts[10] IS DISTINCT FROM encode(hardened_crypto.digest(convert_to(p_action,'UTF8'),'sha256'),'hex')", 'false')
+        elif args.mutant == 'worker_fence':
+            forward = forward.replace('RETURN platform.complete_outbox(p_id,p_token,p_success);', 'RETURN true;')
         elif args.mutant == 'document_page':
-            profile_source = profile_source.replace(" IF p_resource='documents' THEN\n  SELECT", " IF false THEN\n  SELECT")
-        if args.mutant and profile_source == (ROOT / 'db/profiles/hardened-v1.sql').read_text():
+            historical = historical.replace(" IF p_resource='documents' THEN\n  SELECT", " IF false THEN\n  SELECT")
+        elif args.mutant == 'installation':
+            forward = forward.replace('parts[2] IS DISTINCT FROM installation_id::text', 'false')
+        profile_source = historical + forward
+        if args.mutant and profile_source == original:
             raise RuntimeError('Mutant did not alter the installed profile')
         sql(f'SET ROLE {owner};\n' + profile_source)
-        sql(f'\\set api_role {api}\n\\set worker_role {worker}\n\\set organization_id {ORG}\n\\set warehouse_id {WH}\nSET ROLE {owner};\n' + (ROOT / 'db/bootstrap/hardened-grants.psql').read_text())
+        bootstrap = 'hardened-grants.psql' if args.legacy_profile else 'onprem-grants.psql'
+        sql(f'\\set api_role {api}\n\\set worker_role {worker}\n\\set organization_id {ORG}\n\\set warehouse_id {WH}\nSET ROLE {owner};\n' + (ROOT / 'db/bootstrap' / bootstrap).read_text())
         # Synthetic key exists only in process memory and this disposable DB.
         sql(f"INSERT INTO hardened_private.signing_keys(login,key) VALUES('{api}',decode('{key.hex()}','hex'));")
+        if not args.legacy_profile:
+            installation = sql('SELECT id::text FROM hardened_private.installation WHERE singleton;').stdout.strip()
     results = []
 
     def check(name, body):
@@ -108,6 +118,8 @@ def main():
     if args.profile == 'hardened':
         check('API cannot read signing secret', lambda: denied('SELECT * FROM hardened_private.signing_keys;'))
         check('API cannot read binding registry', lambda: denied('SELECT * FROM hardened_private.bindings;'))
+        if not args.legacy_profile:
+            check('API cannot read installation registry', lambda: denied('SELECT * FROM hardened_private.installation;'))
         check('API cannot call hardened worker', lambda: denied('SELECT * FROM hardened_worker.claim_outbox(1);'))
         check('API cannot call HMAC signer', lambda: denied("SELECT hardened_crypto.hmac('x','y','sha256');"))
         check('API cannot change owner role', lambda: denied(f'SET ROLE {owner};'))
@@ -117,7 +129,7 @@ def main():
         check('freely set actor GUC rejected', lambda: denied(f"SET LOCAL wms.actor_id='{REVIEWER}'; SELECT * FROM hardened_api.read('documents','{{\"limit\":100}}');"))
         check('fabricated signed context rejected', lambda: denied("SET LOCAL wms.context='{}'; SET LOCAL wms.context_mac='00'; SELECT * FROM hardened_api.read('documents','{\"limit\":100}');"))
 
-        def signed(body, actor=ACTOR, org=ORG, wh=WH, expiry=None, replay=False, tamper=False, other_backend=False, action='read|documents|{"limit":100}'):
+        def signed(body, actor=ACTOR, org=ORG, wh=WH, expiry=None, replay=False, tamper=False, other_backend=False, installation_override=None, action='read|documents|{"limit":100}'):
             # One psql session retains its backend and transaction; stdout protocol
             # deliberately never emits a key, token, or MAC into verification files.
             p = subprocess.Popen(base + ['-U', api, '-d', db], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf8', bufsize=1)
@@ -126,7 +138,9 @@ def main():
             coordinates = p.stdout.readline().strip()
             pid, xid = coordinates.split('|')
             expires = expiry or int(time.time()) + 20
-            payload = '|'.join(['1', api, pid, xid, actor, org, wh, str(expires), hashlib.sha256(action.encode()).hexdigest()])
+            digest = hashlib.sha256(action.encode()).hexdigest()
+            payload = '|'.join(['1', api, pid, xid, actor, org, wh, str(expires), digest] if args.legacy_profile else
+                               ['2', installation_override or installation, api, pid, xid, actor, org, wh, str(expires), digest])
             import hmac
             mac = hmac.new(key, payload.encode(), hashlib.sha256).hexdigest()
             if tamper:
@@ -157,6 +171,11 @@ def main():
         check('expired signed context rejected', lambda: signed_denied(expiry=int(time.time())-1))
         check('excessive context lifetime rejected', lambda: signed_denied(expiry=int(time.time())+120))
         check('signed context for another scope rejected', lambda: signed_denied(org=OTHER_ORG, wh=OTHER_WH))
+        if not args.legacy_profile:
+            check('signed context for another installation rejected', lambda: signed_denied(installation_override=str(uuid.uuid4())))
+            system_actor = '00000000-0000-4000-8000-000000000001'
+            sql(f"INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,permission) VALUES('{system_actor}','{ORG}','{WH}','document.read');")
+            check('system actor cannot use API despite explicit grants', lambda: signed_denied(actor=system_actor))
         check('signed context replay in another transaction rejected', lambda: signed_denied(replay=True))
         check('signed context replay on another connection rejected', lambda: signed_denied(other_backend=True))
         def raw_bytes():
@@ -193,9 +212,10 @@ def main():
             if result.stdout.strip() != '0':
                 raise AssertionError('unexpected event in fresh fixture')
         check('separate scoped worker surface works', valid_worker)
-    files = ['tests/hardened_profile.py', 'scripts/hardened_gate.py', 'db/profiles/hardened-v1.sql', 'db/bootstrap/hardened-grants.psql', 'internal/postgres/hardened.go', 'internal/postgres/hardened_jobs.go', 'internal/postgres/hardened_integration_test.go', 'internal/postgres/hardened_load_integration_test.go', 'cmd/wms-api/main.go', 'cmd/wms-api/runtime_profile.go', 'cmd/wms-api/runtime_profile_test.go']
+    files = ['tests/hardened_profile.py', 'scripts/hardened_gate.py', 'db/profiles/hardened-v1.sql', 'db/bootstrap/hardened-grants.psql', 'db/profiles/onprem-v1.sql', 'db/bootstrap/onprem-grants.psql', 'internal/postgres/hardened.go', 'internal/postgres/hardened_jobs.go', 'internal/postgres/hardened_integration_test.go', 'internal/postgres/hardened_onprem_integration_test.go', 'internal/postgres/hardened_load_integration_test.go', 'cmd/wms-api/main.go', 'cmd/wms-api/runtime_profile.go', 'cmd/wms-api/runtime_profile_test.go']
+    files += ['internal/postgres/hardened_durability.go', 'internal/postgres/hardened_durability_test.go', 'internal/postgres/hardened_onprem_critic_integration_test.go']
     files += [str(p.relative_to(ROOT)).replace('\\','/') for p in sorted((ROOT / 'db/migrations').glob('*.sql'))]
-    report = {'profile': args.profile, 'mutant': args.mutant, 'postgres': sql('SHOW server_version;').stdout.strip(),
+    report = {'profile': args.profile, 'deployment_profile': 'hardened-v1' if args.legacy_profile else 'onprem-v1', 'installation_id': installation, 'mutant': args.mutant, 'postgres': sql('SHOW server_version;').stdout.strip(),
               'test_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'sources_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in files if (ROOT / p).exists()},
               'executed_profile_sha256': hashlib.sha256(profile_source.encode()).hexdigest() if profile_source else None,
@@ -204,7 +224,7 @@ def main():
     path.parent.mkdir(parents=True, exist_ok=True)
     for r in results:
         print(r['status'].upper() + ' ' + r['name'] + (': ' + r['detail'] if 'detail' in r else ''))
-    if args.go and args.profile == 'hardened' and report['passed']:
+    if args.go and args.profile == 'hardened' and report['passed'] and not args.legacy_profile:
         import base64
         env = os.environ.copy()
         env['WMS_HARDENED_ADMIN_DSN'] = f'postgres://{admin}@127.0.0.1:{args.port}/{db}?sslmode=disable'
@@ -212,7 +232,7 @@ def main():
         env['WMS_HARDENED_WORKER_DSN'] = f'postgres://{worker}@127.0.0.1:{args.port}/{db}?sslmode=disable'
         env['WMS_HARDENED_KEY'] = base64.b64encode(key).decode()
         env['WMS_HARDENED_FIXTURE'] = json.dumps(dict(org=ORG, wh=WH, owner=OWNER, item=ITEM, actor=ACTOR, reviewer=REVIEWER, document=DOC, line=LINE, balance=BAL, other_org=OTHER_ORG, other_wh=OTHER_WH, other_document=OTHER_DOC))
-        run = subprocess.run([args.go, 'test', '-race', '-tags=integration,hardened', './internal/postgres', '-run', '^TestHardened', '-count=1', '-v', '-timeout=180s'], env=env, text=True, encoding='utf8', capture_output=True)
+        run = subprocess.run([args.go, 'test', '-race', '-tags=integration,hardened', './internal/postgres', '-run', '^TestHardened', '-shuffle=on', '-count=1', '-v', '-timeout=180s'], env=env, text=True, encoding='utf8', capture_output=True)
         if '--- SKIP:' in run.stdout:
             raise RuntimeError('hardened tests were skipped')
         # Go test failure messages must never print config/key/context parameters.

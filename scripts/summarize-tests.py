@@ -18,6 +18,11 @@ packages = {e['Package']: e['Action'] for e in events if not e.get('Test') and e
 legacy = json.loads(Path(args.legacy).read_text(encoding='utf-8'))
 integration_ran = any(e.get('Test') == 'TestDispatchQualityModuleUsesTransactionalFacts' and e.get('Action') == 'pass' for e in tests)
 required = [
+    'TestOnPremAccountingMicroquantityConcurrentWarehousesProperty',
+    'TestOnPremAccountingNumericBoundaryAndAtomicOverflow',
+    'TestOnPremAccountingCrossWarehouseCorrectionAndReplayStayAtomic',
+    'TestOnPremAccountingOwnerImportsRejectNonFiniteQuantities',
+    'TestDurabilitySettingsFailClosed',
     'TestDatabaseProfileConfigurationFailsClosed',
     'TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase',
     'TestHardenedDeploymentRejectsMismatchedBinding',
@@ -131,9 +136,14 @@ report = {
         'docs/verification/security-arena/hardened-load-review.json',
         'docs/verification/resilience/assurance-critic.json',
         'docs/verification/resilience/ci-artifact-red.json',
+        'docs/verification/onprem/white-onprem.json',
+        'docs/verification/onprem/accounting-receipt.json',
+        'docs/verification/onprem/security-critic-red.json',
+        'docs/verification/onprem/security-critic-worker-red.json',
+        'docs/verification/onprem/recovery-receipt.json',
     ],
-    'current_change_test_commit': '17470c9',
-    'current_change_test_commits': ['8a9d675', 'c4f26c0', '17470c9'],
+    'current_change_test_commit': '3bd7545',
+    'current_change_test_commits': ['8a9d675', 'c4f26c0', '17470c9', '3bd7545'],
     'go': args.go.strip(),
     'postgresql': args.postgres.strip(),
     'command': 'go test -race -tags=integration ./... -count=1 -timeout=600s -json',

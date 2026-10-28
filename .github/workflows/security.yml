@@ -18,6 +18,7 @@ jobs:
           POSTGRES_USER: wms_test_admin
           POSTGRES_PASSWORD: unused-disposable-ci
           POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_INITDB_ARGS: --data-checksums
         ports:
           - 5432:5432
         options: >-
@@ -100,6 +101,7 @@ jobs:
           POSTGRES_USER: arena_admin
           POSTGRES_PASSWORD: unused-disposable-ci
           POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_INITDB_ARGS: --data-checksums
         ports:
           - 5432:5432
         options: >-
@@ -131,6 +133,32 @@ jobs:
             work/hardened-plans/
             work/arena-green*
             work/security-arena-*/*.log
+          if-no-files-found: error
+  runtime-durability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Build isolated PostgreSQL runtime laboratory
+        run: docker build --file tests/resilience.Dockerfile --tag wms-runtime tests
+      - name: Actual unsafe settings and durable API and worker transactions
+        run: |
+          mkdir -p work/runtime
+          chmod 0777 work/runtime
+          go_root="$(go env GOROOT)"
+          docker run --rm --entrypoint python3 --env CGO_ENABLED=0 --env GOFLAGS=-buildvcs=false --env GOCACHE=/repo/work/go-build-cache --env GOPATH=/repo/work/go-mod-cache --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/runtime,target=/repo/work" --mount "type=bind,source=$go_root,target=/usr/local/go,readonly" wms-runtime /repo/scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin /usr/lib/postgresql/17/bin --go /usr/local/go/bin/go --report /repo/work/runtime.json
+      - name: Runtime durability evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: runtime-durability-evidence
+          path: work/runtime/runtime.json
           if-no-files-found: error
   resilience:
     runs-on: ubuntu-latest

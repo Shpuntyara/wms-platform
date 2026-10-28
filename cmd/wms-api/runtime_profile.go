@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -17,15 +18,17 @@ func parseDatabaseProfile(name, encodedKey, workerURL string) (databaseProfile, 
 	switch name {
 	case "legacy":
 		if encodedKey != "" || workerURL != "" {
-			return databaseProfile{}, errors.New("request context and worker credentials require WMS_DATABASE_PROFILE=hardened-v1")
+			return databaseProfile{}, errors.New("request context and worker credentials require WMS_DATABASE_PROFILE=onprem-v1")
 		}
 		return databaseProfile{}, nil
-	case "", "hardened-v1":
+	case "", "onprem-v1":
 		key, err := base64.StdEncoding.DecodeString(encodedKey)
 		if err != nil || len(key) != 32 || workerURL == "" {
-			return databaseProfile{}, errors.New("hardened-v1 requires a separate worker database URL and a base64 32-byte request-context key")
+			return databaseProfile{}, errors.New("onprem-v1 requires a separate worker database URL and a base64 32-byte request-context key")
 		}
 		return databaseProfile{hardened: true, contextKey: key, workerURL: workerURL}, nil
+	case "hardened-v1":
+		return databaseProfile{}, errors.New("the single-warehouse profile requires the onprem-v1 database upgrade and configuration")
 	default:
 		return databaseProfile{}, errors.New("unknown WMS_DATABASE_PROFILE")
 	}
@@ -45,9 +48,11 @@ func validateHardenedWorkerTarget(api, worker *pgx.ConnConfig) error {
 	return nil
 }
 
-func validateHardenedBinding(apiLogin, workerLogin, apiOrg, apiWarehouse, workerOrg, workerWarehouse string) error {
-	if apiLogin == "" || workerLogin == "" || apiLogin == workerLogin || apiOrg == "" || apiWarehouse == "" || apiOrg != workerOrg || apiWarehouse != workerWarehouse {
-		return errors.New("hardened API and worker require distinct effective logins bound to the same organization and warehouse")
+func validateOnPremBinding(apiLogin, workerLogin, apiInstallation, workerInstallation string) error {
+	apiID, apiErr := inventory.NormalizeID(apiInstallation)
+	workerID, workerErr := inventory.NormalizeID(workerInstallation)
+	if apiLogin == "" || workerLogin == "" || apiLogin == workerLogin || apiErr != nil || workerErr != nil || apiID != workerID {
+		return errors.New("on-premise API and worker require distinct effective logins on the same client installation")
 	}
 	return nil
 }

@@ -32,7 +32,7 @@ function Invoke-Checked([string]$Program, [string[]]$Arguments) {
 Push-Location $repoRoot
 try {
     Write-Host 'Creating an isolated local PostgreSQL cluster'
-    Invoke-Checked (Join-Path $PgBin 'initdb.exe') @('-D',$dataPath,'-U','wms_test_admin','-A','trust','--encoding=UTF8','--locale=C')
+    Invoke-Checked (Join-Path $PgBin 'initdb.exe') @('-D',$dataPath,'-U','wms_test_admin','-A','trust','--data-checksums','--encoding=UTF8','--locale=C')
     Invoke-Checked $ctl @('-D',$dataPath,'-l',(Join-Path $testRoot 'postgres.log'),'-o',"-h 127.0.0.1 -p $testPort",'-w','start')
     $started = $true
     $connection = @('-X','-q','-h','127.0.0.1','-p',"$testPort",'-U','wms_test_admin','-v','ON_ERROR_STOP=1')

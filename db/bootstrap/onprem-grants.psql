@@ -1,0 +1,34 @@
+\set ON_ERROR_STOP on
+-- Apply after hardened-v1.sql + onprem-v1.sql as the installation owner.
+-- Required: api_role, worker_role. No per-organization login or secret creation.
+BEGIN;
+SELECT set_config('onprem.install_api',:'api_role',true),set_config('onprem.install_worker',:'worker_role',true);
+DO $$
+DECLARE login text; r record; s record;
+BEGIN
+ IF current_setting('onprem.install_api')=current_setting('onprem.install_worker') THEN RAISE EXCEPTION 'distinct_roles_required'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM hardened_private.installation WHERE singleton) THEN RAISE EXCEPTION 'onprem_profile_unavailable'; END IF;
+ IF EXISTS(SELECT 1 FROM hardened_private.bindings b WHERE
+  b.login=current_setting('onprem.install_api') AND b.kind<>'api' OR b.login=current_setting('onprem.install_worker') AND b.kind<>'worker') THEN
+  RAISE EXCEPTION 'role_kind_conflict'; END IF;
+ FOREACH login IN ARRAY ARRAY[current_setting('onprem.install_api'),current_setting('onprem.install_worker')] LOOP
+  SELECT * INTO r FROM pg_roles WHERE rolname=login;
+  IF NOT FOUND OR login !~ '^[a-z][a-z0-9_]{0,62}$' OR NOT r.rolcanlogin OR r.rolsuper OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication OR r.rolbypassrls
+   OR EXISTS(SELECT 1 FROM pg_auth_members WHERE member=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_class WHERE relowner=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_proc WHERE proowner=r.oid) THEN RAISE EXCEPTION 'unsafe_onprem_role'; END IF;
+  FOR s IN SELECT nspname FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname<>'information_schema' LOOP
+   EXECUTE format('REVOKE ALL ON SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL FUNCTIONS IN SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA %I FROM %I',s.nspname,login);
+  END LOOP;
+ END LOOP;
+END $$;
+INSERT INTO hardened_private.bindings(login,kind) VALUES(:'api_role','api'),(:'worker_role','worker') ON CONFLICT(login) DO NOTHING;
+GRANT USAGE ON SCHEMA hardened_api TO :"api_role";
+GRANT EXECUTE ON FUNCTION hardened_api.profile(),hardened_api.read(text,text),hardened_api.command(uuid,text,text),hardened_api.resolve(text),hardened_api.module_metadata() TO :"api_role";
+GRANT USAGE ON SCHEMA hardened_worker TO :"worker_role";
+GRANT EXECUTE ON FUNCTION hardened_worker.profile(),hardened_worker.claim_outbox(integer),hardened_worker.complete_outbox(uuid,uuid,boolean),hardened_worker.expire_reservations(integer),hardened_worker.queue_state() TO :"worker_role";
+COMMIT;

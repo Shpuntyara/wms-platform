@@ -20,17 +20,17 @@ $data = Join-Path $testRoot 'pgdata'
 $started = $false
 Push-Location $repoRoot
 try {
-    & (Join-Path $PgBin 'initdb.exe') -D $data -U arena_admin -A trust --encoding=UTF8 --locale=C
+    & (Join-Path $PgBin 'initdb.exe') -D $data -U arena_admin -A trust --data-checksums --encoding=UTF8 --locale=C
     if ($LASTEXITCODE -ne 0) { throw 'initdb failed' }
     & $ctl -D $data -l (Join-Path $testRoot 'postgres.log') -o "-h 127.0.0.1 -p $testPort" -w start
     if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL start failed' }
     $started = $true
-    $reportRoot = 'docs/verification/security-arena'
+    $reportRoot = 'docs/verification/onprem'
     New-Item -ItemType Directory -Path $reportRoot -Force | Out-Null
     # IncludeMutations is retained for CLI compatibility; all runs prove every kill.
-    & $PythonExe scripts/hardened_gate.py --psql $psql --port $testPort --go $GoExe --output "$reportRoot/local-current"
+    & $PythonExe scripts/hardened_gate.py --psql $psql --port $testPort --go $GoExe --output "$reportRoot/portable-current"
     if ($LASTEXITCODE -ne 0) { throw 'Hardened profile gate failed' }
-    Write-Host 'Hardened profile: baseline behavioral RED, SQL/HTTP/race GREEN, requested mutants killed.'
+    Write-Host 'On-premise profile: baseline behavioral RED, SQL/HTTP/race GREEN, requested mutants killed.'
 } finally {
     if ($started) {
         & $ctl -D $data -m fast -w stop

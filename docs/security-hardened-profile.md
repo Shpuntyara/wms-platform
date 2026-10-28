@@ -1,4 +1,6 @@
-# Hardened-v1 deployment profile
+# Historical warehouse-bound hardened-v1 profile
+
+**Исторический документ.** Текущий бинарник по умолчанию использует [onprem-v1](on-premise.md): отдельная клиентская БД/сервер, несколько организаций и складов в одной установке. Ограничение одним складом ниже описывает прежний профиль и больше не является целевой архитектурой. Исходный SQL сохранён; переход выполняет новый `db/profiles/onprem-v1.sql`. Старые результаты ниже — история проверки, а не свидетельство итогового CI новой ревизии.
 
 The legacy runtime contract trusts a caller-supplied actor UUID and grants warehouse-global contract reads plus maintenance functions. An SQL password holder can use that contract without OIDC. The binary now defaults to `hardened-v1` and fails startup without its configuration. Explicit `WMS_DATABASE_PROFILE=legacy` retains the old trusted-role behavior and emits a warning. Existing deployments must install the additive profile and provision its roles/key before upgrading, or explicitly accept the legacy risk.
 
