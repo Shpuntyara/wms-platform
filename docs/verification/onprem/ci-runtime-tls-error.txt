@@ -1,0 +1,8 @@
+go: downloading github.com/jackc/pgx/v5 v5.11.0
+go: downloading golang.org/x/mod v0.42.0
+go: downloading github.com/coreos/go-oidc/v3 v3.21.0
+internal/modules/registry.go:17:2: golang.org/x/mod@v0.42.0: Get "https://proxy.golang.org/golang.org/x/mod/@v/v0.42.0.zip": tls: failed to verify certificate: x509: certificate signed by unknown authority
+internal/auth/oidc.go:15:2: github.com/coreos/go-oidc/v3@v3.21.0: Get "https://proxy.golang.org/github.com/coreos/go-oidc/v3/@v/v3.21.0.zip": tls: failed to verify certificate: x509: certificate signed by unknown authority
+internal/postgres/hardened.go:19:2: github.com/jackc/pgx/v5@v5.11.0: Get "https://proxy.golang.org/github.com/jackc/pgx/v5/@v/v5.11.0.zip": tls: failed to verify certificate: x509: certificate signed by unknown authority
+internal/postgres/documents.go:11:2: github.com/jackc/pgx/v5@v5.11.0: Get "https://proxy.golang.org/github.com/jackc/pgx/v5/@v/v5.11.0.zip": tls: failed to verify certificate: x509: certificate signed by unknown authority
+internal/postgres/hardened.go:21:2: github.com/jackc/pgx/v5@v5.11.0: Get "https://proxy.golang.org/github.com/jackc/pgx/v5/@v/v5.11.0.zip": tls: failed to verify certificate: x509: certificate signed by unknown authority

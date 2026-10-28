@@ -1,0 +1,7 @@
+{
+  "run": "https://github.com/Shpuntyara/wms-platform/actions/runs/40707985411",
+  "classification": "infrastructure TLS trust failure before runtime behavior tests",
+  "error": "x509 certificate signed by unknown authority while fetching locked Go dependencies through the runner HTTPS proxy",
+  "fix": "read-only mount of the runner system CA bundle into disposable container; no TLS verification bypass",
+  "diagnostic_sha256": "e3589b4820bb9cb533c1bc69605bd310b59aba879b92848e3d7b80313b5397cb"
+}

@@ -152,7 +152,7 @@ jobs:
           mkdir -p work/runtime
           chmod 0777 work/runtime
           go_root="$(go env GOROOT)"
-          docker run --rm --entrypoint python3 --env CGO_ENABLED=0 --env GOROOT=/usr/local/go --env GOFLAGS=-buildvcs=false --env GOCACHE=/repo/work/go-build-cache --env GOPATH=/repo/work/go-mod-cache --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/runtime,target=/repo/work" --mount "type=bind,source=$go_root,target=/usr/local/go,readonly" wms-runtime /repo/scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin /usr/lib/postgresql/17/bin --go /usr/local/go/bin/go --report /repo/work/runtime.json
+          docker run --rm --entrypoint python3 --env CGO_ENABLED=0 --env GOROOT=/usr/local/go --env GOFLAGS=-buildvcs=false --env GOCACHE=/repo/work/go-build-cache --env GOPATH=/repo/work/go-mod-cache --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/runtime,target=/repo/work" --mount "type=bind,source=$go_root,target=/usr/local/go,readonly" --mount "type=bind,source=/etc/ssl/certs/ca-certificates.crt,target=/etc/ssl/certs/ca-certificates.crt,readonly" wms-runtime /repo/scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin /usr/lib/postgresql/17/bin --go /usr/local/go/bin/go --report /repo/work/runtime.json
       - name: Preserve compiler diagnostics
         if: always()
         run: |
