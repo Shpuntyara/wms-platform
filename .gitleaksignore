@@ -1,0 +1,41 @@
+# Reviewed Gitleaks false positives from synthetic WMS verification evidence.
+# 35 SHA-256 source-file checksums and two generated PostgreSQL role identifiers.
+# Only exact commit/path/rule/line fingerprints are ignored; no detection rules or paths are disabled.
+# Do not add future findings without examining their context.
+074ee0a0ff1ce75aa2ee137395b333bbb4fe0488:docs/verification/core-audit/boundary.json:generic-api-key:47
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-load-green.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-load-red-fixed-harness.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-load-red.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-load-setup-timeout.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-red-trust.json:generic-api-key:10
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-red-trust.json:generic-api-key:600
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-red.json:generic-api-key:10
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/hardened-red.json:generic-api-key:600
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/action.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/baseline.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/document_page.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/green.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/signature.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/local-current/worker_scope.json:generic-api-key:20
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/red-baseline.json:generic-api-key:437
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/white-green.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/white-mutant-action.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/white-mutant-signature.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/white-mutant-worker_scope.json:generic-api-key:15
+17470c9495cc16f7cdd99cfd28f5235de98e69c8:docs/verification/security-arena/white-red-current.json:generic-api-key:15
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/multiwarehouse-before-independent.json:generic-api-key:20
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/multiwarehouse-before.json:generic-api-key:20
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/mutant-action.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/mutant-document_page.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/mutant-installation.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/mutant-signature.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/mutant-worker_fence.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/onprem-final-green.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/onprem-green.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/action.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/baseline.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/document_page.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/green.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/installation.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/signature.json:generic-api-key:25
+3bd7545a0a43c731ef874cc471323b9c25c38c31:docs/verification/onprem/portable-current/worker_fence.json:generic-api-key:25
