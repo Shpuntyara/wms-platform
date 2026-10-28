@@ -1,0 +1,76 @@
+---
+- name: One dedicated WMS installation on this guest
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  become: true
+  serial: 1
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Validate exact target and immutable release inputs
+      ansible.builtin.assert:
+        that:
+          - ansible_distribution == 'Ubuntu'
+          - ansible_distribution_version == '24.04'
+          - ansible_architecture == 'x86_64'
+          - wms_revision is match('^[a-f0-9]{40}$')
+          - wms_sha256 is match('^[a-f0-9]{64}$')
+          - wms_archive.startswith('/')
+          - wms_address is match('^[0-9.]+$')
+    - name: Inspect existing installation identity
+      ansible.builtin.stat:
+        path: /etc/wms/identity.json
+      register: wms_existing
+    - name: Prevent packaged default web/monitor listeners before configuration
+      ansible.builtin.command:
+        argv: [systemctl, mask, caddy.service, prometheus.service]
+      changed_when: false
+      when: not wms_existing.stat.exists
+    - name: Install trusted Ubuntu distribution packages
+      ansible.builtin.apt:
+        name: [docker.io, docker-compose-v2, openssl, curl, caddy, prometheus, python3]
+        state: present
+        update_cache: true
+        install_recommends: false
+    - name: Create nonprivileged application identity
+      ansible.builtin.user:
+        name: wms
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+    - name: Enable local container runtime
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+    - name: Verify trusted release before execution
+      ansible.builtin.command:
+        argv:
+          - /usr/bin/python3
+          - -c
+          - "import importlib.util,sys; s=importlib.util.spec_from_file_location('wmsctl', sys.argv[1]); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); m.verify_archive(sys.argv[2],sys.argv[3],sys.argv[4])"
+          - "{{ playbook_dir }}/../linux/wmsctl.py"
+          - "{{ wms_archive }}"
+          - "{{ wms_sha256 }}"
+          - "{{ wms_revision }}"
+      changed_when: false
+    - name: Install or reconcile this independent installation
+      ansible.builtin.command:
+        argv:
+          - /usr/bin/python3
+          - "{{ playbook_dir }}/../linux/wmsctl.py"
+          - install
+          - --archive
+          - "{{ wms_archive }}"
+          - --sha256
+          - "{{ wms_sha256 }}"
+          - --revision
+          - "{{ wms_revision }}"
+          - --address
+          - "{{ wms_address }}"
+      register: wms_install
+      changed_when: "'installed' in wms_install.stdout"
+    - name: Report nonsecret installation receipt
+      ansible.builtin.debug:
+        msg: "{{ wms_install.stdout }}"

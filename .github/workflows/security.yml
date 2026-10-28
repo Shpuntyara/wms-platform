@@ -46,6 +46,15 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_*.py' 2>&1 | tee work/python-tests.txt
       - name: Prepare disposable database
         run: python3 scripts/prepare-test-db.py --psql psql --port 5432
+      - name: Installer, Hyper-V driver and deployment mutation regressions
+        run: |
+          set -o pipefail
+          command -v pwsh
+          python3 -m pip install --disable-pip-version-check --target work/hyperv-deps pycdlib==1.14.0
+          export PYTHONPATH="$PWD/work/hyperv-deps"
+          python3 -m unittest discover -s tests -p 'test*installer*.py' 2>&1 | tee work/installer-tests.txt
+          python3 -m unittest discover -s tests -p 'test_hyperv_bootstrap.py' 2>&1 | tee work/hyperv-tests.txt
+          python3 deploy/linux/verify_installer.py
       - name: Migration recipes and database upgrade regressions
         run: |
           python3 scripts/verify-migrations.py --psql psql --port 5432
@@ -80,6 +89,9 @@ jobs:
             work/verification.json
             work/migration-verification.json
             work/python-tests.txt
+            work/installer-tests.txt
+            work/hyperv-tests.txt
+            work/vm-installer-*/**
             work/document-mutations.json
             work/kernel-mutations.json
             work/mutations-*/**/*.jsonl
