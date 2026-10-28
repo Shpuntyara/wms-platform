@@ -1,0 +1,19 @@
+PASS baseline
+PASS green
+PASS signature
+PASS action
+PASS worker_scope
+PASS document_page
+...F..
+======================================================================
+FAIL: test_mutations_cannot_overwrite_the_unmutated_query_plans (test_hardened_gate.HardenedGateTests.test_mutations_cannot_overwrite_the_unmutated_query_plans)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 94, in test_mutations_cannot_overwrite_the_unmutated_query_plans
+    self.assertTrue(all(Path(path).is_absolute() for path in plans), 'Go package cwd redirects relative plan directories')
+AssertionError: False is not true : Go package cwd redirects relative plan directories
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.026s
+
+FAILED (failures=1)

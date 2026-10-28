@@ -133,6 +133,11 @@ Do not publish PGDATA. Native selected logs, unit-test receipts and artifact
 digests are under `docs/verification/resilience`; the binary backup and complete
 witnesses stay in the local report's `work_directory` and in CI artifacts.
 
+The collector runs as the cluster's container user, prunes `pgdata` before traversal,
+copies only the selected synthetic evidence to `published/`, and records a digest
+manifest. The upload action scans only that directory. This preserves PGDATA's
+private permissions while making the selected files readable to the CI runner.
+
 ## Test provenance and limits
 
 [`assurance-critic.json`](verification/resilience/assurance-critic.json) records

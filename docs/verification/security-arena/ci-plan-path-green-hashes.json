@@ -1,0 +1,6 @@
+{
+  "scripts/test_hardened_gate.py": "89d0dc271059cc42a19b9f01a4025e452762d294610e25fb99ee5e31cab97032",
+  "scripts/hardened_gate.py": "f4c68327d193f4075e443fc7065f9148c2f163caf6cd01930e9a9127a929f1b1",
+  "scripts/test_collect_resilience_evidence.py": "6ad39904776980e6c04abce3e1e9be8c5d0ec63cde624a352f0581dbd8427d6a",
+  "scripts/collect_resilience_evidence.py": "36b5909541d9d2276e48c7d2b31642ab77bec0a3c75f5c3246e834efa87e09bb"
+}

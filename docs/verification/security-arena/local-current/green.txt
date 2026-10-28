@@ -39,17 +39,17 @@ PASS separate scoped worker surface works
 === RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof
 === RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic
 === RUN   TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access
---- PASS: TestHardenedHTTPAndContainment (0.65s)
+--- PASS: TestHardenedHTTPAndContainment (0.66s)
     --- PASS: TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion (0.04s)
-    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.03s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.04s)
     --- PASS: TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval (0.02s)
-    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.00s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.01s)
     --- PASS: TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement (0.02s)
     --- PASS: TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution (0.01s)
     --- PASS: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse_and_stale_ack_fenced (0.02s)
     --- PASS: TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation (0.06s)
     --- PASS: TestHardenedHTTPAndContainment/expiry_and_acknowledgement_stay_in_worker_warehouse (0.07s)
-    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.27s)
+    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.28s)
         --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send (0.09s)
         --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof (0.09s)
         --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic (0.09s)
@@ -57,8 +57,8 @@ PASS separate scoped worker surface works
 === RUN   TestHardenedDocumentReadsAtScale
 === RUN   TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle
 === RUN   TestHardenedDocumentReadsAtScale/one-owner-first
-    hardened_load_integration_test.go:315: documents=100000 case=one-owner-first mode=force_custom_plan blocks=249 row_work=210 line_hydrations=21
-    hardened_load_integration_test.go:315: documents=100000 case=one-owner-first mode=force_generic_plan blocks=237 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=one-owner-first mode=force_custom_plan blocks=250 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=one-owner-first mode=force_generic_plan blocks=238 row_work=210 line_hydrations=21
 === RUN   TestHardenedDocumentReadsAtScale/one-owner-deep
     hardened_load_integration_test.go:315: documents=100000 case=one-owner-deep mode=force_custom_plan blocks=237 row_work=210 line_hydrations=21
     hardened_load_integration_test.go:315: documents=100000 case=one-owner-deep mode=force_generic_plan blocks=237 row_work=210 line_hydrations=21
@@ -67,18 +67,18 @@ PASS separate scoped worker surface works
     hardened_load_integration_test.go:315: documents=100000 case=multiple-owner-first mode=force_generic_plan blocks=250 row_work=402 line_hydrations=21
 === RUN   TestHardenedDocumentReadsAtScale/multiple-owner-deep
     hardened_load_integration_test.go:315: documents=100000 case=multiple-owner-deep mode=force_custom_plan blocks=249 row_work=585 line_hydrations=21
-    hardened_load_integration_test.go:315: documents=100000 case=multiple-owner-deep mode=force_generic_plan blocks=249 row_work=585 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=multiple-owner-deep mode=force_generic_plan blocks=249 row_work=402 line_hydrations=21
 === RUN   TestHardenedDocumentReadsAtScale/all-owner-first
-    hardened_load_integration_test.go:315: documents=100000 case=all-owner-first mode=force_custom_plan blocks=225 row_work=211 line_hydrations=21
-    hardened_load_integration_test.go:315: documents=100000 case=all-owner-first mode=force_generic_plan blocks=225 row_work=211 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=all-owner-first mode=force_custom_plan blocks=235 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=all-owner-first mode=force_generic_plan blocks=235 row_work=210 line_hydrations=21
 === RUN   TestHardenedDocumentReadsAtScale/all-owner-deep
     hardened_load_integration_test.go:315: documents=100000 case=all-owner-deep mode=force_custom_plan blocks=236 row_work=210 line_hydrations=21
     hardened_load_integration_test.go:315: documents=100000 case=all-owner-deep mode=force_generic_plan blocks=236 row_work=210 line_hydrations=21
 === RUN   TestHardenedDocumentReadsAtScale/explicit-owner
-    hardened_load_integration_test.go:315: documents=100000 case=explicit-owner mode=force_custom_plan blocks=237 row_work=210 line_hydrations=21
-    hardened_load_integration_test.go:315: documents=100000 case=explicit-owner mode=force_generic_plan blocks=237 row_work=210 line_hydrations=21
---- PASS: TestHardenedDocumentReadsAtScale (16.04s)
-    --- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle (2.52s)
+    hardened_load_integration_test.go:315: documents=100000 case=explicit-owner mode=force_custom_plan blocks=238 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:315: documents=100000 case=explicit-owner mode=force_generic_plan blocks=238 row_work=210 line_hydrations=21
+--- PASS: TestHardenedDocumentReadsAtScale (15.93s)
+    --- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle (2.48s)
     --- PASS: TestHardenedDocumentReadsAtScale/one-owner-first (0.02s)
     --- PASS: TestHardenedDocumentReadsAtScale/one-owner-deep (0.02s)
     --- PASS: TestHardenedDocumentReadsAtScale/multiple-owner-first (0.02s)
@@ -87,5 +87,5 @@ PASS separate scoped worker surface works
     --- PASS: TestHardenedDocumentReadsAtScale/all-owner-deep (0.02s)
     --- PASS: TestHardenedDocumentReadsAtScale/explicit-owner (0.02s)
 PASS
-ok  	github.com/Shpuntyara/wms-platform/internal/postgres	17.727s
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	17.643s
 

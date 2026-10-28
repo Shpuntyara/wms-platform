@@ -5,16 +5,16 @@
   "test_sha256": "8f77d6d42004d9c9005c7c310d8defa0f3399cb6a516da664532846195d57efd",
   "sources_sha256": {
     "tests/hardened_profile.py": "8f77d6d42004d9c9005c7c310d8defa0f3399cb6a516da664532846195d57efd",
-    "scripts/hardened_gate.py": "9d6961b6bfffdbc3a77a4efda4e1c7adc70208024e5da508b5b73ce6f3a97735",
+    "scripts/hardened_gate.py": "f4c68327d193f4075e443fc7065f9148c2f163caf6cd01930e9a9127a929f1b1",
     "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
     "db/bootstrap/hardened-grants.psql": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05",
     "internal/postgres/hardened.go": "e1bd34cc45987c30cc817edc8150558bee6b35e4e0968277e8999d9f0f48974a",
     "internal/postgres/hardened_jobs.go": "0f120103995e3d07b9833c7617880f4c735e76080fb265053e826ea66578bc22",
     "internal/postgres/hardened_integration_test.go": "cda34565aaf5ce59dbb90211a500512829b4f6d37a08fe6ceb233d7a77c0e6f0",
-    "internal/postgres/hardened_load_integration_test.go": "4b27dccdff99d43acbb3949eaac69ffb6e9fa282b9da4026cf111f73bc5ba4a2",
+    "internal/postgres/hardened_load_integration_test.go": "8599aee584ae29da5354e453c5748719b72086e95e8ddb73c1a91e317013b59e",
     "cmd/wms-api/main.go": "ac1e6b38763328aff96ff66f63a9fda5a125060b6716a96d69e09f7482f77eae",
-    "cmd/wms-api/runtime_profile.go": "519681ee84e1a6c91f01e5e401c3c17fcf031821d275dd2af3fc1eb8090b4f37",
-    "cmd/wms-api/runtime_profile_test.go": "10fca8888c797226cc626bb4f32455cfa0b47c6e27f0dd768297299ac2737a04",
+    "cmd/wms-api/runtime_profile.go": "8ded97660c9a5e110751bb75aebc82a8d08ca5e31ae26607384cfe135e650f84",
+    "cmd/wms-api/runtime_profile_test.go": "6fa89be7b402cbb72db55e0a25251acd5268ed1a4f9255ce6b58da348dc2af9e",
     "db/migrations/0001_inventory_schema.sql": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
     "db/migrations/0002_inventory_commands.sql": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
     "db/migrations/0003_backend_api.sql": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
@@ -30,12 +30,12 @@
     {
       "name": "stolen API cannot enumerate foreign documents",
       "status": "fail",
-      "detail": "stolen login accepted forbidden SQL; result=e4738840-ce57-4033-a74b-9f45e355d0ae"
+      "detail": "stolen login accepted forbidden SQL; result=de03a707-650d-4e6c-80ed-ae0ce1c4eae0"
     },
     {
       "name": "stolen API cannot forge actor via legacy command",
       "status": "fail",
-      "detail": "stolen login accepted forbidden SQL; result={\"document_id\": \"79ba7e07-dc28-4020-ab51-ec1162d00165\", \"operation_id\": \"52907c4f-327a-4a94-aa2c-adcdc949bb7c\", \"reservation_id\": \"6525abd9-521f-41cb-81cb-e87d3625bfcc\", \"content_revision\": 2, \"document_version\": 2}"
+      "detail": "stolen login accepted forbidden SQL; result={\"document_id\": \"bb637d61-322d-41ac-b51a-1c8d93290ab3\", \"operation_id\": \"ab16455a-d770-42d3-ab69-ec63e2353cf0\", \"reservation_id\": \"11cc3456-6fa7-4994-8f99-6e196323d144\", \"content_revision\": 2, \"document_version\": 2}"
     },
     {
       "name": "stolen API cannot claim outbox",

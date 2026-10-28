@@ -1,0 +1,4 @@
+2026-10-28T12:46:14.4024464Z Download action repository 'actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9' (SHA:cf430e030ddbb5b0abf93d22962f4752f3646cd9)
+2026-10-28T12:47:40.9651956Z {"status": "passed", "cycles": 3, "witness_commands": 6969, "restore": "passed"}
+2026-10-28T12:47:41.0751722Z ##[group]Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+2026-10-28T12:47:41.2462720Z ##[error]EACCES: permission denied, scandir '/home/runner/work/wms-platform/wms-platform/work/resilience/crash-restore-9eef9d8b40d34a23836e835b3f873321/restored/pgdata'

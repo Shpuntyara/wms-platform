@@ -1,0 +1,19 @@
+{
+  "run": "https://github.com/Shpuntyara/wms-platform/actions/runs/40690555628",
+  "revision": "c81685845660e7e4e44fd224af8d5f8f07bd5828",
+  "pipeline": "failed",
+  "functional_crash_restore": "passed, 3 cycles, 6969 witnessed commands",
+  "failed_required_step": "Resilience evidence",
+  "error": "EACCES while upload-artifact recursively scanned private pgdata owned by container postgres",
+  "other_required_jobs": {
+    "security": "success",
+    "hardened": "success"
+  },
+  "separate_evidence_gap": "hardened custom/generic plans were not in the artifact because relative paths resolved under the Go package cwd",
+  "fix_tests": [
+    "scripts/test_collect_resilience_evidence.py",
+    "scripts/test_hardened_gate.py"
+  ],
+  "original_job_log_sha256": "8cd948093abee8a9963c44f83fdc41d08c0d8423e8f4fe37440d9a7f4880c39e",
+  "excerpt_sha256": "6c7b8af64df9338e9cc69969d2e1846a6fba86bde4117dea31961957c821ae60"
+}

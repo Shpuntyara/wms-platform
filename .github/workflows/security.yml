@@ -146,17 +146,13 @@ jobs:
           mkdir -p work/resilience
           chmod 0777 work/resilience
           docker run --rm --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/resilience,target=/evidence" wms-resilience --repo /repo --work-root /evidence --pg-bin /usr/lib/postgresql/17/bin --report /evidence/final.json --cycles 3 --seconds 10 --writers 2
+      - name: Collect evidence without reading private PGDATA
+        if: always()
+        run: docker run --rm --entrypoint python3 --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/resilience,target=/evidence" wms-resilience /repo/scripts/collect_resilience_evidence.py --root /evidence --output /evidence/published
       - name: Resilience evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: resilience-test-evidence
-          path: |
-            work/resilience/final.json
-            work/resilience/**/report.json
-            work/resilience/**/*.jsonl
-            work/resilience/**/*.log
-            work/resilience/**/*.txt
-            work/resilience/**/*.err
-            work/resilience/**/synthetic-wms.dump
+          path: work/resilience/published/
           if-no-files-found: error

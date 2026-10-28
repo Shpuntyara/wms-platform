@@ -1,5 +1,6 @@
 """Run the isolated profile's baseline, functional and behavioral mutation gates."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,24 @@ BASELINE_FAILURES = {
     'stolen API cannot acknowledge outbox',
     'stolen API cannot run expiry',
 }
+
+
+def validate_plan_evidence(path, profile_hash, test_hash):
+    try:
+        report = json.loads(Path(path).read_text())
+    except (OSError, ValueError) as error:
+        raise ValueError('Completed plan evidence was not retained') from error
+    plans = report.get('plans', [])
+    pairs = {(p.get('case'), p.get('mode')) for p in plans}
+    required = {(case, mode) for case in ('one-owner-first','one-owner-deep','multiple-owner-first',
+        'multiple-owner-deep','all-owner-first','all-owner-deep','explicit-owner')
+        for mode in ('force_custom_plan','force_generic_plan')}
+    if (report.get('seeded_documents', 0) < 100000 or report.get('seeded_lines', 0) < 300000
+            or report.get('property_cases', 0) < 30 or not required.issubset(pairs)
+            or report.get('profile_sha256') != profile_hash or report.get('test_sha256') != test_hash
+            or any(not (0 < p.get('row_work', 0) <= 2000 and 0 < p.get('blocks', 0) <= 3000
+                        and p.get('line_hydrations') == 21) for p in plans)):
+        raise ValueError('Missing, stale or unbounded plan evidence')
 
 
 def validate_receipt(kind, exit_code, report, go_output):
@@ -72,8 +91,10 @@ def main():
         if kind not in ('baseline', 'green'):
             command += ['--mutant', kind]
         env = os.environ.copy()
-        plan_root = Path(env.get('WMS_HARDENED_PLAN_DIR', str(output / 'plans')))
+        plan_root = (root / env.get('WMS_HARDENED_PLAN_DIR', str(output / 'plans'))).resolve()
         env['WMS_HARDENED_PLAN_DIR'] = str(plan_root / kind)
+        plan_file = plan_root / kind / 'hardened-read-plans.json'
+        plan_file.unlink(missing_ok=True)
         result = subprocess.run(command, cwd=root, env=env, capture_output=True, text=True, timeout=360)
         path.with_suffix('.txt').write_text(result.stdout + result.stderr, encoding='utf8')
         if not path.exists():
@@ -81,6 +102,10 @@ def main():
         report = json.loads(path.read_text())
         go_output = go_path.read_text() if go_path.exists() else ''
         validate_receipt(kind, result.returncode, report, go_output)
+        if kind == 'green':
+            validate_plan_evidence(plan_file,
+                hashlib.sha256((root / 'db/profiles/hardened-v1.sql').read_bytes()).hexdigest(),
+                hashlib.sha256((root / 'internal/postgres/hardened_load_integration_test.go').read_bytes()).hexdigest())
         runs.append({'kind': kind, 'status': 'pass', 'report': path.name})
         print('PASS ' + kind, flush=True)
     (output / 'summary.json').write_text(json.dumps({'passed': True, 'runs': runs,

@@ -5,10 +5,27 @@ import tempfile
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from hardened_gate import main, validate_receipt, BASELINE_FAILURES
+from hardened_gate import main, validate_receipt, validate_plan_evidence, BASELINE_FAILURES
 
 
 class HardenedGateTests(unittest.TestCase):
+    def test_green_requires_a_retained_complete_bounded_plan_artifact(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'plans.json'
+            with self.assertRaises(ValueError):
+                validate_plan_evidence(path, 'profile', 'test')
+            report = {'seeded_documents': 100000, 'seeded_lines': 300000, 'property_cases': 30,
+                'profile_sha256': 'profile', 'test_sha256': 'test', 'plans': [
+                    {'case': case, 'mode': mode, 'row_work': 585, 'blocks': 250, 'line_hydrations': 21}
+                    for case in ('one-owner-first','one-owner-deep','multiple-owner-first','multiple-owner-deep','all-owner-first','all-owner-deep','explicit-owner')
+                    for mode in ('force_custom_plan','force_generic_plan')]}
+            path.write_text(json.dumps(report))
+            validate_plan_evidence(path, 'profile', 'test')
+            for changed in ({'plans': []}, {'property_cases': 0}, {'profile_sha256': 'wrong'}):
+                path.write_text(json.dumps(report | changed))
+                with self.assertRaises(ValueError):
+                    validate_plan_evidence(path, 'profile', 'test')
+
     def test_stale_receipt_cannot_turn_setup_failure_into_a_baseline_proof(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'baseline.json'
@@ -84,12 +101,15 @@ class HardenedGateTests(unittest.TestCase):
                           }.get(kind, '')
                 path.with_suffix('.go.txt').write_text(output)
                 return SimpleNamespace(returncode=0 if kind == 'green' else 1, stdout='', stderr='')
-            with patch('sys.argv', ['gate', '--psql', 'psql', '--port', '5432', '--go', 'go', '--output', directory]), \
+            with patch.dict('os.environ', {'WMS_HARDENED_PLAN_DIR': 'work/relative-plans'}), \
+                    patch('hardened_gate.validate_plan_evidence'), \
+                    patch('sys.argv', ['gate', '--psql', 'psql', '--port', '5432', '--go', 'go', '--output', directory]), \
                     patch('hardened_gate.subprocess.run', side_effect=execute):
                 main()
             self.assertEqual(len(plans), 6)
             self.assertNotIn(None, plans, 'Missing plan directory lets children share the caller directory')
             self.assertEqual(len(set(plans)), 6, 'A mutant can overwrite unmutated plans')
+            self.assertTrue(all(Path(path).is_absolute() for path in plans), 'Go package cwd redirects relative plan directories')
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
-FAIL stolen API cannot enumerate foreign documents: stolen login accepted forbidden SQL; result=e4738840-ce57-4033-a74b-9f45e355d0ae
-FAIL stolen API cannot forge actor via legacy command: stolen login accepted forbidden SQL; result={"document_id": "79ba7e07-dc28-4020-ab51-ec1162d00165", "operation_id": "52907c4f-327a-4a94-aa2c-adcdc949bb7c", "reservation_id": "6525abd9-521f-41cb-81cb-e87d3625bfcc", "content_revision": 2, "document_version": 2}
+FAIL stolen API cannot enumerate foreign documents: stolen login accepted forbidden SQL; result=de03a707-650d-4e6c-80ed-ae0ce1c4eae0
+FAIL stolen API cannot forge actor via legacy command: stolen login accepted forbidden SQL; result={"document_id": "bb637d61-322d-41ac-b51a-1c8d93290ab3", "operation_id": "ab16455a-d770-42d3-ab69-ec63e2353cf0", "reservation_id": "11cc3456-6fa7-4994-8f99-6e196323d144", "content_revision": 2, "document_version": 2}
 FAIL stolen API cannot claim outbox: stolen login accepted forbidden SQL; result=
 FAIL stolen API cannot acknowledge outbox: stolen login accepted forbidden SQL; result=f
 FAIL stolen API cannot run expiry: stolen login accepted forbidden SQL; result=0
