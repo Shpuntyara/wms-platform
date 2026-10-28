@@ -45,6 +45,18 @@ MUTANTS = [
     ('release_traversal', 'def release_permissions(directory):\n',
      'def release_permissions(directory):\n    return None\n',
      'test_extracted_release_is_executable_but_not_writable_by_service_user'),
+    ('keycloak_snapshot_omitted', "dump_database('keycloak', kc_dump)", "dump_database('wms', kc_dump)",
+     'test_backup_includes_keycloak_private_dump_and_real_isolated_rehearsal'),
+    ('keycloak_rehearsal_omitted', "kc_proof = restore_database(kc_dump, 'keycloak', kc_expected, value, kc_identity)",
+     'kc_proof = dict(wms_proof)', 'test_backup_includes_keycloak_private_dump_and_real_isolated_rehearsal'),
+    ('keycloak_restore_drift', 'if observed != expected:', "if database != 'keycloak' and observed != expected:",
+     'test_keycloak_restored_key_or_client_drift_cannot_be_reported_verified'),
+    ('keycloak_recovery', "run(['docker', 'start', 'wms-keycloak'], sensitive=True, timeout=60)", 'return None',
+     'test_keycloak_dump_failure_resumes_keycloak_and_api_without_receipt'),
+    ('keycloak_preflight', "    identity = receipt.get('keycloak', {})", "    return None\n    identity = receipt.get('keycloak', {})",
+     'test_old_wms_only_backup_is_rejected_as_update_recovery_evidence'),
+    ('monitor_boot_order', 'After=docker.service\nRequires=docker.service', 'After=network.target',
+     'test_prometheus_waits_for_docker_bridge_and_retries_failed_boot'),
 ]
 
 
@@ -71,7 +83,7 @@ def main():
         output = result.stdout + result.stderr
         (args.output / (name + '.txt')).write_text(output)
         if name == 'baseline':
-            valid = result.returncode == 0 and 'Ran 15 tests' in output and 'OK' in output
+            valid = result.returncode == 0 and 'Ran 21 tests' in output and 'OK' in output
         else:
             valid = (result.returncode == 1 and 'FAIL: ' + required in output and
                      'FAILED (failures=' in output and 'errors=' not in output)

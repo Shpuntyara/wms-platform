@@ -91,8 +91,13 @@ class InstallerContract(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             dump = Path(tmp) / 'db.dump'
             dump.write_bytes(b'nonempty real backup placeholder')
-            receipt = {'path': str(dump), 'sha256': hashlib.sha256(dump.read_bytes()).hexdigest(),
-                       'restore_verified': True, 'instance_id': 'this-instance'}
+            kc_dump = Path(tmp) / 'keycloak.dump'
+            kc_dump.write_bytes(b'nonempty keycloak backup placeholder')
+            receipt = {'schema': 2, 'path': str(dump), 'sha256': hashlib.sha256(dump.read_bytes()).hexdigest(),
+                       'restore_verified': True, 'instance_id': 'this-instance',
+                       'keycloak': {'path': str(kc_dump), 'sha256': hashlib.sha256(kc_dump.read_bytes()).hexdigest(),
+                           'restore_verified': True, 'source_fingerprint_sha256': '1' * 64,
+                           'restored_fingerprint_sha256': '1' * 64}}
             wms.validate_update_preflight(safe, receipt, 'this-instance')
             for key in safe:
                 bad = dict(safe, **{key: 'off' if safe[key] == 'on' else 'on'})

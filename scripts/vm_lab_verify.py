@@ -1,7 +1,8 @@
 """Guest-local, repeatable verification for a dedicated synthetic WMS lab.
 
-Execute as root inside a newly installed laboratory guest. All business fixtures
-have fresh UUIDs. HTTP credentials remain in memory or an explicit root-only file.
+Execute as root inside a laboratory guest. Smoke creates a fresh fixture;
+maintenance verification reuses its original IDs. HTTP credentials remain in
+memory or an explicit root-only file.
 """
 import argparse
 import base64

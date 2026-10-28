@@ -148,6 +148,15 @@ def validate_update_preflight(settings, receipt, instance_id):
     if (receipt.get('instance_id') != instance_id or receipt.get('restore_verified') is not True
             or not path.is_file() or not path.stat().st_size or sha256(path) != receipt.get('sha256')):
         raise ValueError('A current verified same-installation backup is required')
+    identity = receipt.get('keycloak', {})
+    identity_dump = Path(identity.get('path', ''))
+    source_hash = identity.get('source_fingerprint_sha256', '')
+    if (receipt.get('schema') != 2 or identity.get('restore_verified') is not True
+            or not identity_dump.is_file() or not identity_dump.stat().st_size
+            or sha256(identity_dump) != identity.get('sha256')
+            or not re.fullmatch(r'[a-f0-9]{64}', source_hash)
+            or source_hash != identity.get('restored_fingerprint_sha256')):
+        raise ValueError('A verified Keycloak identity backup is required')
 
 
 def run(argv, data=None, sensitive=False, timeout=600):
@@ -396,6 +405,13 @@ networks:
     private_write(CONFIG / 'grafana/datasources/prometheus.yaml',
         'apiVersion: 1\ndatasources:\n  - name: WMS Prometheus\n    uid: wms-prometheus\n    type: prometheus\n    access: proxy\n    url: http://' + gateway + ':9090\n    isDefault: true\n    editable: false\n', 0o644)
     private_write('/etc/default/prometheus', 'ARGS="--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/var/lib/prometheus/metrics2 --storage.tsdb.retention.time=7d --storage.tsdb.retention.size=512MB --web.listen-address=' + gateway + ':9090"\n', 0o644)
+    private_write('/etc/systemd/system/prometheus.service.d/wms.conf', '''[Unit]
+After=docker.service
+Requires=docker.service
+[Service]
+Restart=on-failure
+RestartSec=5s
+''', 0o644)
     private_write('/etc/prometheus/prometheus.yml', '''global:
   scrape_interval: 15s
   evaluation_interval: 15s
@@ -464,7 +480,7 @@ https://{address} {{
 def dashboard(value):
     panels = []
     for index, (title, expression, kind) in enumerate([
-        ('Background readiness', 'wms_background_ready', 'stat'),
+        ('Background readiness', 'wms_background_ready or on(instance, job) (up{job="wms-background"} * 0)', 'stat'),
         ('Delivered events', 'wms_outbox_delivered_total', 'stat'),
         ('Pending events', 'wms_outbox_pending', 'stat'),
         ('Dead letters', 'wms_outbox_dead', 'stat'),
@@ -474,7 +490,7 @@ def dashboard(value):
             'datasource': {'type': 'prometheus', 'uid': 'wms-prometheus'},
             'gridPos': {'x': index % 4 * 6 if index < 4 else (index - 4) * 12,
                         'y': 0 if index < 4 else 5, 'w': 6 if index < 4 else 12, 'h': 5 if index < 4 else 9},
-            'targets': [{'expr': expression, 'refId': 'A'}]})
+            'targets': [{'expr': expression, 'refId': 'A', 'instant': kind == 'stat'}]})
     value = {'uid': 'wms-operations', 'title': 'WMS — dedicated installation ' + value['instance_id'][:8],
         'schemaVersion': 39, 'version': 1, 'refresh': '5s', 'time': {'from': 'now-15m', 'to': 'now'},
         'editable': False, 'panels': panels, 'tags': ['on-premise', 'lab ERP sink']}
@@ -551,41 +567,139 @@ WantedBy=multi-user.target
     run(['systemctl', 'daemon-reload'])
 
 
-def backup(value):
-    directory = STATE / 'backups' / datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S-%fZ')
-    directory.mkdir(parents=True, mode=0o700)
-    dump = directory / 'wms.dump'
-    with dump.open('wb') as output:
-        result = subprocess.run(['docker', 'exec', 'wms-postgres', 'pg_dump', '-U', 'wms_admin', '-d', 'wms', '-Fc'], stdout=output, stderr=subprocess.PIPE)
-    if result.returncode or not dump.stat().st_size:
-        raise RuntimeError('Backup failed')
-    os.chmod(dump, 0o600)
-    private_write(directory / 'globals.sql', sql('SELECT 1;') + '\n')
-    globals_output = run(['docker', 'exec', 'wms-postgres', 'pg_dumpall', '-U', 'wms_admin', '--globals-only'], sensitive=True)
-    private_write(directory / 'globals.sql', globals_output + '\n')
-    # Identity/secret/certificate archive is as sensitive as the live host. It
-    # stays root-only locally; encrypted off-host export remains operator work.
-    with tarfile.open(directory / 'identity.tar.gz', 'w:gz') as output:
-        output.add(CONFIG, arcname='wms')
-    os.chmod(directory / 'identity.tar.gz', 0o600)
-    rehearsal = 'wms_restore_' + secrets.token_hex(6)
-    sql('CREATE DATABASE ' + rehearsal + ' OWNER wms_owner;', 'postgres')
+def database_fingerprints(database):
+    """Hash every application table inside SQL; never return secret row values."""
+    tables = json.loads(sql("SELECT coalesce(json_agg(json_build_array(schemaname,tablename) ORDER BY schemaname,tablename),'[]'::json) "
+        "FROM pg_tables WHERE schemaname NOT LIKE 'pg_%' AND schemaname<>'information_schema';", database))
+    if not isinstance(tables, list) or not tables:
+        raise ValueError('Backup database has no application tables')
+    result = {}
+    for pair in tables:
+        if not isinstance(pair, list) or len(pair) != 2 or not all(isinstance(item, str) for item in pair):
+            raise ValueError('Invalid database catalog during backup')
+        table = '.'.join('"' + item.replace('"', '""') + '"' for item in pair)
+        # Fixed-size per-row hashes keep the aggregate smaller than whole JSON
+        # rows. Sorting the hashes makes row order irrelevant while preserving
+        # duplicate counts. sha256(bytea) is built into PostgreSQL 17.
+        query = """SET statement_timeout='60s'; SET TIME ZONE 'UTC';
+SELECT json_build_object('rows',count(*),'sha256',encode(sha256(convert_to(
+ coalesce(string_agg(row_hash,'' ORDER BY row_hash COLLATE "C"),''),'UTF8')),'hex'))
+FROM (SELECT encode(sha256(convert_to(to_jsonb(t)::text,'UTF8')),'hex') AS row_hash FROM """ + table + ' t) fingerprints;'
+        fingerprint = json.loads(sql(query, database))
+        if (not isinstance(fingerprint, dict) or type(fingerprint.get('rows')) is not int
+                or fingerprint['rows'] < 0 or not re.fullmatch(r'[a-f0-9]{64}', fingerprint.get('sha256', ''))):
+            raise ValueError('Invalid database fingerprint')
+        result[table] = fingerprint
+    return result
+
+
+def fingerprint_digest(fingerprints):
+    return hashlib.sha256(json.dumps(fingerprints, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
+def keycloak_identity(database, value):
+    realm = literal('wms-' + value['instance_id'][:8])
+    client = literal('wms-api-' + value['instance_id'][:8])
+    identity = json.loads(sql("""SELECT json_build_object(
+ 'realm',EXISTS(SELECT FROM public.realm WHERE name=""" + realm + """ AND enabled),
+ 'client',EXISTS(SELECT FROM public.client c JOIN public.realm r ON r.id=c.realm_id
+  WHERE r.name=""" + realm + ' AND c.client_id=' + client + ' AND c.secret=' + literal(value['oidc_client_secret']) + """
+  AND c.enabled AND c.service_accounts_enabled AND NOT c.public_client),
+ 'private_signing_key',EXISTS(SELECT FROM public.component c
+  JOIN public.component_config cfg ON cfg.component_id=c.id JOIN public.realm r ON r.id=c.realm_id
+  WHERE r.name=""" + realm + """ AND c.provider_type='org.keycloak.keys.KeyProvider'
+  AND c.provider_id='rsa-generated' AND cfg.name='privateKey' AND length(cfg.value)>0));""", database))
+    if identity != {'realm': True, 'client': True, 'private_signing_key': True}:
+        raise ValueError('Keycloak realm/client/signing identity unavailable')
+    return identity
+
+
+def dump_database(database, target):
+    descriptor = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    with os.fdopen(descriptor, 'wb') as output:
+        result = subprocess.run(['docker', 'exec', 'wms-postgres', 'pg_dump', '-U', 'wms_admin', '-d', database, '-Fc'],
+                                stdout=output, stderr=subprocess.PIPE, timeout=600)
+        output.flush()
+        os.fsync(output.fileno())
+    if result.returncode or not target.stat().st_size:
+        raise RuntimeError('Backup failed (' + database + ')')
+
+
+def resume_keycloak():
+    run(['docker', 'start', 'wms-keycloak'], sensitive=True, timeout=60)
+    issuer = json.loads((CONFIG / 'identity.json').read_text())['issuer']
+    def discovery():
+        result = http_json(issuer + '/.well-known/openid-configuration')
+        if not isinstance(result, dict) or result.get('issuer') != issuer:
+            raise ValueError('Restarted Keycloak issuer differs')
+        return result
+    wait_for(discovery, 'Keycloak HTTPS identity after backup', seconds=240)
+
+
+def restore_database(dump, database, expected, value, identity=None):
+    rehearsal = database + '_restore_' + secrets.token_hex(6)
+    owner = 'wms_owner' if database == 'wms' else 'keycloak'
+    sql('CREATE DATABASE ' + rehearsal + ' OWNER ' + owner + ';', 'postgres')
     try:
         with dump.open('rb') as source:
             result = subprocess.run(['docker', 'exec', '-i', 'wms-postgres', 'pg_restore', '-U', 'wms_admin',
-                '--exit-on-error', '-d', rehearsal], stdin=source, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                '--exit-on-error', '-d', rehearsal], stdin=source, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=600)
         if result.returncode:
-            raise RuntimeError('Isolated backup restore failed')
-        if sql('SELECT id::text FROM hardened_private.installation WHERE singleton;', rehearsal) != value['instance_id']:
-            raise ValueError('Restored identity mismatch')
-        for table in ('inventory.stock_balances', 'platform.operations', 'platform.outbox', 'platform.actor_grants'):
-            if sql('SELECT count(*) FROM ' + table + ';') != sql('SELECT count(*) FROM ' + table + ';', rehearsal):
-                raise ValueError('Restored data count mismatch: ' + table)
+            raise RuntimeError('Isolated backup restore failed (' + database + ')')
+        observed = database_fingerprints(rehearsal)
+        if observed != expected:
+            raise ValueError('Restored database fingerprint mismatch (' + database + ')')
+        if database == 'wms':
+            if sql('SELECT id::text FROM hardened_private.installation WHERE singleton;', rehearsal) != value['instance_id']:
+                raise ValueError('Restored WMS installation identity mismatch')
+        elif keycloak_identity(rehearsal, value) != identity:
+            raise ValueError('Restored Keycloak identity mismatch')
+        return {'restore_verified': True, 'source_fingerprint_sha256': fingerprint_digest(expected),
+                'restored_fingerprint_sha256': fingerprint_digest(observed), 'table_count': len(expected),
+                'row_count': sum(item['rows'] for item in expected.values())}
     finally:
+        # Only the newly generated no-consumer clone is removed. Live database
+        # names are constants and never derived from an archive or receipt.
         sql('DROP DATABASE ' + rehearsal + ' WITH (FORCE);', 'postgres')
-    receipt = dict(instance_id=value['instance_id'], path=str(dump), sha256=sha256(dump),
-                   restore_verified=True, created_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                   scope='Local root-only logical backup, isolated no-consumer restore; not off-host backup/PITR')
+
+
+def backup(value):
+    directory = STATE / 'backups' / datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S-%fZ')
+    directory.mkdir(parents=True, mode=0o700)
+    dump, kc_dump = directory / 'wms.dump', directory / 'keycloak.dump'
+    was_running = run(['docker', 'inspect', '--format', '{{.State.Running}}', 'wms-keycloak'], sensitive=True) == 'true'
+    quiesced_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    try:
+        if was_running:
+            run(['docker', 'stop', '--timeout', '30', 'wms-keycloak'], sensitive=True, timeout=60)
+        # WMS API/worker are already stopped by the caller. With both writers
+        # quiesced, the sequential dumps and identity archive represent one
+        # stable application state across the two dedicated databases.
+        wms_expected = database_fingerprints('wms')
+        kc_expected = database_fingerprints('keycloak')
+        kc_identity = keycloak_identity('keycloak', value)
+        dump_database('wms', dump)
+        dump_database('keycloak', kc_dump)
+        globals_output = run(['docker', 'exec', 'wms-postgres', 'pg_dumpall', '-U', 'wms_admin', '--globals-only'], sensitive=True)
+        private_write(directory / 'globals.sql', globals_output + '\n')
+        descriptor = os.open(directory / 'identity.tar.gz', os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        with os.fdopen(descriptor, 'wb') as raw:
+            with tarfile.open(fileobj=raw, mode='w:gz') as output:
+                output.add(CONFIG, arcname='wms')
+            raw.flush()
+            os.fsync(raw.fileno())
+        snapshot_complete_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    finally:
+        if was_running:
+            resume_keycloak()
+    wms_proof = restore_database(dump, 'wms', wms_expected, value)
+    kc_proof = restore_database(kc_dump, 'keycloak', kc_expected, value, kc_identity)
+    receipt = dict(schema=2, instance_id=value['instance_id'], path=str(dump), sha256=sha256(dump),
+        restore_verified=True, wms=dict(wms_proof, path=str(dump), sha256=sha256(dump)),
+        keycloak=dict(kc_proof, path=str(kc_dump), sha256=sha256(kc_dump), identity_checks=kc_identity),
+        quiesced_at=quiesced_at, snapshot_complete_at=snapshot_complete_at,
+        created_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        scope='Local root-only WMS + Keycloak logical backups, globals, secrets/TLS configuration; two isolated no-consumer restores; not encrypted off-host backup/PITR or monitoring-history backup')
     private_write(directory / 'receipt.json', json.dumps(receipt, indent=2) + '\n')
     return receipt
 

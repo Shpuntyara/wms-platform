@@ -55,6 +55,16 @@ jobs:
           python3 -m unittest discover -s tests -p 'test*installer*.py' 2>&1 | tee work/installer-tests.txt
           python3 -m unittest discover -s tests -p 'test_hyperv_bootstrap.py' 2>&1 | tee work/hyperv-tests.txt
           python3 deploy/linux/verify_installer.py
+      - name: Monitoring semantics with real Prometheus query evaluation
+        run: |
+          set -o pipefail
+          mkdir -p work/promtool-package
+          sudo apt-get update -qq
+          cd work/promtool-package
+          apt-get download prometheus
+          dpkg-deb -x prometheus_*.deb unpacked
+          cd ../..
+          python3 scripts/verify_monitoring.py --promtool work/promtool-package/unpacked/usr/bin/promtool --output work/monitoring-verification.json
       - name: Migration recipes and database upgrade regressions
         run: |
           python3 scripts/verify-migrations.py --psql psql --port 5432
@@ -91,6 +101,7 @@ jobs:
             work/python-tests.txt
             work/installer-tests.txt
             work/hyperv-tests.txt
+            work/monitoring-verification.json
             work/vm-installer-*/**
             work/document-mutations.json
             work/kernel-mutations.json

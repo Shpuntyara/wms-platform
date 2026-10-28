@@ -46,6 +46,11 @@ Grafana с ролью **Viewer** за отдельной HTTPS Basic Auth: `wms-
 `monitor_password` из root-only secret store. Без credentials маршрут
 `/monitor/*` возвращает 401. Административный пароль Grafana отдельный.
 На сетевом адресе VM должны быть доступны только SSH 22 и HTTPS 443.
+Systemd drop-in Prometheus требует/ожидает `docker.service` перед привязкой
+docker0 и повторяет неудачный запуск через 5 секунд. После перезапуска VM
+проверяются и WMS, и живой monitoring listener. Readiness stat в Grafana
+использует instant query с нулём при недоступном scrape/отсутствующей метрике,
+чтобы последнее историческое значение `1` не скрывало текущий сбой.
 
 **Лабораторный sink не является ERP-коннектором.** Он проверяет HMAC,
 временное окно и повтор UUID, подтверждает событие только после SQLite
@@ -122,9 +127,21 @@ sudo wmsctl status
 ```
 
 Bundle сначала проверяется и распаковывается в отдельный release directory.
-Затем прекращаются API/worker записи, создаются dump и isolated restore
-в отдельную временную БД без потребителя событий. Проверяются UUID
-установки, контрольная сумма dump и количества строк ключевых таблиц.
+Затем прекращаются API/worker записи. Keycloak тоже кратко останавливается
+на время согласованного snapshot: создаются отдельные dumps **WMS и Keycloak**,
+сохраняются globals и private secrets/TLS configuration. До возобновления
+Keycloak вычисляются counts и SHA256 содержимого каждой таблицы обеих БД;
+сырой SQL с приватными ключами/паролями не выводится. Keycloak возвращается
+в прежнее состояние в `finally` даже при ошибке snapshot; проверяется его
+настоящий HTTPS issuer.
+
+Оба dumps восстанавливаются в отдельные временные БД без API/worker/Keycloak
+потребителей. Для каждой таблицы сравниваются количество строк и SHA256,
+включая WMS business rows/command receipts/grants/signing metadata и Keycloak
+realm/client/grants/private signing-key configuration. Дополнительно
+проверяются UUID установки, ожидаемый OIDC client и наличие RSA signing key.
+Секреты остаются в БД и root-only файлах; receipt содержит только сводные
+fingerprints. Удаляются только сгенерированные rehearsal DB.
 Далее выполняются проверки durability, forward migrations и атомарное
 переключение `/opt/wms/current`; служба запускается и проверяет HTTPS
 readiness и background health. Секреты/UUID/issuer/client/volumes сохраняются.
@@ -161,13 +178,25 @@ Grafana: `https://VM_IP/monitor/d/wms-operations`. Панели показыва
 Auth к запросам по проверяемому TLS; браузеру не нужны административные
 credentials. Не встраивайте пароль в URL или исходники страницы.
 
-`backup` ограниченно останавливает API/worker, создаёт root-only
-`/var/lib/wms/backups/TIMESTAMP/` с dump, globals, private identity archive
-и restore receipt, затем возвращает работающую службу. Сами локальные копии
+`backup` ограниченно останавливает API/worker, кратко quiesces Keycloak на
+время snapshot, создаёт root-only `/var/lib/wms/backups/TIMESTAMP/` с
+`wms.dump`, `keycloak.dump`, globals, private identity archive и schema-2
+restore receipt, затем возвращает работавшие службы. Ошибка dump, restore
+или fingerprint проверки не создаёт успешный receipt; `finally` возвращает
+Keycloak и API. Обновление после начала SQL migrations по-прежнему не
+возвращает старый бинарник и не запускает запись автоматически.
+
+Schema-2 receipt указывает hash каждого dump, границы snapshot, результаты
+обоих isolated restores и сверку source/restored fingerprints. Старые
+WMS-only receipts не доказывают сохранность OIDC signing identity и не
+принимаются как recovery preflight нового обновления. Сами локальные копии
 **не зашифрованы**: каталог доступен только root, но находится на том же
 виртуальном диске. Для production обязательны шифрованный off-host export,
 политика retention и регулярный полный restore rehearsal. Логический dump
 не даёт PITR; здесь не настроены WAL archive, HA или нулевой RPO.
+Восстановимая точка — момент quiesced snapshot; команды после него требуют
+отдельного recovery endpoint/WAL-плана. История Prometheus/Grafana volumes
+не входит в этот логический backup; конфигурация готовых панелей сохранена.
 
 Один сервер остаётся единой точкой отказа. Для обновления ОС и контейнеров
 используйте отдельное окно и текущий backup/restore receipt. Не запускайте

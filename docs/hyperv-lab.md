@@ -228,3 +228,40 @@ file on the other guest and run `probe --input /root/peer-probe.json` before tok
 expiry. The target must reject the source client credential as `invalid_client`
 and the source token as API HTTP 401. Repeat in the other direction. Do not commit,
 attach, log or publish the probe bundle; only publish the resulting receipt.
+
+For maintenance, retain the original smoke receipt as a root-only guest file and
+replay its existing fixture instead of creating another organization:
+
+```bash
+sudo python3 scripts/vm_lab_verify.py replay --input /root/smoke-first.json \
+  --output /root/pre-maintenance.json
+sudo python3 scripts/vm_lab_verify.py watch --input /root/pre-maintenance.json \
+  --seconds 600 --interval 1 --output /root/availability.json
+sudo python3 scripts/vm_lab_verify.py replay --input /root/pre-maintenance.json \
+  --output /root/post-maintenance.json
+```
+
+Replay obtains the four committed operation results through the authenticated
+API, reconstructs the original request bodies and uses the original command IDs.
+It compares the responses, reads and six database invariants. Receipts retain
+SHA256 fingerprints of the committed results, CA/JWK and each actual high-entropy
+secret value (the UTF-8 contents of its JSON string, without surrounding quotes).
+A legacy smoke receipt lacking
+these hashes gets `secret_baseline_present=false` and
+`operation_result_baseline_present=false` on its first replay. Use that replay's
+output as the maintenance baseline; later replays require unchanged hashes.
+
+Watch repeatedly performs authenticated document and stock reads, refreshes its
+OIDC token 30 seconds before expiry, and reports request counts, errors and
+latency. Any error makes its exit status nonzero; the output still contains a
+public failure summary without exception text or credentials. Run the watch on
+the instance expected to remain available while the other instance is updated.
+
+The updated peer bundle also contains the source API/worker database passwords.
+On the target, `probe --input -` accepts at most 64 KiB of JSON through stdin, so
+the bundle can be streamed without saving the source secrets on the target.
+For each database role the probe first proves a successful local TCP login, then
+requires an explicit password-authentication failure with the source password.
+It runs only `SELECT 1`; passwords reach Docker through a process environment
+variable, and command arguments contain only `--env PGPASSWORD`. Network errors,
+timeouts or a failed local positive control do not count as password rejection.
