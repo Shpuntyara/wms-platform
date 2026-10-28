@@ -165,6 +165,21 @@ def compose(*args):
     return run(['docker', 'compose', '--project-name', 'wms', '--file', CONFIG / 'compose.yaml', *args], sensitive=True)
 
 
+def fetch_images():
+    # Sequential immutable pulls preserve completed layers when a different
+    # registry fails. Never let one parallel Compose failure cancel all fetches.
+    for service, image in IMAGES.items():
+        for attempt in range(1, 4):
+            try:
+                run(['docker', 'pull', '--platform', 'linux/amd64', image], sensitive=True, timeout=600)
+                break
+            except (RuntimeError, subprocess.TimeoutExpired):
+                if attempt == 3:
+                    # Docker's raw errors may contain signed registry URLs.
+                    raise RuntimeError('Image fetch failed after 3 attempts (' + service + ')') from None
+                time.sleep(2 * attempt)
+
+
 def sql(query, database='wms'):
     return run(['docker', 'exec', '-i', 'wms-postgres', 'psql', '-X', '-q', '-A', '-t',
                 '-v', 'ON_ERROR_STOP=1', '-U', 'wms_admin', '-d', database], query, sensitive=True)
@@ -224,6 +239,19 @@ def database_settings():
                            ','.join(literal(key) for key in (*DURABILITY, 'synchronous_commit')) + ');', 'postgres'))
 
 
+def release_permissions(directory):
+    # mkdtemp is deliberately private during extraction. Before publishing,
+    # grant traversal/execution to the service UID, with root as sole writer.
+    # Reconcile older already-verified releases as well as freshly staged ones.
+    for parent in (BASE, BASE / 'releases', directory):
+        os.chmod(parent, 0o755)
+    for item in directory.rglob('*'):
+        if item.is_symlink():
+            raise ValueError('Installed release contains a link')
+        mode = 0o755 if item.is_dir() or item.relative_to(directory).parts[0] == 'bin' else 0o644
+        os.chmod(item, mode)
+
+
 def release_extract(archive, digest, revision):
     manifest, blob = _verified_archive(archive, digest, revision)
     releases = BASE / 'releases'
@@ -233,6 +261,7 @@ def release_extract(archive, digest, revision):
         for name, expected in manifest['files'].items():
             if sha256(target / name) != expected:
                 raise ValueError('Installed release has drifted')
+        release_permissions(target)
         return target
     staging = Path(tempfile.mkdtemp(prefix='.stage-', dir=releases))
     try:
@@ -247,6 +276,7 @@ def release_extract(archive, digest, revision):
                     with destination.open('wb') as output:
                         shutil.copyfileobj(source.extractfile(member), output)
                     os.chmod(destination, 0o755 if name.startswith('bin/') else 0o644)
+        release_permissions(staging)
         os.replace(staging, target)
     finally:
         if staging.exists():
@@ -614,7 +644,7 @@ def _install(args, value, recovery):
         validate_update_preflight(database_settings(), receipt, value['instance_id'])
     issuer = configuration(value, args.address)
     compose('config', '--quiet')
-    compose('pull')
+    fetch_images()
     compose('up', '-d', 'postgres')
     wait_for(lambda: sql('SELECT 1;', 'postgres'), 'PostgreSQL')
     settings = database_settings()

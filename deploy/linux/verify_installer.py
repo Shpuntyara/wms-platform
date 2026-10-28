@@ -38,6 +38,13 @@ MUTANTS = [
      'test_monitor_route_requires_separate_viewer_auth_without_plaintext'),
     ('operator_backup_recovery', "    finally:\n        if running:\n            run(['systemctl', 'start', 'wms-api'])", '    finally:\n        pass',
      'test_operator_backup_failure_also_restarts_existing_writer'),
+    ('image_retry', 'for attempt in range(1, 4):', 'for attempt in range(3, 4):',
+     'test_image_pull_retries_transient_failure_then_continues_sequentially'),
+    ('image_fail_closed', "raise RuntimeError('Image fetch failed after 3 attempts (' + service + ')') from None",
+     'break', 'test_image_pull_permanent_failure_aborts_before_database_mutation'),
+    ('release_traversal', 'def release_permissions(directory):\n',
+     'def release_permissions(directory):\n    return None\n',
+     'test_extracted_release_is_executable_but_not_writable_by_service_user'),
 ]
 
 
@@ -64,7 +71,7 @@ def main():
         output = result.stdout + result.stderr
         (args.output / (name + '.txt')).write_text(output)
         if name == 'baseline':
-            valid = result.returncode == 0 and 'Ran 12 tests' in output and 'OK' in output
+            valid = result.returncode == 0 and 'Ran 15 tests' in output and 'OK' in output
         else:
             valid = (result.returncode == 1 and 'FAIL: ' + required in output and
                      'FAILED (failures=' in output and 'errors=' not in output)

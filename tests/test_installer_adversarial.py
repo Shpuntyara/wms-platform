@@ -4,7 +4,9 @@ import datetime
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -19,6 +21,80 @@ spec.loader.exec_module(wms)
 
 
 class InstallerAdversarial(unittest.TestCase):
+    def test_extracted_release_is_executable_but_not_writable_by_service_user(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            os.chmod(base, 0o755)
+            path, digest = archive(base)
+            calls = []
+            original_chmod = os.chmod
+            def chmod(target, mode):
+                calls.append((Path(target), mode))
+                return original_chmod(target, mode)
+            with patch.object(wms, 'BASE', base / 'installation'), patch.object(wms.os, 'chmod', side_effect=chmod):
+                release = wms.release_extract(path, digest, REV)
+            # Simulate the root-owned 0700 release left by the first installer.
+            # Reusing a verified directory must repair permissions too.
+            os.chmod(release, 0o700)
+            calls.clear()
+            with patch.object(wms, 'BASE', base / 'installation'), patch.object(wms.os, 'chmod', side_effect=chmod):
+                self.assertEqual(wms.release_extract(path, digest, REV), release)
+            self.assertIn((release, 0o755), calls, 'Existing release mode was not reconciled')
+            if os.name == 'posix':
+                # Real permission check as nobody, not the root test process.
+                # CI must have working sudo; a missing dependency is a failure.
+                prefix = ['sudo', '-n', '-u', 'nobody', '--']
+                executable = subprocess.run(prefix + ['/usr/bin/test', '-x', str(release / 'bin/wms-api')])
+                writable = subprocess.run(prefix + ['/usr/bin/test', '-w', str(release / 'bin/wms-api')])
+                self.assertEqual(executable.returncode, 0, 'Service UID cannot traverse/execute extracted binary')
+                self.assertEqual(writable.returncode, 1, 'Service UID can alter release binary')
+            else:
+                # Windows cannot implement Unix mode semantics. The Linux CI
+                # branch above still executes, with no skip or silent fallback.
+                self.assertTrue(any(mode == 0o755 and 'bin' not in target.parts for target, mode in calls),
+                                'Extracted release directory must grant service traversal')
+
+    def test_image_pull_retries_transient_failure_then_continues_sequentially(self):
+        calls = []
+        def command(argv, *args, **kwargs):
+            calls.append(list(argv))
+            self.assertTrue(kwargs.get('sensitive'), 'Image errors may contain dynamic registry URLs')
+            if len(calls) == 1:
+                raise RuntimeError('temporary registry failure')
+            return ''
+        with patch.object(wms, 'run', side_effect=command), patch.object(wms.time, 'sleep'):
+            try:
+                wms.fetch_images()
+            except RuntimeError:
+                self.fail('A transient image pull failure must retry and recover')
+        images = list(wms.IMAGES.values())
+        self.assertEqual([call[-1] for call in calls], [images[0], images[0], images[1], images[2]])
+        self.assertTrue(all(call[:4] == ['docker', 'pull', '--platform', 'linux/amd64'] for call in calls))
+
+    def test_image_pull_permanent_failure_aborts_before_database_mutation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            args = argparse.Namespace(address='192.168.50.11', action='install', archive=base / 'release.tar',
+                                      sha256='0' * 64, revision=REV)
+            calls = []
+            def command(argv, *args, **kwargs):
+                calls.append(list(argv))
+                raise RuntimeError('registry unavailable')
+            with patch.object(wms, 'BASE', base), patch.object(wms, 'CONFIG', base / 'config'), \
+                 patch.object(wms, 'release_extract', return_value=base / 'release'), \
+                 patch.object(wms, 'configuration', return_value='https://192.168.50.11/auth/realms/test'), \
+                 patch.object(wms, 'compose') as compose, \
+                 patch.object(wms, 'sql', side_effect=AssertionError('SQL reached after permanent image failure')) as sql, \
+                 patch.object(wms, 'database_bootstrap') as bootstrap, \
+                 patch.object(wms, 'run', side_effect=command), patch.object(wms.time, 'sleep'):
+                with self.assertRaisesRegex(RuntimeError, '3 attempts'):
+                    wms.install(args, {'instance_id': 'test'})
+            self.assertEqual(len(calls), 3)
+            self.assertEqual([call[-1] for call in calls], [wms.IMAGES['postgres']] * 3)
+            compose.assert_called_once_with('config', '--quiet')
+            sql.assert_not_called()
+            bootstrap.assert_not_called()
+
     def test_operator_backup_failure_also_restarts_existing_writer(self):
         commands = []
         def command(argv, *args, **kwargs):
