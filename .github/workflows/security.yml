@@ -51,9 +51,9 @@ jobs:
       - name: Formatting and static analysis
         run: |
           test -z "$(gofmt -l cmd internal)"
-          go vet -tags=integration ./...
+          go vet -tags=integration,hardened,arena ./...
           go mod verify
-          go fix ./...
+          go fix -tags=integration,hardened,arena ./...
           git diff --exit-code
       - name: Race, integration and security regressions
         run: |
@@ -89,4 +89,74 @@ jobs:
             work/windows-migration-verification.json
             work/document-plans/
             work/document-critic-plans/
+          if-no-files-found: error
+  hardened:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: arena_admin
+          POSTGRES_PASSWORD: unused-disposable-ci
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U arena_admin"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      WMS_HARDENED_PLAN_DIR: work/hardened-plans
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Hardened profile RED, GREEN, race and behavioral mutations
+        run: python3 scripts/hardened_gate.py --psql psql --port 5432 --go go --output work/hardened
+      - name: Independent SQL credential permission matrix
+        run: python3 scripts/security_arena.py --psql psql --port 5432 --go go --report work/arena-green.json
+      - name: Hardened evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: hardened-test-evidence
+          path: |
+            work/hardened/
+            work/hardened-plans/
+            work/arena-green*
+            work/security-arena-*/*.log
+          if-no-files-found: error
+  resilience:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build PostgreSQL process-crash laboratory
+        run: docker build --file tests/resilience.Dockerfile --tag wms-resilience tests
+      - name: Abrupt process termination, WAL recovery and isolated restore
+        run: |
+          mkdir -p work/resilience
+          chmod 0777 work/resilience
+          docker run --rm --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/resilience,target=/evidence" wms-resilience --repo /repo --work-root /evidence --pg-bin /usr/lib/postgresql/17/bin --report /evidence/final.json --cycles 3 --seconds 10 --writers 2
+      - name: Resilience evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: resilience-test-evidence
+          path: |
+            work/resilience/final.json
+            work/resilience/**/report.json
+            work/resilience/**/*.jsonl
+            work/resilience/**/*.log
+            work/resilience/**/*.txt
+            work/resilience/**/*.err
+            work/resilience/**/synthetic-wms.dump
           if-no-files-found: error

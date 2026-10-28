@@ -1,0 +1,32 @@
+\set ON_ERROR_STOP on
+-- Fresh dedicated logins, no group memberships. No passwords or keys here.
+-- Required: api_role, worker_role, organization_id, warehouse_id.
+BEGIN;
+SELECT set_config('hardened.install_api',:'api_role',true),set_config('hardened.install_worker',:'worker_role',true);
+DO $$
+DECLARE login text; r record; s record;
+BEGIN
+ IF current_setting('hardened.install_api')=current_setting('hardened.install_worker') THEN RAISE EXCEPTION 'distinct_roles_required'; END IF;
+ FOREACH login IN ARRAY ARRAY[current_setting('hardened.install_api'),current_setting('hardened.install_worker')] LOOP
+  SELECT * INTO r FROM pg_roles WHERE rolname=login;
+  IF NOT FOUND OR login !~ '^[a-z][a-z0-9_]{0,62}$' OR NOT r.rolcanlogin OR r.rolsuper OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication OR r.rolbypassrls
+   OR EXISTS(SELECT 1 FROM pg_auth_members WHERE member=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_class WHERE relowner=r.oid)
+   OR EXISTS(SELECT 1 FROM pg_proc WHERE proowner=r.oid) THEN RAISE EXCEPTION 'unsafe_hardened_role'; END IF;
+  -- Strip every direct legacy grant, including optional module schemas.
+  FOR s IN SELECT nspname FROM pg_namespace WHERE nspname NOT LIKE 'pg_%' AND nspname<>'information_schema' LOOP
+   EXECUTE format('REVOKE ALL ON SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL FUNCTIONS IN SCHEMA %I FROM %I',s.nspname,login);
+   EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA %I FROM %I',s.nspname,login);
+  END LOOP;
+ END LOOP;
+END $$;
+INSERT INTO hardened_private.bindings VALUES(:'api_role','api',:'organization_id'::uuid,:'warehouse_id'::uuid),
+ (:'worker_role','worker',:'organization_id'::uuid,:'warehouse_id'::uuid);
+GRANT USAGE ON SCHEMA hardened_api TO :"api_role";
+GRANT EXECUTE ON FUNCTION hardened_api.profile(),hardened_api.read(text,text),hardened_api.command(uuid,text,text),hardened_api.resolve(text),hardened_api.module_metadata() TO :"api_role";
+GRANT USAGE ON SCHEMA hardened_worker TO :"worker_role";
+GRANT EXECUTE ON FUNCTION hardened_worker.profile(),hardened_worker.claim_outbox(integer),hardened_worker.complete_outbox(uuid,uuid,boolean),hardened_worker.expire_reservations(integer),hardened_worker.queue_state() TO :"worker_role";
+COMMIT;

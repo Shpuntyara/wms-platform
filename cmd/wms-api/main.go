@@ -33,12 +33,30 @@ func main() {
 	}
 }
 
+type applicationStore interface {
+	api.Backend
+	InstalledModules(context.Context) ([]modules.Manifest, error)
+	ValidateModules(context.Context, *modules.Registry) error
+}
+
+type backgroundStore interface {
+	jobs.Store
+	jobs.MonitorStore
+}
+
 func run(logger *slog.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	dsn, issuer, audience := os.Getenv("WMS_DATABASE_URL"), os.Getenv("WMS_OIDC_ISSUER"), os.Getenv("WMS_OIDC_AUDIENCE")
 	if dsn == "" || issuer == "" || audience == "" {
 		return errors.New("required configuration: WMS_DATABASE_URL, WMS_OIDC_ISSUER, WMS_OIDC_AUDIENCE")
+	}
+	profile, err := parseDatabaseProfile(os.Getenv("WMS_DATABASE_PROFILE"), os.Getenv("WMS_REQUEST_CONTEXT_KEY"), os.Getenv("WMS_WORKER_DATABASE_URL"))
+	if err != nil {
+		return err
+	}
+	if !profile.hardened {
+		logger.Warn("legacy database profile trusts SQL service credentials; use hardened-v1 to require signed user context")
 	}
 	config, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
@@ -65,7 +83,14 @@ func run(logger *slog.Logger) error {
 		return errors.New("database initialization failed")
 	}
 	defer pool.Close()
-	store, err := postgres.New(startup, pool)
+	var store applicationStore
+	var hardenedAPI *postgres.HardenedStore
+	if profile.hardened {
+		hardenedAPI, err = postgres.NewHardened(startup, pool, profile.contextKey)
+		store = hardenedAPI
+	} else {
+		store, err = postgres.New(startup, pool)
+	}
 	if err != nil {
 		return errors.New("database preflight failed; verify role, migrations and backend grants")
 	}
@@ -99,6 +124,18 @@ func run(logger *slog.Logger) error {
 		return err
 	}
 	jobConfig := config.Copy()
+	if profile.hardened {
+		jobConfig, err = pgxpool.ParseConfig(profile.workerURL)
+		if err != nil {
+			return errors.New("invalid worker database configuration")
+		}
+		if err := validateDatabaseTLS(&jobConfig.ConnConfig.Config); err != nil {
+			return err
+		}
+		if err := validateHardenedWorkerTarget(config.ConnConfig, jobConfig.ConnConfig); err != nil {
+			return err
+		}
+	}
 	jobConfig.MaxConns = 4
 	jobConfig.MinConns = 1
 	jobPool, err := pgxpool.NewWithConfig(startup, jobConfig)
@@ -106,7 +143,19 @@ func run(logger *slog.Logger) error {
 		return errors.New("background database initialization failed")
 	}
 	defer jobPool.Close()
-	jobStore, err := postgres.New(startup, jobPool)
+	var jobStore backgroundStore
+	if profile.hardened {
+		var workerStore *postgres.HardenedWorker
+		workerStore, err = postgres.NewHardenedWorker(startup, jobPool)
+		if err == nil {
+			apiOrg, apiWarehouse := hardenedAPI.DeploymentScope()
+			workerOrg, workerWarehouse := workerStore.DeploymentScope()
+			err = validateHardenedBinding(hardenedAPI.RuntimeLogin(), workerStore.RuntimeLogin(), apiOrg, apiWarehouse, workerOrg, workerWarehouse)
+		}
+		jobStore = workerStore
+	} else {
+		jobStore, err = postgres.New(startup, jobPool)
+	}
 	if err != nil {
 		return errors.New("background database preflight failed")
 	}

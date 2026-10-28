@@ -17,12 +17,7 @@ func planReadsDocumentLines(p documentReadPlan) bool {
 	if p.Relation == "document_lines" {
 		return true
 	}
-	for _, child := range p.Plans {
-		if planReadsDocumentLines(child) {
-			return true
-		}
-	}
-	return false
+	return slices.ContainsFunc(p.Plans, planReadsDocumentLines)
 }
 
 func documentLineHydrations(p documentReadPlan) float64 {
