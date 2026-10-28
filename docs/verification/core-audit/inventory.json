@@ -1,0 +1,191 @@
+{
+  "status": "characterization_passed",
+  "recorded_at_utc": "2026-10-28T11:21:25.341110+00:00",
+  "inventory_sql_baseline": "80f7d66770d01d5090b3222069581e4eb00070f9",
+  "new_test_file": "internal/postgres/store_kernel_inventory_adversarial_integration_test.go",
+  "test_sha256_lf": "2175dfa3a1f23c314d6bd26844076b4fe60877df2fcfa028c638b135de7c82c0",
+  "mutation_specs_sha256_lf": "da2d5d7d8d2e07c30278119d829c65d3d0e75c08b941d3f7c85c6826a1f69a85",
+  "production_inventory_changes": false,
+  "confirmed_remaining_accounting_defects": [],
+  "classification": "No genuine accounting defect was reproduced in this bounded audit; passing characterization is not represented as red TDD. No implementation fix was made in this domain.",
+  "trust_boundary": {
+    "documented_contract": "docs/postgresql-core.md: low-level SQL runtime belongs to a trusted backend; actor_id is server metadata, not SQL authentication.",
+    "discarded_hypothesis": "Missing end-user actor_grants checks in reserve/release/post SQL is not itself a bug in this existing contract. No artificial trust-model change was made."
+  },
+  "audit_files": [
+    "db/migrations/0001_inventory_schema.sql",
+    "db/migrations/0002_inventory_commands.sql",
+    "db/migrations/0003_backend_api.sql",
+    "db/migrations/0006_security_boundary.sql",
+    "db/migrations/0007_background_jobs.sql",
+    "db/migrations/0009_warehouse_documents.sql",
+    "db/bootstrap/grants.psql",
+    "db/bootstrap/backend-grants.psql",
+    "db/queries/reconciliation.sql",
+    "db/queries/allocation_candidates.sql",
+    "internal/postgres/store.go",
+    "docs/postgresql-core.md"
+  ],
+  "schema_constraints_reviewed": [
+    "quantity domain finiteness/nonnegativity and bounds",
+    "composite scope foreign keys",
+    "line reserved+fulfilled <= requested",
+    "balance reserved<=on_hand",
+    "serial quantity_scale=0 and one live location",
+    "reservation active=quantity-consumed-released",
+    "movement and audit history append-only",
+    "operation completion constraint at commit"
+  ],
+  "functions_reviewed": [
+    {
+      "function": "inventory.assert_quantity(uuid,numeric)",
+      "reviewed_behavior": "positive, finite bounded decimal and item quantity_scale",
+      "evidence": "TestKernelInventoryBusinessRejectionsAreAtomic; tests/postgres_kernel.py numeric edge cases"
+    },
+    {
+      "function": "inventory.validate_balance()",
+      "reviewed_behavior": "identity immutable, tracking/serial lot match, quantity_scale and allocatable reserved state",
+      "evidence": "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable; existing SQL serial/lot tests"
+    },
+    {
+      "function": "catalog.protect_item_accounting()",
+      "reviewed_behavior": "used item organization/base unit/precision/tracking freeze",
+      "evidence": "TestKernelInventoryItemAccountingCannotDriftAfterUse"
+    },
+    {
+      "function": "platform.reject_history_change()",
+      "reviewed_behavior": "append-only movement lines, movements, reservation events and audit",
+      "evidence": "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable; existing SQL history tests"
+    },
+    {
+      "function": "platform.require_completed_operation()",
+      "reviewed_behavior": "deferred no-pending operation at COMMIT",
+      "evidence": "TestKernelInventoryPrepareCannotCommitIncompleteOperation"
+    },
+    {
+      "function": "platform.begin_operation(uuid,uuid,uuid,text,jsonb)",
+      "reviewed_behavior": "global command ID serialization, actor/type/request binding and exact replay",
+      "evidence": "TestKernelInventoryCommandReplayBindsExactRequest; TestKernelInventoryGeneratedWorkflowConservesLedger"
+    },
+    {
+      "function": "inventory.movement_request(uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+      "reviewed_behavior": "JSONB request contains all command inputs including correction, reason and reservation",
+      "evidence": "static function review and existing movement API tests"
+    },
+    {
+      "function": "inventory.prepare_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+      "reviewed_behavior": "same command protocol, quantity, document lock/version/state and replay",
+      "evidence": "TestKernelInventoryPrepareCannotCommitIncompleteOperation; existing mandatory guard rollback tests"
+    },
+    {
+      "function": "warehouse.lock_line(uuid,bigint)",
+      "reviewed_behavior": "document-before-line locking, expected version and active state",
+      "evidence": "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind; TestKernelInventoryCompetingDocumentsCannotOverdrawSharedStock"
+    },
+    {
+      "function": "warehouse.lock_document(uuid,bigint)",
+      "reviewed_behavior": "snapshot and active/version check under row lock",
+      "evidence": "TestKernelInventoryBusinessRejectionsAreAtomic; existing module transactional facts tests"
+    },
+    {
+      "function": "platform.get_operation_result(uuid,uuid,uuid,uuid)",
+      "reviewed_behavior": "original actor/organization/warehouse filter",
+      "evidence": "static reviewed WHERE predicate plus existing scoped operation API tests; API boundary audited separately"
+    },
+    {
+      "function": "platform.finish_operation(uuid,jsonb,uuid,text)",
+      "reviewed_behavior": "one completed receipt, audit and transactional outbox payload with scope/version metadata",
+      "evidence": "TestKernelInventoryGeneratedWorkflowConservesLedger; existing outbox tests"
+    },
+    {
+      "function": "inventory.ensure_balance(uuid,uuid,uuid,uuid,uuid,text,uuid,uuid)",
+      "reviewed_behavior": "concurrent get-or-create and NULL-safe unique identity",
+      "evidence": "TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe (8 first creations and 8 existing retries)"
+    },
+    {
+      "function": "inventory.reserve_stock(uuid,uuid,uuid,bigint,uuid,numeric,timestamptz)",
+      "reviewed_behavior": "document kind, scope, quantity/availability/state/expiry, aggregates, guards and exact effects",
+      "evidence": "generated workflow; direct stale/kind/inactive; atomic business rejections; last-stock competition"
+    },
+    {
+      "function": "inventory.release_reservation(uuid,uuid,uuid,bigint,numeric,text)",
+      "reviewed_behavior": "remaining-active bound, reason, doc/stock/reservation aggregate decrement, event/audit/outbox",
+      "evidence": "TestKernelInventoryReleaseAndExpiryKeepExactEffects; generated workflow"
+    },
+    {
+      "function": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+      "reviewed_behavior": "receipt/transfer/issue/adjustment shapes, document kind, deterministic balance lock order, tracking, reservation/expiry, correction scope, relocation and quantity ledger",
+      "evidence": "generated workflow; tracking mismatch; expired issue; correction scope; existing serial/adjustment/kernel SQL tests"
+    },
+    {
+      "function": "inventory.prepare_reservation(uuid,uuid,uuid,bigint,uuid,numeric,timestamptz)",
+      "reviewed_behavior": "prepare/replay and mandatory post before commit",
+      "evidence": "TestKernelInventoryPrepareCannotCommitIncompleteOperation/reserve; generated workflow"
+    },
+    {
+      "function": "inventory.prepare_release(uuid,uuid,uuid,bigint,numeric,text)",
+      "reviewed_behavior": "reservation-to-line snapshot and mandatory post before commit",
+      "evidence": "TestKernelInventoryPrepareCannotCommitIncompleteOperation/release; generated workflow"
+    },
+    {
+      "function": "inventory.expire_reservations(integer)",
+      "reviewed_behavior": "skip-locked bounded expiry, exact active remainder, document version and stock/line/reservation reconciliation",
+      "evidence": "TestKernelInventoryReleaseAndExpiryKeepExactEffects; worker/expiry concurrency separately assigned to background critic"
+    },
+    {
+      "function": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+      "reviewed_behavior": "draft/active/closed/cancelled constraints, lines/precision, scoped permissions and replay",
+      "evidence": "review of 0009 plus existing document adversarial/recovery/property suite from 80f7d66; no redundant new implementation"
+    }
+  ],
+  "characterization": {
+    "command": "go test -race -tags=integration ./internal/postgres -run ^TestKernelInventory -count=1 -timeout=180s -v",
+    "top_level_tests": 13,
+    "property_cases": 32,
+    "property_seed": 2026102801,
+    "result": "passed; zero skips",
+    "log": "inventory-characterization.txt",
+    "last_identity_extension": {
+      "command": "go test -race -tags=integration ./internal/postgres -run ^TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe$ -count=1 -timeout=180s -v",
+      "result": "passed; zero skips",
+      "log": "inventory-identity-characterization.txt"
+    },
+    "invariants": [
+      "stock on_hand equals sum of movement deltas",
+      "stock reserved_qty equals sum active reservations",
+      "document-line reserved_qty equals sum active reservations",
+      "exact fulfilled quantities for generated partial pick/release/ship workflows",
+      "replays preserve response and observed accounting/effect snapshot",
+      "one operation/audit/outbox effect per successful command",
+      "rejected statements preserve all observed accounting and effect tables"
+    ],
+    "vet": "go vet -tags=integration ./internal/postgres passed",
+    "go_fix_diff": "empty"
+  },
+  "mutations": {
+    "new_mutants": 19,
+    "distinct_functions": 11,
+    "source_sites_unique_and_sql_compiles": 19,
+    "initial_results": "inventory-mutations-initial.json",
+    "initial_killed": 18,
+    "initial_survived": 1,
+    "coverage_gap": {
+      "mutant": "core_inventory_line_active_check_removed",
+      "why_it_survived": "API preparation repeated active-state validation in warehouse.lock_document; an API-only killer did not exercise direct public reserve_stock contract.",
+      "test_strengthening": "Added direct reserve_stock call against a draft document; no production changed.",
+      "retest": "inventory-mutant-strengthened-retest.json",
+      "retest_result": "killed by TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/inactive_document"
+    },
+    "final_exploratory_result": "19/19 killed after strengthening; parent full campaign in independent database clones is authoritative",
+    "limits": "Exploratory critic runner restored function definitions sequentially in a private disposable cluster. It did not mutate schema DDL/indexes and does not constitute an exhaustive mutation score."
+  },
+  "limitations": [
+    "Finite generated workflow and concurrency schedules do not prove absence of all defects.",
+    "Used trusted-owner fixture writes only for setup/fault injection; arbitrary schema-owner corruption is outside runtime threat model.",
+    "Lot expiry/FEFO and disabled location policy belong to application guard/allocation rules per documented contract, not newly inferred kernel authorization.",
+    "No production throughput, HA or power-loss guarantee was measured.",
+    "Other critics cover module authorization, worker leases, recovery and API/OIDC; this report only claims the listed accounting scope.",
+    "The replay snapshot includes balances, documents, lines and operation/movement/audit/outbox counts; it does not compare every reservation-event payload. Reservation totals and release-event quantities are checked separately."
+  ],
+  "temporary_postgres_clusters_stopped": true
+}

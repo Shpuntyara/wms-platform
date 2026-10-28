@@ -1,0 +1,53 @@
+{
+  "status": "passed_local",
+  "inspected_files": [
+    "internal/api/server.go",
+    "internal/api/documents.go",
+    "internal/auth/oidc.go",
+    "internal/inventory/model.go",
+    "api/openapi.json"
+  ],
+  "new_mutants": 17,
+  "new_property_cases": {
+    "decimal": 256,
+    "identifier": 256,
+    "signature_bits": 64
+  },
+  "confirmed_defects": [
+    "oversized trailing request body misclassified400 rather than413",
+    "malformed query filters silently discarded"
+  ],
+  "characterization": [
+    "RS256 and ES256 access tokens",
+    "issuer/audience/expiry/signature/subject/token-use validation",
+    "strict near-future not-before",
+    "cancelled startup context does not poison later JWKS fetch",
+    "canonical decimal and UUID grammar",
+    "caller deadline shortened to configured request bound"
+  ],
+  "red_evidence": [
+    "api-red.txt",
+    "api-filter-red.txt"
+  ],
+  "green_evidence": [
+    "api-green.txt",
+    "oidc-characterization.txt",
+    "crosscritic-api-green.txt",
+    "full-green.json"
+  ],
+  "test_only_commits": [
+    "8a9d675",
+    "c4f26c0"
+  ],
+  "source_sha256_lf": {
+    "internal/api/server.go": "d18d534e05605f50a37ebe0039e02f146a499943ba6292b75b7fa0151f35b91c",
+    "internal/api/documents.go": "0baefba3614eec98cd9fb745db73bd562ba94530aabaf6fd0d6031bcf2153454",
+    "internal/auth/oidc.go": "0a3bc86f278ac3751f2a7a4d922d9fd4b6a49431900f606c1f8df3ce604e5410",
+    "internal/inventory/model.go": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67",
+    "api/openapi.json": "86c6dbd1f382288c8f0a578dc204283fb37aedfc9de3187468215133f64a7166"
+  },
+  "limitations": [
+    "Bounded generated cases and local TLS provider; not a proof of all possible token formats or production IdP behavior.",
+    "No OIDC verifier implementation change was necessary; passing identity checks are characterization."
+  ]
+}

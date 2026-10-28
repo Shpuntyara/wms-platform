@@ -1,0 +1,164 @@
+{
+  "status": "passed",
+  "cases": [
+    {
+      "name": "core_authorization_projection_guards_omitted",
+      "status": "killed",
+      "failed_tests": [
+        "TestRegistryAdversarialManifestSnapshotIsImmutable/guard_policy",
+        "TestRegistryAdversarialManifestSnapshotIsImmutable"
+      ],
+      "source_sha256": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+      "mutant_sha256": "cdf617a0e76e27d8756d623a0309fb12a1453748ac326c1dc4feb7e83604931b"
+    },
+    {
+      "name": "core_authorization_projection_policies_omitted",
+      "status": "killed",
+      "failed_tests": [
+        "TestRegistryAdversarialRawPolicySnapshotIsImmutable"
+      ],
+      "source_sha256": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+      "mutant_sha256": "cdb589e8006c9810decaf8ef67f2eb6451f11032cb2b8842e7aba7dedcf59408"
+    },
+    {
+      "name": "core_authorization_legacy_sdk_accepted",
+      "status": "killed",
+      "failed_tests": [
+        "TestRegistryRejectsLegacySDK"
+      ],
+      "source_sha256": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+      "mutant_sha256": "1b0328514797737ea4e5289134599897e744fb3ef62aecf3dc029e6107f34010"
+    },
+    {
+      "name": "core_authorization_guard_point_binding_ignored",
+      "status": "killed",
+      "failed_tests": [
+        "TestRegistryRejectsRelocatedGuard"
+      ],
+      "source_sha256": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+      "mutant_sha256": "00be379595fa399e6977e744a59cca08a547284591a32c2d4e5f61576a755670"
+    },
+    {
+      "name": "core_authorization_required_module_omitted",
+      "status": "killed",
+      "failed_tests": [
+        "TestNewRegistryRejectsInvalidInstallations/missing_required_module",
+        "TestNewRegistryRejectsInvalidInstallations"
+      ],
+      "source_sha256": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+      "mutant_sha256": "7c7e0f2beb034b6959b0488e64c85ffd058a424d92579668eeadd55faca936fd"
+    },
+    {
+      "name": "core_authorization_fact_org_scope_removed",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_organization",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_warehouse",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_document",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/stale_content_revision",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/ambiguous_matching_facts",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique"
+      ],
+      "source_sha256": "45f5727e970a6b34e5a44422aea58cfb742c107d961a06ab0900e82038258050",
+      "mutant_sha256": "6016b50a9c80419d6137d2925f5ed1a081a196fb8fd8a956b63cf8d105dce385"
+    },
+    {
+      "name": "core_authorization_fact_revision_scope_removed",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/stale_content_revision",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/ambiguous_matching_facts",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique"
+      ],
+      "source_sha256": "45f5727e970a6b34e5a44422aea58cfb742c107d961a06ab0900e82038258050",
+      "mutant_sha256": "9d35cae29e53ee964c5a69c4e0bf569dff9b80a6976711b433792648bafd7593"
+    },
+    {
+      "name": "core_authorization_ambiguous_facts_accepted",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/ambiguous_matching_facts",
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique"
+      ],
+      "source_sha256": "45f5727e970a6b34e5a44422aea58cfb742c107d961a06ab0900e82038258050",
+      "mutant_sha256": "94c04823367f2a60d1e65075b5d1c80634a1fe9982009e79afb813f510eef8b5"
+    },
+    {
+      "name": "core_authorization_conjunction_becomes_or",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts"
+      ],
+      "source_sha256": "45f5727e970a6b34e5a44422aea58cfb742c107d961a06ab0900e82038258050",
+      "mutant_sha256": "57f233fb8638d904c8aca9ab924272b723c8182102c8053f39b6c0e71954d1a0"
+    },
+    {
+      "name": "core_authorization_alternatives_become_and",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts"
+      ],
+      "source_sha256": "45f5727e970a6b34e5a44422aea58cfb742c107d961a06ab0900e82038258050",
+      "mutant_sha256": "9b23fdbb45cea32902192a45c9029173767b9f96f330e551e9c3e11f51557506"
+    },
+    {
+      "name": "core_authorization_rule_type_coercion",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound/numeric_equality_is_not_string",
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound/missing_neq_is_false",
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound"
+      ],
+      "source_sha256": "cef9b89654e34c60a132947ce81d9850e45dbf2d8057516ce9f08eff6a829c39",
+      "mutant_sha256": "43d05c85e376ce362f46e47bb3b747aa9e95e176fa60e33dbb4a2f249d561f42"
+    },
+    {
+      "name": "core_authorization_decimal_float_rounding",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound/decimal_gte_below_threshold",
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound"
+      ],
+      "source_sha256": "cef9b89654e34c60a132947ce81d9850e45dbf2d8057516ce9f08eff6a829c39",
+      "mutant_sha256": "5f926aee434bda2b2dc4aa49c61866664711e63346aee2364ab916f6ef24d590"
+    },
+    {
+      "name": "core_authorization_null_exists",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound/null_is_absent",
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound"
+      ],
+      "source_sha256": "cef9b89654e34c60a132947ce81d9850e45dbf2d8057516ce9f08eff6a829c39",
+      "mutant_sha256": "d0f4d69170f4f6f5c29e67edb4de19df9b98f38b6cfa955ba85192ea665a3b78"
+    },
+    {
+      "name": "core_authorization_permission_scope_removed",
+      "status": "killed",
+      "failed_tests": [
+        "TestPrincipalAdversarialGrantScopesAreExact"
+      ],
+      "source_sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67",
+      "mutant_sha256": "c8745bb380063166ab7261249cff76ba4f163ab48997a75569e1a9c8a93b3c86"
+    },
+    {
+      "name": "core_authorization_organization_scope_removed",
+      "status": "killed",
+      "failed_tests": [
+        "TestPrincipalAdversarialGrantScopesAreExact"
+      ],
+      "source_sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67",
+      "mutant_sha256": "9c8cfaeff21846b8e3713ae2144f659d0bef1583fc09e06627c60346ab58eba2"
+    },
+    {
+      "name": "core_authorization_warehouse_scope_removed",
+      "status": "killed",
+      "failed_tests": [
+        "TestPrincipalAdversarialGrantScopesAreExact"
+      ],
+      "source_sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67",
+      "mutant_sha256": "b678645d865e559edb9a4add02488ae048f4d73d1ec67bd6ada9ef0937e368b3"
+    }
+  ],
+  "root": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\authorization-mutants-ffc9625e20c64decb8d4ac887a2ffffa"
+}

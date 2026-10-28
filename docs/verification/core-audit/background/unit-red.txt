@@ -1,0 +1,6 @@
+=== RUN   TestWorkerRejectsPartialFailedClaim
+    worker_adversarial_test.go:66: an unsuccessful claim published unconfirmed work: sends=1 acknowledgements=1
+--- FAIL: TestWorkerRejectsPartialFailedClaim (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/jobs	0.035s
+FAIL

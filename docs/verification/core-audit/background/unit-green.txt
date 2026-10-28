@@ -1,0 +1,62 @@
+=== RUN   TestWorkerRejectsPartialFailedClaim
+--- PASS: TestWorkerRejectsPartialFailedClaim (0.00s)
+=== RUN   TestWorkerCancellationReleasesEveryActiveSender
+=== RUN   TestWorkerCancellationReleasesEveryActiveSender/1
+=== RUN   TestWorkerCancellationReleasesEveryActiveSender/4
+=== RUN   TestWorkerCancellationReleasesEveryActiveSender/64
+--- PASS: TestWorkerCancellationReleasesEveryActiveSender (0.00s)
+    --- PASS: TestWorkerCancellationReleasesEveryActiveSender/1 (0.00s)
+    --- PASS: TestWorkerCancellationReleasesEveryActiveSender/4 (0.00s)
+    --- PASS: TestWorkerCancellationReleasesEveryActiveSender/64 (0.00s)
+=== RUN   TestWorkerAckFailureDoesNotCountAsDelivery
+--- PASS: TestWorkerAckFailureDoesNotCountAsDelivery (0.00s)
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/200
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/204
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/299
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/300
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/400
+=== RUN   TestSenderCopiesSigningKeyAndChecksResponseStatus/503
+--- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/200 (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/204 (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/299 (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/300 (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/400 (0.00s)
+    --- PASS: TestSenderCopiesSigningKeyAndChecksResponseStatus/503 (0.00s)
+=== RUN   TestSenderInvalidEnvelopeNeverMakesRequest
+--- PASS: TestSenderInvalidEnvelopeNeverMakesRequest (0.00s)
+=== RUN   TestWorkerFreshHealthExpiresDuringMonitoringFailure
+--- PASS: TestWorkerFreshHealthExpiresDuringMonitoringFailure (0.00s)
+=== RUN   TestRelayDrainsBurstWithoutPerEventPollingDelay
+--- PASS: TestRelayDrainsBurstWithoutPerEventPollingDelay (0.16s)
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/healthy
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/not_started
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/relay_stalled
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/expiry_stalled
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/monitor_stalled
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/dead_event
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/outbox_age
+=== RUN   TestBackgroundReadinessDetectsStallsAndBacklogs/expiry_age
+--- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/healthy (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/not_started (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/relay_stalled (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/expiry_stalled (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/monitor_stalled (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/dead_event (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/outbox_age (0.00s)
+    --- PASS: TestBackgroundReadinessDetectsStallsAndBacklogs/expiry_age (0.00s)
+=== RUN   TestSlowDeliveryDoesNotHoldOtherSlots
+--- PASS: TestSlowDeliveryDoesNotHoldOtherSlots (0.00s)
+=== RUN   TestBackgroundMonitorExposesCountersAndUnhealthyStatus
+--- PASS: TestBackgroundMonitorExposesCountersAndUnhealthyStatus (0.00s)
+=== RUN   TestSenderSignsExactEventAndRejectsRedirect
+--- PASS: TestSenderSignsExactEventAndRejectsRedirect (0.02s)
+=== RUN   TestSenderConfigurationAndNetworkBoundary
+--- PASS: TestSenderConfigurationAndNetworkBoundary (0.00s)
+=== RUN   TestDeliveryFailureSchedulesRetry
+--- PASS: TestDeliveryFailureSchedulesRetry (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/jobs	1.232s

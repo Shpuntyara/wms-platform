@@ -1,0 +1,151 @@
+{
+  "baseline": "80f7d66",
+  "utc_before_fix": "2026-10-28T11:12:40.479352+00:00",
+  "test": "TestWorkerRejectsPartialFailedClaim",
+  "red": {
+    "exit_code": 1,
+    "command": "go test -race ./internal/jobs -run ^TestWorkerRejectsPartialFailedClaim$ -count=1 -timeout=60s -v",
+    "log": "unit-red.txt",
+    "failure": "Unsuccessful partial claim still sent and acknowledged one event."
+  },
+  "sha_before_fix": {
+    "internal/jobs/worker.go": "d89a21e89d6c0b87be0fd11360e68c70586050fe28092039e8abbdf008420eec",
+    "internal/jobs/worker_adversarial_test.go": "a813a9865a62c1bc7c9b991e8b5ad96d0ac0014f206f08737b0236ab91072dfd"
+  },
+  "finding": {
+    "severity": "P2",
+    "behavior": "Worker.Run published and acknowledged partial results despite a failed lease-claim operation. DeliverOne already rejected the same error. A failed result stream can correspond to an unconfirmed/rolled-back claim.",
+    "fix": "Discard the partial batch in Worker.claim when ClaimEvents returns an error. A subsequent confirmed claim still delivers the event after bounded retry backoff.",
+    "published_sql_changed": false
+  },
+  "green": {
+    "command": "go test -race ./internal/jobs -count=1 -timeout=60s -v",
+    "status": "passed",
+    "skipped": 0,
+    "log": "background/unit-green.txt",
+    "utc": "2026-10-28T11:21:39.612075+00:00",
+    "sha_after_fix": {
+      "internal/jobs/worker.go": "97400ace8abdfa86e4c9231590f6ea738ef43536066bb75bf01cfa149b18b311",
+      "internal/jobs/worker_adversarial_test.go": "a813a9865a62c1bc7c9b991e8b5ad96d0ac0014f206f08737b0236ab91072dfd",
+      "internal/postgres/store_kernel_background_adversarial_integration_test.go": "36bcbae6edc76791927050b46872cb506840ef321752c9b44f7a184cb1da653b",
+      "scripts/mutations/core-background.json": "d4c03be63d41af09dece363ca1c7efa0e83661acbd7b956caf87a66557f815db"
+    }
+  },
+  "characterization": {
+    "unit": [
+      "deterministic cancellation drains active senders at concurrency 1,4,64",
+      "acknowledgement failure never increments delivery count",
+      "immutable private HMAC signing key",
+      "HTTP 2xx boundaries and reject 300/400/503",
+      "invalid envelopes never reach transport",
+      "stale health becomes unhealthy"
+    ],
+    "real_postgres": [
+      "concurrent disjoint claims honor batch limits",
+      "active and expired lease fencing; fresh token on reclaim",
+      "failed delivery availability/backoff and durable dead letter at attempt12",
+      "duplicate acknowledgement rejected",
+      "expiry skips locked documents",
+      "outbox failure rolls back reservation, balance, line, document version and operation together",
+      "expiry retry releases exactly once and creates one audit/outbox effect",
+      "NULL/out-of-range batch sizes rejected"
+    ],
+    "already_passed_before_fixes": true
+  },
+  "coverage_map": [
+    {
+      "area": "internal/jobs/worker.go Worker Snapshot/Ready/send/claim/deliver/relay/pause/Run",
+      "tests": [
+        "TestWorkerRejectsPartialFailedClaim",
+        "TestWorkerCancellationReleasesEveryActiveSender",
+        "TestWorkerAckFailureDoesNotCountAsDelivery",
+        "TestWorkerFreshHealthExpiresDuringMonitoringFailure",
+        "TestRelayDrainsBurstWithoutPerEventPollingDelay",
+        "TestSlowDeliveryDoesNotHoldOtherSlots",
+        "TestDeliveryFailureSchedulesRetry"
+      ],
+      "notes": "Mutex synchronization, retry/cancellation bounds, confirmed batch ownership, independent free slots and result counters."
+    },
+    {
+      "area": "internal/jobs/worker.go NewSender/allowedAddress/Send",
+      "tests": [
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus",
+        "TestSenderInvalidEnvelopeNeverMakesRequest",
+        "TestSenderSignsExactEventAndRejectsRedirect",
+        "TestSenderConfigurationAndNetworkBoundary"
+      ],
+      "notes": "Endpoint, TLS/DNS boundaries reviewed; fixed endpoint/HMAC immutability/2xx/redirect/bounded body validated."
+    },
+    {
+      "area": "internal/jobs/monitor.go MonitorHandler/unixOrZero",
+      "tests": [
+        "TestBackgroundMonitorExposesCountersAndUnhealthyStatus",
+        "TestBackgroundReadinessDetectsStallsAndBacklogs",
+        "TestWorkerFreshHealthExpiresDuringMonitoringFailure"
+      ],
+      "notes": "Global statistics served only on dedicated loopback listener; metrics state and freshness inspected."
+    },
+    {
+      "area": "internal/postgres/jobs.go all methods; platform.claim_outbox / complete_outbox",
+      "tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery",
+        "TestKernelOutboxRetryAvailabilityAndDeadLetter",
+        "TestKernelBackgroundRejectsInvalidBatchSizes",
+        "TestSecurityOutboxLeaseFencesStaleAcknowledgement",
+        "TestRelayDatabaseHTTPBurst",
+        "TestBackgroundQueueHealthReportsDeadAndExpired"
+      ],
+      "notes": "New tests lock unrelated outbox rows without deleting/rewriting their durable events. Real runtime PostgreSQL pool and row-lock contention."
+    },
+    {
+      "area": "inventory.expire_reservations / contracts_v1.background_health",
+      "tests": [
+        "TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically",
+        "TestKernelBackgroundRejectsInvalidBatchSizes",
+        "TestSecurityExpiryReleasesExactlyOnce",
+        "TestBackgroundQueueHealthReportsDeadAndExpired"
+      ],
+      "notes": "Batch cap, document lock ordering, SKIP LOCKED, rollback and exactly-once economic effects."
+    },
+    {
+      "area": "cmd/wms-api/main.go run startup/lifecycle",
+      "tests": [
+        "TestMonitoringListenerMustStayOnLoopback",
+        "TestReadinessSurvivesBackgroundFailure",
+        "TestBrokerOutageKeepsAPIAvailableAndRecovers"
+      ],
+      "notes": "Reviewed distinct pool lifecycle, startup contract checks, loopback monitor, signal cancellation, listener failure and defer ordering; reused established checks."
+    }
+  ],
+  "limits": [
+    "Bounded audit and deterministic fault injection do not prove absence of all concurrency or delivery bugs.",
+    "Outbox remains at-least-once; a broker acknowledgement lost before database completion can require duplicate delivery and consumer-side deduplication.",
+    "No new production process SIGTERM/kill or power-loss durability trial; lifecycle was inspected with existing startup tests.",
+    "NULL success to complete_outbox was examined but not declared a new defect: production caller passes a nonnullable Go bool and the acceptance contract has no explicit null-input promise."
+  ],
+  "integration": {
+    "status": "passed",
+    "command": "go test -race -tags=integration ./internal/postgres -run ^TestKernel(Background|Outbox|Expiry) -count=1 -timeout=180s -v",
+    "top_level_tests": 4,
+    "skipped": 0,
+    "log": "background/integration-green.txt",
+    "isolated_cluster_stopped": true
+  },
+  "mutations": {
+    "status": "passed",
+    "killed": 21,
+    "survived": 0,
+    "invalid": 0,
+    "initial_survivors": [],
+    "spec": "scripts/mutations/core-background.json",
+    "independent_result": "background/mutations.json",
+    "validation": "Every mutant ran with -race and a targeted assertion failure. SQL functions were fetched from a private disposable PostgreSQL cluster; original function definitions restored between cases. Go used overlays, never source rewrites."
+  },
+  "final_sha256": {
+    "internal/jobs/worker.go": "97400ace8abdfa86e4c9231590f6ea738ef43536066bb75bf01cfa149b18b311",
+    "internal/jobs/worker_adversarial_test.go": "a813a9865a62c1bc7c9b991e8b5ad96d0ac0014f206f08737b0236ab91072dfd",
+    "internal/postgres/store_kernel_background_adversarial_integration_test.go": "36bcbae6edc76791927050b46872cb506840ef321752c9b44f7a184cb1da653b",
+    "scripts/mutations/core-background.json": "d4c03be63d41af09dece363ca1c7efa0e83661acbd7b956caf87a66557f815db"
+  },
+  "completed_utc": "2026-10-28T11:22:07.251901+00:00"
+}

@@ -104,6 +104,9 @@ func (w *Worker) claim(ctx context.Context, limit int) ([]Event, error) {
 	defer w.mu.Unlock()
 	if err != nil {
 		w.state.RelayErrors++
+		// A partial result may belong to a rolled-back claim transaction.
+		// Publish only a batch whose lease acquisition was confirmed.
+		events = nil
 	} else {
 		w.state.RelayAt = time.Now()
 	}

@@ -1,0 +1,52 @@
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/missing
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_organization
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_warehouse
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_document
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/stale_content_revision
+=== RUN   TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/ambiguous_matching_facts
+--- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique (0.21s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/missing (0.01s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_organization (0.00s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_warehouse (0.00s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/foreign_document (0.00s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/stale_content_revision (0.00s)
+    --- PASS: TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique/ambiguous_matching_facts (0.00s)
+=== RUN   TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts
+--- PASS: TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts (0.30s)
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/string_equality
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/numeric_equality_is_not_string
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/missing_neq_is_false
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/unequal_strings
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/null_is_absent
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/empty_value_exists
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/boolean_true
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/string_true_is_not_boolean
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/decimal_gte_below_threshold
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/decimal_lte_above_threshold
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/exact_decimal_equality
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/NaN_is_not_a_number
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/membership
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/membership_denied
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/future_must_be_timestamp
+=== RUN   TestKernelAuthorizationTypedRulesNeverCoerceOrRound/empty_string_denied
+--- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound (0.16s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/string_equality (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/numeric_equality_is_not_string (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/missing_neq_is_false (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/unequal_strings (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/null_is_absent (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/empty_value_exists (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/boolean_true (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/string_true_is_not_boolean (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/decimal_gte_below_threshold (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/decimal_lte_above_threshold (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/exact_decimal_equality (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/NaN_is_not_a_number (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/membership (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/membership_denied (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/future_must_be_timestamp (0.00s)
+    --- PASS: TestKernelAuthorizationTypedRulesNeverCoerceOrRound/empty_string_denied (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	1.716s

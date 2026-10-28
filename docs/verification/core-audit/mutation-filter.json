@@ -1,0 +1,175 @@
+{
+  "status": "passed",
+  "scope": "Focused non-equivalent document command, pagination and migration-integrity mutations; not a whole-repository mutation score.",
+  "source_head": "c4f26c0e9f4b38a28cf7330527e31a2cd133ec9a",
+  "mutants": [
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding",
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding/item_id=%",
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz",
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz&owner_id=00000000-0000-4000-8000-000000000005",
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=00000000-0000-4000-8000-000000000005;ignored=value",
+        "TestQueryFiltersCannotDisappearOnMalformedEncoding/position_id=%Q0"
+      ],
+      "completed_test_events": 6,
+      "seconds": 0.828,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-4419a3609c2342879afe25cbcb1a42e7\\core_boundary_malformed_query_filters_discarded\\overlay.json",
+        "-tags=integration",
+        "./internal/api",
+        "-run",
+        "^TestQueryFiltersCannotDisappearOnMalformedEncoding$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_boundary_malformed_query_filters_discarded",
+      "kind": "go",
+      "source": "internal/api/server.go",
+      "before": "if err != nil {\n\t\treturn \"\", \"\", inventory.Invalid(\"invalid_query_parameter\")\n\t}",
+      "after": "if err != nil {\n\t\tquery = r.URL.Query()\n\t}",
+      "mutant_sha256": "ca57a414e1a73adff707e89b3a6599a78a80dedb1f21284c0fbe71cfc555ea28"
+    }
+  ],
+  "work_directory": "work\\mutations-4419a3609c2342879afe25cbcb1a42e7",
+  "baseline": {
+    "status": "survived",
+    "failed_tests": [],
+    "completed_test_events": 22,
+    "seconds": 6.985,
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "test",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$|^TestDocumentCommandsRecoverFromCommitTransportFailure$|^TestDocumentPaginationProperties$",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ]
+  },
+  "source_sha256_lf": {
+    "internal/postgres/documents.go": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "internal/postgres/store.go": "b7d7dea55b4311ee300caed09c6f50f4b9bb910a02b1daecd7317c9eaa87e8b8",
+    "scripts/migrate_core.py": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5"
+  },
+  "core_domains": {
+    "inventory": 19,
+    "authorization": 16,
+    "background": 21,
+    "boundary": 17
+  },
+  "core_baselines": {
+    "./internal/api": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 29,
+      "seconds": 0.828,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/api",
+        "-run",
+        "^TestQueryFiltersCannotDisappearOnMalformedEncoding$|^TestRequestBodyLimitIncludesTrailingJSONAndWhitespace$|^TestRequestDeadlineIsShorterThanTheCallerContext$|^TestServerRejectsInvalidRequestsBeforeBackend$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/auth": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 24,
+      "seconds": 0.984,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/auth",
+        "-run",
+        "^TestOIDCAdversarialAlgorithmsAndLifetime$|^TestOIDCSecureRedirects$|^TestOIDCVerifiesAccessTokens$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/inventory": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 3,
+      "seconds": 0.469,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/inventory",
+        "-run",
+        "^TestIdentifierNormalizationProperties$|^TestPrincipalAdversarialGrantScopesAreExact$|^TestQuantityCanonicalDecimalProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/jobs": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 21,
+      "seconds": 0.687,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/jobs",
+        "-run",
+        "^TestBackgroundMonitorExposesCountersAndUnhealthyStatus$|^TestBackgroundReadinessDetectsStallsAndBacklogs$|^TestDeliveryFailureSchedulesRetry$|^TestSenderCopiesSigningKeyAndChecksResponseStatus$|^TestSenderInvalidEnvelopeNeverMakesRequest$|^TestWorkerAckFailureDoesNotCountAsDelivery$|^TestWorkerRejectsPartialFailedClaim$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/modules": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 22,
+      "seconds": 0.5,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/modules",
+        "-run",
+        "^TestNewRegistryRejectsInvalidInstallations$|^TestRegistryAdversarialManifestSnapshotIsImmutable$|^TestRegistryAdversarialRawPolicySnapshotIsImmutable$|^TestRegistryRejectsLegacySDK$|^TestRegistryRejectsRelocatedGuard$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/postgres": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 65,
+      "seconds": 14.844,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts$|^TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique$|^TestKernelAuthorizationTypedRulesNeverCoerceOrRound$|^TestKernelBackgroundRejectsInvalidBatchSizes$|^TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically$|^TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe$|^TestKernelInventoryBusinessRejectionsAreAtomic$|^TestKernelInventoryCommandReplayBindsExactRequest$|^TestKernelInventoryCorrectionCannotReferenceDifferentScope$|^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$|^TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays$|^TestKernelInventoryGeneratedWorkflowConservesLedger$|^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$|^TestKernelInventoryItemAccountingCannotDriftAfterUse$|^TestKernelInventoryPrepareCannotCommitIncompleteOperation$|^TestKernelInventoryReleaseAndExpiryKeepExactEffects$|^TestKernelInventoryTrackingMismatchCannotRelabelStock$|^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$|^TestKernelOutboxRetryAvailabilityAndDeadLetter$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    }
+  },
+  "killed": 1,
+  "survived": 0,
+  "invalid": 0
+}

@@ -53,7 +53,7 @@ jobs:
           test -z "$(gofmt -l cmd internal)"
           go vet -tags=integration ./...
           go mod verify
-          go fix ./cmd/wms-api ./internal/clientmodules/dispatchquality ./internal/modules ./internal/postgres ./internal/jobs
+          go fix ./...
           git diff --exit-code
       - name: Race, integration and security regressions
         run: |
@@ -64,8 +64,8 @@ jobs:
         run: |
           python3 tests/postgres_kernel.py --psql psql --port 5432 --database wms_kernel_test_backend --admin wms_test_admin --report work/postgres-kernel.json
           python3 scripts/summarize-tests.py --events work/go-tests.jsonl --legacy work/postgres-kernel.json --output work/verification.json --go "$(go version)" --postgres "$(psql -h 127.0.0.1 -U wms_test_admin -d wms_kernel_test_backend -Atc 'SHOW server_version')"
-      - name: Document and migration mutation gate
-        run: python3 scripts/mutation_runner.py --go go --psql psql --report work/document-mutations.json
+      - name: WMS kernel mutation gate
+        run: python3 scripts/mutation_runner.py --go go --psql psql --report work/kernel-mutations.json
       - name: Known vulnerability scan
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
       - name: Test evidence
@@ -80,6 +80,7 @@ jobs:
             work/migration-verification.json
             work/python-tests.txt
             work/document-mutations.json
+            work/kernel-mutations.json
             work/mutations-*/**/*.jsonl
             work/mutations-*/**/stderr.txt
             work/mutations-*/**/mutant.txt

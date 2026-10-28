@@ -1,0 +1,4 @@
+=== RUN   TestPrincipalAdversarialGrantScopesAreExact
+--- PASS: TestPrincipalAdversarialGrantScopesAreExact (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/inventory	1.045s

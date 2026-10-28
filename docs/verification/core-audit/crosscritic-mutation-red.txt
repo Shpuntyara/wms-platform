@@ -1,0 +1,30 @@
+go_document_lookahead_removed: killed
+.FFF
+======================================================================
+FAIL: test_renaming_one_mutation_cannot_inflate_domain_coverage (test_mutation_crosscritic.MutationCrossCriticTests.test_renaming_one_mutation_cannot_inflate_domain_coverage) (kind='go')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_crosscritic.py", line 37, in test_renaming_one_mutation_cannot_inflate_domain_coverage
+    with self.assertRaisesRegex(ValueError, 'duplicate|Duplicate'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_renaming_one_mutation_cannot_inflate_domain_coverage (test_mutation_crosscritic.MutationCrossCriticTests.test_renaming_one_mutation_cannot_inflate_domain_coverage) (kind='sql_function')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_crosscritic.py", line 37, in test_renaming_one_mutation_cannot_inflate_domain_coverage
+    with self.assertRaisesRegex(ValueError, 'duplicate|Duplicate'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_unknown_selector_is_not_silently_ignored_beside_a_valid_case (test_mutation_crosscritic.MutationCrossCriticTests.test_unknown_selector_is_not_silently_ignored_beside_a_valid_case)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_mutation_crosscritic.py", line 67, in test_unknown_selector_is_not_silently_ignored_beside_a_valid_case
+    with self.assertRaisesRegex(ValueError, 'Unknown|unknown'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.023s
+
+FAILED (failures=3)

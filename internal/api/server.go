@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"mime"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -158,7 +159,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) method(w http.ResponseWriter, r *http.Request, allowed string) bool {
-	for _, method := range strings.Split(allowed, ", ") {
+	for method := range strings.SplitSeq(allowed, ", ") {
 		if r.Method == method {
 			return true
 		}
@@ -174,16 +175,20 @@ func principal(r *http.Request) inventory.Principal {
 }
 
 func queryScope(r *http.Request) (string, string, error) {
-	for _, values := range r.URL.Query() {
+	query, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		return "", "", inventory.Invalid("invalid_query_parameter")
+	}
+	for _, values := range query {
 		if len(values) != 1 {
 			return "", "", inventory.Invalid("duplicate_query_parameter")
 		}
 	}
-	org, err := inventory.NormalizeID(r.URL.Query().Get("organization_id"))
+	org, err := inventory.NormalizeID(query.Get("organization_id"))
 	if err != nil {
 		return "", "", err
 	}
-	wh, err := inventory.NormalizeID(r.URL.Query().Get("warehouse_id"))
+	wh, err := inventory.NormalizeID(query.Get("warehouse_id"))
 	return org, wh, err
 }
 
@@ -297,13 +302,15 @@ func decode(w http.ResponseWriter, r *http.Request, dest any) error {
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(dest); err != nil {
-		var large *http.MaxBytesError
-		if errors.As(err, &large) {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
 			return &inventory.Problem{Status: 413, Code: "request_too_large", Detail: "The request exceeds the size limit."}
 		}
 		return inventory.Invalid("invalid_json")
 	}
 	if err := decoder.Decode(new(any)); err != io.EOF {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
+			return &inventory.Problem{Status: 413, Code: "request_too_large", Detail: "The request exceeds the size limit."}
+		}
 		return inventory.Invalid("trailing_json")
 	}
 	return nil

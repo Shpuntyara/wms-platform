@@ -1,0 +1,12 @@
+{
+  "recorded_before_fix": true,
+  "source_sha256": "2512f02ab8c93b6a0187f828254a290a3024c555b0bf70d988995d44a92c6bc6",
+  "test_sha256": "24d703d44cfbb9d08aebd38d8253c5fa074160d1b2aeaa33b046353a5e936d03",
+  "test": "TestQueryFiltersCannotDisappearOnMalformedEncoding",
+  "red_exit": 1,
+  "observed": "5 malformed filters returned200/backend1 instead of400/backend0",
+  "timestamp": "2026-10-28T11:23:41.0589157Z",
+  "green_status": "passed",
+  "green_command": "go test -race ./internal/api -count=1 -v",
+  "green_source_sha256": "d18d534e05605f50a37ebe0039e02f146a499943ba6292b75b7fa0151f35b91c"
+}

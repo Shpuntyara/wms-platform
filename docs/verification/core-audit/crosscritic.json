@@ -1,0 +1,70 @@
+{
+  "baseline": "80f7d66",
+  "recorded_utc": "2026-10-28T11:23:42.824305+00:00",
+  "role": "independent cross-critic; production was not changed by this critic",
+  "red_before_fix": {
+    "mutation_gate": {
+      "command": "python -m unittest discover -s scripts -p test_mutation_crosscritic.py",
+      "failures": 3,
+      "findings": [
+        "renamed exact Go fault counted as independent coverage",
+        "renamed exact SQL function fault counted as independent coverage",
+        "unknown requested selector silently ignored beside valid selector"
+      ],
+      "log": "crosscritic-mutation-red.txt"
+    },
+    "api_query": {
+      "command": "go test -race ./internal/api -run ^Test(QueryFiltersCannotDisappearOnMalformedEncoding|RequestBodySizeBoundaryIsExact)$ -count=1 -v",
+      "failing_cases": 5,
+      "problem": "URL.Query silently discards malformed optional filters; backend called with less restrictive filter",
+      "log": "crosscritic-api-red.txt"
+    }
+  },
+  "characterization_passed": [
+    "exact body one MiB remains accepted",
+    "one byte above body limit is413 before backend",
+    "different replacements at same mutation site remain legitimate distinct mutants"
+  ],
+  "source_sha256": {
+    "scripts/test_mutation_crosscritic.py": "6bac7e5556bb8bf69043fe2e704e5bacda835ff506747361056e5b93c02b9929",
+    "internal/api/server_crosscritic_test.go": "24d703d44cfbb9d08aebd38d8253c5fa074160d1b2aeaa33b046353a5e936d03",
+    "scripts/mutation_runner.py": "c6c78959f08a5ad4bc712c49cc61bc80ec0229abde7ed73b8b468b719f3f27ac",
+    "internal/api/server.go": "2512f02ab8c93b6a0187f828254a290a3024c555b0bf70d988995d44a92c6bc6"
+  },
+  "current_catalog_inspection": {
+    "new_cases": 72,
+    "exact_duplicate_identities": 0,
+    "note": "Current actual catalog is unique. Missing-selector issue does not affect unfiltered default CI command."
+  },
+  "limits": [
+    "This critic did not run a full mutation campaign or any PostgreSQL cluster.",
+    "Full final CI and actual mutation totals remain the parent agent responsibility.",
+    "Passing bounded adversarial tests do not prove the whole core defect-free.",
+    "Malformed query validation defect did not bypass principal permissions."
+  ],
+  "green_after_root_fixes": {
+    "recorded_utc": "2026-10-28T11:24:49.324881+00:00",
+    "python_command": "python -m unittest discover -s scripts -p test_mutation_crosscritic.py",
+    "python_result": "3 tests passed, no skips",
+    "go_command": "go test -race ./internal/api ./internal/modules ./internal/jobs -run ^Test(QueryFiltersCannotDisappearOnMalformedEncoding|RequestBodySizeBoundaryIsExact|RequestBodyLimitIncludesTrailingJSONAndWhitespace|RegistryAdversarial|WorkerRejectsPartialFailedClaim|WorkerCancellationReleasesEveryActiveSender|WorkerAckFailureDoesNotCountAsDelivery) -count=1 -v",
+    "go_result": "all selected named tests and subtests passed, no skips",
+    "source_sha256": {
+      "scripts/mutation_runner.py": "c6c78959f08a5ad4bc712c49cc61bc80ec0229abde7ed73b8b468b719f3f27ac",
+      "internal/api/server.go": "c318fd175bfbb616f4179d1c8bc32541afc80d0442b94ac53fe68e1d71d7310f",
+      "internal/jobs/worker.go": "97400ace8abdfa86e4c9231590f6ea738ef43536066bb75bf01cfa149b18b311",
+      "internal/modules/registry.go": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83"
+    },
+    "inspection": [
+      "exact mutation identities, not just names, are now unique",
+      "unknown requested cases rejected before selection",
+      "RawQuery ParseQuery error rejects request before scoped backend read",
+      "API body limit remains exact at one MiB",
+      "failed partial event claims are discarded before publish and lease retry remains possible",
+      "registry manifest projection remains an immutable string snapshot"
+    ],
+    "logs": [
+      "crosscritic-mutation-green.txt",
+      "crosscritic-api-green.txt"
+    ]
+  }
+}

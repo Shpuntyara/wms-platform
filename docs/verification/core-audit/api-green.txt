@@ -1,0 +1,116 @@
+=== RUN   TestRequestDeadlineIsShorterThanTheCallerContext
+--- PASS: TestRequestDeadlineIsShorterThanTheCallerContext (0.00s)
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value
+--- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace (0.03s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid (0.00s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected (0.00s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace (0.01s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value (0.01s)
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/item_id=%
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/position_id=%Q0
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=00000000-0000-4000-8000-000000000005;ignored=value
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz&owner_id=00000000-0000-4000-8000-000000000005
+--- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/item_id=% (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/position_id=%Q0 (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=00000000-0000-4000-8000-000000000005;ignored=value (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz&owner_id=00000000-0000-4000-8000-000000000005 (0.00s)
+=== RUN   TestRequestBodySizeBoundaryIsExact
+=== RUN   TestRequestBodySizeBoundaryIsExact/exactly_one_MiB
+=== RUN   TestRequestBodySizeBoundaryIsExact/one_byte_above_limit
+--- PASS: TestRequestBodySizeBoundaryIsExact (0.02s)
+    --- PASS: TestRequestBodySizeBoundaryIsExact/exactly_one_MiB (0.01s)
+    --- PASS: TestRequestBodySizeBoundaryIsExact/one_byte_above_limit (0.01s)
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unauthenticated
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/invalid_token
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/missing_scope
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/invalid_limit
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/negative_limit
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/foreign_warehouse
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/missing_idempotency
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/bad_idempotency
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/numeric_quantity
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/zero_quantity
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unknown_fields
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/trailing_json
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/wrong_media_type
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/large_body
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/method_not_allowed
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unknown_route
+--- PASS: TestServerRejectsInvalidRequestsBeforeBackend (0.02s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unauthenticated (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/invalid_token (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/missing_scope (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/invalid_limit (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/negative_limit (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/foreign_warehouse (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/missing_idempotency (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/bad_idempotency (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/numeric_quantity (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/zero_quantity (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unknown_fields (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/trailing_json (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/wrong_media_type (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/large_body (0.01s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/method_not_allowed (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unknown_route (0.00s)
+=== RUN   TestServerReturnsDecimalStringsAndAuthenticatedActor
+--- PASS: TestServerReturnsDecimalStringsAndAuthenticatedActor (0.00s)
+=== RUN   TestServerRedactsUnexpectedErrors
+--- PASS: TestServerRedactsUnexpectedErrors (0.00s)
+=== RUN   TestServerHealth
+--- PASS: TestServerHealth (0.00s)
+=== RUN   TestAdjustmentsRequireSeparatePermission
+--- PASS: TestAdjustmentsRequireSeparatePermission (0.00s)
+=== RUN   TestReleaseReasonUnicodeLength
+=== PAUSE TestReleaseReasonUnicodeLength
+=== RUN   TestReadinessSurvivesBackgroundFailure
+--- PASS: TestReadinessSurvivesBackgroundFailure (0.00s)
+=== RUN   TestDocumentInputValidationPrecedesBackend
+=== RUN   TestDocumentInputValidationPrecedesBackend/empty_lines
+=== RUN   TestDocumentInputValidationPrecedesBackend/float_quantity
+=== RUN   TestDocumentInputValidationPrecedesBackend/unknown_field
+=== RUN   TestDocumentInputValidationPrecedesBackend/transition_cannot_change_lines
+=== RUN   TestDocumentInputValidationPrecedesBackend/invalid_transition_state
+--- PASS: TestDocumentInputValidationPrecedesBackend (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/empty_lines (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/float_quantity (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/unknown_field (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/transition_cannot_change_lines (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/invalid_transition_state (0.00s)
+=== CONT  TestReleaseReasonUnicodeLength
+=== RUN   TestReleaseReasonUnicodeLength/ASCII/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/ASCII/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== RUN   TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== RUN   TestReleaseReasonUnicodeLength/emoji/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/emoji/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/emoji/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/emoji/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/ASCII/within_limit
+=== CONT  TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== CONT  TestReleaseReasonUnicodeLength/emoji/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/emoji/within_limit
+--- PASS: TestReleaseReasonUnicodeLength (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/ASCII/within_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/ASCII/over_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/Cyrillic/over_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/Cyrillic/within_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/emoji/over_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/emoji/within_limit (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/api	1.134s

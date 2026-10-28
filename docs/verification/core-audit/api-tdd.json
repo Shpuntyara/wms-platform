@@ -1,0 +1,17 @@
+{
+  "base_revision": "80f7d66770d01d5090b3222069581e4eb00070f9",
+  "recorded_before_implementation": true,
+  "test": "TestRequestBodyLimitIncludesTrailingJSONAndWhitespace",
+  "test_sha256": "d04f954b2e80746a7a0fbdf78aebcc74c035b23a3a58c0b552a5659b8ee668aa",
+  "source_sha256": "e1d2d44bdde90e0ff84ee7950056097b36766ac971d1557d3c5e9b5209186641",
+  "red_command": "go test -race ./internal/api -run ^TestRequestBodyLimitIncludesTrailingJSONAndWhitespace$ -count=1 -v",
+  "red_exit": 1,
+  "failures": [
+    "oversized trailing whitespace:400 instead of413",
+    "oversized second value:400 instead of413"
+  ],
+  "timestamp": "2026-10-28T11:12:34.4206308Z",
+  "green_status": "passed",
+  "green_command": "go test -race ./internal/api -count=1 -v",
+  "green_source_sha256": "d18d534e05605f50a37ebe0039e02f146a499943ba6292b75b7fa0151f35b91c"
+}

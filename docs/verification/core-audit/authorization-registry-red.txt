@@ -1,0 +1,23 @@
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/guard_policy
+    registry_adversarial_test.go:56: caller mutation changed the registry's original executable contract
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/capability
+    registry_adversarial_test.go:56: caller mutation changed the registry's original executable contract
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/dependency
+    registry_adversarial_test.go:56: caller mutation changed the registry's original executable contract
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/conflict
+    registry_adversarial_test.go:56: caller mutation changed the registry's original executable contract
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/migration_metadata
+    registry_adversarial_test.go:56: caller mutation changed the registry's original executable contract
+--- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable (0.01s)
+    --- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable/guard_policy (0.00s)
+    --- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable/capability (0.00s)
+    --- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable/dependency (0.00s)
+    --- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable/conflict (0.00s)
+    --- FAIL: TestRegistryAdversarialManifestSnapshotIsImmutable/migration_metadata (0.00s)
+=== RUN   TestRegistryAdversarialRawPolicySnapshotIsImmutable
+    registry_adversarial_test.go:75: mutable RawMessage policy changed the immutable registry contract
+--- FAIL: TestRegistryAdversarialRawPolicySnapshotIsImmutable (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/modules	0.041s
+FAIL

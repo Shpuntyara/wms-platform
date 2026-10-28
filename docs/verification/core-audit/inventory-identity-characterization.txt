@@ -1,0 +1,4 @@
+=== RUN   TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe
+--- PASS: TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe (0.26s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	1.309s

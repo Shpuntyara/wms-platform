@@ -1,0 +1,15 @@
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace
+    server_adversarial_test.go:23: status=400 want=413 body={"code":"trailing_json","detail":"The request contains an invalid value.","status":400,"title":"Bad Request","trace_id":"QVBRWF72IGXQM63GQBQFYFLAQW","type":"urn:wms:problem:trailing_json"}
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value
+    server_adversarial_test.go:23: status=400 want=413 body={"code":"trailing_json","detail":"The request contains an invalid value.","status":400,"title":"Bad Request","trace_id":"5XTWGXRYG5QRFSEOR3D3IK4ADL","type":"urn:wms:problem:trailing_json"}
+--- FAIL: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace (0.03s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid (0.00s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected (0.00s)
+    --- FAIL: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace (0.01s)
+    --- FAIL: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value (0.01s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/api	0.066s
+FAIL

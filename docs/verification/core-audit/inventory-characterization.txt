@@ -1,0 +1,60 @@
+=== RUN   TestKernelInventoryGeneratedWorkflowConservesLedger
+--- PASS: TestKernelInventoryGeneratedWorkflowConservesLedger (9.68s)
+=== RUN   TestKernelInventoryBusinessRejectionsAreAtomic
+=== RUN   TestKernelInventoryBusinessRejectionsAreAtomic/unavailable_stock
+=== RUN   TestKernelInventoryBusinessRejectionsAreAtomic/item_precision
+=== RUN   TestKernelInventoryBusinessRejectionsAreAtomic/stale_document
+=== RUN   TestKernelInventoryBusinessRejectionsAreAtomic/inactive_document
+--- PASS: TestKernelInventoryBusinessRejectionsAreAtomic (0.89s)
+    --- PASS: TestKernelInventoryBusinessRejectionsAreAtomic/unavailable_stock (0.34s)
+    --- PASS: TestKernelInventoryBusinessRejectionsAreAtomic/item_precision (0.19s)
+    --- PASS: TestKernelInventoryBusinessRejectionsAreAtomic/stale_document (0.18s)
+    --- PASS: TestKernelInventoryBusinessRejectionsAreAtomic/inactive_document (0.18s)
+=== RUN   TestKernelInventoryReleaseAndExpiryKeepExactEffects
+--- PASS: TestKernelInventoryReleaseAndExpiryKeepExactEffects (0.20s)
+=== RUN   TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind
+=== RUN   TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/stale_version
+=== RUN   TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/reservation_on_receipt
+=== RUN   TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/inactive_document
+--- PASS: TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind (0.51s)
+    --- PASS: TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/stale_version (0.17s)
+    --- PASS: TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/reservation_on_receipt (0.17s)
+    --- PASS: TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/inactive_document (0.17s)
+=== RUN   TestKernelInventoryCompetingDocumentsCannotOverdrawSharedStock
+--- PASS: TestKernelInventoryCompetingDocumentsCannotOverdrawSharedStock (0.33s)
+=== RUN   TestKernelInventoryTrackingMismatchCannotRelabelStock
+--- PASS: TestKernelInventoryTrackingMismatchCannotRelabelStock (0.20s)
+=== RUN   TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays
+--- PASS: TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays (0.20s)
+=== RUN   TestKernelInventoryCorrectionCannotReferenceDifferentScope
+--- PASS: TestKernelInventoryCorrectionCannotReferenceDifferentScope (0.35s)
+=== RUN   TestKernelInventoryCommandReplayBindsExactRequest
+--- PASS: TestKernelInventoryCommandReplayBindsExactRequest (0.42s)
+=== RUN   TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe
+--- PASS: TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe (0.25s)
+=== RUN   TestKernelInventoryHistoryAndBalanceIdentityAreImmutable
+=== RUN   TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/balance_identity
+=== RUN   TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/movement_lines
+=== RUN   TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/audit
+--- PASS: TestKernelInventoryHistoryAndBalanceIdentityAreImmutable (0.63s)
+    --- PASS: TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/balance_identity (0.19s)
+    --- PASS: TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/movement_lines (0.19s)
+    --- PASS: TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/audit (0.25s)
+=== RUN   TestKernelInventoryItemAccountingCannotDriftAfterUse
+=== RUN   TestKernelInventoryItemAccountingCannotDriftAfterUse/quantity_scale
+=== RUN   TestKernelInventoryItemAccountingCannotDriftAfterUse/tracking
+=== RUN   TestKernelInventoryItemAccountingCannotDriftAfterUse/base_unit
+--- PASS: TestKernelInventoryItemAccountingCannotDriftAfterUse (0.49s)
+    --- PASS: TestKernelInventoryItemAccountingCannotDriftAfterUse/quantity_scale (0.17s)
+    --- PASS: TestKernelInventoryItemAccountingCannotDriftAfterUse/tracking (0.16s)
+    --- PASS: TestKernelInventoryItemAccountingCannotDriftAfterUse/base_unit (0.16s)
+=== RUN   TestKernelInventoryPrepareCannotCommitIncompleteOperation
+=== RUN   TestKernelInventoryPrepareCannotCommitIncompleteOperation/reserve
+=== RUN   TestKernelInventoryPrepareCannotCommitIncompleteOperation/movement
+=== RUN   TestKernelInventoryPrepareCannotCommitIncompleteOperation/release
+--- PASS: TestKernelInventoryPrepareCannotCommitIncompleteOperation (0.52s)
+    --- PASS: TestKernelInventoryPrepareCannotCommitIncompleteOperation/reserve (0.17s)
+    --- PASS: TestKernelInventoryPrepareCannotCommitIncompleteOperation/movement (0.17s)
+    --- PASS: TestKernelInventoryPrepareCannotCommitIncompleteOperation/release (0.18s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	15.725s

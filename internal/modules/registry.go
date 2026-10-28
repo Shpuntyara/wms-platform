@@ -111,7 +111,7 @@ type Registry struct {
 	guards        map[string][]registeredGuard
 	factViews     []string
 	installations []Installation
-	manifests     map[string]Manifest
+	manifests     map[string]string
 }
 
 var moduleID = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`)
@@ -192,7 +192,7 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 			compiled = append(compiled, code)
 		}
 	}
-	r := &Registry{guards: make(map[string][]registeredGuard), manifests: make(map[string]Manifest)}
+	r := &Registry{guards: make(map[string][]registeredGuard), manifests: make(map[string]string)}
 	codes := make(map[string]Module)
 	bindings := make(map[string]map[string]bool)
 	schemas := map[string]string{}
@@ -251,7 +251,7 @@ func NewRegistry(installed []Manifest, compiled []Module, required []string) (*R
 			}
 		}
 		manifests[m.ID] = m
-		r.manifests[m.ID] = m
+		r.manifests[m.ID] = manifestProjection(m)
 	}
 	for _, id := range required {
 		if _, exists := manifests[id]; !exists {
@@ -390,18 +390,19 @@ func (r *Registry) AcceptsManifest(m Manifest) bool {
 	if !ok {
 		return false
 	}
-	canonical := func(value Manifest) string {
-		raw, _ := json.Marshal(value)
-		decoder := json.NewDecoder(bytes.NewReader(raw))
-		decoder.UseNumber()
-		var object any
-		if decoder.Decode(&object) != nil {
-			return ""
-		}
-		normalized, _ := json.Marshal(object)
-		return string(normalized)
+	return expected == manifestProjection(m)
+}
+
+func manifestProjection(value Manifest) string {
+	raw, _ := json.Marshal(value)
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	decoder.UseNumber()
+	var object any
+	if decoder.Decode(&object) != nil {
+		return ""
 	}
-	return canonical(expected) == canonical(m)
+	normalized, _ := json.Marshal(object)
+	return string(normalized)
 }
 
 // SQLOnlyGuard records the handler binding without duplicating its business

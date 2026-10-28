@@ -1,4 +1,4 @@
-"""Focused document/packaging mutations; every mutant must fail a real assertion.
+"""Scoped WMS kernel mutations; every mutant must fail a real behavior test.
 
 Go changes use overlays. SQL changes run in a fresh clone of the disposable test
 database. Published migrations and the working tree are never rewritten.
@@ -70,14 +70,14 @@ def database_environment(dsn):
     return name, env
 
 
-def run_go(go, run_pattern, directory, environment, overlay=None):
+def run_go(go, run_pattern, directory, environment, overlay=None, package='./internal/postgres'):
     environment = {key: value for key, value in environment.items() if not key.upper().startswith('PG')}
     environment['WMS_DOCUMENT_PLAN_DIR'] = str(directory / 'plans')
     environment['WMS_DOCUMENT_CRITIC_PLAN_DIR'] = str(directory / 'critic-plans')
     command = [go, 'test']
     if overlay:
         command += ['-overlay', str(overlay)]
-    command += ['-tags=integration', './internal/postgres', '-run', run_pattern, '-count=1', '-timeout=180s', '-json']
+    command += ['-tags=integration', package, '-run', run_pattern, '-count=1', '-timeout=180s', '-json']
     started = time.monotonic()
     with (directory / 'events.jsonl').open('w', encoding='utf8') as out, (directory / 'stderr.txt').open('w', encoding='utf8') as err:
         try:
@@ -108,6 +108,60 @@ def sql_mutants():
         ('sql_active_document_cancels', "IF target='cancelled' AND EXISTS", "IF false AND EXISTS"),
         ('sql_owner_authorization_removed', '(g.owner_id IS NULL OR g.owner_id=v_owner)', 'true'),
         ('sql_audit_outbox_removed', "RETURN platform.finish_operation(p_command,result,d.id,CASE WHEN p_document IS NULL THEN 'wms.document.created' ELSE 'wms.document.state_changed' END);", 'RETURN result;'),
+    ]
+
+
+def load_core_mutations(root):
+    cases = []
+    for path in sorted((root / 'scripts/mutations').glob('core-*.json')):
+        entries = json.loads(path.read_text(encoding='utf8'))
+        if not isinstance(entries, list):
+            raise ValueError('Invalid core mutation catalog: ' + path.name)
+        cases.extend(entries)
+    domains = {'inventory': 0, 'authorization': 0, 'background': 0, 'boundary': 0}
+    names = set()
+    identities = set()
+    for case in cases:
+        domain = case.get('domain')
+        name = case.get('name', '')
+        if domain not in domains or not re.fullmatch('core_' + str(domain) + r'_[a-z0-9_]+', name) or name in names:
+            raise ValueError('Invalid or duplicate core mutation identity')
+        names.add(name)
+        domains[domain] += 1
+        if not case.get('before') or case.get('before') == case.get('after') or not isinstance(case.get('after'), str):
+            raise ValueError('Core mutation must change a known source site')
+        if not case.get('pattern', '').startswith('^Test'):
+            raise ValueError('Core mutation requires an explicit behavior test')
+        re.compile(case['pattern'])
+        package = case.get('package', '')
+        if not re.fullmatch(r'\./internal/[a-z_]+(?:/[a-z_]+)?|\./cmd/wms-api', package):
+            raise ValueError('Invalid core mutation Go package')
+        if case.get('kind') == 'go':
+            source = case.get('source', '')
+            if not (source.startswith('internal/') or source.startswith('cmd/wms-api/')) or '..' in Path(source).parts or not source.endswith('.go'):
+                raise ValueError('Invalid core mutation source path')
+            if package != './' + Path(source).parent.as_posix():
+                raise ValueError('Mutation source and test package differ')
+        elif case.get('kind') == 'sql_function':
+            if not re.fullmatch(r'(inventory|warehouse|platform|catalog)\.[a-z_][a-z0-9_]*\([a-z0-9_, ]*\)', case.get('signature', '')) or package != './internal/postgres':
+                raise ValueError('Invalid core mutation SQL function signature')
+        else:
+            raise ValueError('Invalid core mutation kind')
+        identity = (case['kind'], case.get('signature') if case['kind'] == 'sql_function' else case['source'], case['before'], case['after'])
+        if identity in identities:
+            raise ValueError('Duplicate core mutation fault')
+        identities.add(identity)
+    if any(count < 8 for count in domains.values()):
+        raise ValueError('Incomplete core mutation coverage: ' + str(domains))
+    return cases
+
+
+def python_mutants():
+    return [
+        ('migration_newline_normalization_removed', "raw = path.read_bytes().replace(b'\\r\\n', b'\\n')", 'raw = path.read_bytes()', False),
+        ('migration_published_pin_guard_removed', 'if path.name in PINNED and hashlib.sha256(pinned_raw).hexdigest() != PINNED[path.name]:', 'if False:', False),
+        ('migration_missing_sources_allowed', 'if missing:', 'if False:', False),
+        ('migration_historical_crosspair_accepted', "execution_checksum IN ('{historical_execution}','legacy_baseline:{historical_digest}')", "execution_checksum IN ('{historical_execution}','{execution}','legacy_baseline:{historical_digest}')", True),
     ]
 
 
@@ -156,15 +210,16 @@ def run(args):
         raise ValueError('Admin/runtime mutation connections must use the same server')
     run_root = ROOT / 'work' / ('mutations-' + uuid.uuid4().hex)
     run_root.mkdir(parents=True)
-    report = {'status': 'failed', 'scope': 'Focused non-equivalent document command, pagination and migration-integrity mutations; not a whole-repository mutation score.', 'source_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(), 'mutants': [], 'work_directory': str(run_root.relative_to(ROOT))}
+    report = {'status': 'failed', 'scope': 'Scoped non-equivalent inventory, authorization, background, OIDC/HTTP, document and migration mutations; not a whole-repository mutation score.', 'source_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(), 'mutants': [], 'selected_cases': args.case, 'work_directory': str(run_root.relative_to(ROOT))}
 
     def psql(sql, database='postgres'):
         env = dict(psql_env, PGDATABASE=database)
-        result = subprocess.run([args.psql, '-X', '-q', '-v', 'ON_ERROR_STOP=1'], input=sql, text=True, env=env, capture_output=True)
+        result = subprocess.run([args.psql, '-X', '-q', '-At', '-v', 'ON_ERROR_STOP=1'], input=sql, text=True, env=env, capture_output=True)
         if result.returncode:
             # SQL never includes credentials; leave exact diagnostics in the local work dir.
             (run_root / 'sql-error.txt').write_text(result.stderr, encoding='utf8')
             raise RuntimeError('Mutation SQL setup failed (see work directory)')
+        return result.stdout
 
     baseline_dir = run_root / 'baseline'
     baseline_dir.mkdir()
@@ -197,42 +252,60 @@ def run(args):
         ('go_global_document_candidate_limit_removed', 'go', 'internal/postgres/store.go', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args))', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id) ", len(args))', '^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$'),
     ]
     try:
+        core = load_core_mutations(ROOT)
+        core_by_name = {case['name']: case for case in core}
+        known_names = {case[0] for case in cases} | set(core_by_name) | {case[0] for case in python_mutants()}
+        unknown = set(args.case or []) - known_names
+        if unknown:
+            raise ValueError('Unknown mutation case: ' + ', '.join(sorted(unknown)))
+        for path in sorted({case['source'] for case in core if case['kind'] == 'go'}):
+            report['source_sha256_lf'][path] = hashlib.sha256((ROOT / path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+        report['core_domains'] = {domain: sum(case['domain'] == domain for case in core) for domain in ('inventory', 'authorization', 'background', 'boundary')}
+        report['core_baselines'] = {}
+        for package in sorted({case['package'] for case in core}):
+            baseline_directory = run_root / ('baseline-' + package.removeprefix('./').replace('/', '-'))
+            baseline_directory.mkdir()
+            pattern = '|'.join(sorted({case['pattern'] for case in core if case['package'] == package}))
+            result = run_go(args.go, pattern, baseline_directory, os.environ.copy(), package=package)
+            report['core_baselines'][package] = result
+            if result['status'] != 'survived':
+                raise RuntimeError('Unmutated core baseline failed: ' + package)
+        cases.extend((case['name'], case['kind'], case.get('source', case.get('signature')), case['before'], case['after'], case['pattern']) for case in core)
         for name, kind, path, before, after, pattern in cases:
             if args.case and name not in args.case:
                 continue
             directory = run_root / name
             directory.mkdir()
-            original = function_sql if kind == 'sql' else (ROOT / path).read_text(encoding='utf8')
+            if kind == 'sql_function':
+                original = psql("SELECT pg_get_functiondef('" + core_by_name[name]['signature'] + "'::regprocedure);", admin_name)
+            else:
+                original = function_sql if kind == 'sql' else (ROOT / path).read_text(encoding='utf8')
             changed = replace_once(original, before, after)
             (directory / 'mutant.txt').write_text(changed, encoding='utf8')
             environment = os.environ.copy()
             overlay = None
             database = None
-            if kind == 'sql':
-                database = 'wms_kernel_test_mutant_' + uuid.uuid4().hex
-                psql(f'CREATE DATABASE {database} WITH TEMPLATE {admin_name} OWNER wms_test_owner;')
-                psql(changed, database)
-                for key in ('WMS_TEST_ADMIN_DSN', 'WMS_TEST_RUNTIME_DSN'):
-                    parsed = urlsplit(environment[key])
-                    environment[key] = parsed._replace(path='/' + database).geturl()
-            else:
-                overlay = directory / 'overlay.json'
-                overlay.write_text(json.dumps({'Replace': {str(ROOT / path): str(directory / 'mutant.txt')}}), encoding='utf8')
             try:
-                outcome = run_go(args.go, pattern, directory, environment, overlay)
+                if kind in ('sql', 'sql_function'):
+                    database = 'wms_kernel_test_mutant_' + uuid.uuid4().hex
+                    psql(f'CREATE DATABASE {database} WITH TEMPLATE {admin_name} OWNER wms_test_owner;')
+                    psql(changed, database)
+                    for key in ('WMS_TEST_ADMIN_DSN', 'WMS_TEST_RUNTIME_DSN'):
+                        parsed = urlsplit(environment[key])
+                        environment[key] = parsed._replace(path='/' + database).geturl()
+                else:
+                    overlay = directory / 'overlay.json'
+                    overlay.write_text(json.dumps({'Replace': {str(ROOT / path): str(directory / 'mutant.txt')}}), encoding='utf8')
+                package = core_by_name[name]['package'] if name in core_by_name else './internal/postgres'
+                outcome = run_go(args.go, pattern, directory, environment, overlay, package=package)
             finally:
                 if database:
                     # Only the freshly generated disposable clone is ever dropped.
                     psql(f'DROP DATABASE {database};')
-            outcome.update(name=name, kind=kind, source=path, before=before, after=after, mutant_sha256=hashlib.sha256(changed.encode()).hexdigest())
+            outcome.update(name=name, kind=kind, domain=core_by_name[name]['domain'] if name in core_by_name else 'documents', source=path, before=before, after=after, source_sha256_lf=hashlib.sha256(original.encode()).hexdigest(), mutant_sha256=hashlib.sha256(changed.encode()).hexdigest())
             report['mutants'].append(outcome)
             print(name + ': ' + outcome['status'], flush=True)
-        python_cases = [
-            ('migration_newline_normalization_removed', "raw = path.read_bytes().replace(b'\\r\\n', b'\\n')", 'raw = path.read_bytes()', False),
-            ('migration_published_pin_guard_removed', 'if path.name in PINNED and hashlib.sha256(pinned_raw).hexdigest() != PINNED[path.name]:', 'if False:', False),
-            ('migration_missing_sources_allowed', 'if missing:', 'if False:', False),
-            ('migration_historical_crosspair_accepted', "execution_checksum IN ('{historical_execution}','legacy_baseline:{historical_digest}')", "execution_checksum IN ('{historical_execution}','{execution}','legacy_baseline:{historical_digest}')", True),
-        ]
+        python_cases = python_mutants()
         for name, before, after, windows in python_cases:
             if args.case and name not in args.case:
                 continue

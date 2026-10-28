@@ -1,0 +1,194 @@
+{
+  "scope": "Independent authorization/module/contracts critic; root coordinates full-kernel audit and final CI.",
+  "recorded_utc": "2026-10-28T11:19:06.064153+00:00",
+  "baseline_revision": "80f7d66770d01d5090b3222069581e4eb00070f9",
+  "finding": {
+    "severity": "P2",
+    "name": "Registry executable projection aliases caller-owned manifest memory",
+    "effect": "Caller mutation of guards, capabilities, dependencies, conflicts, migration metadata or raw policy bytes after construction changed AcceptsManifest, contrary to the immutable registry contract.",
+    "red": {
+      "utc": "2026-10-28T11:10:47.7068114Z",
+      "base": "80f7d66",
+      "test_sha256": "CD9F42BC303CB6E6714F9BF2150D95A860618B39991E2AB89809448D66E6EECD",
+      "production_sha256": "3A534B1FE8E7B88CEC15F1323F302A86ECC323C191417435F537D04ABB9A1639",
+      "red_log": "work/core-auth-registry-red.txt",
+      "command": "go test -race ./internal/modules -run ^TestRegistryAdversarial -count=1 -v",
+      "exit": 1
+    },
+    "fix": "Store the canonical executable projection as an immutable string at construction; retain UseNumber canonicalization and compare against that frozen value.",
+    "green": "All internal/modules and internal/inventory tests pass with -race; targeted real PostgreSQL characterization passes."
+  },
+  "coverage_map": [
+    {
+      "area": "immutable registry executable projection",
+      "files": [
+        "internal/modules/registry.go"
+      ],
+      "symbols": [
+        "NewRegistry",
+        "AcceptsManifest",
+        "manifestProjection"
+      ],
+      "tests": [
+        "TestRegistryAdversarialManifestSnapshotIsImmutable",
+        "TestRegistryAdversarialRawPolicySnapshotIsImmutable"
+      ],
+      "result": "Confirmed red before production edit; canonical string snapshot fixes shared slice/RawMessage aliases."
+    },
+    {
+      "area": "module identity, compatibility, capabilities, dependencies, conflicts and storage binding",
+      "files": [
+        "internal/modules/registry.go",
+        "internal/modules/registry_test.go"
+      ],
+      "symbols": [
+        "validModuleID",
+        "guardBindings",
+        "validateStorage",
+        "inRange",
+        "NewRegistry",
+        "FactViews",
+        "Installations"
+      ],
+      "tests": [
+        "TestRegistryRejectsLegacySDK",
+        "TestRegistryRejectsRelocatedGuard",
+        "TestNewRegistryRejectsInvalidInstallations",
+        "TestRegistryRejectsInvalidInstallationMetadata",
+        "TestRegistryRequiresExactGuardBindings",
+        "TestRegistryInstallationsAreIndependentSnapshots"
+      ],
+      "result": "Full existing modules race suite passed; five targeted Go mutations killed."
+    },
+    {
+      "area": "guard invocation failures and SQL-only authority",
+      "files": [
+        "internal/modules/registry.go",
+        "internal/postgres/store_guard_authority_test.go"
+      ],
+      "symbols": [
+        "Check",
+        "invoke",
+        "SQLOnlyGuard",
+        "platform.assert_required_guards",
+        "platform.lock_module_configuration"
+      ],
+      "tests": [
+        "TestRegistryFailsClosedOnGuardFailure",
+        "TestSQLGuardIsOnlyBusinessDecision",
+        "TestUninstalledHostGuardsCannotAuthorizeCommands"
+      ],
+      "result": "Existing unit/integration characterization passes; SQL remains the sole business verdict."
+    },
+    {
+      "area": "declarative policies and fact tenant/document/revision/uniqueness",
+      "files": [
+        "internal/modules/declarative.go",
+        "internal/modules/declarative_v2.go",
+        "db/migrations/0006_security_boundary.sql",
+        "db/migrations/0008_background_health_and_policy_v2.sql"
+      ],
+      "symbols": [
+        "declarativeModule",
+        "declarativeV2",
+        "ruleV2.UnmarshalJSON",
+        "platform.check_declarative_guard_v1",
+        "platform.check_declarative_guard",
+        "platform.declarative_condition_v2"
+      ],
+      "tests": [
+        "TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique",
+        "TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts",
+        "TestKernelAuthorizationTypedRulesNeverCoerceOrRound",
+        "TestSecurityDeclarativePolicyEnforcedByAPIAndSQL"
+      ],
+      "result": "New real-PostgreSQL characterization passes; eight SQL mutants killed, including float64 rounding beyond exact integer precision."
+    },
+    {
+      "area": "actor permission scope union",
+      "files": [
+        "internal/inventory/model.go"
+      ],
+      "symbols": [
+        "Principal.Scope",
+        "Scope.AllowsOwner"
+      ],
+      "tests": [
+        "TestPrincipalAdversarialGrantScopesAreExact"
+      ],
+      "result": "All 256 finite grant masks and 128 reproducible generated cases pass; permission/organization/warehouse omission mutants killed."
+    },
+    {
+      "area": "module lifetime, storage metadata and retained guards",
+      "files": [
+        "internal/postgres/store.go",
+        "db/migrations/0006_security_boundary.sql",
+        "db/migrations/0008_background_health_and_policy_v2.sql"
+      ],
+      "symbols": [
+        "InstalledModules",
+        "ValidateModules",
+        "validateInstallation",
+        "validateRegistry",
+        "platform.retain_guard_requirements"
+      ],
+      "tests": [
+        "TestModuleInstallationIntegrity",
+        "TestSecurityDirectSQLCannotBypassDispatchGuard",
+        "TestSecurityDisabledModuleStillBlocksSQL",
+        "TestSecurityRegistryCannotOmitInstalledModule"
+      ],
+      "result": "Existing real-PostgreSQL characterization passed, including checksum/missing/unexpected migration and manifest mismatch."
+    },
+    {
+      "area": "dispatch quality and runtime privileges",
+      "files": [
+        "internal/clientmodules/dispatchquality/module.go",
+        "modules/dispatch-quality/migrations/003_authoritative_guard.sql",
+        "internal/postgres/store.go"
+      ],
+      "symbols": [
+        "dispatchquality.Manifest",
+        "dispatchquality.New",
+        "mod_example_dispatch_quality.check_dispatch",
+        "mod_example_dispatch_quality.lock_quality_document",
+        "postgres.New"
+      ],
+      "tests": [
+        "TestSecurityQualityRequiresAuthorizedIndependentReviewerAndCurrentPolicy",
+        "TestSecurityRuntimeCannotOwnModuleExecutionSurface",
+        "TestSecurityRuntimeRejectsServerFileAndDatabaseOwnershipPrivileges"
+      ],
+      "result": "Real-PostgreSQL characterization passes: unauthorized/self/stale-policy approval and inherited server/database ownership privileges refused."
+    }
+  ],
+  "mutation_campaign": {
+    "status": "passed",
+    "cases": 16,
+    "killed": 16,
+    "survived": 0,
+    "invalid": 0,
+    "specification": "scripts/mutations/core-authorization.json",
+    "independent_result": "authorization-mutations.json"
+  },
+  "current_source_sha256_lf": {
+    "internal/modules/registry.go": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+    "internal/modules/registry_adversarial_test.go": "cd9f42bc303cb6e6714f9bf2150d95a860618b39991e2ab89809448d66e6eecd",
+    "internal/inventory/model_authorization_adversarial_test.go": "2ee8a277df1e271c32d308778978afce148fb6a342b39b2e79668c3e8648334a",
+    "internal/postgres/store_kernel_authorization_adversarial_integration_test.go": "5785407aaf55867bb0db56d676462fe56b419daa8bec068bcc6b9aeb5d58208f"
+  },
+  "checks": {
+    "race": true,
+    "vet": true,
+    "go_fix_diff_empty": true,
+    "published_SQL_changed_by_this_agent": false,
+    "all_owned_test_clusters_stopped": true
+  },
+  "limits": [
+    "The documented low-level SQL contract trusts the backend database role and treats p_actor as trusted server metadata (docs/postgresql-core.md:131); absence of end-user SQL authentication is not reported as a newly discovered bypass.",
+    "Caller-owned in-process module code and schema-owner-installed SQL remain trusted; this audit does not make them a sandbox.",
+    "Passing characterization is not represented as red TDD evidence.",
+    "Sixteen curated mutants are a bounded sensitivity check, not proof over every possible mutation.",
+    "HTTP/OIDC, inventory accounting/concurrency and jobs/transport are covered by separate root-assigned critics; final combined CI is the root responsibility."
+  ]
+}

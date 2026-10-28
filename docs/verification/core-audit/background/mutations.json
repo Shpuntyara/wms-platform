@@ -1,0 +1,191 @@
+{
+  "status": "passed",
+  "mutants": [
+    {
+      "name": "core_background_partial_failed_claim_published",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestWorkerRejectsPartialFailedClaim"
+      ]
+    },
+    {
+      "name": "core_background_ack_failure_counted_delivered",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestWorkerAckFailureDoesNotCountAsDelivery"
+      ]
+    },
+    {
+      "name": "core_background_delivery_failure_acked_success",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestDeliveryFailureSchedulesRetry"
+      ]
+    },
+    {
+      "name": "core_background_signing_key_aliased",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/200",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/204",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/299",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/300",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/400",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/503",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus"
+      ]
+    },
+    {
+      "name": "core_background_300_accepted_as_success",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus/300",
+        "TestSenderCopiesSigningKeyAndChecksResponseStatus"
+      ]
+    },
+    {
+      "name": "core_background_oversized_payload_sent",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestSenderInvalidEnvelopeNeverMakesRequest"
+      ]
+    },
+    {
+      "name": "core_background_stalled_relay_healthy",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestBackgroundReadinessDetectsStallsAndBacklogs/relay_stalled",
+        "TestBackgroundReadinessDetectsStallsAndBacklogs"
+      ]
+    },
+    {
+      "name": "core_background_dead_letter_healthy",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestBackgroundReadinessDetectsStallsAndBacklogs/dead_event",
+        "TestBackgroundReadinessDetectsStallsAndBacklogs"
+      ]
+    },
+    {
+      "name": "core_background_monitor_false_ready",
+      "kind": "go",
+      "status": "killed",
+      "failed_tests": [
+        "TestBackgroundMonitorExposesCountersAndUnhealthyStatus"
+      ]
+    },
+    {
+      "name": "core_background_claim_ignores_active_lease",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery"
+      ]
+    },
+    {
+      "name": "core_background_claim_exceeds_batch_limit",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery"
+      ]
+    },
+    {
+      "name": "core_background_claim_reuses_token",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery"
+      ]
+    },
+    {
+      "name": "core_background_claim_ignores_availability",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxRetryAvailabilityAndDeadLetter"
+      ]
+    },
+    {
+      "name": "core_background_claim_reclaims_dead_letter",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxRetryAvailabilityAndDeadLetter"
+      ]
+    },
+    {
+      "name": "core_background_ack_ignores_token",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery"
+      ]
+    },
+    {
+      "name": "core_background_ack_ignores_expired_lease",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxConcurrentClaimsAndLeaseRecovery"
+      ]
+    },
+    {
+      "name": "core_background_retry_exhaustion_delayed",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelOutboxRetryAvailabilityAndDeadLetter"
+      ]
+    },
+    {
+      "name": "core_background_expiry_releases_half",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically"
+      ]
+    },
+    {
+      "name": "core_background_expiry_increments_version_twice",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically"
+      ]
+    },
+    {
+      "name": "core_background_claim_batch_bounds_removed",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/<nil>",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/-1",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/0",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/101",
+        "TestKernelBackgroundRejectsInvalidBatchSizes"
+      ]
+    },
+    {
+      "name": "core_background_expiry_batch_bounds_removed",
+      "kind": "sql_function",
+      "status": "killed",
+      "failed_tests": [
+        "TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/<nil>",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/-1",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/0",
+        "TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/1001",
+        "TestKernelBackgroundRejectsInvalidBatchSizes"
+      ]
+    }
+  ],
+  "work_directory": "work\\core-background-mutations-405e2ed33c9f4ef5bcb051917af22e16"
+}

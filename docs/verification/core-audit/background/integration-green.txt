@@ -1,0 +1,26 @@
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/<nil>
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/-1
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/0
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/101
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/<nil>
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/-1
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/0
+=== RUN   TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/1001
+--- PASS: TestKernelBackgroundRejectsInvalidBatchSizes (0.17s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/<nil> (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/-1 (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/0 (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/platform.claim_outbox/101 (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/<nil> (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/-1 (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/0 (0.00s)
+    --- PASS: TestKernelBackgroundRejectsInvalidBatchSizes/inventory.expire_reservations/1001 (0.00s)
+=== RUN   TestKernelOutboxConcurrentClaimsAndLeaseRecovery
+--- PASS: TestKernelOutboxConcurrentClaimsAndLeaseRecovery (0.36s)
+=== RUN   TestKernelOutboxRetryAvailabilityAndDeadLetter
+--- PASS: TestKernelOutboxRetryAvailabilityAndDeadLetter (0.21s)
+=== RUN   TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically
+--- PASS: TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically (0.26s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	2.047s

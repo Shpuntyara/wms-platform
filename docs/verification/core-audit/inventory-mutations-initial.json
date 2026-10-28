@@ -1,0 +1,203 @@
+[
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_line_version_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/stale_version",
+      "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind"
+    ],
+    "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$"
+  },
+  {
+    "skipped": 0,
+    "status": "survived",
+    "name": "core_inventory_line_active_check_removed",
+    "exit_code": 0,
+    "failed_tests": [],
+    "pattern": "^TestKernelInventoryBusinessRejectionsAreAtomic$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_reservation_kind_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/reservation_on_receipt",
+      "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind"
+    ],
+    "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_reservation_availability_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryBusinessRejectionsAreAtomic/unavailable_stock",
+      "TestKernelInventoryBusinessRejectionsAreAtomic"
+    ],
+    "pattern": "^TestKernelInventoryBusinessRejectionsAreAtomic$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_release_active_quantity_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryReleaseAndExpiryKeepExactEffects"
+    ],
+    "pattern": "^TestKernelInventoryReleaseAndExpiryKeepExactEffects$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_release_document_aggregate_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryReleaseAndExpiryKeepExactEffects"
+    ],
+    "pattern": "^TestKernelInventoryReleaseAndExpiryKeepExactEffects$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_transfer_tracking_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryTrackingMismatchCannotRelabelStock"
+    ],
+    "pattern": "^TestKernelInventoryTrackingMismatchCannotRelabelStock$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_shipment_expiry_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays"
+    ],
+    "pattern": "^TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_correction_scope_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryCorrectionCannotReferenceDifferentScope"
+    ],
+    "pattern": "^TestKernelInventoryCorrectionCannotReferenceDifferentScope$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_picked_target_reservation_aggregate_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryGeneratedWorkflowConservesLedger"
+    ],
+    "pattern": "^TestKernelInventoryGeneratedWorkflowConservesLedger$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_movement_fulfillment_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryGeneratedWorkflowConservesLedger"
+    ],
+    "pattern": "^TestKernelInventoryGeneratedWorkflowConservesLedger$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_operation_request_binding_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryCommandReplayBindsExactRequest"
+    ],
+    "pattern": "^TestKernelInventoryCommandReplayBindsExactRequest$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_operation_actor_binding_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryCommandReplayBindsExactRequest"
+    ],
+    "pattern": "^TestKernelInventoryCommandReplayBindsExactRequest$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_quantity_scale_check_removed",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryBusinessRejectionsAreAtomic/item_precision",
+      "TestKernelInventoryBusinessRejectionsAreAtomic"
+    ],
+    "pattern": "^TestKernelInventoryBusinessRejectionsAreAtomic$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_balance_null_identity_equality_broken",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe"
+    ],
+    "pattern": "^TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_balance_identity_mutable",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/balance_identity",
+      "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable"
+    ],
+    "pattern": "^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_append_only_history_deletable",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/movement_lines",
+      "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable/audit",
+      "TestKernelInventoryHistoryAndBalanceIdentityAreImmutable"
+    ],
+    "pattern": "^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_used_item_accounting_mutable",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryItemAccountingCannotDriftAfterUse/quantity_scale",
+      "TestKernelInventoryItemAccountingCannotDriftAfterUse/tracking",
+      "TestKernelInventoryItemAccountingCannotDriftAfterUse/base_unit",
+      "TestKernelInventoryItemAccountingCannotDriftAfterUse"
+    ],
+    "pattern": "^TestKernelInventoryItemAccountingCannotDriftAfterUse$"
+  },
+  {
+    "skipped": 0,
+    "status": "killed",
+    "name": "core_inventory_incomplete_operation_can_commit",
+    "exit_code": 1,
+    "failed_tests": [
+      "TestKernelInventoryPrepareCannotCommitIncompleteOperation/reserve",
+      "TestKernelInventoryPrepareCannotCommitIncompleteOperation/movement",
+      "TestKernelInventoryPrepareCannotCommitIncompleteOperation/release",
+      "TestKernelInventoryPrepareCannotCommitIncompleteOperation"
+    ],
+    "pattern": "^TestKernelInventoryPrepareCannotCommitIncompleteOperation$"
+  }
+]

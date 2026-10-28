@@ -1,0 +1,142 @@
+=== RUN   TestDeclarativeModuleDoesNotNeedCompiledBuild
+--- PASS: TestDeclarativeModuleDoesNotNeedCompiledBuild (0.00s)
+=== RUN   TestDeclarativeV2ValidatesAlternativesAndTypedRules
+--- PASS: TestDeclarativeV2ValidatesAlternativesAndTypedRules (0.00s)
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/guard_policy
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/capability
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/dependency
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/conflict
+=== RUN   TestRegistryAdversarialManifestSnapshotIsImmutable/migration_metadata
+--- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable (0.01s)
+    --- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable/guard_policy (0.00s)
+    --- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable/capability (0.00s)
+    --- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable/dependency (0.00s)
+    --- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable/conflict (0.00s)
+    --- PASS: TestRegistryAdversarialManifestSnapshotIsImmutable/migration_metadata (0.00s)
+=== RUN   TestRegistryAdversarialRawPolicySnapshotIsImmutable
+--- PASS: TestRegistryAdversarialRawPolicySnapshotIsImmutable (0.00s)
+=== RUN   TestRegistryRejectsLegacySDK
+--- PASS: TestRegistryRejectsLegacySDK (0.00s)
+=== RUN   TestRegistryRejectsRelocatedGuard
+--- PASS: TestRegistryRejectsRelocatedGuard (0.00s)
+=== RUN   TestRegistryRejectsSchemaIdentityCollisions
+=== RUN   TestRegistryRejectsSchemaIdentityCollisions/no_facts
+=== RUN   TestRegistryRejectsSchemaIdentityCollisions/with_facts
+--- PASS: TestRegistryRejectsSchemaIdentityCollisions (0.00s)
+    --- PASS: TestRegistryRejectsSchemaIdentityCollisions/no_facts (0.00s)
+    --- PASS: TestRegistryRejectsSchemaIdentityCollisions/with_facts (0.00s)
+=== RUN   TestRegistryRejectsTruncatedPostgresIdentifiers
+=== RUN   TestRegistryRejectsTruncatedPostgresIdentifiers/module_id
+=== RUN   TestRegistryRejectsTruncatedPostgresIdentifiers/fact_view
+--- PASS: TestRegistryRejectsTruncatedPostgresIdentifiers (0.00s)
+    --- PASS: TestRegistryRejectsTruncatedPostgresIdentifiers/module_id (0.00s)
+    --- PASS: TestRegistryRejectsTruncatedPostgresIdentifiers/fact_view (0.00s)
+=== RUN   TestNewRegistryRejectsInvalidInstallations
+=== PAUSE TestNewRegistryRejectsInvalidInstallations
+=== RUN   TestRegistryRunsEveryRequiredGuard
+=== PAUSE TestRegistryRunsEveryRequiredGuard
+=== RUN   TestRegistryFailsClosedOnGuardFailure
+=== PAUSE TestRegistryFailsClosedOnGuardFailure
+=== RUN   TestRegistryLoadsOnlyRegisteredModuleFacts
+=== PAUSE TestRegistryLoadsOnlyRegisteredModuleFacts
+=== RUN   TestRegistryRejectsDuplicateModules
+=== PAUSE TestRegistryRejectsDuplicateModules
+=== RUN   TestRegistryRejectsUnsupportedExecutableExtensions
+=== RUN   TestRegistryRejectsUnsupportedExecutableExtensions/policies
+=== RUN   TestRegistryRejectsUnsupportedExecutableExtensions/subscribers
+=== RUN   TestRegistryRejectsUnsupportedExecutableExtensions/runtime
+--- PASS: TestRegistryRejectsUnsupportedExecutableExtensions (0.00s)
+    --- PASS: TestRegistryRejectsUnsupportedExecutableExtensions/policies (0.00s)
+    --- PASS: TestRegistryRejectsUnsupportedExecutableExtensions/subscribers (0.00s)
+    --- PASS: TestRegistryRejectsUnsupportedExecutableExtensions/runtime (0.00s)
+=== RUN   TestRegistryRequiresExactGuardBindings
+=== RUN   TestRegistryRequiresExactGuardBindings/missing_compiled_binding
+=== RUN   TestRegistryRequiresExactGuardBindings/unknown_bound_handler
+=== RUN   TestRegistryRequiresExactGuardBindings/empty_bound_points
+=== RUN   TestRegistryRequiresExactGuardBindings/unknown_bound_point
+=== RUN   TestRegistryRequiresExactGuardBindings/duplicate_compiled_point
+=== RUN   TestRegistryRequiresExactGuardBindings/deleted_manifest_binding
+=== RUN   TestRegistryRequiresExactGuardBindings/added_manifest_binding
+=== RUN   TestRegistryRequiresExactGuardBindings/duplicate_manifest_binding
+--- PASS: TestRegistryRequiresExactGuardBindings (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/missing_compiled_binding (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/unknown_bound_handler (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/empty_bound_points (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/unknown_bound_point (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/duplicate_compiled_point (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/deleted_manifest_binding (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/added_manifest_binding (0.00s)
+    --- PASS: TestRegistryRequiresExactGuardBindings/duplicate_manifest_binding (0.00s)
+=== RUN   TestRegistryFreezesMultiPointGuardBindings
+--- PASS: TestRegistryFreezesMultiPointGuardBindings (0.00s)
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/wrong_schema
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/wrong_schema_version
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/missing_data
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/missing_migration
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/extra_migration
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/duplicate_migration
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/invalid_checksum
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/invalid_migration_id
+=== RUN   TestRegistryRejectsInvalidInstallationMetadata/undeclared_compiled_schema_version
+--- PASS: TestRegistryRejectsInvalidInstallationMetadata (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/wrong_schema (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/wrong_schema_version (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/missing_data (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/missing_migration (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/extra_migration (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/duplicate_migration (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/invalid_checksum (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/invalid_migration_id (0.00s)
+    --- PASS: TestRegistryRejectsInvalidInstallationMetadata/undeclared_compiled_schema_version (0.00s)
+=== RUN   TestRegistryInstallationsAreIndependentSnapshots
+--- PASS: TestRegistryInstallationsAreIndependentSnapshots (0.00s)
+=== RUN   TestRegistryChecksConcurrentCommands
+=== PAUSE TestRegistryChecksConcurrentCommands
+=== CONT  TestNewRegistryRejectsInvalidInstallations
+=== CONT  TestRegistryFailsClosedOnGuardFailure
+=== RUN   TestNewRegistryRejectsInvalidInstallations/missing_required_module
+=== RUN   TestRegistryFailsClosedOnGuardFailure/panic
+=== CONT  TestRegistryChecksConcurrentCommands
+=== RUN   TestNewRegistryRejectsInvalidInstallations/missing_handler
+=== RUN   TestNewRegistryRejectsInvalidInstallations/compiled_guard_omitted_from_manifest
+=== CONT  TestRegistryRejectsDuplicateModules
+=== CONT  TestRegistryRunsEveryRequiredGuard
+=== CONT  TestRegistryLoadsOnlyRegisteredModuleFacts
+=== RUN   TestNewRegistryRejectsInvalidInstallations/wrong_compiled_version
+=== RUN   TestRegistryFailsClosedOnGuardFailure/error
+=== RUN   TestNewRegistryRejectsInvalidInstallations/unsupported_sdk
+=== RUN   TestNewRegistryRejectsInvalidInstallations/unsupported_core
+=== RUN   TestNewRegistryRejectsInvalidInstallations/fail_open
+--- PASS: TestRegistryRejectsDuplicateModules (0.00s)
+--- PASS: TestRegistryRunsEveryRequiredGuard (0.00s)
+--- PASS: TestRegistryChecksConcurrentCommands (0.00s)
+=== RUN   TestRegistryFailsClosedOnGuardFailure/timeout
+--- PASS: TestRegistryLoadsOnlyRegisteredModuleFacts (0.00s)
+=== RUN   TestNewRegistryRejectsInvalidInstallations/optional_mandatory_guard
+=== RUN   TestNewRegistryRejectsInvalidInstallations/unknown_point
+=== RUN   TestNewRegistryRejectsInvalidInstallations/unknown_capability
+=== RUN   TestNewRegistryRejectsInvalidInstallations/missing_dependency
+=== RUN   TestNewRegistryRejectsInvalidInstallations/foreign_facts_schema
+--- PASS: TestNewRegistryRejectsInvalidInstallations (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/missing_required_module (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/missing_handler (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/compiled_guard_omitted_from_manifest (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/wrong_compiled_version (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/unsupported_sdk (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/unsupported_core (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/fail_open (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/optional_mandatory_guard (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/unknown_point (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/unknown_capability (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/missing_dependency (0.00s)
+    --- PASS: TestNewRegistryRejectsInvalidInstallations/foreign_facts_schema (0.00s)
+=== RUN   TestRegistryFailsClosedOnGuardFailure/late_success
+--- PASS: TestRegistryFailsClosedOnGuardFailure (0.01s)
+    --- PASS: TestRegistryFailsClosedOnGuardFailure/panic (0.00s)
+    --- PASS: TestRegistryFailsClosedOnGuardFailure/error (0.00s)
+    --- PASS: TestRegistryFailsClosedOnGuardFailure/timeout (0.01s)
+    --- PASS: TestRegistryFailsClosedOnGuardFailure/late_success (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/modules	1.073s

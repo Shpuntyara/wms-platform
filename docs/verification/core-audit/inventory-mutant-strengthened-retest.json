@@ -1,0 +1,11 @@
+{
+  "exit_code": 1,
+  "failed_tests": [
+    "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind/inactive_document",
+    "TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind"
+  ],
+  "status": "killed",
+  "name": "core_inventory_line_active_check_removed",
+  "skipped": 0,
+  "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$"
+}

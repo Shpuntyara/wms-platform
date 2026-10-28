@@ -1,0 +1,54 @@
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/uncached_JWKS_survives_cancelled_startup_context
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/ES256_access_token_with_RFC9068_header
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/near-future_nbf_is_rejected_without_library_clock-skew_allowance
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/missing_expiry
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/empty_subject
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/malformed_not-before
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/identity_token_cannot_be_used_as_an_access_token
+=== RUN   TestOIDCAdversarialAlgorithmsAndLifetime/every_changed_signature_bit_fails_authentication
+--- PASS: TestOIDCAdversarialAlgorithmsAndLifetime (0.11s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/uncached_JWKS_survives_cancelled_startup_context (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/ES256_access_token_with_RFC9068_header (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/near-future_nbf_is_rejected_without_library_clock-skew_allowance (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/missing_expiry (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/empty_subject (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/malformed_not-before (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/identity_token_cannot_be_used_as_an_access_token (0.00s)
+    --- PASS: TestOIDCAdversarialAlgorithmsAndLifetime/every_changed_signature_bit_fails_authentication (0.07s)
+=== RUN   TestOIDCVerifiesAccessTokens
+=== RUN   TestOIDCVerifiesAccessTokens/valid_access_token
+=== RUN   TestOIDCVerifiesAccessTokens/wrong_audience
+=== RUN   TestOIDCVerifiesAccessTokens/wrong_issuer
+=== RUN   TestOIDCVerifiesAccessTokens/expired
+=== RUN   TestOIDCVerifiesAccessTokens/not_yet_valid
+=== RUN   TestOIDCVerifiesAccessTokens/missing_subject
+=== RUN   TestOIDCVerifiesAccessTokens/id_token_rejected
+=== RUN   TestOIDCVerifiesAccessTokens/wrong_signature
+=== RUN   TestOIDCVerifiesAccessTokens/malformed
+--- PASS: TestOIDCVerifiesAccessTokens (0.17s)
+    --- PASS: TestOIDCVerifiesAccessTokens/valid_access_token (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/wrong_audience (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/wrong_issuer (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/expired (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/not_yet_valid (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/missing_subject (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/id_token_rejected (0.00s)
+    --- PASS: TestOIDCVerifiesAccessTokens/wrong_signature (0.08s)
+    --- PASS: TestOIDCVerifiesAccessTokens/malformed (0.00s)
+=== RUN   TestOIDCSecureRedirects
+=== RUN   TestOIDCSecureRedirects/discovery_downgrade
+=== RUN   TestOIDCSecureRedirects/JWKS_downgrade
+=== RUN   TestOIDCSecureRedirects/HTTPS_discovery_redirect
+=== RUN   TestOIDCSecureRedirects/HTTPS_JWKS_redirect
+--- PASS: TestOIDCSecureRedirects (0.14s)
+    --- PASS: TestOIDCSecureRedirects/discovery_downgrade (0.01s)
+    --- PASS: TestOIDCSecureRedirects/JWKS_downgrade (0.01s)
+    --- PASS: TestOIDCSecureRedirects/HTTPS_discovery_redirect (0.01s)
+    --- PASS: TestOIDCSecureRedirects/HTTPS_JWKS_redirect (0.01s)
+=== RUN   TestOIDCPreservesCallerRedirectPolicy
+--- PASS: TestOIDCPreservesCallerRedirectPolicy (0.01s)
+=== RUN   TestOIDCKeepsDefaultRedirectLimit
+--- PASS: TestOIDCKeepsDefaultRedirectLimit (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/auth	1.480s
