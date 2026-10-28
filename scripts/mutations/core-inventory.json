@@ -1,0 +1,193 @@
+[
+  {
+    "name": "core_inventory_line_version_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "warehouse.lock_line(uuid,bigint)",
+    "before": "IF p_expected_version IS NULL OR v_doc.version <> p_expected_version THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_line_active_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "warehouse.lock_line(uuid,bigint)",
+    "before": "IF v_doc.state <> 'active' THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_reservation_kind_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.reserve_stock(uuid,uuid,uuid,bigint,uuid,numeric,timestamptz)",
+    "before": "IF v_doc.kind <> 'shipment' THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_reservation_availability_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.reserve_stock(uuid,uuid,uuid,bigint,uuid,numeric,timestamptz)",
+    "before": "IF v_balance.on_hand - v_balance.reserved_qty < p_qty THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryBusinessRejectionsAreAtomic$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_release_active_quantity_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.release_reservation(uuid,uuid,uuid,bigint,numeric,text)",
+    "before": "IF v_res.active_qty < p_qty THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryReleaseAndExpiryKeepExactEffects$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_release_document_aggregate_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.release_reservation(uuid,uuid,uuid,bigint,numeric,text)",
+    "before": "UPDATE warehouse.document_lines SET reserved_qty = reserved_qty - p_qty WHERE id = v_line.id;",
+    "after": "PERFORM 1;",
+    "pattern": "^TestKernelInventoryReleaseAndExpiryKeepExactEffects$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_transfer_tracking_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "ROW(v_source.lot_id, v_source.serial_id) IS DISTINCT FROM ROW(v_target.lot_id, v_target.serial_id)",
+    "after": "false",
+    "pattern": "^TestKernelInventoryTrackingMismatchCannotRelabelStock$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_shipment_expiry_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "IF v_res.expires_at IS NOT NULL AND v_res.expires_at <= clock_timestamp() THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_correction_scope_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "ROW(v_corrected.organization_id, v_corrected.warehouse_id, v_corrected.owner_id, v_corrected.item_id)\n       <> ROW(v_line.organization_id, v_line.warehouse_id, v_line.owner_id, v_line.item_id)",
+    "after": "false",
+    "pattern": "^TestKernelInventoryCorrectionCannotReferenceDifferentScope$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_picked_target_reservation_aggregate_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "UPDATE inventory.stock_balances SET reserved_qty = reserved_qty + p_qty, version = version + 1 WHERE id = p_target;",
+    "after": "PERFORM 1;",
+    "pattern": "^TestKernelInventoryGeneratedWorkflowConservesLedger$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_movement_fulfillment_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "UPDATE warehouse.document_lines SET fulfilled_qty = fulfilled_qty + p_qty WHERE id = p_line;",
+    "after": "PERFORM 1;",
+    "pattern": "^TestKernelInventoryGeneratedWorkflowConservesLedger$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_operation_request_binding_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "platform.begin_operation(uuid,uuid,uuid,text,jsonb)",
+    "before": "OR v_existing.request <> p_request",
+    "after": "OR false",
+    "pattern": "^TestKernelInventoryCommandReplayBindsExactRequest$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_operation_actor_binding_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "platform.begin_operation(uuid,uuid,uuid,text,jsonb)",
+    "before": "v_existing.actor_id <> p_actor",
+    "after": "false",
+    "pattern": "^TestKernelInventoryCommandReplayBindsExactRequest$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_quantity_scale_check_removed",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.assert_quantity(uuid,numeric)",
+    "before": "OR trunc(p_qty, v_scale) <> p_qty",
+    "after": "OR false",
+    "pattern": "^TestKernelInventoryBusinessRejectionsAreAtomic$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_balance_null_identity_equality_broken",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.ensure_balance(uuid,uuid,uuid,uuid,uuid,text,uuid,uuid)",
+    "before": "AND lot_id IS NOT DISTINCT FROM p_lot AND serial_id IS NOT DISTINCT FROM p_serial",
+    "after": "AND lot_id = p_lot AND serial_id = p_serial",
+    "pattern": "^TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_balance_identity_mutable",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.validate_balance()",
+    "before": "IF TG_OP = 'UPDATE' AND",
+    "after": "IF false AND",
+    "pattern": "^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_append_only_history_deletable",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "platform.reject_history_change()",
+    "before": "BEGIN RAISE EXCEPTION 'append_only_history'; END",
+    "after": "BEGIN RETURN OLD; END",
+    "pattern": "^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_used_item_accounting_mutable",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "catalog.protect_item_accounting()",
+    "before": "AND (EXISTS (SELECT 1 FROM inventory.stock_balances WHERE item_id = OLD.id)",
+    "after": "AND false AND (EXISTS (SELECT 1 FROM inventory.stock_balances WHERE item_id = OLD.id)",
+    "pattern": "^TestKernelInventoryItemAccountingCannotDriftAfterUse$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_incomplete_operation_can_commit",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "platform.require_completed_operation()",
+    "before": "IF EXISTS (SELECT 1 FROM platform.operations WHERE id = NEW.id AND result IS NULL) THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelInventoryPrepareCannotCommitIncompleteOperation$",
+    "package": "./internal/postgres"
+  }
+]
+

@@ -1,0 +1,212 @@
+[
+  {
+    "name": "core_background_partial_failed_claim_published",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "events = nil",
+    "after": "// Retain unconfirmed events.",
+    "pattern": "^TestWorkerRejectsPartialFailedClaim$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_ack_failure_counted_delivered",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "sendErr == nil && ackErr == nil",
+    "after": "sendErr == nil",
+    "pattern": "^TestWorkerAckFailureDoesNotCountAsDelivery$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_delivery_failure_acked_success",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "event, sendErr == nil",
+    "after": "event, true",
+    "pattern": "^TestDeliveryFailureSchedulesRetry$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_signing_key_aliased",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "key: bytes.Clone(key)",
+    "after": "key: key",
+    "pattern": "^TestSenderCopiesSigningKeyAndChecksResponseStatus$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_300_accepted_as_success",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "response.StatusCode >= 300",
+    "after": "response.StatusCode > 300",
+    "pattern": "^TestSenderCopiesSigningKeyAndChecksResponseStatus$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_oversized_payload_sent",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "len(event.Payload) > 1<<20",
+    "after": "len(event.Payload) > 1<<21",
+    "pattern": "^TestSenderInvalidEnvelopeNeverMakesRequest$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_stalled_relay_healthy",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "now.Sub(s.RelayAt) > 20*time.Second",
+    "after": "false",
+    "pattern": "^TestBackgroundReadinessDetectsStallsAndBacklogs$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_dead_letter_healthy",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/worker.go",
+    "before": "s.Queue.Dead > 0",
+    "after": "false",
+    "pattern": "^TestBackgroundReadinessDetectsStallsAndBacklogs$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_monitor_false_ready",
+    "kind": "go",
+    "domain": "background",
+    "source": "internal/jobs/monitor.go",
+    "before": "if w.Ready() == nil {",
+    "after": "if true {",
+    "pattern": "^TestBackgroundMonitorExposesCountersAndUnhealthyStatus$",
+    "package": "./internal/jobs"
+  },
+  {
+    "name": "core_background_claim_ignores_active_lease",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "AND (o.leased_until IS NULL OR o.leased_until<=clock_timestamp())",
+    "after": "AND true",
+    "pattern": "^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_claim_exceeds_batch_limit",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "ORDER BY o.available_at,o.id LIMIT p_limit",
+    "after": "ORDER BY o.available_at,o.id LIMIT 100",
+    "pattern": "^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_claim_reuses_token",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "lease_token=gen_random_uuid()",
+    "after": "lease_token=o.id",
+    "pattern": "^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_claim_ignores_availability",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "AND o.available_at<=clock_timestamp()",
+    "after": "AND true",
+    "pattern": "^TestKernelOutboxRetryAvailabilityAndDeadLetter$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_claim_reclaims_dead_letter",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "AND o.dead_at IS NULL",
+    "after": "AND true",
+    "pattern": "^TestKernelOutboxRetryAvailabilityAndDeadLetter$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_ack_ignores_token",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.complete_outbox(uuid,uuid,boolean)",
+    "before": "AND lease_token=p_token",
+    "after": "AND true",
+    "pattern": "^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_ack_ignores_expired_lease",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.complete_outbox(uuid,uuid,boolean)",
+    "before": "AND leased_until>clock_timestamp()",
+    "after": "AND true",
+    "pattern": "^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_retry_exhaustion_delayed",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.complete_outbox(uuid,uuid,boolean)",
+    "before": "attempts>=12",
+    "after": "attempts>=13",
+    "pattern": "^TestKernelOutboxRetryAvailabilityAndDeadLetter$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_expiry_releases_half",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "inventory.expire_reservations(integer)",
+    "before": "qty:=r.active_qty;",
+    "after": "qty:=r.active_qty/2;",
+    "pattern": "^TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_expiry_increments_version_twice",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "inventory.expire_reservations(integer)",
+    "before": "UPDATE warehouse.documents SET version=version+1,content_revision=content_revision+1",
+    "after": "UPDATE warehouse.documents SET version=version+2,content_revision=content_revision+1",
+    "pattern": "^TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_claim_batch_bounds_removed",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "platform.claim_outbox(integer)",
+    "before": "IF p_limit IS NULL OR p_limit<1 OR p_limit>100 THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelBackgroundRejectsInvalidBatchSizes$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_expiry_batch_bounds_removed",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "inventory.expire_reservations(integer)",
+    "before": "IF p_limit IS NULL OR p_limit<1 OR p_limit>1000 THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestKernelBackgroundRejectsInvalidBatchSizes$",
+    "package": "./internal/postgres"
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "name": "core_authorization_projection_guards_omitted",
+    "kind": "go",
+    "source": "internal/modules/registry.go",
+    "before": "func manifestProjection(value Manifest) string {\n",
+    "after": "func manifestProjection(value Manifest) string {\n\tvalue.Guards = nil\n",
+    "pattern": "^TestRegistryAdversarialManifestSnapshotIsImmutable$",
+    "package": "./internal/modules",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_projection_policies_omitted",
+    "kind": "go",
+    "source": "internal/modules/registry.go",
+    "before": "func manifestProjection(value Manifest) string {\n",
+    "after": "func manifestProjection(value Manifest) string {\n\tvalue.Policies = nil\n",
+    "pattern": "^TestRegistryAdversarialRawPolicySnapshotIsImmutable$",
+    "package": "./internal/modules",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_legacy_sdk_accepted",
+    "kind": "go",
+    "source": "internal/modules/registry.go",
+    "before": "!inRange(SDKVersion, m.Compatibility.SDK)",
+    "after": "false",
+    "pattern": "^TestRegistryRejectsLegacySDK$",
+    "package": "./internal/modules",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_guard_point_binding_ignored",
+    "kind": "go",
+    "source": "internal/modules/registry.go",
+    "before": "!bindings[id][key]",
+    "after": "false",
+    "pattern": "^TestRegistryRejectsRelocatedGuard$",
+    "package": "./internal/modules",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_required_module_omitted",
+    "kind": "go",
+    "source": "internal/modules/registry.go",
+    "before": "if _, exists := manifests[id]; !exists {",
+    "after": "if _, exists := manifests[id]; !exists && false {",
+    "pattern": "^TestNewRegistryRejectsInvalidInstallations$",
+    "package": "./internal/modules",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_fact_org_scope_removed",
+    "kind": "sql_function",
+    "signature": "platform.check_declarative_guard(text,text,uuid,uuid)",
+    "before": "WHERE organization_id=$1 AND warehouse_id=$2 AND document_id=$3 AND content_revision=$4",
+    "after": "WHERE $1 IS NOT NULL AND warehouse_id=$2 AND document_id=$3 AND content_revision=$4",
+    "pattern": "^TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_fact_revision_scope_removed",
+    "kind": "sql_function",
+    "signature": "platform.check_declarative_guard(text,text,uuid,uuid)",
+    "before": "AND content_revision=$4",
+    "after": "AND $4 IS NOT NULL",
+    "pattern": "^TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_ambiguous_facts_accepted",
+    "kind": "sql_function",
+    "signature": "platform.check_declarative_guard(text,text,uuid,uuid)",
+    "before": "INTO STRICT facts USING",
+    "after": "INTO facts USING",
+    "pattern": "^TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_conjunction_becomes_or",
+    "kind": "sql_function",
+    "signature": "platform.check_declarative_guard(text,text,uuid,uuid)",
+    "before": "matched:=matched AND coalesce(passed,false);",
+    "after": "matched:=matched OR coalesce(passed,false);",
+    "pattern": "^TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_alternatives_become_and",
+    "kind": "sql_function",
+    "signature": "platform.check_declarative_guard(text,text,uuid,uuid)",
+    "before": "allowed:=allowed OR matched;",
+    "after": "allowed:=allowed AND matched;",
+    "pattern": "^TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_rule_type_coercion",
+    "kind": "sql_function",
+    "signature": "platform.declarative_condition_v2(jsonb,jsonb,uuid)",
+    "before": "IF jsonb_typeof(actual) IS DISTINCT FROM 'string' THEN RETURN false; END IF;",
+    "after": "IF false THEN RETURN false; END IF;",
+    "pattern": "^TestKernelAuthorizationTypedRulesNeverCoerceOrRound$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_decimal_float_rounding",
+    "kind": "sql_function",
+    "signature": "platform.declarative_condition_v2(jsonb,jsonb,uuid)",
+    "before": "RETURN value::numeric>=expected::numeric;",
+    "after": "RETURN value::double precision>=expected::double precision;",
+    "pattern": "^TestKernelAuthorizationTypedRulesNeverCoerceOrRound$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_null_exists",
+    "kind": "sql_function",
+    "signature": "platform.declarative_condition_v2(jsonb,jsonb,uuid)",
+    "before": "RETURN actual IS NOT NULL AND actual<>'null'::jsonb;",
+    "after": "RETURN actual IS NOT NULL;",
+    "pattern": "^TestKernelAuthorizationTypedRulesNeverCoerceOrRound$",
+    "package": "./internal/postgres",
+    "domain": "authorization"
+  },
+  {
+    "name": "core_authorization_permission_scope_removed",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/inventory/model.go",
+    "before": "g.Permission != permission || g.OrganizationID != org || g.WarehouseID != warehouse",
+    "after": "g.OrganizationID != org || g.WarehouseID != warehouse",
+    "pattern": "^TestPrincipalAdversarialGrantScopesAreExact$",
+    "package": "./internal/inventory"
+  },
+  {
+    "name": "core_authorization_organization_scope_removed",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/inventory/model.go",
+    "before": "g.Permission != permission || g.OrganizationID != org || g.WarehouseID != warehouse",
+    "after": "g.Permission != permission || g.WarehouseID != warehouse",
+    "pattern": "^TestPrincipalAdversarialGrantScopesAreExact$",
+    "package": "./internal/inventory"
+  },
+  {
+    "name": "core_authorization_warehouse_scope_removed",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/inventory/model.go",
+    "before": "g.Permission != permission || g.OrganizationID != org || g.WarehouseID != warehouse",
+    "after": "g.Permission != permission || g.OrganizationID != org",
+    "pattern": "^TestPrincipalAdversarialGrantScopesAreExact$",
+    "package": "./internal/inventory"
+  }
+]

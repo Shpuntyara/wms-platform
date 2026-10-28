@@ -1,0 +1,162 @@
+[
+  {
+    "name": "core_boundary_oidc_issuer_unchecked",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "ClientID: audience, SupportedSigningAlgs:",
+    "after": "ClientID: audience, SkipIssuerCheck: true, SupportedSigningAlgs:",
+    "pattern": "^TestOIDCVerifiesAccessTokens$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_audience_unchecked",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "ClientID: audience, SupportedSigningAlgs:",
+    "after": "ClientID: audience, SkipClientIDCheck: true, SupportedSigningAlgs:",
+    "pattern": "^TestOIDCVerifiesAccessTokens$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_expiry_unchecked",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "ClientID: audience, SupportedSigningAlgs:",
+    "after": "ClientID: audience, SkipExpiryCheck: true, SupportedSigningAlgs:",
+    "pattern": "^TestOIDCVerifiesAccessTokens$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_signature_unchecked",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "ClientID: audience, SupportedSigningAlgs:",
+    "after": "ClientID: audience, InsecureSkipSignatureCheck: true, SupportedSigningAlgs:",
+    "pattern": "^TestOIDCVerifiesAccessTokens$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_subject_optional",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "token.Subject == \"\" || ",
+    "after": "",
+    "pattern": "^TestOIDCAdversarialAlgorithmsAndLifetime$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_access_marker_ignored",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "claims.Type != \"Bearer\" && claims.Use != \"access\" && header.Type != \"at+jwt\"",
+    "after": "false",
+    "pattern": "^TestOIDCAdversarialAlgorithmsAndLifetime$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_near_future_nbf_allowed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "claims.NotBefore > time.Now().Unix()",
+    "after": "claims.NotBefore > time.Now().Unix() && false",
+    "pattern": "^TestOIDCAdversarialAlgorithmsAndLifetime$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_downgrade_allowed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "u.Scheme == \"https\"",
+    "after": "(u.Scheme == \"https\" || u.Scheme == \"http\")",
+    "pattern": "^TestOIDCSecureRedirects$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_oidc_es256_removed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/auth/oidc.go",
+    "before": "[]string{oidc.RS256, oidc.ES256}",
+    "after": "[]string{oidc.RS256}",
+    "pattern": "^TestOIDCAdversarialAlgorithmsAndLifetime$",
+    "package": "./internal/auth"
+  },
+  {
+    "name": "core_boundary_zero_quantity_allowed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/inventory/model.go",
+    "before": " || strings.Trim(value, \"0.\") == \"\"",
+    "after": "",
+    "pattern": "^TestQuantityCanonicalDecimalProperties$",
+    "package": "./internal/inventory"
+  },
+  {
+    "name": "core_boundary_nil_identifier_allowed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/inventory/model.go",
+    "before": " || strings.ReplaceAll(value, \"-\", \"\") == strings.Repeat(\"0\", 32)",
+    "after": "",
+    "pattern": "^TestIdentifierNormalizationProperties$",
+    "package": "./internal/inventory"
+  },
+  {
+    "name": "core_boundary_identifier_normalization_removed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/inventory/model.go",
+    "before": "return strings.ToLower(value), nil",
+    "after": "return value, nil",
+    "pattern": "^TestIdentifierNormalizationProperties$",
+    "package": "./internal/inventory"
+  },
+  {
+    "name": "core_boundary_oversize_body_limit_doubled",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/server.go",
+    "before": "http.MaxBytesReader(w, r.Body, 1024*1024)",
+    "after": "http.MaxBytesReader(w, r.Body, 2*1024*1024)",
+    "pattern": "^TestRequestBodyLimitIncludesTrailingJSONAndWhitespace$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_unknown_request_fields_allowed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/server.go",
+    "before": "decoder.DisallowUnknownFields()",
+    "after": "decoder.UseNumber()",
+    "pattern": "^TestServerRejectsInvalidRequestsBeforeBackend$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_trailing_body_unchecked",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/server.go",
+    "before": "if err := decoder.Decode(new(any)); err != io.EOF {",
+    "after": "if err := decoder.Decode(new(any)); err != io.EOF && false {",
+    "pattern": "^TestRequestBodyLimitIncludesTrailingJSONAndWhitespace$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_request_deadline_removed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/server.go",
+    "before": "context.WithTimeout(r.Context(), s.config.RequestTimeout)",
+    "after": "context.WithCancel(r.Context())",
+    "pattern": "^TestRequestDeadlineIsShorterThanTheCallerContext$",
+    "package": "./internal/api"
+  }
+]
