@@ -6,10 +6,32 @@ import tempfile
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from mutation_runner import classify_go_run, database_environment, replace_once, run
+from mutation_runner import classify_go_run, classify_python_run, database_environment, replace_once, run, run_go
 
 
 class MutationRunnerTests(unittest.TestCase):
+    def test_mutant_plans_cannot_overwrite_unmutated_plan_evidence(self):
+        def fake_go(_command, **kwargs):
+            self.assertNotEqual(kwargs['env']['WMS_DOCUMENT_PLAN_DIR'], 'green/plans')
+            self.assertNotEqual(kwargs['env']['WMS_DOCUMENT_CRITIC_PLAN_DIR'], 'green/critic-plans')
+            kwargs['stdout'].write(json.dumps({'Action': 'pass', 'Test': 'TestDocumentPlan'}))
+            return SimpleNamespace(returncode=0)
+
+        with tempfile.TemporaryDirectory() as directory, patch('mutation_runner.subprocess.run', side_effect=fake_go):
+            outcome = run_go('go', '^TestDocumentPlan$', Path(directory), {'WMS_DOCUMENT_PLAN_DIR': 'green/plans', 'WMS_DOCUMENT_CRITIC_PLAN_DIR': 'green/critic-plans'})
+        self.assertEqual(outcome['status'], 'survived')
+
+    def test_python_import_errors_and_skips_are_not_mutation_kills(self):
+        self.assertEqual(classify_python_run(1, {'tests': 1, 'failures': ['test_integrity'], 'errors': [], 'skipped': []})['status'], 'killed')
+        self.assertEqual(classify_python_run(1, {'tests': 1, 'failures': [], 'errors': ['test_missing_source'], 'skipped': []})['status'], 'killed')
+        for result in (
+            {'tests': 0, 'failures': [], 'errors': [], 'skipped': []},
+            {'tests': 1, 'failures': [], 'errors': ['unittest.loader._FailedTest.test_import'], 'skipped': []},
+            {'tests': 2, 'failures': ['test_integrity'], 'errors': [], 'skipped': ['test_database']},
+        ):
+            with self.subTest(result=result):
+                self.assertEqual(classify_python_run(1, result)['status'], 'invalid')
+
     def test_only_a_failing_test_kills_a_mutant(self):
         events = [
             {'Action': 'run', 'Package': 'p', 'Test': 'TestDocumentRetry'},
@@ -95,6 +117,21 @@ class MutationRunnerTests(unittest.TestCase):
             self.assertEqual(report['status'], 'failed')
             self.assertEqual(report['baseline']['status'], 'invalid')
             self.assertEqual(report['mutants'], [])
+
+    def test_missing_go_executable_still_writes_failed_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            args = SimpleNamespace(go='missing-go', psql='psql', report='work/result.json', case=None)
+            environment = {
+                'WMS_TEST_ADMIN_DSN': 'postgres://admin@127.0.0.1:55487/wms_kernel_test_baseline?sslmode=disable',
+                'WMS_TEST_RUNTIME_DSN': 'postgres://runtime@127.0.0.1:55487/wms_kernel_test_baseline?sslmode=disable',
+            }
+            with patch('mutation_runner.ROOT', root), patch.dict('os.environ', environment), patch('mutation_runner.subprocess.check_output', return_value='frozen-head\n'), patch('mutation_runner.run_go', side_effect=FileNotFoundError('missing Go executable')):
+                with self.assertRaises(FileNotFoundError):
+                    run(args)
+            target = root / args.report
+            self.assertTrue(target.is_file(), 'A failed process launch lost the mutation evidence artifact')
+            self.assertEqual(json.loads(target.read_text(encoding='utf8'))['status'], 'failed')
 
 
 if __name__ == '__main__':

@@ -16,6 +16,8 @@ DOCUMENT_REGRESSIONS = (
     'TestDocumentPaginationProperties',
     'TestDocumentAdversarialCommandIdentityAndAuthorization',
     'TestDocumentAdversarialConcurrentCommands',
+    'TestDocumentAdversarialOwnerFanoutHydratesOnlyPage',
+    'TestDocumentAdversarialCursorCannotCrossAuthorizationScope',
 )
 
 

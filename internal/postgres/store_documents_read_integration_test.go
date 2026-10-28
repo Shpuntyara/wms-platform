@@ -30,7 +30,7 @@ type documentReadCapture struct {
 }
 
 func (c *documentReadCapture) TraceQueryStart(ctx context.Context, _ *pgx.Conn, d pgx.TraceQueryStartData) context.Context {
-	if strings.HasPrefix(d.SQL, "SELECT to_jsonb(document_details)") {
+	if strings.Contains(d.SQL, "SELECT to_jsonb(document_details)") && strings.Contains(d.SQL, "contracts_v1.document_details") {
 		c.mu.Lock()
 		c.sql, c.args = d.SQL, slices.Clone(d.Args)
 		c.mu.Unlock()
