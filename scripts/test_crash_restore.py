@@ -23,6 +23,8 @@ class CrashRestoreGateTests(unittest.TestCase):
             root = Path(directory)
             paths = ('scripts/crash_restore.py', 'scripts/migrate_core.py',
                      'scripts/test_crash_restore.py', 'scripts/test_resilience_assurance_critic.py',
+                     'scripts/test_onprem_recovery_critic.py', 'scripts/collect_resilience_evidence.py',
+                     'scripts/test_collect_resilience_evidence.py',
                      'db/bootstrap/grants.psql', 'db/migrations/0001_example.sql')
             for name in paths:
                 path = root / name

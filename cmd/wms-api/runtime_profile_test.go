@@ -17,12 +17,13 @@ func TestDatabaseProfileConfigurationFailsClosed(t *testing.T) {
 		{name: "default requires hardened configuration"},
 		{name: "hardened default", key: key, worker: "postgres://worker@127.0.0.1/db", valid: true},
 		{name: "explicit legacy", profile: "legacy", valid: true},
-		{name: "hardened", profile: "hardened-v1", key: key, worker: "postgres://worker@127.0.0.1/db", valid: true},
+		{name: "on premise", profile: "onprem-v1", key: key, worker: "postgres://worker@127.0.0.1/db", valid: true},
+		{name: "old single warehouse profile requires upgrade", profile: "hardened-v1", key: key, worker: "postgres://worker@127.0.0.1/db"},
 		{name: "unknown profile", profile: "hardened-v2", key: key, worker: "postgres://worker@127.0.0.1/db"},
-		{name: "missing signing key", profile: "hardened-v1", worker: "postgres://worker@127.0.0.1/db"},
-		{name: "missing worker login", profile: "hardened-v1", key: key},
-		{name: "bad base64", profile: "hardened-v1", key: "invalid secret value", worker: "postgres://worker@127.0.0.1/db"},
-		{name: "short key", profile: "hardened-v1", key: base64.StdEncoding.EncodeToString(make([]byte, 16)), worker: "postgres://worker@127.0.0.1/db"},
+		{name: "missing signing key", profile: "onprem-v1", worker: "postgres://worker@127.0.0.1/db"},
+		{name: "missing worker login", profile: "onprem-v1", key: key},
+		{name: "bad base64", profile: "onprem-v1", key: "invalid secret value", worker: "postgres://worker@127.0.0.1/db"},
+		{name: "short key", profile: "onprem-v1", key: base64.StdEncoding.EncodeToString(make([]byte, 16)), worker: "postgres://worker@127.0.0.1/db"},
 		{name: "hardened settings accidentally in legacy", key: key},
 		{name: "worker setting accidentally in legacy", worker: "postgres://worker@127.0.0.1/db"},
 	} {
@@ -86,17 +87,18 @@ func TestHardenedAPIRejectsFallbackToAnotherEndpoint(t *testing.T) {
 
 func TestHardenedDeploymentRejectsMismatchedBinding(t *testing.T) {
 	for _, tc := range []struct {
-		name, apiLogin, workerLogin, apiOrg, apiWarehouse, workerOrg, workerWarehouse string
-		valid                                                                         bool
+		name, apiLogin, workerLogin, apiInstallation, workerInstallation string
+		valid                                                            bool
 	}{
-		{name: "same warehouse distinct logins", apiLogin: "api", workerLogin: "worker", apiOrg: "org", apiWarehouse: "warehouse", workerOrg: "org", workerWarehouse: "warehouse", valid: true},
-		{name: "same effective login", apiLogin: "api", workerLogin: "api", apiOrg: "org", apiWarehouse: "warehouse", workerOrg: "org", workerWarehouse: "warehouse"},
-		{name: "foreign organization", apiLogin: "api", workerLogin: "worker", apiOrg: "org", apiWarehouse: "warehouse", workerOrg: "other", workerWarehouse: "warehouse"},
-		{name: "foreign warehouse", apiLogin: "api", workerLogin: "worker", apiOrg: "org", apiWarehouse: "warehouse", workerOrg: "org", workerWarehouse: "other"},
-		{name: "empty scope", apiLogin: "api", workerLogin: "worker"},
+		{name: "same client installation distinct logins", apiLogin: "api", workerLogin: "worker", apiInstallation: "10000000-0000-4000-8000-000000000001", workerInstallation: "10000000-0000-4000-8000-000000000001", valid: true},
+		{name: "same effective login", apiLogin: "api", workerLogin: "api", apiInstallation: "10000000-0000-4000-8000-000000000001", workerInstallation: "10000000-0000-4000-8000-000000000001"},
+		{name: "different client installation", apiLogin: "api", workerLogin: "worker", apiInstallation: "10000000-0000-4000-8000-000000000001", workerInstallation: "20000000-0000-4000-8000-000000000001"},
+		{name: "malformed installation", apiLogin: "api", workerLogin: "worker", apiInstallation: "client", workerInstallation: "client"},
+		{name: "nil installation", apiLogin: "api", workerLogin: "worker", apiInstallation: "00000000-0000-0000-0000-000000000000", workerInstallation: "00000000-0000-0000-0000-000000000000"},
+		{name: "empty installation", apiLogin: "api", workerLogin: "worker"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			if err := validateHardenedBinding(tc.apiLogin, tc.workerLogin, tc.apiOrg, tc.apiWarehouse, tc.workerOrg, tc.workerWarehouse); (err == nil) != tc.valid {
+			if err := validateOnPremBinding(tc.apiLogin, tc.workerLogin, tc.apiInstallation, tc.workerInstallation); (err == nil) != tc.valid {
 				t.Fatalf("accepted=%v want=%v", err == nil, tc.valid)
 			}
 		})

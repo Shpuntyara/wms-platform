@@ -1,0 +1,10 @@
+{
+  "classification": "invalid infrastructure run; not a mutation kill",
+  "stage": "document_page large fixture preparation",
+  "postgres_sqlstate": "53100",
+  "cause": "No space left on device",
+  "go_test_source_sha256": "e89a0a22fede20aaf7f6546230a9f6502ccd45fdffe50a25f45ba88b90b49944",
+  "output_sha256": "91db8b6c72b1e982e10a9ec7e45fa4e19a4bed54b6110e12522432988a4092e8",
+  "first_positive_profile_and_other_mutants": "passed; entire portable gate failed as required",
+  "followup": "Full final campaign on fresh GitHub runner; own stopped PGDATA cleanup was rejected by automatic review, blocked by policy; no workaround attempted"
+}

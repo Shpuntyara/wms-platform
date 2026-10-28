@@ -1,0 +1,23 @@
+2026-10-28 15:17:51.621 CET [16568] LOG:  starting PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit
+2026-10-28 15:17:51.622 CET [16568] LOG:  listening on IPv4 address "127.0.0.1", port 50199
+2026-10-28 15:17:51.692 CET [25580] LOG:  database system was interrupted; last known up at 2026-10-28 15:17:40 CET
+2026-10-28 15:17:52.084 CET [22660] FATAL:  the database system is starting up
+2026-10-28 15:17:52.211 CET [37688] FATAL:  the database system is starting up
+2026-10-28 15:17:52.334 CET [40120] FATAL:  the database system is starting up
+2026-10-28 15:17:52.460 CET [14924] FATAL:  the database system is starting up
+2026-10-28 15:17:52.596 CET [33780] FATAL:  the database system is starting up
+2026-10-28 15:17:52.729 CET [33944] FATAL:  the database system is starting up
+2026-10-28 15:17:52.867 CET [20588] FATAL:  the database system is starting up
+2026-10-28 15:17:53.001 CET [35172] FATAL:  the database system is starting up
+2026-10-28 15:17:53.180 CET [25580] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-28 15:17:53.186 CET [25580] LOG:  redo starts at 0/265EAA0
+2026-10-28 15:17:53.225 CET [2020] FATAL:  the database system is starting up
+2026-10-28 15:17:53.260 CET [25580] LOG:  invalid record length at 0/2C3B1E0: expected at least 24, got 0
+2026-10-28 15:17:53.260 CET [25580] LOG:  redo done at 0/2C3B1B8 system usage: CPU: user: 0.01 s, system: 0.04 s, elapsed: 0.07 s
+2026-10-28 15:17:53.269 CET [41432] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-10-28 15:17:53.344 CET [11092] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:17:53.344 CET [11092] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:17:53.480 CET [26496] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:17:53.480 CET [26496] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:17:53.500 CET [41432] LOG:  checkpoint complete: wrote 756 buffers (18.5%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.046 s, sync=0.171 s, total=0.234 s; sync files=78, longest=0.006 s, average=0.003 s; distance=6001 kB, estimate=6001 kB; lsn=0/2C3B1E0, redo lsn=0/2C3B1E0
+2026-10-28 15:17:53.555 CET [16568] LOG:  database system is ready to accept connections

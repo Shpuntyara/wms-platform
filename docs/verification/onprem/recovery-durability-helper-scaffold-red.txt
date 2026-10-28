@@ -1,0 +1,6 @@
+# github.com/Shpuntyara/wms-platform/internal/postgres [github.com/Shpuntyara/wms-platform/internal/postgres.test]
+internal\postgres\hardened_durability_test.go:9:14: undefined: validateDurabilitySettings
+internal\postgres\hardened_durability_test.go:16:14: undefined: validateDurabilitySettings
+internal\postgres\hardened_durability_test.go:26:15: undefined: validateDurabilitySettings
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres [build failed]
+FAIL

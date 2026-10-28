@@ -1,0 +1,85 @@
+{
+  "utc": "2026-10-28T13:52:48.207727+00:00",
+  "scope": "One client installation/database, several warehouses in one organization; independent core SQL accounting critic. No arena/opponent code read.",
+  "baseline_head": "77ab640d91b3f18c0514d2fe4d342b32658235f1",
+  "outcome": "Expanded characterization passed; no confirmed accounting defect and no production fix. No passing characterization is labeled RED.",
+  "first_behavior_run": {
+    "command": "go test -race -tags=integration ./internal/postgres -run ^TestOnPremAccounting -count=1 -timeout=180s -json",
+    "exit": 0,
+    "postgres": "17.11",
+    "toplevel_tests": 4,
+    "completed_test_events": 31,
+    "failed": 0,
+    "skipped": 0,
+    "log": "accounting-first.jsonl",
+    "log_sha256_bytes": "c35efff3ccdb32acb070460565cedc6c777765f70b38192b6833af01c086fa69"
+  },
+  "property_oracle": {
+    "seed": 202610280717,
+    "samples": 12,
+    "warehouses_per_sample": 2,
+    "representation": "Go int64 integer millionths, formatted as exact six-digit decimals; no SQL arithmetic or floats in expected values",
+    "boundary_sample_micros": [
+      1,
+      999999,
+      1000001
+    ],
+    "checked": "concurrent reservations sharing each warehouse balance; parallel manual release, issue and two expiry workers; exact balance and each document line; independent reserved/released/consumed event totals; SQL ledger reconciliation; replay after expiry preserves results and full accounting snapshots"
+  },
+  "numeric_boundaries": {
+    "maximum_per_row": "999999999999999999.999999",
+    "independent_sum_oracle": "math/big.Int integer millionths across two warehouses; aggregate exceeds per-row numeric(24,6) and int64 micro range",
+    "overflow": "adding one micro to maximum rejects SQLSTATE22003 and preserves stock/document/reservation/ledger/operation/effect snapshots",
+    "invalid_kernel_inputs": [
+      "0.0000001",
+      "0.0000005",
+      "0.0000009",
+      "1.0000001",
+      "NaN",
+      "Infinity",
+      "-Infinity"
+    ],
+    "kernel_routes": [
+      "inventory.reserve_stock",
+      "inventory.post_movement"
+    ],
+    "owner_import": "NaN/Infinity/-Infinity rejected for both balance quantities and requested/reserved/fulfilled document quantities (15 cases). Existing finite-domain upper bound already protects these fields."
+  },
+  "scope_atomicity": "Cross-warehouse correction, same-ID command reuse against another warehouse and cross-warehouse balance references fail atomically.",
+  "mutation_campaign": {
+    "status": "passed",
+    "cases": 3,
+    "killed": 3,
+    "survived": 0,
+    "invalid": 0,
+    "fresh_owned_database_clone_per_mutant": true,
+    "source_migrations_unchanged": true,
+    "baseline_completed_test_events": 31,
+    "report": "accounting-mutations.json",
+    "new_catalogs": {
+      "scripts/mutations/core-inventory.json": 2,
+      "scripts/mutations/core-background.json": 1
+    },
+    "selector": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "faults": "Rounding debit, credit or expiry to three decimal places; all produce actual behavioral failures, not setup/build/skip/timeout results."
+  },
+  "source_before_after_hashes_unchanged": true,
+  "pre_execution_hashes": "accounting-before.json",
+  "parallel_backend_scan": {
+    "reviewer": "crash_restore_critic",
+    "scope": "non-test store/documents/jobs/hardened/hardened_jobs",
+    "query_sites_reviewed": 12,
+    "confirmed_findings": 0,
+    "checks": "All Query sites close rows/check Err; context propagated; runtime values parameterized; identifiers fixed or pgx.Identifier.Sanitize; operation errors checked; ignored rollback cleanup errors intentional."
+  },
+  "cluster": {
+    "path": "work/integration-fa1177e40cb44a5783289f0a66c65e96",
+    "loopback_synthetic_only": true,
+    "stopped": true,
+    "postmaster_pid_absent": true,
+    "checksums_note": "Initial wrapper created this accounting cluster before root enabled --data-checksums; no physical durability claim."
+  },
+  "initial_full_wrapper_attempt": "Stopped at four concurrently authored expected RED Python recovery tests before Go execution; separately recorded in accounting-before.json. This is not a full CI pass.",
+  "remaining": "Root must run the complete integrated final CI with the three new catalog cases and no required skips; targeted accounting evidence does not assert deployment/HTTP/OIDC/durability safety.",
+  "official_reference": "https://www.postgresql.org/docs/17/datatype-numeric.html"
+}

@@ -323,7 +323,7 @@ func TestRedTeamCredentialsHardenedRPCDenials(t *testing.T) {
 func TestRedTeamCredentialsHardenedSafeMetadataCharacterization(t *testing.T) {
 	f := newArenaCredentialFixture(t)
 	checks := []struct{ name, query string }{
-		{"profile_contains_only_public_metadata", `SELECT ((SELECT count(*) FROM jsonb_object_keys(p))=4 AND p->>'profile'='hardened-v1' AND p->>'login'=session_user)::text FROM (SELECT hardened_api.profile() AS p) profile`},
+		{"profile_contains_only_public_metadata", `SELECT ((SELECT count(*) FROM jsonb_object_keys(p))=3 AND p->>'profile'='onprem-v1' AND p->>'login'=session_user AND (p->>'installation_id')::uuid<>'00000000-0000-0000-0000-000000000000'::uuid)::text FROM (SELECT hardened_api.profile() AS p) profile`},
 		{"api_namespace_usage_without_create", `SELECT (has_schema_privilege(current_user,'hardened_api','USAGE') AND NOT has_schema_privilege(current_user,'hardened_api','CREATE') AND NOT has_database_privilege(current_user,current_database(),'CREATE'))::text`},
 		{"core_private_worker_namespaces_are_isolated", `SELECT bool_and(NOT has_schema_privilege(current_user,n.oid,'USAGE') AND NOT has_schema_privilege(current_user,n.oid,'CREATE'))::text FROM pg_namespace n WHERE n.nspname IN ('platform','catalog','warehouse','inventory','contracts_v1','hardened_private','hardened_crypto','hardened_worker')`},
 	}

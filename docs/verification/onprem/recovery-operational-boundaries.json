@@ -1,0 +1,40 @@
+{
+  "deployment_model": "One customer, one dedicated WMS installation, database and server. Organizations and warehouses are business scopes inside that installation.",
+  "claims": [
+    {
+      "boundary": "PostgreSQL process termination and logical restore",
+      "evidence": "Actual owned clusters, no production data; final 3x10s result is recorded separately.",
+      "does_not_prove": "Physical power loss, controller cache honesty, disk loss, PITR or failover."
+    },
+    {
+      "boundary": "Runtime durability configuration",
+      "evidence": "Actual Go API/worker reject 7 unsafe settings; explicit transactions strengthen weak commit settings and preserve remote_apply; actual unsafe fsync reload refuses new writes.",
+      "does_not_prove": "A malicious PostgreSQL superuser, compromised OS or dishonest storage firmware cannot be prevented by application preflight."
+    },
+    {
+      "boundary": "Private installation/signing state",
+      "evidence": "The synthetic dump preserves installation UUID and in-database hashes of bindings/key bytes, with actual API/worker profile probes after restore.",
+      "does_not_prove": "Production passwords, TLS private keys, OIDC identity-provider state, external app signing key custody, and OS service configuration are not backed up by pg_dump."
+    }
+  ],
+  "operational_acceptance_plan_not_executed": [
+    "Choose customer-approved RPO/RTO objectives; record actual dataset size, storage characteristics, operator and replacement-host availability. No zero-error or zero-downtime promise.",
+    "Protect the dedicated server with tested storage write-flush behavior, power-loss protection and independent hardware monitoring. Schedule any actual power-cut drill only on separately authorized disposable hardware.",
+    "Keep encrypted backups and a continuous WAL archive outside the WMS server failure domain. Use separate backup credentials and encryption-key custody that SQL runtime credentials cannot access. A local dump on the same disk is not an off-server disaster-recovery copy.",
+    "For PITR use a valid physical base backup plus an uninterrupted archived WAL chain; pg_dump is logical and cannot be replayed with WAL. This repository has not yet executed such a physical/WAL PITR drill.",
+    "Before declaring off-server recovery operational, restore an independently downloaded/decrypted artifact to an isolated replacement host, with network egress and event consumers quarantined; compare private installation identity, keys, roles, migration receipts, per-warehouse exact decimal balances, active reservations, audit/outbox and command-ID witnesses.",
+    "Inject a missing archive segment, truncated artifact, wrong decrypt key, missing external secret, incomplete command witness and delayed archival; require refusal or a clearly failed receipt, not a passing summary.",
+    "Verify recovery at a selected timestamp/LSN using acknowledged command IDs and an independent witness cutoff. Measure archive lag, verification duration and loss bounds with the actual workload.",
+    "Document role/owner re-provisioning and external secret retrieval. The logical restore test recreates safe synthetic roles and reapplies reviewed grants; it does not restore pg_authid passwords.",
+    "Retain a last-known verified backup chain until a newer independent restore succeeds. Configure archive-failure, disk-space, checksum and recovery-readiness alerts; include restore rehearsals after migration/profile changes and on an approved recurring schedule.",
+    "A single dedicated server does not provide HA. Server/disk destruction requires replacement and restore; any availability promise needs separate replicas, failure-domain design and tested failover outside this current proof."
+  ],
+  "primary_sources": [
+    "https://www.postgresql.org/docs/17/wal-reliability.html",
+    "https://www.postgresql.org/docs/17/continuous-archiving.html",
+    "https://www.postgresql.org/docs/17/backup-dump.html",
+    "https://www.postgresql.org/docs/17/runtime-config-wal.html",
+    "https://www.postgresql.org/docs/17/runtime-config-developer.html"
+  ],
+  "external_actions": "No SSH, production service, real data, real key, off-server upload, physical power-cut or retention deletion was performed."
+}

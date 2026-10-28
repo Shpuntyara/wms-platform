@@ -1,0 +1,73 @@
+-test.shuffle 1793197423194621800
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup
+--- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey (0.18s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup (0.02s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup (0.01s)
+=== RUN   TestHardenedOnPremCriticWorkerRejectsInstallationDrift
+--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift (0.14s)
+=== RUN   TestHardenedHTTPAndContainment
+=== RUN   TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval
+=== RUN   TestHardenedHTTPAndContainment/HTTP_release
+=== RUN   TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement
+=== RUN   TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution
+=== RUN   TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced
+=== RUN   TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation
+=== RUN   TestHardenedHTTPAndContainment/expiry_and_acknowledgement_service_all_installation_warehouses
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic
+=== RUN   TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access
+--- PASS: TestHardenedHTTPAndContainment (0.98s)
+    --- PASS: TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion (0.06s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.06s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval (0.04s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement (0.03s)
+    --- PASS: TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced (0.04s)
+    --- PASS: TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation (0.08s)
+    --- PASS: TestHardenedHTTPAndContainment/expiry_and_acknowledgement_service_all_installation_warehouses (0.10s)
+    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.41s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send (0.14s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof (0.14s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic (0.12s)
+    --- PASS: TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access (0.02s)
+=== RUN   TestHardenedOnPremiseMultiWarehouse
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_store_resolves_all_authorized_organizations_and_warehouses
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/0
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/1
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/2
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_actor_cannot_borrow_another_actors_warehouse_rights
+=== RUN   TestHardenedOnPremiseMultiWarehouse/scope_mixing_and_failed_commands_preserve_rollback_and_accounting
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_worker_expires_all_installation_warehouses
+=== RUN   TestHardenedOnPremiseMultiWarehouse/worker_drains_all_installation_warehouses_and_fences_stale_ack
+--- PASS: TestHardenedOnPremiseMultiWarehouse (0.44s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_store_resolves_all_authorized_organizations_and_warehouses (0.00s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse (0.08s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/0 (0.05s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/1 (0.02s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/2 (0.01s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_actor_cannot_borrow_another_actors_warehouse_rights (0.00s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/scope_mixing_and_failed_commands_preserve_rollback_and_accounting (0.01s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_worker_expires_all_installation_warehouses (0.07s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/worker_drains_all_installation_warehouses_and_fences_stale_ack (0.06s)
+=== RUN   TestHardenedDocumentReadsAtScale
+    hardened_load_integration_test.go:92: ERROR: could not extend file "base/21238/21501": No space left on device (SQLSTATE 53100)
+--- FAIL: TestHardenedDocumentReadsAtScale (10.42s)
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/current_user_cannot_read_another_owner_in_the_same_warehouse
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/forged_in-memory_owner_and_actor_scope_cannot_replace_SQL_grants
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/revoked_document_grants_reject_a_cached_read_scope_while_unrelated_grants_remain
+--- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants (0.31s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/current_user_cannot_read_another_owner_in_the_same_warehouse (0.02s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/forged_in-memory_owner_and_actor_scope_cannot_replace_SQL_grants (0.01s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/revoked_document_grants_reject_a_cached_read_scope_while_unrelated_grants_remain (0.01s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	12.524s
+FAIL

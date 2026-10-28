@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "test_sha256": "0C044CED72507BB23774C2834E5A1C7F0BE287A524C97802CAC2C3C4CF66F611",
+  "note": "Missing validator scaffold RED, distinct from prior actual API+worker trigger behavioral RED."
+}

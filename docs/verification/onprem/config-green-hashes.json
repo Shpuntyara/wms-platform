@@ -1,0 +1,4 @@
+{
+  "cmd/wms-api/runtime_profile.go": "14b257ab10d8dbfe94561b19a96de9194824b28fb8c0b5cb9c04490aad0cdcbd",
+  "cmd/wms-api/runtime_profile_test.go": "c6bf65bf5065abccaa6a585aa563e8b5a8b726faa6207ed5cd804dee4981baf3"
+}

@@ -1,0 +1,4 @@
+=== RUN   TestHardenedOnPremCriticWorkerRejectsInstallationDrift
+--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift (0.13s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	1.173s

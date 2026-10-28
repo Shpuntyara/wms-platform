@@ -1,0 +1,8 @@
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup
+--- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey (0.16s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup (0.01s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	1.212s

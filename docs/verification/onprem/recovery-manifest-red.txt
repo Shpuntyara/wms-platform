@@ -1,0 +1,13 @@
+.............F
+======================================================================
+FAIL: test_source_manifest_cannot_silently_omit_the_new_critic_or_collector (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_source_manifest_cannot_silently_omit_the_new_critic_or_collector)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 198, in test_source_manifest_cannot_silently_omit_the_new_critic_or_collector
+    with self.assertRaises(FileNotFoundError):
+AssertionError: FileNotFoundError not raised
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.090s
+
+FAILED (failures=1)

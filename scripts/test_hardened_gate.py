@@ -41,8 +41,15 @@ class HardenedGateTests(unittest.TestCase):
         good = {'passed': True, 'results': [{'name': str(i), 'status': 'pass'} for i in range(26)], 'go_passed': True, 'go_exit_code': 0}
         output = '\n'.join('--- PASS: ' + name for name in (
             'TestHardenedHTTPAndContainment', 'TestHardenedDocumentReadsAtScale',
+            'TestHardenedOnPremiseMultiWarehouse',
+            'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey',
+            'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
+            'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
         validate_receipt('green', 0, good, output)
+        for name in ('TestHardenedOnPremiseMultiWarehouse', 'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey', 'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants', 'TestHardenedOnPremCriticWorkerRejectsInstallationDrift'):
+            with self.subTest(missing=name), self.assertRaises(ValueError):
+                validate_receipt('green', 0, good, output.replace('--- PASS: ' + name, ''))
         with self.assertRaises(ValueError):
             validate_receipt('green', 0, good, '')
         with self.assertRaises(ValueError):
@@ -59,14 +66,16 @@ class HardenedGateTests(unittest.TestCase):
         validate_receipt('signature', 1, receipt, '')
         with self.assertRaises(ValueError):
             validate_receipt('signature', 2, receipt, '')
+        installation = {'passed': False, 'results': [{'name': 'signed context for another installation rejected', 'status': 'fail'}]}
+        validate_receipt('installation', 1, installation, '')
 
     def test_worker_build_failure_and_skip_are_not_kills(self):
         receipt = {'passed': False, 'results': [{'name': 'SQL', 'status': 'pass'}], 'go_exit_code': 1}
-        expected = '--- FAIL: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse'
-        validate_receipt('worker_scope', 1, receipt, expected)
+        expected = '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced'
+        validate_receipt('worker_fence', 1, receipt, expected)
         for output in ('build failed', expected + '\n--- SKIP: something', expected + '\npanic: test timed out after 180s', ''):
             with self.subTest(output=output), self.assertRaises(ValueError):
-                validate_receipt('worker_scope', 1, receipt, output)
+                validate_receipt('worker_fence', 1, receipt, output)
 
     def test_document_page_mutant_requires_the_large_fixture_plan_assertion(self):
         receipt = {'passed': False, 'results': [{'name': 'SQL', 'status': 'pass'}], 'go_exit_code': 1}
@@ -87,6 +96,7 @@ class HardenedGateTests(unittest.TestCase):
                 names = BASELINE_FAILURES if kind == 'baseline' else {
                     'signature': {'tampered actor signature rejected'},
                     'action': {'signature for read cannot authorize a command'},
+                    'installation': {'signed context for another installation rejected'},
                 }.get(kind, set())
                 report = {'passed': kind == 'green', 'results': [
                     {'name': name, 'status': 'fail'} for name in names] or [
@@ -95,8 +105,12 @@ class HardenedGateTests(unittest.TestCase):
                 path.write_text(json.dumps(report))
                 output = ('--- PASS: TestHardenedHTTPAndContainment\n'
                           '--- PASS: TestHardenedDocumentReadsAtScale\n'
+                          '--- PASS: TestHardenedOnPremiseMultiWarehouse\n'
+                          '--- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey\n'
+                          '--- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants\n'
+                          '--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift\n'
                           '--- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle') if kind == 'green' else {
-                              'worker_scope': '--- FAIL: TestHardenedHTTPAndContainment/worker_sees_only_own_warehouse',
+                              'worker_fence': '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced',
                               'document_page': '--- FAIL: TestHardenedDocumentReadsAtScale/one-owner-first\nread page scanned history instead of bounded candidates',
                           }.get(kind, '')
                 path.with_suffix('.go.txt').write_text(output)
@@ -106,9 +120,9 @@ class HardenedGateTests(unittest.TestCase):
                     patch('sys.argv', ['gate', '--psql', 'psql', '--port', '5432', '--go', 'go', '--output', directory]), \
                     patch('hardened_gate.subprocess.run', side_effect=execute):
                 main()
-            self.assertEqual(len(plans), 6)
+            self.assertEqual(len(plans), 7)
             self.assertNotIn(None, plans, 'Missing plan directory lets children share the caller directory')
-            self.assertEqual(len(set(plans)), 6, 'A mutant can overwrite unmutated plans')
+            self.assertEqual(len(set(plans)), 7, 'A mutant can overwrite unmutated plans')
             self.assertTrue(all(Path(path).is_absolute() for path in plans), 'Go package cwd redirects relative plan directories')
 
 

@@ -1,0 +1,342 @@
+"""Independent negative controls for on-premise recovery evidence."""
+import hashlib
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from collect_resilience_evidence import collect
+from crash_restore import STAGES, verify_canary_state
+
+
+RUNTIME_GO = r'''package main
+import (
+ "context"
+ "encoding/base64"
+ "encoding/json"
+ "os"
+ "time"
+ "github.com/Shpuntyara/wms-platform/internal/inventory"
+ "github.com/Shpuntyara/wms-platform/internal/modules"
+ "github.com/Shpuntyara/wms-platform/internal/postgres"
+ "github.com/jackc/pgx/v5/pgxpool"
+)
+func main() {
+ ctx,cancel:=context.WithTimeout(context.Background(),30*time.Second); defer cancel()
+ config,err:=pgxpool.ParseConfig(os.Getenv("PROBE_API_DSN")); if err!=nil {panic(err)}
+ config.MaxConns=1
+ pool,err:=pgxpool.NewWithConfig(ctx,config); if err!=nil {panic(err)}; defer pool.Close()
+ workerConfig,err:=pgxpool.ParseConfig(os.Getenv("PROBE_WORKER_DSN")); if err!=nil {panic(err)}; workerConfig.MaxConns=1
+ workers,err:=pgxpool.NewWithConfig(ctx,workerConfig); if err!=nil {panic(err)}; defer workers.Close()
+ key,err:=base64.StdEncoding.DecodeString(os.Getenv("PROBE_KEY")); if err!=nil {panic(err)}
+ store,apiErr:=postgres.NewHardened(ctx,pool,key)
+ worker,workerErr:=postgres.NewHardenedWorker(ctx,workers)
+ result:=map[string]any{"api_accepted":apiErr==nil,"worker_accepted":workerErr==nil}
+ if apiErr!=nil {result["api_error"]=apiErr.Error()}; if workerErr!=nil {result["worker_error"]=workerErr.Error()}
+ if apiErr==nil && os.Getenv("PROBE_SAFE")=="true" {
+  fixture:=map[string]string{}; if err=json.Unmarshal([]byte(os.Getenv("PROBE_FIXTURE")),&fixture);err!=nil {panic(err)}
+  registry,err:=modules.NewRegistry(nil,nil,nil); if err!=nil {panic(err)}
+  principal:=inventory.Principal{ActorID:fixture["actor"],Grants:[]inventory.Grant{{OrganizationID:fixture["org"],WarehouseID:fixture["warehouse"],OwnerID:fixture["owner"],Permission:"document.create"}}}
+  modes:=map[string]string{}
+  for index,mode:=range []string{"off","local","remote_write","remote_apply"} {
+   if _,err=pool.Exec(ctx,"SET synchronous_commit="+mode);err!=nil {panic(err)}
+   command:=[]string{"d1000000-0000-0000-0000-000000000001","d1000000-0000-0000-0000-000000000002","d1000000-0000-0000-0000-000000000003","d1000000-0000-0000-0000-000000000004"}[index]
+   _,err=store.CommandDocument(ctx,principal,command,"",inventory.DocumentInput{OrganizationID:fixture["org"],WarehouseID:fixture["warehouse"],OwnerID:fixture["owner"],Kind:"receipt",Number:"durability-"+mode,Lines:[]inventory.DocumentLineInput{{ItemID:fixture["item"],Quantity:"1"}}},registry)
+   if err!=nil {modes[mode]="ERROR: "+err.Error()} else {modes[mode]="committed"}
+  }
+  result["commands"]=modes
+  if workerErr==nil {
+   claims:=map[string]string{}
+   for _,mode:=range []string{"off","local","remote_write","remote_apply"} {
+    if _,err=workers.Exec(ctx,"SET synchronous_commit="+mode);err!=nil {panic(err)}
+    events,claimErr:=worker.ClaimEvents(ctx,1)
+    if claimErr!=nil {claims[mode]="ERROR: "+claimErr.Error()} else if len(events)!=1 {claims[mode]="missing claim"} else {claims[mode]="claimed"}
+   }
+   result["worker_claims"]=claims
+   admin,adminErr:=pgxpool.New(ctx,os.Getenv("PROBE_ADMIN_DSN")); if adminErr!=nil {panic(adminErr)}; defer admin.Close()
+   if _,err=admin.Exec(ctx,"ALTER SYSTEM SET fsync=off");err!=nil {panic(err)}
+   if _,err=admin.Exec(ctx,"SELECT pg_reload_conf()");err!=nil {panic(err)}
+   var actual string
+   for attempt:=0;attempt<50;attempt++ {if err=admin.QueryRow(ctx,"SHOW fsync").Scan(&actual);err!=nil {panic(err)};if actual=="off" {break};time.Sleep(20*time.Millisecond)}
+   result["reload_fsync_effective"]=actual
+   command:="d1000000-0000-0000-0000-000000000005"
+   _,commandErr:=store.CommandDocument(ctx,principal,command,"",inventory.DocumentInput{OrganizationID:fixture["org"],WarehouseID:fixture["warehouse"],OwnerID:fixture["owner"],Kind:"receipt",Number:"durability-after-reload",Lines:[]inventory.DocumentLineInput{{ItemID:fixture["item"],Quantity:"1"}}},registry)
+   _,claimErr:=worker.ClaimEvents(ctx,1)
+   result["after_reload_api_accepted"]=commandErr==nil
+   result["after_reload_worker_accepted"]=claimErr==nil
+   var persisted int
+   if err=admin.QueryRow(ctx,"SELECT count(*) FROM platform.operations WHERE id=$1::uuid",command).Scan(&persisted);err!=nil {panic(err)}
+   result["after_reload_command_effects"]=persisted
+  }
+ }
+ if err=json.NewEncoder(os.Stdout).Encode(result);err!=nil {panic(err)}
+}
+'''
+
+
+def runtime_probe(pg_bin, go, destination, safe_only=False):
+    """Explicit opt-in real PostgreSQL test; never touches an existing service."""
+    import base64
+    import os
+    import secrets
+    import subprocess
+    import sys
+    import uuid
+    from unittest.mock import patch
+    from crash_restore import Cluster, seed, sql_string
+
+    root = Path(__file__).resolve().parent.parent
+    work = root / 'work' / ('onprem-runtime-critic-' + uuid.uuid4().hex)
+    work.mkdir(parents=True)
+    (work / 'main.go').write_text(RUNTIME_GO, encoding='utf8')
+    executable = work / ('probe.exe' if os.name == 'nt' else 'probe')
+    build = subprocess.run([go, 'build', '-o', str(executable), str(work / 'main.go')], cwd=root, capture_output=True, text=True, timeout=120)
+    (work / 'build.txt').write_text(build.stdout + build.stderr)
+    if build.returncode:
+        raise RuntimeError('Runtime critic helper did not compile; this is not a behavioral RED')
+    report = {'scope': 'Synthetic owned loopback clusters; actual Go hardened constructors and transactions.',
+              'work_directory': str(work), 'cases': [], 'failures': [], 'status': 'failed',
+              'source_files': {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in (
+                  'scripts/test_onprem_recovery_critic.py', 'scripts/crash_restore.py', 'internal/postgres/hardened.go',
+                  'internal/postgres/hardened_jobs.go', 'internal/postgres/hardened_durability.go',
+                  'db/profiles/hardened-v1.sql', 'db/profiles/onprem-v1.sql')}}
+    original_popen = subprocess.Popen
+    clusters = []
+    bypass_flags = ('ignore_checksum_failure', 'zero_damaged_pages', 'ignore_invalid_pages')
+    cases = (None,) if safe_only else (None, 'fsync', 'synchronous_commit', 'full_page_writes', 'data_checksums') + bypass_flags
+    for unsafe in cases:
+        label = 'safe' if unsafe is None else 'unsafe-' + unsafe
+        class ProbeCluster(Cluster):
+            def command(self, name, arguments, **kwargs):
+                if name == 'initdb' and unsafe == 'data_checksums':
+                    arguments = [value for value in arguments if value != '--data-checksums']
+                return super().command(name, arguments, **kwargs)
+        cluster = ProbeCluster(pg_bin, work, label)
+        clusters.append(cluster)
+        def launch(command, *args, **kwargs):
+            if isinstance(command, list) and Path(command[0]).stem == 'postgres' and unsafe is None:
+                command = list(command)
+                index = command.index('fsync=on')
+                del command[index-1:index+1]
+            if isinstance(command, list) and Path(command[0]).stem == 'postgres' and unsafe not in (None, 'data_checksums'):
+                command = (command + ['-c', unsafe + '=on'] if unsafe in bypass_flags else
+                           [unsafe + '=off' if value == unsafe + '=on' else value for value in command])
+            return original_popen(command, *args, **kwargs)
+        try:
+            with patch('crash_restore.subprocess.Popen', side_effect=launch):
+                cluster.initialize()
+            fixture = seed(cluster, root)
+            key = secrets.token_bytes(32)
+            cluster.query('CREATE ROLE onprem_probe_api LOGIN; CREATE ROLE onprem_probe_worker LOGIN;', database='postgres')
+            cluster.query('SET ROLE wms_test_owner;\n' + (root / 'db/profiles/hardened-v1.sql').read_text())
+            cluster.query('\\set api_role onprem_probe_api\n\\set worker_role onprem_probe_worker\n'
+                          '\\set organization_id ' + fixture['org'] + '\n\\set warehouse_id ' + fixture['warehouse'] + '\n'
+                          + (root / 'db/bootstrap/hardened-grants.psql').read_text())
+            cluster.query('SET ROLE wms_test_owner;\n' + (root / 'db/profiles/onprem-v1.sql').read_text())
+            cluster.query("INSERT INTO hardened_private.signing_keys(login,key) VALUES('onprem_probe_api',decode(" + sql_string(key.hex()) + ",'hex'));"
+                          'CREATE TABLE resilience_lab.sync_probe(command uuid,mode text);'
+                          'CREATE TABLE resilience_lab.worker_sync_probe(sequence bigserial,mode text);'
+                          "CREATE FUNCTION resilience_lab.record_sync() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$ BEGIN INSERT INTO resilience_lab.sync_probe VALUES(NEW.id,current_setting('synchronous_commit')); RETURN NEW; END $$;"
+                          'CREATE TRIGGER critic_sync BEFORE INSERT ON platform.operations FOR EACH ROW EXECUTE FUNCTION resilience_lab.record_sync();'
+                          "CREATE FUNCTION resilience_lab.record_worker_sync() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog AS $$ BEGIN INSERT INTO resilience_lab.worker_sync_probe(mode) VALUES(current_setting('synchronous_commit')); RETURN NEW; END $$;"
+                          'CREATE TRIGGER critic_worker_sync BEFORE UPDATE ON platform.outbox FOR EACH ROW EXECUTE FUNCTION resilience_lab.record_worker_sync();')
+            settings = cluster.json("SELECT jsonb_object_agg(name,setting) FROM pg_settings WHERE name IN('fsync','synchronous_commit','full_page_writes','data_checksums','ignore_checksum_failure','zero_damaged_pages','ignore_invalid_pages');", database='postgres')
+            env = {key: value for key, value in os.environ.items() if not key.startswith(('PG', 'WMS_', 'PROBE_'))}
+            base = 'postgres://{}@127.0.0.1:' + str(cluster.port) + '/wms_kernel_test_resilience?sslmode=disable'
+            env.update(PROBE_API_DSN=base.format('onprem_probe_api'), PROBE_WORKER_DSN=base.format('onprem_probe_worker'),
+                       PROBE_ADMIN_DSN=base.format('wms_test_admin'),
+                       PROBE_KEY=base64.b64encode(key).decode(), PROBE_SAFE='true' if unsafe is None else 'false', PROBE_FIXTURE=json.dumps(fixture))
+            result = subprocess.run([str(executable)], env=env, cwd=root, capture_output=True, text=True, timeout=45)
+            if result.returncode:
+                (work / (label + '-helper.txt')).write_text(result.stdout + result.stderr)
+                raise RuntimeError('Runtime critic helper failed; inspect owned work log; not a behavioral RED')
+            observed = json.loads(result.stdout)
+            case = {'setting': unsafe or 'safe', 'actual_settings': settings, 'observed': observed}
+            report['cases'].append(case)
+            if unsafe is None:
+                if not observed['api_accepted'] or not observed['worker_accepted']:
+                    report['failures'].append('Safe fixture was refused; cannot interpret unsafe results')
+                actual_modes = cluster.json("SELECT coalesce(jsonb_object_agg(d.number,p.mode),'{}'::jsonb) FROM resilience_lab.sync_probe p JOIN platform.operations o ON o.id=p.command JOIN warehouse.documents d ON d.id=(o.result->>'document_id')::uuid;")
+                case['actual_transaction_modes'] = actual_modes
+                for mode in ('off','local','remote_write','remote_apply'):
+                    expected = 'remote_apply' if mode == 'remote_apply' else 'on'
+                    if actual_modes.get('durability-' + mode) != expected:
+                        report['failures'].append('Actual command transaction persisted with mode ' + mode + ' rather than ' + expected)
+                worker_modes = cluster.json("SELECT coalesce(jsonb_agg(mode ORDER BY sequence),'[]'::jsonb) FROM resilience_lab.worker_sync_probe;")
+                case['actual_worker_transaction_modes'] = worker_modes
+                if worker_modes != ['on','on','on','remote_apply']:
+                    report['failures'].append('Actual worker claims did not strengthen weak commit modes while preserving remote_apply: ' + ','.join(worker_modes))
+                if observed.get('reload_fsync_effective') != 'off':
+                    raise AssertionError('Runtime reload negative control did not actually disable fsync')
+                if observed.get('after_reload_api_accepted') or observed.get('after_reload_worker_accepted') or observed.get('after_reload_command_effects') != 0:
+                    report['failures'].append('Already-started API or worker accepted writes after an actual unsafe fsync reload')
+            else:
+                bad_value = 'on' if unsafe in bypass_flags else 'off'
+                if settings[unsafe] != bad_value:
+                    raise AssertionError('The negative-control cluster was not actually unsafe')
+                if observed['api_accepted'] or observed['worker_accepted']:
+                    report['failures'].append('Runtime accepted actual ' + unsafe + '=' + bad_value)
+        finally:
+            cluster.stop()
+    report['all_owned_clusters_stopped'] = all(cluster.process.poll() is not None for cluster in clusters)
+    report['status'] = 'passed' if not report['failures'] else 'failed'
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(report, indent=2) + '\n')
+    print(json.dumps({'status': report['status'], 'behavior_failures': len(report['failures']), 'cases': len(report['cases'])}))
+    return 1 if report['failures'] else 0
+
+
+class OnPremRecoveryCriticTests(unittest.TestCase):
+    @staticmethod
+    def canary(unit, balance, quantity, reserved):
+        record = {
+            'request': {'balance': balance, 'quantity': quantity, 'reserve_quantity': reserved},
+            'result': {'shipment_create': {'document_id': unit + '-document', 'lines': [{'id': unit + '-line'}]}},
+        }
+        state = {'balance_id': balance, 'document_id': unit + '-document', 'document_line_id': unit + '-line',
+                 'on_hand': quantity, 'reserved_qty': reserved, 'active_qty': reserved,
+                 'line_reserved': reserved, 'requested_qty': quantity, 'fulfilled_qty': '0.000000',
+                 'state': 'active', 'version': 3}
+        return record, state
+
+    def test_fractional_canaries_are_checked_per_balance_not_global_integer_totals(self):
+        one, first = self.canary('one', 'warehouse-one-balance', '10.125000', '0.125000')
+        two, second = self.canary('two', 'warehouse-two-balance', '5.375000', '0.375000')
+        expected = {'one': one, 'two': two}
+        observed = {'one': first, 'two': second}
+        verify_canary_state(expected, observed)
+        with self.assertRaises(AssertionError):
+            verify_canary_state(expected, dict(observed, two=dict(second, reserved_qty='0.000000')))
+
+    def test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state(self):
+        one, first = self.canary('one', 'shared-balance', '10.125000', '0.125000')
+        two, second = self.canary('two', 'shared-balance', '5.375000', '0.375000')
+        observed = {name: dict(value, on_hand='15.500000', reserved_qty='0.500000')
+                    for name, value in (('one', first), ('two', second))}
+        verify_canary_state({'one': one, 'two': two}, observed)
+        with self.assertRaises(AssertionError):
+            verify_canary_state({'one': one, 'two': two},
+                                {key: dict(value, on_hand='15.499999') for key, value in observed.items()})
+
+    @staticmethod
+    def evidence(root, include_dump=True, witnessed_units=2):
+        run = root / 'run'
+        run.mkdir()
+        archive = b'PGDMP independent synthetic archive fixture'
+        def record(unit, stages):
+            return {'unit_id': unit, 'request': {'commands': [unit + '-' + stage for stage in stages]},
+                    'result': {stage: {'original': unit + '-' + stage} for stage in stages}}
+        witness = '\n'.join(json.dumps(record(str(i), STAGES)) for i in range(witnessed_units)) + '\n'
+        canary = json.dumps(record('canary', STAGES[:7])) + '\n'
+        (run / 'acknowledged.jsonl').write_bytes(witness.encode())
+        (run / 'candidates.jsonl').write_bytes(witness.encode())
+        (run / 'canaries.jsonl').write_bytes(canary.encode())
+        if include_dump:
+            (run / 'synthetic-wms.dump').write_bytes(archive)
+        report = {'status': 'passed', 'work_directory': str(run), 'witness_units': 2,
+                  'witness_commands': 25, 'canary_units': 1,
+                  'witness_sha256': hashlib.sha256(witness.encode()).hexdigest(),
+                  'canary_witness_sha256': hashlib.sha256(canary.encode()).hexdigest(),
+                  'restore': {'status': 'passed', 'backup_bytes': len(archive),
+                              'backup_sha256': hashlib.sha256(archive).hexdigest()}}
+        (root / 'final.json').write_text(json.dumps(report), encoding='utf8')
+        return run
+
+    def test_publication_preserves_complete_backup_and_witness_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.evidence(root)
+            manifest = collect(root, root / 'published')
+            self.assertIn('run/synthetic-wms.dump', manifest)
+            for name in ('synthetic-wms.dump', 'acknowledged.jsonl', 'canaries.jsonl'):
+                self.assertEqual((root / 'published/run' / name).read_bytes(), (run / name).read_bytes())
+
+    def test_publication_refuses_passed_report_whose_real_backup_is_missing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.evidence(root, include_dump=False)
+            with self.assertRaisesRegex(ValueError, 'backup|archive|evidence|missing|Missing'):
+                collect(root, root / 'published')
+
+    def test_publication_refuses_a_partial_witness_even_when_report_hash_was_recomputed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.evidence(root, witnessed_units=1)
+            with self.assertRaisesRegex(ValueError, 'witness|count|evidence|incomplete|Incomplete'):
+                collect(root, root / 'published')
+
+    def test_publication_refuses_corrupt_or_truncated_backup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.evidence(root)
+            (run / 'synthetic-wms.dump').write_bytes(b'changed archive')
+            with self.assertRaisesRegex(ValueError, 'backup|archive|evidence|checksum'):
+                collect(root, root / 'published')
+
+    def test_publication_refuses_reused_command_ids_even_if_hashes_and_counts_match(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.evidence(root)
+            path = run / 'acknowledged.jsonl'
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            rows[1]['request']['commands'] = rows[0]['request']['commands']
+            path.write_bytes(('\n'.join(json.dumps(row) for row in rows) + '\n').encode())
+            report = json.loads((root / 'final.json').read_text())
+            report['witness_sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+            (root / 'final.json').write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, 'command|duplicate|witness|evidence'):
+                collect(root, root / 'published')
+
+    def test_publication_refuses_a_missing_canary_even_if_its_hash_was_recomputed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            run = self.evidence(root)
+            (run / 'canaries.jsonl').write_bytes(b'')
+            report = json.loads((root / 'final.json').read_text())
+            report['canary_witness_sha256'] = hashlib.sha256(b'').hexdigest()
+            (root / 'final.json').write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, 'canary|witness|evidence|count'):
+                collect(root, root / 'published')
+
+    def test_publication_refuses_a_report_pointing_outside_its_owned_work_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.evidence(root)
+            report = json.loads((root / 'final.json').read_text())
+            report['work_directory'] = str(root.parent / 'foreign-run')
+            (root / 'final.json').write_text(json.dumps(report))
+            with self.assertRaisesRegex(ValueError, 'root|outside|owned|evidence'):
+                collect(root, root / 'published')
+
+    def test_publication_cannot_omit_the_final_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.evidence(root)
+            (root / 'final.json').unlink()
+            with self.assertRaisesRegex(ValueError, 'report|evidence'):
+                collect(root, root / 'published')
+
+    def test_failed_run_can_publish_diagnostics_clearly_marked_failed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'final.json').write_text('{"status":"failed","error":"synthetic interrupted run"}')
+            (root / 'failure.txt').write_text('synthetic diagnostic')
+            manifest = collect(root, root / 'published')
+            self.assertIn('failure.txt', manifest)
+            self.assertEqual(json.loads((root / 'published/final.json').read_text())['status'], 'failed')
+
+
+if __name__ == '__main__':
+    import sys
+    if '--runtime-probe' in sys.argv:
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--runtime-probe', action='store_true')
+        parser.add_argument('--pg-bin', required=True)
+        parser.add_argument('--go', required=True)
+        parser.add_argument('--report', required=True)
+        parser.add_argument('--safe-only', action='store_true')
+        arguments = parser.parse_args()
+        raise SystemExit(runtime_probe(arguments.pg_bin, arguments.go, arguments.report, arguments.safe_only))
+    unittest.main()

@@ -1,0 +1,1 @@
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	1.045s

@@ -1,0 +1,6 @@
+{
+  "collector_exit": 0,
+  "source_checksum_exit": 0,
+  "restored_checksum_exit": 0,
+  "only_stopped_owned_clusters": true
+}

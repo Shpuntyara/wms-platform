@@ -14,7 +14,7 @@ class CollectEvidenceTests(unittest.TestCase):
             root = Path(directory)
             (root / 'run/source/pgdata').mkdir(parents=True)
             (root / 'run/source/pgdata/private.jsonl').write_text('do not publish')
-            (root / 'final.json').write_text('{"status":"passed"}')
+            (root / 'final.json').write_text('{"status":"failed","error":"synthetic interrupted run"}')
             (root / 'run/source/postgres.log').write_text('redo starts at')
             dump = root / 'run/synthetic-wms.dump'
             dump.write_bytes(b'PGDMP synthetic bytes')

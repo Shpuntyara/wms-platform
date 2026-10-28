@@ -1,0 +1,81 @@
+.FFF.FFFFFF
+======================================================================
+FAIL: test_fractional_canaries_are_checked_per_balance_not_global_integer_totals (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_fractional_canaries_are_checked_per_balance_not_global_integer_totals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 180, in test_fractional_canaries_are_checked_per_balance_not_global_integer_totals
+    verify_canary_state(expected, observed)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py", line 126, in verify_canary_state
+    raise AssertionError('Persistent nonzero stock/reservation canary changed')
+AssertionError: Persistent nonzero stock/reservation canary changed
+
+======================================================================
+FAIL: test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 189, in test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state
+    verify_canary_state({'one': one, 'two': two}, observed)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py", line 126, in verify_canary_state
+    raise AssertionError('Persistent nonzero stock/reservation canary changed')
+AssertionError: Persistent nonzero stock/reservation canary changed
+
+======================================================================
+FAIL: test_publication_cannot_omit_the_final_report (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_cannot_omit_the_final_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 289, in test_publication_cannot_omit_the_final_report
+    with self.assertRaisesRegex(ValueError, 'report|evidence'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_a_missing_canary_even_if_its_hash_was_recomputed (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_missing_canary_even_if_its_hash_was_recomputed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 271, in test_publication_refuses_a_missing_canary_even_if_its_hash_was_recomputed
+    with self.assertRaisesRegex(ValueError, 'canary|witness|evidence|count'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_a_partial_witness_even_when_report_hash_was_recomputed (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_partial_witness_even_when_report_hash_was_recomputed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 238, in test_publication_refuses_a_partial_witness_even_when_report_hash_was_recomputed
+    with self.assertRaisesRegex(ValueError, 'witness|count|evidence|incomplete|Incomplete'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_a_report_pointing_outside_its_owned_work_root (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_report_pointing_outside_its_owned_work_root)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 281, in test_publication_refuses_a_report_pointing_outside_its_owned_work_root
+    with self.assertRaisesRegex(ValueError, 'root|outside|owned|evidence'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_corrupt_or_truncated_backup (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_corrupt_or_truncated_backup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 246, in test_publication_refuses_corrupt_or_truncated_backup
+    with self.assertRaisesRegex(ValueError, 'backup|archive|evidence|checksum'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_passed_report_whose_real_backup_is_missing (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_passed_report_whose_real_backup_is_missing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 231, in test_publication_refuses_passed_report_whose_real_backup_is_missing
+    with self.assertRaisesRegex(ValueError, 'backup|archive|evidence|missing|Missing'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_reused_command_ids_even_if_hashes_and_counts_match (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_reused_command_ids_even_if_hashes_and_counts_match)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 260, in test_publication_refuses_reused_command_ids_even_if_hashes_and_counts_match
+    with self.assertRaisesRegex(ValueError, 'command|duplicate|witness|evidence'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.132s
+
+FAILED (failures=9)

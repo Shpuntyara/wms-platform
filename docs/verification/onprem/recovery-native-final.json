@@ -1,0 +1,560 @@
+{
+  "status": "passed",
+  "scope": "Bounded PostgreSQL process-crash recovery and isolated logical backup restore using synthetic WMS data.",
+  "cycles": [
+    {
+      "cycle": 1,
+      "kill": {
+        "pid": 42048,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 255,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 26168,
+      "recovery_seconds": 1.875,
+      "workload_seconds": 10.328,
+      "writers": 2,
+      "acknowledged_units_before_kill": 96,
+      "acknowledged_units_verified_before_replay": 98,
+      "new_acknowledged_units": 98,
+      "read_requests": 81,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.187,
+      "unit_latency_p95_seconds": 0.328,
+      "same_id_replayed_units": 100,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 4,
+        "on_hand": "40.500010",
+        "active_reserved": "1.500010",
+        "all_original_results_and_live_states": "passed"
+      },
+      "onprem_identity_verified_before_replay": true,
+      "checks": {
+        "exact_counts": {
+          "audit": 928,
+          "lines": 208,
+          "active": "1.500010",
+          "closed": 204,
+          "outbox": 928,
+          "on_hand": "40.500010",
+          "reserved": "1.500010",
+          "documents": 208,
+          "movements": 204,
+          "incomplete": 0,
+          "operations": 928,
+          "reservations": 104
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed",
+        "warehouse_decimal_oracle": [
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "10.125003",
+            "reserved": "0.375003",
+            "documents": 44,
+            "warehouse": "2f5031a5-93cb-4860-8b68-514a9288214d",
+            "operations": 196
+          },
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "10.125004",
+            "reserved": "0.375004",
+            "documents": 54,
+            "warehouse": "89376d86-0349-4270-ba6e-a6417bda3068",
+            "operations": 241
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "10.125002",
+            "reserved": "0.375002",
+            "documents": 56,
+            "warehouse": "c8b2e7b7-8530-4111-9e52-6f37ed0b1a4e",
+            "operations": 250
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "10.125001",
+            "reserved": "0.375001",
+            "documents": 54,
+            "warehouse": "c9563c69-20ce-4999-9169-2b8957a58b0a",
+            "operations": 241
+          }
+        ],
+        "organizations_verified": 2,
+        "warehouses_verified": 4
+      }
+    },
+    {
+      "cycle": 2,
+      "kill": {
+        "pid": 26168,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 0,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 16568,
+      "recovery_seconds": 2.266,
+      "workload_seconds": 10.312,
+      "writers": 2,
+      "acknowledged_units_before_kill": 198,
+      "acknowledged_units_verified_before_replay": 200,
+      "new_acknowledged_units": 100,
+      "read_requests": 77,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.188,
+      "unit_latency_p95_seconds": 0.328,
+      "same_id_replayed_units": 202,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 8,
+        "on_hand": "81.000020",
+        "active_reserved": "3.000020",
+        "all_original_results_and_live_states": "passed"
+      },
+      "onprem_identity_verified_before_replay": true,
+      "checks": {
+        "exact_counts": {
+          "audit": 1874,
+          "lines": 420,
+          "active": "3.000020",
+          "closed": 412,
+          "outbox": 1874,
+          "on_hand": "81.000020",
+          "reserved": "3.000020",
+          "documents": 420,
+          "movements": 412,
+          "incomplete": 0,
+          "operations": 1874,
+          "reservations": 210
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed",
+        "warehouse_decimal_oracle": [
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "20.250006",
+            "reserved": "0.750006",
+            "documents": 94,
+            "warehouse": "2f5031a5-93cb-4860-8b68-514a9288214d",
+            "operations": 419
+          },
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "20.250008",
+            "reserved": "0.750008",
+            "documents": 104,
+            "warehouse": "89376d86-0349-4270-ba6e-a6417bda3068",
+            "operations": 464
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "20.250004",
+            "reserved": "0.750004",
+            "documents": 108,
+            "warehouse": "c8b2e7b7-8530-4111-9e52-6f37ed0b1a4e",
+            "operations": 482
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "20.250002",
+            "reserved": "0.750002",
+            "documents": 114,
+            "warehouse": "c9563c69-20ce-4999-9169-2b8957a58b0a",
+            "operations": 509
+          }
+        ],
+        "organizations_verified": 2,
+        "warehouses_verified": 4
+      }
+    },
+    {
+      "cycle": 3,
+      "kill": {
+        "pid": 16568,
+        "method": "Windows TerminateProcess via taskkill /F /T",
+        "exit_code": 1,
+        "tree_tool_returncode": 0,
+        "pgdata": "source\\pgdata"
+      },
+      "restart_pid": 1272,
+      "recovery_seconds": 3.171,
+      "workload_seconds": 10.532,
+      "writers": 2,
+      "acknowledged_units_before_kill": 263,
+      "acknowledged_units_verified_before_replay": 265,
+      "new_acknowledged_units": 63,
+      "read_requests": 52,
+      "interrupted_writes": 0,
+      "interrupted_reads": 0,
+      "unit_latency_p50_seconds": 0.312,
+      "unit_latency_p95_seconds": 0.453,
+      "same_id_replayed_units": 267,
+      "newly_confirmed_after_replay": 2,
+      "known_uncommitted_absent_before_replay": true,
+      "known_committed_without_application_witness_survived": true,
+      "nonzero_canaries_verified_before_replay": {
+        "acknowledged_nonzero_canaries": 12,
+        "on_hand": "121.500030",
+        "active_reserved": "4.500030",
+        "all_original_results_and_live_states": "passed"
+      },
+      "onprem_identity_verified_before_replay": true,
+      "checks": {
+        "exact_counts": {
+          "audit": 2487,
+          "lines": 558,
+          "active": "4.500030",
+          "closed": 546,
+          "outbox": 2487,
+          "on_hand": "121.500030",
+          "reserved": "4.500030",
+          "documents": 558,
+          "movements": 546,
+          "incomplete": 0,
+          "operations": 2487,
+          "reservations": 279
+        },
+        "reconciliation": {
+          "movement_ledger": 0,
+          "balance_reservations": 0,
+          "document_reservations": 0
+        },
+        "runtime_read_contract": "passed",
+        "warehouse_decimal_oracle": [
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "30.375009",
+            "reserved": "1.125009",
+            "documents": 140,
+            "warehouse": "2f5031a5-93cb-4860-8b68-514a9288214d",
+            "operations": 624
+          },
+          {
+            "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+            "on_hand": "30.375012",
+            "reserved": "1.125012",
+            "documents": 136,
+            "warehouse": "89376d86-0349-4270-ba6e-a6417bda3068",
+            "operations": 606
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "30.375006",
+            "reserved": "1.125006",
+            "documents": 148,
+            "warehouse": "c8b2e7b7-8530-4111-9e52-6f37ed0b1a4e",
+            "operations": 660
+          },
+          {
+            "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+            "on_hand": "30.375003",
+            "reserved": "1.125003",
+            "documents": 134,
+            "warehouse": "c9563c69-20ce-4999-9169-2b8957a58b0a",
+            "operations": 597
+          }
+        ],
+        "organizations_verified": 2,
+        "warehouses_verified": 4
+      }
+    }
+  ],
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-resilience-final\\crash-restore-0cd4f729c5ba40f891a3e57e00580933",
+  "postgresql_tools": "C:\\Program Files\\PostgreSQL\\17\\bin",
+  "source_files": {
+    "scripts/crash_restore.py": {
+      "sha256_bytes": "5a9a75f8020803bab46a01806aa05695dc203f6e2802f6d07ababe0d6d36d9e9",
+      "sha256_lf": "5a9a75f8020803bab46a01806aa05695dc203f6e2802f6d07ababe0d6d36d9e9"
+    },
+    "scripts/migrate_core.py": {
+      "sha256_bytes": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5",
+      "sha256_lf": "111dd557cea3b212e10d47cc23d2b05c7544432212296ec0ee71cf72b503b5f5"
+    },
+    "scripts/test_crash_restore.py": {
+      "sha256_bytes": "1238c6e6dbaa6f5d509dacd2bbb5189f845d570f1afac4b03f871a43f1fd6eb4",
+      "sha256_lf": "1238c6e6dbaa6f5d509dacd2bbb5189f845d570f1afac4b03f871a43f1fd6eb4"
+    },
+    "scripts/test_resilience_assurance_critic.py": {
+      "sha256_bytes": "93f7ee4bad608eecd98c45a899550a7b44b16b60d53bbe808cf7a761b712b0d9",
+      "sha256_lf": "93f7ee4bad608eecd98c45a899550a7b44b16b60d53bbe808cf7a761b712b0d9"
+    },
+    "scripts/test_onprem_recovery_critic.py": {
+      "sha256_bytes": "cacad4c4ae879f53b97f0f6be1ff8667e8caf6fe87645e08312a048819bd88e7",
+      "sha256_lf": "cacad4c4ae879f53b97f0f6be1ff8667e8caf6fe87645e08312a048819bd88e7"
+    },
+    "scripts/collect_resilience_evidence.py": {
+      "sha256_bytes": "ea4767b9283bfc0565ad1f66c0bab076fae30a4a695495d7bbc4e91d46987cd5",
+      "sha256_lf": "ea4767b9283bfc0565ad1f66c0bab076fae30a4a695495d7bbc4e91d46987cd5"
+    },
+    "scripts/test_collect_resilience_evidence.py": {
+      "sha256_bytes": "0cf5ed3442b35df74f22c6e840a8b83ac0a9b12bd28718f435eaa456646b1598",
+      "sha256_lf": "0cf5ed3442b35df74f22c6e840a8b83ac0a9b12bd28718f435eaa456646b1598"
+    },
+    "db/migrations/0001_inventory_schema.sql": {
+      "sha256_bytes": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+      "sha256_lf": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+    },
+    "db/migrations/0002_inventory_commands.sql": {
+      "sha256_bytes": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+      "sha256_lf": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+    },
+    "db/migrations/0003_backend_api.sql": {
+      "sha256_bytes": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+      "sha256_lf": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+    },
+    "db/migrations/0004_module_integrity.sql": {
+      "sha256_bytes": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+      "sha256_lf": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+    },
+    "db/migrations/0005_inventory_pagination.sql": {
+      "sha256_bytes": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+      "sha256_lf": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045"
+    },
+    "db/migrations/0006_security_boundary.sql": {
+      "sha256_bytes": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+      "sha256_lf": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72"
+    },
+    "db/migrations/0007_background_jobs.sql": {
+      "sha256_bytes": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261",
+      "sha256_lf": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817"
+    },
+    "db/migrations/0008_background_health_and_policy_v2.sql": {
+      "sha256_bytes": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+      "sha256_lf": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213"
+    },
+    "db/migrations/0009_warehouse_documents.sql": {
+      "sha256_bytes": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431",
+      "sha256_lf": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+    },
+    "db/bootstrap/backend-grants.psql": {
+      "sha256_bytes": "960cd9f4a8ed10567b10b3ba4f87f344b17e86beaadb18c219b281a1767fca3f",
+      "sha256_lf": "960cd9f4a8ed10567b10b3ba4f87f344b17e86beaadb18c219b281a1767fca3f"
+    },
+    "db/bootstrap/dispatch-quality-grants.psql": {
+      "sha256_bytes": "c24354b41348091999ebe6ae4511a1c9244802fe6831a44d7096c9b5b461c7bc",
+      "sha256_lf": "c24354b41348091999ebe6ae4511a1c9244802fe6831a44d7096c9b5b461c7bc"
+    },
+    "db/bootstrap/grants.psql": {
+      "sha256_bytes": "44caab192acd64df668f6cf672c60a1ee8dc6d6cc9647712ddbfdc6017dd23ad",
+      "sha256_lf": "44caab192acd64df668f6cf672c60a1ee8dc6d6cc9647712ddbfdc6017dd23ad"
+    },
+    "db/bootstrap/hardened-grants.psql": {
+      "sha256_bytes": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05",
+      "sha256_lf": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05"
+    },
+    "db/bootstrap/onprem-grants.psql": {
+      "sha256_bytes": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2",
+      "sha256_lf": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2"
+    },
+    "db/profiles/hardened-v1.sql": {
+      "sha256_bytes": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
+      "sha256_lf": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798"
+    },
+    "db/profiles/onprem-v1.sql": {
+      "sha256_bytes": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7",
+      "sha256_lf": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7"
+    }
+  },
+  "production_data_or_consumers_used": false,
+  "limitations": [
+    "Not hardware power-loss, disk-cache honesty, disk failure, PITR, replication or HA evidence.",
+    "Workload and latency measurements are a bounded local/container experiment, not a production throughput SLA."
+  ],
+  "settings": {
+    "fsync": "on",
+    "data_checksums": "on",
+    "full_page_writes": "on",
+    "synchronous_commit": "on"
+  },
+  "postgres_version": "17.11",
+  "installation_and_role_state": {
+    "roles_sha256": "2e966d1b69b5655f104e005a3d5dff0a1fe24a5db2a1b6e935833b804650c35b",
+    "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21",
+    "private_state_sha256": "f25882fb5e65b2e130f8b29426cd0aa2c9b3edc3c1ba37df76e144f83ca970d0",
+    "api_profile": {
+      "login": "wms_resilience_api",
+      "profile": "onprem-v1",
+      "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+    },
+    "worker_profile": {
+      "login": "wms_resilience_worker",
+      "profile": "onprem-v1",
+      "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+    }
+  },
+  "signing_key": "Fresh synthetic random 32 bytes generated inside this disposable database; never returned to runner. The synthetic dump contains that synthetic key.",
+  "witness_units": 267,
+  "canary_units": 12,
+  "witness_commands": 2487,
+  "witness_sha256": "4af31fd79f245421b759d386a7bdcd708334f43d1607c4169fe7b8cbd2c2e7ed",
+  "canary_witness_sha256": "d25542864926cd4d95aed115a50b4f3174ed283819862f4343632827cf06c772",
+  "restore": {
+    "status": "passed",
+    "backup_sha256": "15ff5101989f7c3b9ae6493382a9528e258a7ca45aac7d4b70e0a06214887fb1",
+    "backup_bytes": 1011117,
+    "backup_restore_total_seconds": 41.125,
+    "restore_verify_replay_seconds": 32.062,
+    "corrupt_archive_refused_before_restore": true,
+    "separate_pgdata": true,
+    "migration_history_preserved": true,
+    "checks": {
+      "exact_counts": {
+        "audit": 2487,
+        "lines": 558,
+        "active": "4.500030",
+        "closed": 546,
+        "outbox": 2487,
+        "on_hand": "121.500030",
+        "reserved": "4.500030",
+        "documents": 558,
+        "movements": 546,
+        "incomplete": 0,
+        "operations": 2487,
+        "reservations": 279
+      },
+      "reconciliation": {
+        "movement_ledger": 0,
+        "balance_reservations": 0,
+        "document_reservations": 0
+      },
+      "runtime_read_contract": "passed",
+      "warehouse_decimal_oracle": [
+        {
+          "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+          "on_hand": "30.375009",
+          "reserved": "1.125009",
+          "documents": 140,
+          "warehouse": "2f5031a5-93cb-4860-8b68-514a9288214d",
+          "operations": 624
+        },
+        {
+          "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+          "on_hand": "30.375012",
+          "reserved": "1.125012",
+          "documents": 136,
+          "warehouse": "89376d86-0349-4270-ba6e-a6417bda3068",
+          "operations": 606
+        },
+        {
+          "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+          "on_hand": "30.375006",
+          "reserved": "1.125006",
+          "documents": 148,
+          "warehouse": "c8b2e7b7-8530-4111-9e52-6f37ed0b1a4e",
+          "operations": 660
+        },
+        {
+          "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+          "on_hand": "30.375003",
+          "reserved": "1.125003",
+          "documents": 134,
+          "warehouse": "c9563c69-20ce-4999-9169-2b8957a58b0a",
+          "operations": 597
+        }
+      ],
+      "organizations_verified": 2,
+      "warehouses_verified": 4
+    },
+    "checks_after_replay": {
+      "exact_counts": {
+        "audit": 2487,
+        "lines": 558,
+        "active": "4.500030",
+        "closed": 546,
+        "outbox": 2487,
+        "on_hand": "121.500030",
+        "reserved": "4.500030",
+        "documents": 558,
+        "movements": 546,
+        "incomplete": 0,
+        "operations": 2487,
+        "reservations": 279
+      },
+      "reconciliation": {
+        "movement_ledger": 0,
+        "balance_reservations": 0,
+        "document_reservations": 0
+      },
+      "runtime_read_contract": "passed",
+      "warehouse_decimal_oracle": [
+        {
+          "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+          "on_hand": "30.375009",
+          "reserved": "1.125009",
+          "documents": 140,
+          "warehouse": "2f5031a5-93cb-4860-8b68-514a9288214d",
+          "operations": 624
+        },
+        {
+          "org": "c0d514b8-ab71-45b5-bd78-c612679b3d95",
+          "on_hand": "30.375012",
+          "reserved": "1.125012",
+          "documents": 136,
+          "warehouse": "89376d86-0349-4270-ba6e-a6417bda3068",
+          "operations": 606
+        },
+        {
+          "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+          "on_hand": "30.375006",
+          "reserved": "1.125006",
+          "documents": 148,
+          "warehouse": "c8b2e7b7-8530-4111-9e52-6f37ed0b1a4e",
+          "operations": 660
+        },
+        {
+          "org": "ca1eaf30-97fe-4255-854d-e9c01276773b",
+          "on_hand": "30.375003",
+          "reserved": "1.125003",
+          "documents": 134,
+          "warehouse": "c9563c69-20ce-4999-9169-2b8957a58b0a",
+          "operations": 597
+        }
+      ],
+      "organizations_verified": 2,
+      "warehouses_verified": 4
+    },
+    "nonzero_canaries_verified_before_replay": {
+      "acknowledged_nonzero_canaries": 12,
+      "on_hand": "121.500030",
+      "active_reserved": "4.500030",
+      "all_original_results_and_live_states": "passed"
+    },
+    "onprem_identity_verified_before_replay": true,
+    "installation_and_role_state": {
+      "roles_sha256": "2e966d1b69b5655f104e005a3d5dff0a1fe24a5db2a1b6e935833b804650c35b",
+      "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21",
+      "private_state_sha256": "f25882fb5e65b2e130f8b29426cd0aa2c9b3edc3c1ba37df76e144f83ca970d0",
+      "api_profile": {
+        "login": "wms_resilience_api",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      },
+      "worker_profile": {
+        "login": "wms_resilience_worker",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      }
+    },
+    "synthetic_signing_key_only": true,
+    "quarantine": "Synthetic database, loopback only, no application relay/consumer started."
+  },
+  "source_unchanged_during_run": true,
+  "clusters_stopped": true
+}

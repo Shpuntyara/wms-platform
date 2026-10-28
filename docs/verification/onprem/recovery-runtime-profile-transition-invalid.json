@@ -1,0 +1,100 @@
+{
+  "scope": "Synthetic owned loopback clusters; actual Go hardened constructors and transactions.",
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-runtime-critic-d4c96c38ed554fbd9fcb461973eb0240",
+  "cases": [
+    {
+      "setting": "safe",
+      "actual_settings": {
+        "fsync": "on",
+        "data_checksums": "on",
+        "full_page_writes": "on",
+        "synchronous_commit": "on"
+      },
+      "observed": {
+        "api_accepted": false,
+        "api_error": "onprem-v1 profile required; apply the forward installation profile",
+        "worker_accepted": false,
+        "worker_error": "onprem-v1 profile required; apply the forward installation profile"
+      },
+      "actual_transaction_modes": {},
+      "actual_worker_transaction_modes": []
+    },
+    {
+      "setting": "fsync",
+      "actual_settings": {
+        "fsync": "off",
+        "data_checksums": "on",
+        "full_page_writes": "on",
+        "synchronous_commit": "on"
+      },
+      "observed": {
+        "api_accepted": false,
+        "api_error": "onprem-v1 profile required; apply the forward installation profile",
+        "worker_accepted": false,
+        "worker_error": "onprem-v1 profile required; apply the forward installation profile"
+      }
+    },
+    {
+      "setting": "synchronous_commit",
+      "actual_settings": {
+        "fsync": "on",
+        "data_checksums": "on",
+        "full_page_writes": "on",
+        "synchronous_commit": "off"
+      },
+      "observed": {
+        "api_accepted": false,
+        "api_error": "onprem-v1 profile required; apply the forward installation profile",
+        "worker_accepted": false,
+        "worker_error": "onprem-v1 profile required; apply the forward installation profile"
+      }
+    },
+    {
+      "setting": "full_page_writes",
+      "actual_settings": {
+        "fsync": "on",
+        "data_checksums": "on",
+        "full_page_writes": "off",
+        "synchronous_commit": "on"
+      },
+      "observed": {
+        "api_accepted": false,
+        "api_error": "onprem-v1 profile required; apply the forward installation profile",
+        "worker_accepted": false,
+        "worker_error": "onprem-v1 profile required; apply the forward installation profile"
+      }
+    },
+    {
+      "setting": "data_checksums",
+      "actual_settings": {
+        "fsync": "on",
+        "data_checksums": "off",
+        "full_page_writes": "on",
+        "synchronous_commit": "on"
+      },
+      "observed": {
+        "api_accepted": false,
+        "api_error": "onprem-v1 profile required; apply the forward installation profile",
+        "worker_accepted": false,
+        "worker_error": "onprem-v1 profile required; apply the forward installation profile"
+      }
+    }
+  ],
+  "failures": [
+    "Safe fixture was refused; cannot interpret unsafe results",
+    "Actual command transaction persisted with mode off rather than on",
+    "Actual command transaction persisted with mode local rather than on",
+    "Actual command transaction persisted with mode remote_write rather than on",
+    "Actual command transaction persisted with mode remote_apply rather than remote_apply",
+    "Actual worker claims did not strengthen weak commit modes while preserving remote_apply: "
+  ],
+  "status": "failed",
+  "source_files": {
+    "scripts/test_onprem_recovery_critic.py": "36e6db415928ab7ec643a7f424ea0881ebd93cb96d314e4e3842cf978c7617f5",
+    "scripts/crash_restore.py": "00236f0ef1920dc426a43b8fdc870c7fe590db4f100ae7e5dcfb8f28c2ea4177",
+    "internal/postgres/hardened.go": "0e8aeb9458c0ee41b425124d1a3de6f289e90bcff459a38ff86d8a0d551f34db",
+    "internal/postgres/hardened_jobs.go": "6f50574aa6a19984fe6548d6b138e2a99c05b06db8fe917c7c117c7624365f8f",
+    "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798"
+  },
+  "all_owned_clusters_stopped": true
+}

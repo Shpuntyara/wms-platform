@@ -1,0 +1,167 @@
+//go:build integration && hardened
+
+package postgres_test
+
+import (
+	"context"
+	"crypto/rand"
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+
+	"github.com/Shpuntyara/wms-platform/internal/api"
+	"github.com/Shpuntyara/wms-platform/internal/auth"
+	"github.com/Shpuntyara/wms-platform/internal/modules"
+	"github.com/Shpuntyara/wms-platform/internal/postgres"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type onPremCriticAuth struct{ subject string }
+
+func (a onPremCriticAuth) Authenticate(context.Context, string) (auth.Identity, error) {
+	return auth.Identity{Issuer: "onprem-security-critic", Subject: a.subject}, nil
+}
+
+func onPremCriticPool(t *testing.T, name string) *pgxpool.Pool {
+	t.Helper()
+	if os.Getenv(name) == "" {
+		t.Fatal("disposable hardened fixture required: " + name)
+	}
+	p, err := pgxpool.New(t.Context(), os.Getenv(name))
+	if err != nil {
+		t.Fatal("cannot create disposable fixture pool")
+	}
+	t.Cleanup(p.Close)
+	return p
+}
+
+// The singleton and signing key are deliberately changed only in the disposable
+// owner fixture. Do not parallelize this test: those two values are installation
+// configuration shared by all API requests in this customer's database.
+func TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey(t *testing.T) {
+	admin := onPremCriticPool(t, "WMS_HARDENED_ADMIN_DSN")
+	runtime := onPremCriticPool(t, "WMS_HARDENED_API_DSN")
+	key, err := base64.StdEncoding.DecodeString(os.Getenv("WMS_HARDENED_KEY"))
+	if err != nil || len(key) != 32 {
+		t.Fatal("a 32-byte synthetic signing key is required")
+	}
+	store, err := postgres.NewHardened(t.Context(), runtime, key)
+	if err != nil {
+		t.Fatal("cannot construct hardened store from disposable fixture")
+	}
+
+	// Independent actor/document: no fixture actor, organization, owner or document
+	// IDs are assumed, and a successful real request establishes the baseline.
+	var org, wh, owner, actor, document string
+	if err := admin.QueryRow(t.Context(), `SELECT gen_random_uuid()::text,gen_random_uuid()::text,
+	 gen_random_uuid()::text,gen_random_uuid()::text,gen_random_uuid()::text`).Scan(&org, &wh, &owner, &actor, &document); err != nil {
+		t.Fatal("cannot allocate independent critic fixture IDs")
+	}
+	exec := func(query string, args ...any) {
+		t.Helper()
+		if _, err := admin.Exec(t.Context(), query, args...); err != nil {
+			if databaseError, ok := errors.AsType[*pgconn.PgError](err); ok {
+				t.Fatalf("disposable critic fixture SQL failed: %s (%s)", databaseError.Message, databaseError.Code)
+			}
+			t.Fatal("disposable critic fixture SQL failed")
+		}
+	}
+	exec(`INSERT INTO platform.organizations(id,code,name) VALUES($1,$2,'security critic')`, org, org)
+	exec(`INSERT INTO warehouse.warehouses(id,organization_id,code) VALUES($1,$2,$3)`, wh, org, wh)
+	exec(`INSERT INTO catalog.stock_owners(id,organization_id,code) VALUES($1,$2,$3)`, owner, org, owner)
+	exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'onprem-security-critic',$2)`, actor, actor)
+	exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission)
+	 VALUES($1,$2,$3,$4,'document.read')`, actor, org, wh, owner)
+	exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state)
+	 VALUES($1,$2,$3,$4,'shipment',$5,'draft')`, document, org, wh, owner, document)
+	t.Cleanup(func() {
+		// Foreign keys make cleanup order explicit. No persistent data is retained.
+		for _, query := range []string{
+			`DELETE FROM warehouse.documents WHERE organization_id=$1`,
+			`DELETE FROM platform.actor_grants WHERE organization_id=$1`,
+			`DELETE FROM catalog.stock_owners WHERE organization_id=$1`,
+			`DELETE FROM warehouse.warehouses WHERE organization_id=$1`,
+			`DELETE FROM platform.organizations WHERE id=$1`,
+		} {
+			if _, err := admin.Exec(context.Background(), query, org); err != nil {
+				t.Error("cannot clean independent critic fixture")
+			}
+		}
+		if _, err := admin.Exec(context.Background(), `DELETE FROM platform.actors WHERE id=$1`, actor); err != nil {
+			t.Error("cannot clean independent critic actor")
+		}
+	})
+	registry, err := modules.NewRegistry(nil, nil, nil)
+	if err != nil {
+		t.Fatal("cannot create empty module registry")
+	}
+	handler, err := api.New(api.Config{Backend: store, Auth: onPremCriticAuth{subject: actor}, Modules: registry})
+	if err != nil {
+		t.Fatal("cannot construct API")
+	}
+	request := func(path string) int {
+		t.Helper()
+		req := httptest.NewRequest(http.MethodGet, path, nil)
+		req.Header.Set("Authorization", "Bearer synthetic-verified-identity")
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+		return rec.Code
+	}
+	documentURL := fmt.Sprintf("/api/v1/documents/%s?organization_id=%s&warehouse_id=%s", document, org, wh)
+	healthy := func(t *testing.T) {
+		t.Helper()
+		if err := store.Ping(t.Context()); err != nil {
+			t.Error("Ping rejected restored installation configuration")
+		}
+		if got := request("/readyz"); got != http.StatusOK {
+			t.Errorf("restored /readyz = %d, want 200", got)
+		}
+		if got := request(documentURL); got != http.StatusOK {
+			t.Errorf("restored authenticated document request = %d, want 200", got)
+		}
+	}
+	healthy(t)
+
+	var replacement [32]byte
+	if _, err := rand.Read(replacement[:]); err != nil {
+		t.Fatal("cannot generate synthetic replacement key")
+	}
+	cases := []struct {
+		name    string
+		mutate  func()
+		restore func()
+	}{
+		{"installation identifier changed after startup", func() {
+			exec(`UPDATE hardened_private.installation SET id=gen_random_uuid() WHERE singleton`)
+		}, func() {
+			exec(`UPDATE hardened_private.installation SET id=$1 WHERE singleton`, store.InstallationID())
+		}},
+		{"signing key changed after startup", func() {
+			exec(`UPDATE hardened_private.signing_keys SET key=$1 WHERE login=$2`, replacement[:], store.RuntimeLogin())
+		}, func() {
+			exec(`UPDATE hardened_private.signing_keys SET key=$1 WHERE login=$2`, key, store.RuntimeLogin())
+		}},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.mutate()
+			defer tc.restore()
+			if got := request(documentURL); got == http.StatusOK {
+				t.Error("authenticated request accepted changed installation configuration")
+			}
+			if err := store.Ping(t.Context()); err == nil {
+				t.Error("Ping reports healthy while authenticated requests fail after configuration drift")
+			}
+			if got := request("/readyz"); got != http.StatusServiceUnavailable {
+				t.Errorf("/readyz = %d after configuration drift, want 503", got)
+			}
+			tc.restore()
+			healthy(t)
+		})
+	}
+}

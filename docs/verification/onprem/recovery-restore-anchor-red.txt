@@ -1,0 +1,57 @@
+.FF...FFF.....E
+======================================================================
+ERROR: test_restore_must_preserve_private_installation_keys_and_role_capabilities_exactly (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_restore_must_preserve_private_installation_keys_and_role_capabilities_exactly)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 192, in test_restore_must_preserve_private_installation_keys_and_role_capabilities_exactly
+    from crash_restore import verify_installation_state
+ImportError: cannot import name 'verify_installation_state' from 'crash_restore' (C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py)
+
+======================================================================
+FAIL: test_fractional_canaries_are_checked_per_balance_not_global_integer_totals (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_fractional_canaries_are_checked_per_balance_not_global_integer_totals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 219, in test_fractional_canaries_are_checked_per_balance_not_global_integer_totals
+    verify_canary_state(expected, observed)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py", line 126, in verify_canary_state
+    raise AssertionError('Persistent nonzero stock/reservation canary changed')
+AssertionError: Persistent nonzero stock/reservation canary changed
+
+======================================================================
+FAIL: test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 228, in test_multiple_fractional_canaries_on_one_balance_keep_exact_accumulated_state
+    verify_canary_state({'one': one, 'two': two}, observed)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\crash_restore.py", line 126, in verify_canary_state
+    raise AssertionError('Persistent nonzero stock/reservation canary changed')
+AssertionError: Persistent nonzero stock/reservation canary changed
+
+======================================================================
+FAIL: test_publication_refuses_a_missing_checksum_anchor (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_missing_checksum_anchor) (key='backup')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 299, in test_publication_refuses_a_missing_checksum_anchor
+    with self.assertRaisesRegex(ValueError, 'checksum|digest|evidence'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_a_missing_checksum_anchor (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_missing_checksum_anchor) (key='witness_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 299, in test_publication_refuses_a_missing_checksum_anchor
+    with self.assertRaisesRegex(ValueError, 'checksum|digest|evidence'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_publication_refuses_a_missing_checksum_anchor (test_onprem_recovery_critic.OnPremRecoveryCriticTests.test_publication_refuses_a_missing_checksum_anchor) (key='canary_witness_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_onprem_recovery_critic.py", line 299, in test_publication_refuses_a_missing_checksum_anchor
+    with self.assertRaisesRegex(ValueError, 'checksum|digest|evidence'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.105s
+
+FAILED (failures=5, errors=1)

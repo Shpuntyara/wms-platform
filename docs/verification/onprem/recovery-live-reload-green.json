@@ -1,0 +1,62 @@
+{
+  "scope": "Synthetic owned loopback clusters; actual Go hardened constructors and transactions.",
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-runtime-critic-7ccbc534b53043dea94c2cf8c6b4dea9",
+  "cases": [
+    {
+      "setting": "safe",
+      "actual_settings": {
+        "fsync": "on",
+        "data_checksums": "on",
+        "full_page_writes": "on",
+        "synchronous_commit": "on",
+        "zero_damaged_pages": "off",
+        "ignore_invalid_pages": "off",
+        "ignore_checksum_failure": "off"
+      },
+      "observed": {
+        "after_reload_api_accepted": false,
+        "after_reload_command_effects": 0,
+        "after_reload_worker_accepted": false,
+        "api_accepted": true,
+        "commands": {
+          "local": "committed",
+          "off": "committed",
+          "remote_apply": "committed",
+          "remote_write": "committed"
+        },
+        "reload_fsync_effective": "off",
+        "worker_accepted": true,
+        "worker_claims": {
+          "local": "claimed",
+          "off": "claimed",
+          "remote_apply": "claimed",
+          "remote_write": "claimed"
+        }
+      },
+      "actual_transaction_modes": {
+        "durability-off": "on",
+        "durability-local": "on",
+        "durability-remote_apply": "remote_apply",
+        "durability-remote_write": "on"
+      },
+      "actual_worker_transaction_modes": [
+        "on",
+        "on",
+        "on",
+        "remote_apply"
+      ]
+    }
+  ],
+  "failures": [],
+  "status": "passed",
+  "source_files": {
+    "scripts/test_onprem_recovery_critic.py": "30e4690abec0615b47aaee2aeb236cd4d3cde15bb92b4c83ee69cdefb3af2669",
+    "scripts/crash_restore.py": "00236f0ef1920dc426a43b8fdc870c7fe590db4f100ae7e5dcfb8f28c2ea4177",
+    "internal/postgres/hardened.go": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2",
+    "internal/postgres/hardened_jobs.go": "53bb2ce91744420bdd86deafc21255e4af3adeb03d7e177e0acb3f619125ba13",
+    "internal/postgres/hardened_durability.go": "8f89781870212183ce3faca65ca8a0e37be70d90049eaed75cf08b01dc71f6c1",
+    "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
+    "db/profiles/onprem-v1.sql": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7"
+  },
+  "all_owned_clusters_stopped": true
+}

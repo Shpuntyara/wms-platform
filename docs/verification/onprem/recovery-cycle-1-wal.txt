@@ -1,0 +1,19 @@
+2026-10-28 15:17:26.990 CET [26168] LOG:  starting PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit
+2026-10-28 15:17:26.992 CET [26168] LOG:  listening on IPv4 address "127.0.0.1", port 50199
+2026-10-28 15:17:27.062 CET [35344] LOG:  database system was interrupted; last known up at 2026-10-28 15:17:15 CET
+2026-10-28 15:17:27.562 CET [35872] FATAL:  the database system is starting up
+2026-10-28 15:17:27.705 CET [26520] FATAL:  the database system is starting up
+2026-10-28 15:17:27.839 CET [41808] FATAL:  the database system is starting up
+2026-10-28 15:17:27.960 CET [41716] FATAL:  the database system is starting up
+2026-10-28 15:17:28.052 CET [35344] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-28 15:17:28.058 CET [35344] LOG:  redo starts at 0/1DEED98
+2026-10-28 15:17:28.157 CET [35344] LOG:  invalid record length at 0/22F1388: expected at least 24, got 0
+2026-10-28 15:17:28.157 CET [35344] LOG:  redo done at 0/22F1360 system usage: CPU: user: 0.00 s, system: 0.09 s, elapsed: 0.09 s
+2026-10-28 15:17:28.167 CET [29340] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-10-28 15:17:28.186 CET [25816] FATAL:  the database system is starting up
+2026-10-28 15:17:28.305 CET [15688] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:17:28.305 CET [15688] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:17:28.426 CET [29340] LOG:  checkpoint complete: wrote 660 buffers (16.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.048 s, sync=0.190 s, total=0.262 s; sync files=93, longest=0.004 s, average=0.003 s; distance=5129 kB, estimate=5129 kB; lsn=0/22F1388, redo lsn=0/22F1388
+2026-10-28 15:17:28.472 CET [26168] LOG:  database system is ready to accept connections
+2026-10-28 15:17:28.530 CET [32036] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:17:28.530 CET [32036] DETAIL:  Consistent recovery state has not been yet reached.

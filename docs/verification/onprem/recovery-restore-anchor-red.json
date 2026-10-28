@@ -1,0 +1,7 @@
+{
+  "exit": 1,
+  "test_sha256": "51C3450EACF817EC667C5D9C54AE0D6E87F66A89DDEC71C34DAE02FD968A784B",
+  "harness_sha256": "00236F0EF1920DC426A43B8FDC870C7FE590DB4F100AE7E5DCFB8F28C2EA4177",
+  "collector_sha256": "1A9F85BF3BDABC8FE4594EDDB9F5350F3B29585D994E3D0D24F983B5A395AFF0",
+  "classification": "Restore helper missing is scaffold RED; null checksum anchors behavior RED; fractional behavior remains RED pending implementation."
+}

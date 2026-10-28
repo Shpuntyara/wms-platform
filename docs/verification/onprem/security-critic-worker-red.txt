@@ -1,0 +1,10 @@
+=== RUN   TestHardenedOnPremCriticWorkerRejectsInstallationDrift
+    hardened_onprem_critic_integration_test.go:94: worker claimed events after installation identity changed
+    hardened_onprem_critic_integration_test.go:97: worker accepted expiry after installation identity changed
+    hardened_onprem_critic_integration_test.go:100: worker acknowledged a pre-existing lease after installation identity changed
+    hardened_onprem_critic_integration_test.go:103: worker monitoring reports healthy after installation identity changed
+    hardened_onprem_critic_integration_test.go:106: worker changed owned outbox or stock rows after installation identity changed
+--- FAIL: TestHardenedOnPremCriticWorkerRejectsInstallationDrift (0.14s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	0.185s
+FAIL

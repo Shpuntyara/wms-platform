@@ -208,5 +208,15 @@
     "after": "IF false THEN",
     "pattern": "^TestKernelBackgroundRejectsInvalidBatchSizes$",
     "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_onprem_micro_expiry_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "inventory.expire_reservations(integer)",
+    "before": "qty:=r.active_qty;",
+    "after": "qty:=round(r.active_qty,3);",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
   }
 ]

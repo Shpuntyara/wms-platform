@@ -1,0 +1,116 @@
+{
+  "recorded_at_utc": "2026-10-28T14:21:51.211220+00:00",
+  "baseline_git_head": "77ab640d91b3f18c0514d2fe4d342b32658235f1",
+  "native_command": "python scripts/crash_restore.py --pg-bin 'C:\\Program Files\\PostgreSQL\\17\\bin' --work-root work/onprem-resilience-final --cycles 3 --seconds 10 --report work/onprem-resilience-final/final.json",
+  "native_exit": 0,
+  "native_source_snapshot": "recovery-native-final.json:source_files; frozen working-tree source, not a clean committed revision",
+  "runtime_probe_command": "python scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin 'C:\\Program Files\\PostgreSQL\\17\\bin' --go '<Go1.27.3 executable>' --report docs/verification/onprem/recovery-runtime-green.json",
+  "runtime_probe_exit": 0,
+  "runtime_probe_cases": 8,
+  "runtime_probe_receipt": "recovery-runtime-green.json",
+  "runtime_source_limit": "Runtime green records its exact source hashes. Later Go-only worker installation-binding changes by parent require exact-final-revision CI again; this historical native receipt is not relabelled as that later binary.",
+  "unit_tests": {
+    "all_python_tests": 70,
+    "python_exit": 0,
+    "new_independent_recovery_tests": 14,
+    "durability_table_tests_race_exit": 0,
+    "go_vet_exit": 0,
+    "go_fix_diff_exit": 0,
+    "go_fix_diff": "empty"
+  },
+  "private_identity_restore": {
+    "original": {
+      "roles_sha256": "2e966d1b69b5655f104e005a3d5dff0a1fe24a5db2a1b6e935833b804650c35b",
+      "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21",
+      "private_state_sha256": "f25882fb5e65b2e130f8b29426cd0aa2c9b3edc3c1ba37df76e144f83ca970d0",
+      "api_profile": {
+        "login": "wms_resilience_api",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      },
+      "worker_profile": {
+        "login": "wms_resilience_worker",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      }
+    },
+    "restored": {
+      "roles_sha256": "2e966d1b69b5655f104e005a3d5dff0a1fe24a5db2a1b6e935833b804650c35b",
+      "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21",
+      "private_state_sha256": "f25882fb5e65b2e130f8b29426cd0aa2c9b3edc3c1ba37df76e144f83ca970d0",
+      "api_profile": {
+        "login": "wms_resilience_api",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      },
+      "worker_profile": {
+        "login": "wms_resilience_worker",
+        "profile": "onprem-v1",
+        "installation_id": "da132322-c66d-4db6-9105-b8a05a431f21"
+      }
+    },
+    "before_replay_each_cycle": true
+  },
+  "actual_artifacts_root": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-resilience-final\\crash-restore-0cd4f729c5ba40f891a3e57e00580933",
+  "published_artifacts_root": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-resilience-final\\published",
+  "artifact_sizes_and_hashes": {
+    "acknowledged.jsonl": {
+      "bytes": 1022877,
+      "sha256_bytes": "4af31fd79f245421b759d386a7bdcd708334f43d1607c4169fe7b8cbd2c2e7ed"
+    },
+    "candidates.jsonl": {
+      "bytes": 217071,
+      "sha256_bytes": "c237559058a73b5b10ba881b6597ec18e4ed55884f9091a7ce29c91c7b1852ff"
+    },
+    "canaries.jsonl": {
+      "bytes": 37776,
+      "sha256_bytes": "d25542864926cd4d95aed115a50b4f3174ed283819862f4343632827cf06c772"
+    },
+    "synthetic-wms.dump": {
+      "bytes": 1011117,
+      "sha256_bytes": "15ff5101989f7c3b9ae6493382a9528e258a7ca45aac7d4b70e0a06214887fb1"
+    }
+  },
+  "tdd_provenance": [
+    {
+      "red": "recovery-red.json and recovery-red.txt",
+      "meaning": "Fractional per-balance support is newly requested harness scope; 7 collector incomplete/missing evidence controls are behavioral false-assurance RED. Two complete/failed-publication cases were already-passing characterizations."
+    },
+    {
+      "red": "recovery-runtime-red.json",
+      "meaning": "Actual onprem API/worker constructors accepted four unsafe PostgreSQL settings, and actual API/worker trigger probes observed weak commit modes. Captured before durability helper hooks."
+    },
+    {
+      "red": "recovery-corruption-flags-red.json",
+      "meaning": "After initial helper hooks, actual 3 corruption-bypass settings still accepted; captured before validator extension."
+    },
+    {
+      "red": "recovery-live-reload-red.json",
+      "meaning": "Already-started actual API and worker still wrote after an effective fsync=off reload; an extra fifth worker trigger record is the same after-reload effect, not a separate bug."
+    },
+    {
+      "red": "recovery-restore-anchor-red.json",
+      "meaning": "Missing checksum anchor is behavioral RED; new installation-state verification helper is missing-scaffold RED, not a PostgreSQL defect."
+    },
+    {
+      "red": "recovery-manifest-red.json",
+      "meaning": "Required critic/collector source files were silently omitted; behavioral RED before strict manifest fix."
+    },
+    {
+      "red": "recovery-durability-helper-scaffold-red.json and recovery-corruption-helper-red.json",
+      "meaning": "Missing/new helper exports or arguments are scaffolding compilation RED; real configuration failures are the separate executed PostgreSQL receipts."
+    }
+  ],
+  "invalid_runs_not_counted_as_red": [
+    "Initial runtime fixture bootstrap attempted REVOKE as an owner against an admin-owned synthetic lab schema; corrected to use its synthetic administrator.",
+    "A missing concatenation operator in the critic runner caused a TypeError; corrected before behavioral runs.",
+    "recovery-runtime-profile-transition-invalid.json: safe old-profile fixture was refused while the Go adapter moved to onprem-v1. Not counted as discovered product failure."
+  ],
+  "scope_limits": [
+    "Logical restore recreates safe synthetic roles and reapplies reviewed grants. It does not back up global authentication passwords, OS/TLS/OIDC state, or an external application secret vault.",
+    "The archive includes only a newly generated synthetic signing key; no real signing key or production data was used.",
+    "Kernel command crash workload uses nine commands per atomic unit; transport/HTTP/OIDC fault behavior is covered separately.",
+    "No actual hardware power loss, disk failure, off-server encrypted restore, PITR, HA, SSH or production action was performed.",
+    "Full final integrated CI and every required mutation/property gate must still pass; native evidence alone does not assert pipeline success."
+  ]
+}

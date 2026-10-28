@@ -1,0 +1,8 @@
+--- FAIL: TestDatabaseProfileConfigurationFailsClosed (0.00s)
+    --- FAIL: TestDatabaseProfileConfigurationFailsClosed/on_premise (0.00s)
+        runtime_profile_test.go:33: accepted=false want=true
+    --- FAIL: TestDatabaseProfileConfigurationFailsClosed/old_single_warehouse_profile_requires_upgrade (0.00s)
+        runtime_profile_test.go:33: accepted=true want=false
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/cmd/wms-api	0.027s
+FAIL

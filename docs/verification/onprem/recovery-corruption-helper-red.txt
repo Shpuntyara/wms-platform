@@ -1,0 +1,15 @@
+# github.com/Shpuntyara/wms-platform/internal/postgres [github.com/Shpuntyara/wms-platform/internal/postgres.test]
+internal\postgres\hardened_durability_test.go:9:67: too many arguments in call to validateDurabilitySettings
+	have (string, string, string, string, string, string, string)
+	want (string, string, string, string)
+internal\postgres\hardened_durability_test.go:16:66: too many arguments in call to validateDurabilitySettings
+	have (string, string, string, string, string, string, string)
+	want (string, string, string, string)
+internal\postgres\hardened_durability_test.go:26:78: too many arguments in call to validateDurabilitySettings
+	have (string, string, string, string, string, string, string)
+	want (string, string, string, string)
+internal\postgres\hardened_durability_test.go:37:66: too many arguments in call to validateDurabilitySettings
+	have (string, string, string, string, string, string, string)
+	want (string, string, string, string)
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres [build failed]
+FAIL

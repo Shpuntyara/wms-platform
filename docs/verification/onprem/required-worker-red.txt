@@ -1,0 +1,20 @@
+PASS baseline
+PASS green
+PASS signature
+PASS action
+PASS installation
+PASS worker_fence
+PASS document_page
+..F....
+======================================================================
+FAIL: test_green_requires_all_sql_and_go_tests (test_hardened_gate.HardenedGateTests.test_green_requires_all_sql_and_go_tests) (missing='TestHardenedOnPremCriticWorkerRejectsInstallationDrift')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 51, in test_green_requires_all_sql_and_go_tests
+    with self.subTest(missing=name), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.048s
+
+FAILED (failures=1)

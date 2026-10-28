@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-28T13:47:54.488228+00:00",
+  "command": "go test -race -tags=integration ./internal/postgres -run ^TestOnPremAccounting -count=1 -json",
+  "files": {
+    "internal/postgres/onprem_accounting_critic_integration_test.go": {
+      "sha256_bytes": "1388160d55fd7fd78ce3b3d3432c7bbf40bb5c3b425574ca4ae190154c7e40f4",
+      "sha256_lf": "1388160d55fd7fd78ce3b3d3432c7bbf40bb5c3b425574ca4ae190154c7e40f4"
+    },
+    "internal/postgres/store_integration_test.go": {
+      "sha256_bytes": "e5d1f5f638aa7b01f9f628ef59a20b4543ea41d8e7d3da6d29a32bc75bb910e6",
+      "sha256_lf": "e5d1f5f638aa7b01f9f628ef59a20b4543ea41d8e7d3da6d29a32bc75bb910e6"
+    },
+    "internal/postgres/store_kernel_inventory_adversarial_integration_test.go": {
+      "sha256_bytes": "2175dfa3a1f23c314d6bd26844076b4fe60877df2fcfa028c638b135de7c82c0",
+      "sha256_lf": "2175dfa3a1f23c314d6bd26844076b4fe60877df2fcfa028c638b135de7c82c0"
+    },
+    "db/migrations/0001_inventory_schema.sql": {
+      "sha256_bytes": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+      "sha256_lf": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+    },
+    "db/migrations/0002_inventory_commands.sql": {
+      "sha256_bytes": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+      "sha256_lf": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+    },
+    "db/migrations/0003_backend_api.sql": {
+      "sha256_bytes": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+      "sha256_lf": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+    },
+    "db/migrations/0004_module_integrity.sql": {
+      "sha256_bytes": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+      "sha256_lf": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+    },
+    "db/migrations/0005_inventory_pagination.sql": {
+      "sha256_bytes": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+      "sha256_lf": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045"
+    },
+    "db/migrations/0006_security_boundary.sql": {
+      "sha256_bytes": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+      "sha256_lf": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72"
+    },
+    "db/migrations/0007_background_jobs.sql": {
+      "sha256_bytes": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261",
+      "sha256_lf": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817"
+    },
+    "db/migrations/0008_background_health_and_policy_v2.sql": {
+      "sha256_bytes": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+      "sha256_lf": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213"
+    },
+    "db/migrations/0009_warehouse_documents.sql": {
+      "sha256_bytes": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431",
+      "sha256_lf": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+    }
+  },
+  "initial_wrapper_attempt": {
+    "command": "scripts/test-postgres.ps1 -Report work/onprem-accounting-local.json",
+    "exit": 1,
+    "stage": "Python unit tests; Go accounting tests not yet executed",
+    "observed": "Ran 61 Python tests; 4 expected red tests in concurrently developed test_onprem_recovery_critic.py",
+    "classification": "Provisional concurrent work, not an accounting bug or a passing CI claim",
+    "owned_cluster": "work/integration-fa1177e40cb44a5783289f0a66c65e96; script stopped it in finally"
+  }
+}

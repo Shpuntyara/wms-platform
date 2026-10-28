@@ -1,0 +1,5 @@
+Checksum operation completed
+Files scanned:   1457
+Blocks scanned:  5643
+Bad checksums:  0
+Data checksum version: 1

@@ -1,0 +1,27 @@
+2026-10-28 15:18:32.467 CET [1272] LOG:  starting PostgreSQL 17.11 on x86_64-windows, compiled by msvc-19.44.35228, 64-bit
+2026-10-28 15:18:32.469 CET [1272] LOG:  listening on IPv4 address "127.0.0.1", port 50199
+2026-10-28 15:18:32.618 CET [19144] LOG:  database system was interrupted; last known up at 2026-10-28 15:18:20 CET
+2026-10-28 15:18:32.804 CET [38308] FATAL:  the database system is starting up
+2026-10-28 15:18:32.966 CET [1992] FATAL:  the database system is starting up
+2026-10-28 15:18:33.118 CET [18356] FATAL:  the database system is starting up
+2026-10-28 15:18:33.251 CET [35304] FATAL:  the database system is starting up
+2026-10-28 15:18:33.378 CET [7272] FATAL:  the database system is starting up
+2026-10-28 15:18:33.508 CET [37248] FATAL:  the database system is starting up
+2026-10-28 15:18:33.648 CET [8204] FATAL:  the database system is starting up
+2026-10-28 15:18:33.796 CET [26672] FATAL:  the database system is starting up
+2026-10-28 15:18:33.943 CET [35348] FATAL:  the database system is starting up
+2026-10-28 15:18:34.079 CET [33436] FATAL:  the database system is starting up
+2026-10-28 15:18:34.221 CET [33736] FATAL:  the database system is starting up
+2026-10-28 15:18:34.315 CET [19144] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-28 15:18:34.321 CET [19144] LOG:  redo starts at 0/300B660
+2026-10-28 15:18:34.363 CET [36780] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:18:34.363 CET [36780] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:18:34.407 CET [19144] LOG:  invalid record length at 0/34B71B0: expected at least 24, got 0
+2026-10-28 15:18:34.407 CET [19144] LOG:  redo done at 0/34B7188 system usage: CPU: user: 0.01 s, system: 0.04 s, elapsed: 0.08 s
+2026-10-28 15:18:34.417 CET [34020] LOG:  checkpoint starting: end-of-recovery immediate wait
+2026-10-28 15:18:34.522 CET [42532] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:18:34.522 CET [42532] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:18:34.766 CET [38040] FATAL:  the database system is not yet accepting connections
+2026-10-28 15:18:34.766 CET [38040] DETAIL:  Consistent recovery state has not been yet reached.
+2026-10-28 15:18:34.816 CET [34020] LOG:  checkpoint complete: wrote 626 buffers (15.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.059 s, sync=0.323 s, total=0.402 s; sync files=77, longest=0.039 s, average=0.005 s; distance=4782 kB, estimate=4782 kB; lsn=0/34B71B0, redo lsn=0/34B71B0
+2026-10-28 15:18:34.900 CET [1272] LOG:  database system is ready to accept connections

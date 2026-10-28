@@ -1,0 +1,136 @@
+{
+  "utc": "2026-10-28T13:50:27.751010+00:00",
+  "scope": "Independent 3-case microquantity SQL rounding campaign; owned fresh database clone for each mutant; published migration bytes unchanged",
+  "work_directory": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\onprem-accounting-mutants-ea9945b85bf24616bbf666e4477fa3f5",
+  "mutants": [
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_0",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_1",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_10",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_11",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_2",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_3",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_4",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_5",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_6",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_7",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_8",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_9"
+      ],
+      "completed_test_events": 13,
+      "seconds": 5.516,
+      "command": [
+        "C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/bin/go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_inventory_onprem_micro_debit_rounded_to_milli",
+      "source_signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+      "before": "on_hand = on_hand - p_qty",
+      "after": "on_hand = round(on_hand - p_qty, 3)",
+      "source_sha256_lf": "736a416e07c5c52e4319c392a4e2e4783b5a1a5ad807be7844cd0763a48c53ab",
+      "mutant_sha256_lf": "0c7c3fa017ee1b86bdcb4385d822dde094f7ec3ae3e6489a3ad840d4bf9f97b3"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_0",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_1",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_10",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_11",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_2",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_3",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_4",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_5",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_6",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_7",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_8",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_9"
+      ],
+      "completed_test_events": 13,
+      "seconds": 4.969,
+      "command": [
+        "C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/bin/go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_inventory_onprem_micro_credit_rounded_to_milli",
+      "source_signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+      "before": "on_hand = on_hand + p_qty",
+      "after": "on_hand = round(on_hand + p_qty, 3)",
+      "source_sha256_lf": "736a416e07c5c52e4319c392a4e2e4783b5a1a5ad807be7844cd0763a48c53ab",
+      "mutant_sha256_lf": "f0f8668bdcf175d7377e8f581ffc8add242684056cceaaa354ed4db0585b2367"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_0",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_1",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_10",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_11",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_2",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_3",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_4",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_5",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_6",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_7",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_8",
+        "TestOnPremAccountingMicroquantityConcurrentWarehousesProperty/seed_202610280717_case_9"
+      ],
+      "completed_test_events": 13,
+      "seconds": 5.765,
+      "command": [
+        "C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/bin/go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_background_onprem_micro_expiry_rounded_to_milli",
+      "source_signature": "inventory.expire_reservations(integer)",
+      "before": "qty:=r.active_qty;",
+      "after": "qty:=round(r.active_qty,3);",
+      "source_sha256_lf": "127c938c810b67abd3a7a391f9195541e002b6ae0ec16eab47d8a4fe81f0344f",
+      "mutant_sha256_lf": "3bfb0fbf5e6378c87321f8f7a6ddcc155e9a7698031dae5f89e0b910045b38af"
+    }
+  ],
+  "baseline": {
+    "status": "survived",
+    "failed_tests": [],
+    "completed_test_events": 31,
+    "seconds": 8.141,
+    "command": [
+      "C:/Users/sashk/Documents/Codex/2026-10-27/erp-wms-crm-blender/work/go-toolchain/go/bin/go.exe",
+      "test",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^TestOnPremAccounting",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ]
+  },
+  "status": "passed"
+}

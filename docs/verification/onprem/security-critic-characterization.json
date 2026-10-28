@@ -1,0 +1,37 @@
+{
+  "phase": "characterization",
+  "exit_code": 0,
+  "postgres": "17.11",
+  "source_sha256_before": {
+    "internal/postgres/hardened_onprem_critic_integration_test.go": "1291fa9a8312ad22b6304b0f0a50323a302d763ffd4ce3454e5097e947f4f22b",
+    "internal/postgres/hardened.go": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2",
+    "internal/api/server.go": "d18d534e05605f50a37ebe0039e02f146a499943ba6292b75b7fa0151f35b91c",
+    "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
+    "db/profiles/onprem-v1.sql": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7",
+    "db/bootstrap/onprem-grants.psql": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2",
+    "docs/verification/onprem/security-critic-run.py": "9bc3fa26ab4d8c14a9264a3f33961f3ed6787a71dc27484ae60d439f5771744b"
+  },
+  "source_sha256_after": {
+    "internal/postgres/hardened_onprem_critic_integration_test.go": "1291fa9a8312ad22b6304b0f0a50323a302d763ffd4ce3454e5097e947f4f22b",
+    "internal/postgres/hardened.go": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2",
+    "internal/api/server.go": "d18d534e05605f50a37ebe0039e02f146a499943ba6292b75b7fa0151f35b91c",
+    "db/profiles/hardened-v1.sql": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798",
+    "db/profiles/onprem-v1.sql": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7",
+    "db/bootstrap/onprem-grants.psql": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2",
+    "docs/verification/onprem/security-critic-run.py": "9bc3fa26ab4d8c14a9264a3f33961f3ed6787a71dc27484ae60d439f5771744b"
+  },
+  "sources_unchanged": true,
+  "command": [
+    "go",
+    "test",
+    "-race",
+    "-tags=integration,hardened",
+    "./internal/postgres",
+    "-run",
+    "^TestHardenedOnPremCritic",
+    "-count=1",
+    "-v",
+    "-timeout=60s"
+  ],
+  "test_output_sha256": "8e6a6f5153eb239f33e0c8ccf09c8608c3fe768beccba6dd1f9636b858ed39ad"
+}

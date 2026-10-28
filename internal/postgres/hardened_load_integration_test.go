@@ -115,6 +115,8 @@ func TestHardenedDocumentReadsAtScale(t *testing.T) {
 			return
 		}
 		profile, _ := os.ReadFile("../../db/profiles/hardened-v1.sql")
+		forward, _ := os.ReadFile("../../db/profiles/onprem-v1.sql")
+		profile = append(profile, forward...)
 		testSource, _ := os.ReadFile("hardened_load_integration_test.go")
 		profileHash, testHash := sha256.Sum256(profile), sha256.Sum256(testSource)
 		slices.Sort(timings)

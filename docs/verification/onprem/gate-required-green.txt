@@ -1,0 +1,12 @@
+PASS baseline
+PASS green
+PASS signature
+PASS action
+PASS installation
+PASS worker_fence
+PASS document_page
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.045s
+
+OK

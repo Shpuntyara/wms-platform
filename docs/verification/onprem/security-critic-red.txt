@@ -1,0 +1,13 @@
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup
+    hardened_onprem_critic_integration_test.go:158: Ping reports healthy while authenticated requests fail after configuration drift
+    hardened_onprem_critic_integration_test.go:161: /readyz = 200 after configuration drift, want 503
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup
+    hardened_onprem_critic_integration_test.go:158: Ping reports healthy while authenticated requests fail after configuration drift
+    hardened_onprem_critic_integration_test.go:161: /readyz = 200 after configuration drift, want 503
+--- FAIL: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey (0.17s)
+    --- FAIL: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup (0.01s)
+    --- FAIL: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup (0.01s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	0.227s
+FAIL

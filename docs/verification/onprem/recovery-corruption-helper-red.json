@@ -1,0 +1,7 @@
+{
+  "exit": 1,
+  "test_sha256": "0D6FCD371B82508072C795888CEC9AEBB50D462DA2851CF820C18E59632D3C94",
+  "source_sha256": "932323744DB6D91B48D40B38C0A3F9FA4DACCE5E74E45800244CBD083BBCB7E8",
+  "actual_behavior_red": "recovery-corruption-flags-red.json",
+  "scaffold": "New helper arguments absent; actual runtime flag acceptance already independently RED."
+}

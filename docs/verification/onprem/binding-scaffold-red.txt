@@ -1,0 +1,4 @@
+# github.com/Shpuntyara/wms-platform/cmd/wms-api [github.com/Shpuntyara/wms-platform/cmd/wms-api.test]
+cmd\wms-api\runtime_profile_test.go:101:14: undefined: validateOnPremBinding
+FAIL	github.com/Shpuntyara/wms-platform/cmd/wms-api [build failed]
+FAIL

@@ -1,0 +1,7 @@
+{
+  "exit": 1,
+  "test_sha256": "31E1359094F7BEDFD86C5208D852D39816F1A38DBA587898DA6836AC9991AEB6",
+  "collector_sha256": "36B5909541D9D2276E48C7D2B31642AB77BEC0A3C75F5C3246E834EFA87E09BB",
+  "harness_sha256": "00236F0EF1920DC426A43B8FDC870C7FE590DB4F100AE7E5DCFB8F28C2EA4177",
+  "classification": "11tests,9behaviorRED (2newfractional support+7collector falseassurance),2alreadyGREEN characterizations; real runtimeRED separate JSON"
+}

@@ -189,7 +189,7 @@ func TestHardenedHTTPAndContainment(t *testing.T) {
 		}
 		exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'reservation.create')`, f["actor"], f["org"], f["wh"], f["owner"])
 	})
-	t.Run("worker sees only own warehouse and stale ack fenced", func(t *testing.T) {
+	t.Run("worker services installation and stale ack fenced", func(t *testing.T) {
 		foreignOp, foreignEvent := id(), id()
 		exec(`INSERT INTO platform.operations(id,actor_id,organization_id,warehouse_id,operation_type,request,result,completed_at) VALUES($1,$2,$3,$4,'foreign_fixture','{}','{}',clock_timestamp())`, foreignOp, f["actor"], f["other_org"], f["other_wh"])
 		exec(`INSERT INTO platform.outbox(id,operation_id,event_type,aggregate_id,payload) VALUES($1,$2,'fixture',$3,'{"foreign":true}')`, foreignEvent, foreignOp, f["other_document"])
@@ -197,9 +197,10 @@ func TestHardenedHTTPAndContainment(t *testing.T) {
 		if err != nil || len(events) == 0 {
 			t.Fatalf("claim: %d %v", len(events), err)
 		}
+		seenOtherWarehouse := false
 		for _, event := range events {
-			if event.ID == foreignEvent || strings.Contains(string(event.Payload), "foreign") {
-				t.Fatal("worker leaked foreign warehouse event")
+			if event.ID == foreignEvent {
+				seenOtherWarehouse = true
 			}
 			if err := worker.CompleteEvent(t.Context(), event, true); err != nil {
 				t.Fatal(err)
@@ -208,9 +209,12 @@ func TestHardenedHTTPAndContainment(t *testing.T) {
 				t.Fatal("stale ack accepted")
 			}
 		}
+		if !seenOtherWarehouse {
+			t.Fatal("worker did not service another warehouse in this installation")
+		}
 		state, err := worker.QueueState(t.Context())
 		if err != nil || state.Pending != 0 {
-			t.Fatalf("foreign event counted in worker health: %+v %v", state, err)
+			t.Fatalf("installation queue did not drain: %+v %v", state, err)
 		}
 	})
 	t.Run("concurrent replay commits one reservation", func(t *testing.T) {
@@ -238,7 +242,7 @@ func TestHardenedHTTPAndContainment(t *testing.T) {
 			t.Fatalf("replay count=%d err=%v", count, err)
 		}
 	})
-	t.Run("expiry and acknowledgement stay in worker warehouse", func(t *testing.T) {
+	t.Run("expiry and acknowledgement service all installation warehouses", func(t *testing.T) {
 		foreignItem, foreignOwner, foreignLocation, foreignPosition, foreignBalance, foreignLine := id(), id(), id(), id(), id(), id()
 		exec(`SELECT set_config('application_name','white-worker-scope-test',false)`)
 		exec(`INSERT INTO catalog.stock_owners(id,organization_id,code) VALUES($1,$2,$1::uuid::text)`, foreignOwner, f["other_org"])
@@ -251,23 +255,34 @@ func TestHardenedHTTPAndContainment(t *testing.T) {
 		exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,'shipment',$1::uuid::text,'active')`, foreignDocument, f["other_org"], f["other_wh"], foreignOwner)
 		exec(`INSERT INTO warehouse.document_lines(id,document_id,organization_id,warehouse_id,owner_id,item_id,line_no,requested_qty) VALUES($1,$2,$3,$4,$5,$6,1,10)`, foreignLine, foreignDocument, f["other_org"], f["other_wh"], foreignOwner, foreignItem)
 		exec(`SELECT inventory.reserve_stock($1,$2,$3,1,$4,1,clock_timestamp()+interval '1 hour')`, id(), f["actor"], foreignLine, foreignBalance)
-		exec(`UPDATE inventory.reservations SET expires_at=clock_timestamp()-interval '1 second' WHERE active_qty>0`)
+		exec(`UPDATE inventory.reservations SET expires_at=clock_timestamp()-interval '1 second' WHERE balance_id IN($1,$2) AND active_qty>0`, f["balance"], foreignBalance)
 		count, err := worker.ExpireReservations(t.Context())
-		if err != nil || count != 1 {
-			t.Fatalf("local expiry count=%d err=%v", count, err)
+		if err != nil || count < 2 {
+			t.Fatalf("installation expiry count=%d err=%v", count, err)
 		}
 		var foreignActive string
-		if err := admin.QueryRow(t.Context(), `SELECT active_qty::text FROM inventory.reservations WHERE document_line_id=$1`, foreignLine).Scan(&foreignActive); err != nil || foreignActive != "1.000000" {
-			t.Fatalf("foreign reservation changed: %s %v", foreignActive, err)
+		if err := admin.QueryRow(t.Context(), `SELECT active_qty::text FROM inventory.reservations WHERE document_line_id=$1`, foreignLine).Scan(&foreignActive); err != nil || foreignActive != "0.000000" {
+			t.Fatalf("other warehouse reservation did not expire: %s %v", foreignActive, err)
 		}
-		var foreignEvent, token string
-		if err := admin.QueryRow(t.Context(), `SELECT c.id::text,c.token::text FROM platform.claim_outbox(100) c JOIN platform.outbox o ON o.id=c.id JOIN platform.operations op ON op.id=o.operation_id WHERE op.organization_id=$1 LIMIT 1`, f["other_org"]).Scan(&foreignEvent, &token); err != nil {
+		events, err := worker.ClaimEvents(t.Context(), 100)
+		if err != nil {
 			t.Fatal(err)
 		}
-		var accepted bool
-		err = workerPool.QueryRow(t.Context(), `SELECT hardened_worker.complete_outbox($1,$2,true)`, foreignEvent, token).Scan(&accepted)
-		if err != nil || accepted {
-			t.Fatalf("foreign acknowledgement accepted=%v err=%v", accepted, err)
+		seenOtherOrganization := false
+		for _, event := range events {
+			var organization string
+			if err := admin.QueryRow(t.Context(), `SELECT op.organization_id::text FROM platform.outbox o JOIN platform.operations op ON op.id=o.operation_id WHERE o.id=$1`, event.ID).Scan(&organization); err != nil {
+				t.Fatal(err)
+			}
+			if organization == f["other_org"] {
+				seenOtherOrganization = true
+			}
+			if err := worker.CompleteEvent(t.Context(), event, true); err != nil {
+				t.Fatalf("same-installation acknowledgement denied: %v", err)
+			}
+		}
+		if !seenOtherOrganization {
+			t.Fatal("installation worker did not acknowledge another organization")
 		}
 	})
 	t.Run("unknown COMMIT outcome retries with one document receipt", func(t *testing.T) {

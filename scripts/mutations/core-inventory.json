@@ -188,5 +188,25 @@
     "after": "IF false THEN",
     "pattern": "^TestKernelInventoryPrepareCannotCommitIncompleteOperation$",
     "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_onprem_micro_debit_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "on_hand = on_hand - p_qty",
+    "after": "on_hand = round(on_hand - p_qty, 3)",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_onprem_micro_credit_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "on_hand = on_hand + p_qty",
+    "after": "on_hand = round(on_hand + p_qty, 3)",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
   }
 ]

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "core_inventory_onprem_micro_debit_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "on_hand = on_hand - p_qty",
+    "after": "on_hand = round(on_hand - p_qty, 3)",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_inventory_onprem_micro_credit_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "inventory",
+    "signature": "inventory.post_movement(uuid,uuid,uuid,bigint,text,uuid,uuid,numeric,uuid,text,uuid)",
+    "before": "on_hand = on_hand + p_qty",
+    "after": "on_hand = round(on_hand + p_qty, 3)",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_background_onprem_micro_expiry_rounded_to_milli",
+    "kind": "sql_function",
+    "domain": "background",
+    "signature": "inventory.expire_reservations(integer)",
+    "before": "qty:=r.active_qty;",
+    "after": "qty:=round(r.active_qty,3);",
+    "pattern": "^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+    "package": "./internal/postgres"
+  }
+]

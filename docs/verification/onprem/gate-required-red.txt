@@ -1,0 +1,49 @@
+PASS baseline
+PASS green
+PASS signature
+PASS action
+..FEE.E
+======================================================================
+ERROR: test_mutant_requires_corresponding_behavioral_failure (test_hardened_gate.HardenedGateTests.test_mutant_requires_corresponding_behavioral_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 66, in test_mutant_requires_corresponding_behavioral_failure
+    validate_receipt('installation', 1, installation, '')
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\hardened_gate.py", line 66, in validate_receipt
+    raise ValueError('Missing or invalid behavioral evidence for ' + kind)
+ValueError: Missing or invalid behavioral evidence for installation
+
+======================================================================
+ERROR: test_mutations_cannot_overwrite_the_unmutated_query_plans (test_hardened_gate.HardenedGateTests.test_mutations_cannot_overwrite_the_unmutated_query_plans)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 115, in test_mutations_cannot_overwrite_the_unmutated_query_plans
+    main()
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\hardened_gate.py", line 104, in main
+    validate_receipt(kind, result.returncode, report, go_output)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\hardened_gate.py", line 66, in validate_receipt
+    raise ValueError('Missing or invalid behavioral evidence for ' + kind)
+ValueError: Missing or invalid behavioral evidence for worker_scope
+
+======================================================================
+ERROR: test_worker_build_failure_and_skip_are_not_kills (test_hardened_gate.HardenedGateTests.test_worker_build_failure_and_skip_are_not_kills)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 71, in test_worker_build_failure_and_skip_are_not_kills
+    validate_receipt('worker_fence', 1, receipt, expected)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\hardened_gate.py", line 66, in validate_receipt
+    raise ValueError('Missing or invalid behavioral evidence for ' + kind)
+ValueError: Missing or invalid behavioral evidence for worker_fence
+
+======================================================================
+FAIL: test_green_requires_all_sql_and_go_tests (test_hardened_gate.HardenedGateTests.test_green_requires_all_sql_and_go_tests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 47, in test_green_requires_all_sql_and_go_tests
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.043s
+
+FAILED (failures=1, errors=3)

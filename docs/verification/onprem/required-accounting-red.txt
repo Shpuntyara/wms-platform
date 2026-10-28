@@ -1,0 +1,45 @@
+FFFFF
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestOnPremAccountingMicroquantityConcurrentWarehousesProperty')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 80, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestOnPremAccountingMicroquantityConcurrentWarehousesProperty
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestOnPremAccountingNumericBoundaryAndAtomicOverflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 80, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestOnPremAccountingNumericBoundaryAndAtomicOverflow
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestOnPremAccountingCrossWarehouseCorrectionAndReplayStayAtomic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 80, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestOnPremAccountingCrossWarehouseCorrectionAndReplayStayAtomic
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestOnPremAccountingOwnerImportsRejectNonFiniteQuantities')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 80, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestOnPremAccountingOwnerImportsRejectNonFiniteQuantities
+
+======================================================================
+FAIL: test_omitting_a_new_regression_fails_the_complete_report (test_verification_gate.VerificationGateTests.test_omitting_a_new_regression_fails_the_complete_report) (omitted='TestDurabilitySettingsFailClosed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verification_gate.py", line 80, in test_omitting_a_new_regression_fails_the_complete_report
+    self.assertNotEqual(result.returncode, 0, 'Missing regression was reported green: ' + omitted)
+AssertionError: 0 == 0 : Missing regression was reported green: TestDurabilitySettingsFailClosed
+
+----------------------------------------------------------------------
+Ran 1 test in 10.210s
+
+FAILED (failures=5)

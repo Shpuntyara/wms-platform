@@ -8,6 +8,11 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCUMENT_REGRESSIONS = (
+    'TestOnPremAccountingMicroquantityConcurrentWarehousesProperty',
+    'TestOnPremAccountingNumericBoundaryAndAtomicOverflow',
+    'TestOnPremAccountingCrossWarehouseCorrectionAndReplayStayAtomic',
+    'TestOnPremAccountingOwnerImportsRejectNonFiniteQuantities',
+    'TestDurabilitySettingsFailClosed',
     'TestDatabaseProfileConfigurationFailsClosed',
     'TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase',
     'TestHardenedDeploymentRejectsMismatchedBinding',

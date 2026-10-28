@@ -1,0 +1,147 @@
+{
+  "baseline": "77ab640",
+  "generated_at_utc": "2026-10-28T14:11:32.025711+00:00",
+  "status": "white_candidate_frozen_pending_root_exact_source_full_gate_and_ci",
+  "scope": "One dedicated customer installation/database/server; many organizations and warehouses inside it. No hosted customer registry or routing.",
+  "new_forward_profile": "Apply unchanged historical hardened-v1.sql, then additive onprem-v1.sql, then onprem-grants.psql; old bindings retain login/kind and signing key FK while org/warehouse columns are removed atomically.",
+  "source_files": [
+    "db/profiles/onprem-v1.sql",
+    "db/bootstrap/onprem-grants.psql",
+    "internal/postgres/hardened.go",
+    "internal/postgres/hardened_jobs.go",
+    "internal/postgres/hardened_integration_test.go",
+    "internal/postgres/hardened_onprem_integration_test.go",
+    "internal/postgres/hardened_load_integration_test.go",
+    "internal/postgres/hardened_durability.go",
+    "tests/hardened_profile.py"
+  ],
+  "sources_sha256": {
+    "db/profiles/onprem-v1.sql": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7",
+    "db/bootstrap/onprem-grants.psql": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2",
+    "internal/postgres/hardened.go": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2",
+    "internal/postgres/hardened_jobs.go": "53bb2ce91744420bdd86deafc21255e4af3adeb03d7e177e0acb3f619125ba13",
+    "internal/postgres/hardened_integration_test.go": "a6d4173a7a015c27ae67e8b026c9201a40c812e57cd3b5e0984cbb765a5d1790",
+    "internal/postgres/hardened_onprem_integration_test.go": "f8c7e065ef5b686261358450f6235d76c7f40b66f602737ecb6f01bd72712075",
+    "internal/postgres/hardened_load_integration_test.go": "e89a0a22fede20aaf7f6546230a9f6502ccd45fdffe50a25f45ba88b90b49944",
+    "internal/postgres/hardened_durability.go": "8f89781870212183ce3faca65ca8a0e37be70d90049eaed75cf08b01dc71f6c1",
+    "tests/hardened_profile.py": "b33de57abcb15a5d4011d5884f78321cb884cc773378820a1f4b9351f81ca729"
+  },
+  "historical_profile_and_bootstrap_unchanged": true,
+  "red": {
+    "receipts": [
+      "multiwarehouse-before.json",
+      "multiwarehouse-before-independent.json",
+      "before-independent-sources.json",
+      "before-independent-test-source.txt"
+    ],
+    "actual_behaviors": [
+      "Existing first warehouse succeeds but legitimate second warehouse and another organization are omitted from ResolvePrincipal and denied read/write by same store.",
+      "Historical warehouse-bound worker leaves second/third warehouse expiry holds and outbox pending."
+    ],
+    "invalid_build_skip_timeout": false
+  },
+  "green": {
+    "receipt": "onprem-final-green.json",
+    "go_output": "onprem-final-green.go.txt",
+    "sql_assertions": 29,
+    "race": true,
+    "shuffled_top_level_order": true,
+    "shuffle_seed_output": "-test.shuffle 1793196420827122500",
+    "all_go_exit_code": 0,
+    "skipped_tests": false,
+    "required_top_test": "TestHardenedOnPremiseMultiWarehouse",
+    "model_document_count": 100000,
+    "model_line_count": 300000,
+    "property_cases": 30,
+    "executed_custom_generic_plans": 14,
+    "max_plan_row_work": 585,
+    "max_page_hydrations": 21
+  },
+  "mutations": [
+    {
+      "name": "signature",
+      "killed_by_behavior": true,
+      "sql_failures": [
+        "tampered actor signature rejected"
+      ],
+      "receipt": "mutant-signature.json",
+      "invalid_failure": false
+    },
+    {
+      "name": "action",
+      "killed_by_behavior": true,
+      "sql_failures": [
+        "signature binds exact raw argument bytes",
+        "signature for read cannot authorize a command"
+      ],
+      "receipt": "mutant-action.json",
+      "invalid_failure": false
+    },
+    {
+      "name": "installation",
+      "killed_by_behavior": true,
+      "sql_failures": [
+        "signed context for another installation rejected"
+      ],
+      "receipt": "mutant-installation.json",
+      "invalid_failure": false
+    },
+    {
+      "name": "worker_fence",
+      "killed_by_behavior": true,
+      "sql_failures": [],
+      "receipt": "mutant-worker_fence.json",
+      "invalid_failure": false
+    },
+    {
+      "name": "document_page",
+      "killed_by_behavior": true,
+      "sql_failures": [],
+      "receipt": "mutant-document_page.json",
+      "invalid_failure": false
+    }
+  ],
+  "retired_mutant": {
+    "name": "worker_scope",
+    "reason": "Warehouse-global maintenance within a dedicated client database is the intended on-premise contract. Replaced by worker_fence, which must reject stale leases."
+  },
+  "exports": [
+    "NewHardened(ctx,pool,key32) only onprem-v1 metadata",
+    "NewHardenedWorker(ctx,pool) only onprem-v1 metadata",
+    "RuntimeLogin() string",
+    "InstallationID() string"
+  ],
+  "context_protocol": "2|installationUUID|session_login|backendPID|full_xact_ID|actor|requested_org|requested_warehouse|expiry|SHA256(exact_action_bytes)",
+  "security_properties": [
+    "Current SQL grants/owner rights gate each request; authenticated identity resolution returns all authorized scopes in this single database.",
+    "System actor is rejected even if someone grants it an API permission.",
+    "Wrong installation with valid MAC is rejected, including deliberate key reuse.",
+    "Replay on another action/backend/transaction or changed raw argument bytes is rejected.",
+    "Worker roles check identity then delegate existing global kernels; no maintenance algorithm duplication.",
+    "Ping attests cached installation/login and performs signed zero-scope resolve probe so key/identity rotation fails readiness until restored/restarted."
+  ],
+  "durability_hooks": [
+    "requireDurablePostgres before profile preflight",
+    "API transaction uses beginDurableTransaction before context/action",
+    "Worker claim/complete/expire use explicit durable transactions and consume/close/error-check rows before COMMIT",
+    "remote_apply preserved; weak session defaults strengthened by separately reviewed helper"
+  ],
+  "independent_critic_evidence": [
+    "security-critic-red.json",
+    "security-critic-green.json",
+    "recovery-runtime-red.json",
+    "recovery-live-reload-green.json"
+  ],
+  "validation_limits": [
+    "No claim of production SLA, HA, offsite recovery, or independent adversarial audit completion.",
+    "The owning administrator, application signing secret and OIDC verifier remain trusted; a worker credential can service all events in this customer installation.",
+    "Single installation UUID must be managed correctly when cloning a database into a new customer deployment.",
+    "Full integrated gate/CI and final corruption-flag recovery evidence are root-owned and pending this handoff.",
+    "All keys were synthetic in process memory/temporary database; no real credentials or customer data used."
+  ],
+  "static_checks": {
+    "full_tags_vet": 0,
+    "full_tags_go_fix_diff": "empty",
+    "unit_race_changed_packages": 0
+  }
+}
