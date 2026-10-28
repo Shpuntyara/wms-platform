@@ -97,20 +97,28 @@ func TestDocumentAdversarialCommandIdentityAndAuthorization(t *testing.T) {
 		}
 	})
 
-	t.Run("revoked permission blocks replay before exposing a receipt", func(t *testing.T) {
-		f := newFixture(t)
-		grantDocumentPermissions(f)
-		key := id()
-		body := documentCreateBody(f, id())
-		if _, err := documentSQL(t, f, f.actor, key, "", body); err != nil {
-			t.Fatal(err)
-		}
-		f.exec(`DELETE FROM platform.actor_grants WHERE actor_id=$1 AND permission='document.create'`, f.actor)
-		_, err := documentSQL(t, f, f.actor, key, "", body)
-		requireDocumentSQLProblem(t, err, "42501", "forbidden")
-		requireStatus(t, f.request(f.handler(nil, nil), "POST", "/api/v1/documents", body, key), 403)
-		assertSingleDocumentEffect(t, f, key)
-	})
+	for _, action := range []string{"create", "transition"} {
+		t.Run("revoked permission blocks replay "+action, func(t *testing.T) {
+			f := newFixture(t)
+			grantDocumentPermissions(f)
+			key := id()
+			body := documentCreateBody(f, id())
+			permission, document, path := "document.create", "", "/api/v1/documents"
+			if action == "transition" {
+				permission, document = "document.transition", f.document
+				path += "/" + document + "/transitions"
+				body = map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "expected_document_version": 1, "state": "cancelled"}
+			}
+			if _, err := documentSQL(t, f, f.actor, key, document, body); err != nil {
+				t.Fatal(err)
+			}
+			f.exec(`DELETE FROM platform.actor_grants WHERE actor_id=$1 AND permission=$2`, f.actor, permission)
+			_, err := documentSQL(t, f, f.actor, key, document, body)
+			requireDocumentSQLProblem(t, err, "42501", "forbidden")
+			requireStatus(t, f.request(f.handler(nil, nil), "POST", path, body, key), 403)
+			assertSingleDocumentEffect(t, f, key)
+		})
+	}
 
 	t.Run("ID binds warehouse owner and document as well as input", func(t *testing.T) {
 		f := newFixture(t)
@@ -129,6 +137,10 @@ func TestDocumentAdversarialCommandIdentityAndAuthorization(t *testing.T) {
 		f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'document.create')`, f.actor, f.org, wh, f.owner)
 		body["owner_id"], body["warehouse_id"] = f.owner, wh
 		_, err = documentSQL(t, f, f.actor, key, "", body)
+		requireDocumentSQLProblem(t, err, "22023", "idempotency_key_reused")
+		otherOrganization := newFixture(t)
+		f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'document.create')`, f.actor, otherOrganization.org, otherOrganization.wh, otherOrganization.owner)
+		_, err = documentSQL(t, f, f.actor, key, "", documentCreateBody(otherOrganization, id()))
 		requireDocumentSQLProblem(t, err, "22023", "idempotency_key_reused")
 		first, _ := f.doc("receipt", "1", f.owner)
 		second, _ := f.doc("receipt", "1", f.owner)

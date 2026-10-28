@@ -1,8 +1,12 @@
 """The mutation gate must distinguish an assertion kill from a broken run."""
 import unittest
+import json
+from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 from unittest.mock import patch
 
-from mutation_runner import classify_go_run, database_environment, replace_once
+from mutation_runner import classify_go_run, database_environment, replace_once, run
 
 
 class MutationRunnerTests(unittest.TestCase):
@@ -73,6 +77,24 @@ class MutationRunnerTests(unittest.TestCase):
             {'Action': 'fail', 'Package': 'p'},
         ]
         self.assertEqual(classify_go_run(1, events)['status'], 'invalid')
+
+    def test_failed_baseline_still_writes_a_failed_evidence_artifact(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            args = SimpleNamespace(go='go', psql='psql', report='work/result.json', case=None)
+            environment = {
+                'WMS_TEST_ADMIN_DSN': 'postgres://admin@127.0.0.1:55487/wms_kernel_test_baseline?sslmode=disable',
+                'WMS_TEST_RUNTIME_DSN': 'postgres://runtime@127.0.0.1:55487/wms_kernel_test_baseline?sslmode=disable',
+            }
+            with patch('mutation_runner.ROOT', root), patch.dict('os.environ', environment), patch('mutation_runner.subprocess.check_output', return_value='frozen-head\n'), patch('mutation_runner.run_go', return_value={'status': 'invalid', 'failed_tests': [], 'reason': 'baseline build failure'}):
+                with self.assertRaises(RuntimeError):
+                    run(args)
+            target = root / args.report
+            self.assertTrue(target.is_file(), 'A failed baseline lost the mutation evidence artifact')
+            report = json.loads(target.read_text(encoding='utf8'))
+            self.assertEqual(report['status'], 'failed')
+            self.assertEqual(report['baseline']['status'], 'invalid')
+            self.assertEqual(report['mutants'], [])
 
 
 if __name__ == '__main__':

@@ -1,0 +1,62 @@
+{
+  "revision": "ea0eb2f6e41d096d02fdb4e0f81f1c175dffb86a",
+  "runner_git_blob": "b2d19b997855f3455e5e1da91ef7bf506e38a51a",
+  "runner_sha256": "83e1e269e41c85a6c6ef44cf63b0e64ab448193da6628841d98cbbe4fb762bca",
+  "method": "Original unmodified migration runner; LF for pinned 0005/0008, historical CRLF checkout for all other files. This exact mixed checkout passes all original published pins.",
+  "receipts": [
+    {
+      "name": "0001_inventory_schema.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "4bdae0053c5437bfbe6b8636fc348bb96e2df16d659f38d6182328a6ce9febc2",
+      "execution_checksum": "4bdae0053c5437bfbe6b8636fc348bb96e2df16d659f38d6182328a6ce9febc2"
+    },
+    {
+      "name": "0002_inventory_commands.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "9b2118301ac2b511badcc445e43a567eb03572c85a58ed4b00a49c27db378a16",
+      "execution_checksum": "9b2118301ac2b511badcc445e43a567eb03572c85a58ed4b00a49c27db378a16"
+    },
+    {
+      "name": "0003_backend_api.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "9422611d95ce077dcdc477053c8daf6279e6a731a92eeda2479fa828d2445281",
+      "execution_checksum": "9422611d95ce077dcdc477053c8daf6279e6a731a92eeda2479fa828d2445281"
+    },
+    {
+      "name": "0004_module_integrity.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "cef95dc2839914dae068ca9209de873d470888428419ae0ecfd27176e9eff573",
+      "execution_checksum": "cef95dc2839914dae068ca9209de873d470888428419ae0ecfd27176e9eff573"
+    },
+    {
+      "name": "0005_inventory_pagination.sql",
+      "checkout_eol": "LF",
+      "source_checksum": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+      "execution_checksum": "40dcbd15bfecc5c7e6c84a22ee02f0b6f509edb50815fb0764c7b9acd167d995"
+    },
+    {
+      "name": "0006_security_boundary.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+      "execution_checksum": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+    },
+    {
+      "name": "0007_background_jobs.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261",
+      "execution_checksum": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261"
+    },
+    {
+      "name": "0008_background_health_and_policy_v2.sql",
+      "checkout_eol": "LF",
+      "source_checksum": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+      "execution_checksum": "183d74b115f41aa9537e296577a7e472bb7ce22754847f013e8924336d75dc06"
+    },
+    {
+      "name": "0009_warehouse_documents.sql",
+      "checkout_eol": "CRLF",
+      "source_checksum": "d610d40bb0b9d99c431f0804df34dde9b7ac2947482eb44e63e98399ef416785",
+      "execution_checksum": "d610d40bb0b9d99c431f0804df34dde9b7ac2947482eb44e63e98399ef416785"
+    }
+  ]
+}
