@@ -1,60 +1,97 @@
 # WMS Platform
 
-Модульная WMS с общим складским ядром и расширениями под процессы заказчика.
+**A modular, on-premises Warehouse Management System backend — with a reproducible two-VM Hyper-V deployment lab.**
 
-Репозиторий приватный. Коммерческая лицензия продукта пока не выбрана.
+Go · PostgreSQL · OIDC · Hyper-V · PowerShell · Python · Ubuntu · Docker · Prometheus · Grafana
 
-## Состояние
+> **Project status:** Engineering prototype / portfolio project. The backend, deployment automation, and selected operational scenarios are implemented and tested. There is **no finished end-user WMS interface**, and the project is **not certified or warranted for production use**.
 
-Go backend на PostgreSQL: API остатков, резервов и движений, OIDC access tokens, права по складам/владельцам и обязательные guards клиентских модулей. Есть исполняемые миграции и unit/integration/race-проверки. Это backend продукта; готового пользовательского интерфейса и производственных гарантий пока нет.
+## See the infrastructure working
 
-Текущая комплектация: ядро **0.4.0**, SDK **2.0.0**, пример dispatch-quality **1.2.0**. [Повторный аудит структуры и путь обновления](docs/reviews/2026-10-27-backend-audit.md), [нагрузочные сценарии](docs/load-testing.md) и [результаты сравнения](docs/reports/2026-10-27-load.md).
+**[Hyper-V portfolio: screenshots, a 36-second demonstration, and verification notes](docs/portfolio/hyperv-lab/README.md)**
 
-[Безопасность, SQL guards, фоновые задачи и обновление](docs/security-hardening.md). [Итоговая security-проверка](docs/verification/security-green.json).
+![WMS-Lab-A monitoring after recovery](docs/portfolio/hyperv-lab/05-wms-a-recovered.jpg)
 
-Контракты модулей и примеры находятся в `contracts/`. Номера релизов внутри примеров условные; они не обозначают существующие релизы продукта.
+The lab demonstrates two **separately deployed WMS installations** on two Ubuntu 24.04 virtual machines hosted by Hyper-V on **one physical Windows PC**:
 
-Архитектура **on-premise**: отдельная WMS, БД и сервер у каждого клиента. Одна установка обслуживает несколько организаций и складов; SaaS-мультитенантности нет. [Модель установки, сохранность данных и переход](docs/on-premise.md). Отдельная схема модуля не является песочницей для кода.
+| Area | What is implemented / demonstrated |
+| --- | --- |
+| Virtualization | Two Generation 2 VMs, separate VHDX disks, VM ownership checks, existing Hyper-V virtual switch |
+| Provisioning | PowerShell and Python automation, cloud-init / NoCloud seed media, independent SSH keys, host-key pinning |
+| Deployment | Per-instance release installer, systemd-managed Go API, PostgreSQL, Keycloak, Caddy, TLS |
+| Observability | Prometheus metrics, Grafana dashboards, availability/readiness checks |
+| Fault handling | Controlled interruption of installation A, continued operation of B, and recovery of A |
+| Verification | Application smoke/replay checks, credential-isolation probes, recovery evidence, automated CI regressions |
 
-## Принципы
+**Evidence:** [lab notes and screenshots](docs/portfolio/hyperv-lab/README.md) · [recorded demo](docs/portfolio/hyperv-lab/wms-two-instances-demo.mp4) · [tested commit](https://github.com/Shpuntyara/wms-platform/commit/89fe54add10e8f3094810fb4da22438ecb5fac5a) · [successful CI run](https://github.com/Shpuntyara/wms-platform/actions/runs/40729659428).
 
-- Проведение движений и резервов принадлежит ядру.
-- Модули добавляют данные, проверки, стратегии, процессы, экраны и интеграции через опубликованные контракты.
-- Обновляется проверенная клиентская комплектация с точными версиями.
-- Подтверждённая складская команда имеет устойчивый идентификатор и безопасно повторяется.
-- Структура данных меняется миграциями с проверенным путём восстановления.
+**Scope:** This is a local lab, **not** a highly available cluster: both VMs share one physical host, backups are local, and the edited demo has cuts between its three 12-second segments. The public results prove the documented scenarios, not production uptime or full disaster recovery.
 
-## PostgreSQL
+## What the backend does
 
-- [Модель данных, связи, индексы и транзакции](docs/postgresql-core.md).
-- [Миграция структуры](db/migrations/0001_inventory_schema.sql).
-- [Команды и идемпотентность](db/migrations/0002_inventory_commands.sql).
-- [Разделение прав](db/bootstrap/grants.psql).
-- [Пример схемы клиентского модуля](db/examples/dispatch_quality_schema.sql).
-- [Интеграционные проверки](tests/README.md) и [результат прогона](docs/verification/postgres-kernel.json).
+The application implements a transaction-oriented warehouse accounting core with extension contracts for customer-specific workflows.
 
-Приёмка, резервирование, освобождение резерва, перенос и отгрузка используют общие учётные инварианты. Отбор зарезервированного товара перемещает резерв к новой позиции и не считается исполнением отгрузки.
+- **Stock and reservations:** receiving, reservation, reservation release, transfers, picking, and shipping operations with accounting invariants.
+- **Warehouse documents:** API lifecycle for receiving, put-away, reservation, picking, shipping, and closure.
+- **Identity and access:** OIDC access-token validation, organization/warehouse/owner scoping, and separated API/worker database privileges.
+- **Extensibility:** versioned module contracts and a compiled `dispatch-quality` extension; the core retains authority over inventory movements.
+- **Reliability:** idempotent commands, checked database migrations, transactional outbox, background workers, monitoring, and explicit failure paths.
+- **Testing:** Go unit/integration/race tests, PostgreSQL checks, adversarial security tests, and failure/recovery exercises.
 
-## Go backend
+For architecture and boundaries, see [on-premises design](docs/on-premise.md), [Go backend](docs/go-backend.md), [PostgreSQL core](docs/postgresql-core.md), and [warehouse workflow](docs/warehouse-workflow.md).
 
-- [Запуск, авторизация, API и клиентские модули](docs/go-backend.md).
-- [OpenAPI 3.1](api/openapi.json).
-- [Пример конфигурации](.env.example).
-- [Скомпилированный модуль контроля отгрузки](internal/clientmodules/dispatchquality/module.go) и его [пакет](modules/dispatch-quality/manifest.json).
-- [Воспроизводимый прогон на отдельном PostgreSQL](scripts/test-postgres.ps1).
-- [Первый red-прогон до реализации](docs/verification/go-backend-red.json) и [итоговая проверка](docs/verification/go-backend-green.json).
-- [Проверка после аудита, включая потерю подтверждения COMMIT](docs/verification/backend-audit-green.json).
+## Deployment model
 
-Нужна Go 1.27.3. После настройки PostgreSQL и OIDC: `go build -o work/wms-api ./cmd/wms-api`. Приложение читает переменные окружения и по умолчанию слушает `127.0.0.1:8080`. Миграции при старте не применяются.
+Each customer receives **an independent WMS installation, database, and server**. An installation may serve multiple organizations and warehouses under its own access rules. The platform does **not** implement a shared SaaS tenant database.
 
-Запуск по умолчанию требует [профиль onprem-v1](docs/on-premise.md), раздельные API/worker logins одной клиентской установки и независимый ключ подписанного контекста. Перед обновлением нужно выполнить forward-переход и настроить секреты. Явный `WMS_DATABASE_PROFILE=legacy` сохраняет прежний доверенный SQL-контракт и риск использования украденного SQL-пароля без API.
+```text
+Hyper-V host (lab)
+├── WMS-Lab-A (Ubuntu 24.04, independent keys/storage)
+│   ├── Caddy HTTPS → Go API + background worker (systemd)
+│   ├── Keycloak / OIDC
+│   ├── PostgreSQL
+│   └── Prometheus → Grafana
+└── WMS-Lab-B (same isolated service composition)
+```
 
-[Стенд аварийного завершения PostgreSQL и восстановления](docs/postgres-resilience.md) проверяет WAL recovery, сохранность подтверждённых команд, ненулевых остатков/резервов и restore в отдельный кластер. Это проверка ограниченного синтетического сценария, а не производственная гарантия.
+A deployment uses the documented Linux installer rather than an unrestricted host setup script. The installers and tests deliberately include guards for ownership, secret handling, archive integrity, preflight validation, upgrades, and restoration.
 
-## Исправления 0.5.0
+- [Hyper-V lab setup and verification](docs/hyperv-lab.md)
+- [Linux deployment installer](docs/deployment-installer.md)
+- [Security hardening](docs/security-hardening.md)
+- [PostgreSQL recovery scenario](docs/postgres-resilience.md)
 
-SQL является единственным исполнителем бизнес-guards. Outbox использует пакетный claim и независимые слоты доставки, фоновые задачи — отдельный пул БД; loopback metrics отражают их состояние. Declarative v2 добавляет альтернативные группы, списки, boolean и точные десятичные сравнения. Для обновления нужны миграция 0008 и новые grants: [контракты и порядок обновления](docs/security-hardening.md). [Проверки](docs/verification/background-green.json).
+## Build and verification
 
-## Складской сценарий 0.6.0
+This repository currently specifies **Go 1.27.3** for its backend. After you have provisioned a separate development PostgreSQL database and a valid OIDC configuration:
 
-Добавлены документы и их жизненный цикл через API: приёмка, размещение, резерв, отбор, отгрузка и закрытие. Readiness API больше не зависит от брокера. Повторяемое применение миграций учитывает контрольные суммы и сохраняет зависимости guard-функций. [Контракт и обновление](docs/warehouse-workflow.md), [проверки](docs/verification/warehouse-green.json), [реальный отказ брокера](docs/verification/readiness-outage.json).
+```bash
+go build -o work/wms-api ./cmd/wms-api
+```
+
+The API defaults to `127.0.0.1:8080`. **Database migrations are not applied automatically on API startup.** A fresh installation requires the schema, role grants, `onprem-v1` profile, OIDC configuration, and independently generated runtime secrets described in the deployment documentation. Do not treat `.env.example` as a working credential file.
+
+Primary entry points:
+
+| Resource | Purpose |
+| --- | --- |
+| [OpenAPI 3.1](api/openapi.json) | HTTP interface contract |
+| [SQL migrations](db/migrations/) | Versioned schema and warehouse operations |
+| [Module contracts](contracts/) | Customer extension APIs and schemas |
+| [Go integration guide](docs/go-backend.md) | Auth, API setup, modules, and tests |
+| [Tests](tests/README.md) | Test setup and supported verification cases |
+| [CI workflow](.github/workflows/security.yml) | Automated correctness/security checks |
+| [Core test result](docs/verification/postgres-kernel.json) | Recorded PostgreSQL kernel verification |
+| [Security result](docs/verification/security-green.json) | Recorded security checks |
+
+### Releases and compatibility
+
+The documented core/SDK baseline is **core 0.4.0 / SDK 2.0.0**, with subsequent **0.5.0 background/security** and **0.6.0 warehouse-workflow** work. The example `dispatch-quality` module is at **1.2.0**. Version strings embedded in example contracts are illustrative; they do not imply externally published production releases. See the [backend audit](docs/reviews/2026-10-27-backend-audit.md) and [load-test report](docs/reports/2026-10-27-load.md).
+
+## Limitations and responsible disclosure
+
+This repository is an engineering portfolio, not a turnkey system. The user interface, customer integrations, operational SLAs, third-party security review, and production deployment guarantees are out of scope or incomplete. Some linked documentation and test evidence remain in Russian.
+
+**No real passwords, private keys, access tokens, client data, or production backups should be committed.** Use unique per-installation secrets and keep protected runtime evidence outside Git. Before public release, scan the **entire Git history**, review screenshots/video for visible confidential information, and rotate any credentials that might have been committed, even if later removed.
+
+**Licensing:** A commercial/product license has not yet been selected. Do not assume rights to redistribute or deploy this project commercially.
