@@ -59,11 +59,9 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p work/promtool-package
-          sudo apt-get update -qq
-          cd work/promtool-package
-          apt-get download prometheus
-          dpkg-deb -x prometheus_*.deb unpacked
-          cd ../..
+          curl --fail --location --silent --show-error --retry 3 --output work/promtool-package/prometheus.deb 'https://archive.ubuntu.com/ubuntu/pool/universe/p/prometheus/prometheus_2.45.3+ds-2ubuntu0.3_amd64.deb'
+          echo '299dda2866a1efa3a085ac19938528eb918a66c74ccc8025ffc59a753f78d8d3  work/promtool-package/prometheus.deb' | sha256sum --check
+          dpkg-deb -x work/promtool-package/prometheus.deb work/promtool-package/unpacked
           python3 scripts/verify_monitoring.py --promtool work/promtool-package/unpacked/usr/bin/promtool --output work/monitoring-verification.json
       - name: Migration recipes and database upgrade regressions
         run: |

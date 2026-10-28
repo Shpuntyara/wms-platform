@@ -303,6 +303,19 @@ def backup_harness(*, fail_dump=None, fail_restore=None, corrupt_restore=False):
 
 
 class InstallationBackupContract(unittest.TestCase):
+    def test_recovery_globals_and_private_identity_artifact_tampering_is_rejected(self):
+        with backup_harness() as (value, _events, _queries, _restores, _directory):
+            receipt = wms.backup(value)
+            settings = dict(wms.DURABILITY, synchronous_commit='on')
+            wms.validate_update_preflight(settings, receipt, value['instance_id'])
+            for filename in ('globals.sql', 'identity.tar.gz'):
+                artifact = Path(receipt['path']).parent / filename
+                original = artifact.read_bytes()
+                artifact.write_bytes(original + b'tampered')
+                with self.subTest(artifact=filename), self.assertRaisesRegex(ValueError, 'recovery artifact'):
+                    wms.validate_update_preflight(settings, receipt, value['instance_id'])
+                artifact.write_bytes(original)
+
     def test_backup_includes_keycloak_private_dump_and_real_isolated_rehearsal(self):
         with backup_harness() as (value, events, _queries, restores, _directory):
             receipt = wms.backup(value)

@@ -93,8 +93,14 @@ class InstallerContract(unittest.TestCase):
             dump.write_bytes(b'nonempty real backup placeholder')
             kc_dump = Path(tmp) / 'keycloak.dump'
             kc_dump.write_bytes(b'nonempty keycloak backup placeholder')
+            artifacts = {}
+            for name in ('globals.sql', 'identity.tar.gz'):
+                artifact = Path(tmp) / name
+                artifact.write_bytes(('synthetic ' + name).encode())
+                artifacts[name] = {'path': str(artifact), 'sha256': hashlib.sha256(artifact.read_bytes()).hexdigest()}
             receipt = {'schema': 2, 'path': str(dump), 'sha256': hashlib.sha256(dump.read_bytes()).hexdigest(),
                        'restore_verified': True, 'instance_id': 'this-instance',
+                       'artifacts': artifacts,
                        'keycloak': {'path': str(kc_dump), 'sha256': hashlib.sha256(kc_dump.read_bytes()).hexdigest(),
                            'restore_verified': True, 'source_fingerprint_sha256': '1' * 64,
                            'restored_fingerprint_sha256': '1' * 64}}

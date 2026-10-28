@@ -189,7 +189,10 @@ Keycloak и API. Обновление после начала SQL migrations п�
 Schema-2 receipt указывает hash каждого dump, границы snapshot, результаты
 обоих isolated restores и сверку source/restored fingerprints. Старые
 WMS-only receipts не доказывают сохранность OIDC signing identity и не
-принимаются как recovery preflight нового обновления. Сами локальные копии
+принимаются как recovery preflight нового обновления. Файлы
+`globals.sql` и `identity.tar.gz` также закреплены отдельными SHA256 в receipt;
+preflight отвергает отсутствие или изменение любого из этих двух recovery
+artifacts, включая TLS/app-signing material. Сами локальные копии
 **не зашифрованы**: каталог доступен только root, но находится на том же
 виртуальном диске. Для production обязательны шифрованный off-host export,
 политика retention и регулярный полный restore rehearsal. Логический dump

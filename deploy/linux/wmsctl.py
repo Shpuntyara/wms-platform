@@ -157,6 +157,13 @@ def validate_update_preflight(settings, receipt, instance_id):
             or not re.fullmatch(r'[a-f0-9]{64}', source_hash)
             or source_hash != identity.get('restored_fingerprint_sha256')):
         raise ValueError('A verified Keycloak identity backup is required')
+    artifacts = receipt.get('artifacts', {})
+    for name in ('globals.sql', 'identity.tar.gz'):
+        artifact = artifacts.get(name, {})
+        artifact_path = Path(artifact.get('path', ''))
+        if (not artifact_path.is_file() or not artifact_path.stat().st_size
+                or sha256(artifact_path) != artifact.get('sha256')):
+            raise ValueError('Missing or changed recovery artifact: ' + name)
 
 
 def run(argv, data=None, sensitive=False, timeout=600):
@@ -697,6 +704,8 @@ def backup(value):
     receipt = dict(schema=2, instance_id=value['instance_id'], path=str(dump), sha256=sha256(dump),
         restore_verified=True, wms=dict(wms_proof, path=str(dump), sha256=sha256(dump)),
         keycloak=dict(kc_proof, path=str(kc_dump), sha256=sha256(kc_dump), identity_checks=kc_identity),
+        artifacts={name: {'path': str(directory / name), 'sha256': sha256(directory / name)}
+                   for name in ('globals.sql', 'identity.tar.gz')},
         quiesced_at=quiesced_at, snapshot_complete_at=snapshot_complete_at,
         created_at=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         scope='Local root-only WMS + Keycloak logical backups, globals, secrets/TLS configuration; two isolated no-consumer restores; not encrypted off-host backup/PITR or monitoring-history backup')

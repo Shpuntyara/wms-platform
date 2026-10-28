@@ -57,6 +57,8 @@ MUTANTS = [
      'test_old_wms_only_backup_is_rejected_as_update_recovery_evidence'),
     ('monitor_boot_order', 'After=docker.service\nRequires=docker.service', 'After=network.target',
      'test_prometheus_waits_for_docker_bridge_and_retries_failed_boot'),
+    ('recovery_artifact_seal', "for name in ('globals.sql', 'identity.tar.gz'):", 'for name in ():',
+     'test_recovery_globals_and_private_identity_artifact_tampering_is_rejected'),
 ]
 
 
@@ -83,7 +85,7 @@ def main():
         output = result.stdout + result.stderr
         (args.output / (name + '.txt')).write_text(output)
         if name == 'baseline':
-            valid = result.returncode == 0 and 'Ran 21 tests' in output and 'OK' in output
+            valid = result.returncode == 0 and 'Ran 22 tests' in output and 'OK' in output
         else:
             valid = (result.returncode == 1 and 'FAIL: ' + required in output and
                      'FAILED (failures=' in output and 'errors=' not in output)
