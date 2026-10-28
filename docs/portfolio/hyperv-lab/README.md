@@ -1,26 +1,30 @@
-# WMS: стенд Hyper-V
+# WMS: Hyper-V lab portfolio
 
-Материалы проверки двух независимых on-premise установок WMS от 28 октября 2026 года. На снимках — настоящие Ubuntu и Grafana с синтетическими данными.
+Evidence from **28 October 2026**, documenting two independent on-premises WMS installations on Ubuntu VMs hosted by Hyper-V. The screenshots show an actual Ubuntu guest and Grafana dashboards using **synthetic data**.
 
-Проверенный релиз: [`89fe54a`](https://github.com/Shpuntyara/wms-platform/commit/89fe54add10e8f3094810fb4da22438ecb5fac5a). [Полный CI этого релиза](https://github.com/Shpuntyara/wms-platform/actions/runs/40729659428).
+**Verified release:** [`89fe54a`](https://github.com/Shpuntyara/wms-platform/commit/89fe54add10e8f3094810fb4da22438ecb5fac5a) · [successful CI run](https://github.com/Shpuntyara/wms-platform/actions/runs/40729659428)
 
-## Видео
+## Short demonstration
 
-[Запись дашбордов, 36 секунд](wms-two-instances-demo.mp4): три отдельных 12-секундных эпизода — остановка A, работа B, восстановление A. Между эпизодами есть монтажные склейки.
+[Watch the 36-second two-instance demo](wms-two-instances-demo.mp4). It contains three edited 12-second segments: installation A stopped, installation B remaining operational, and installation A recovered. There are cuts between segments; this is **not** a continuous uptime recording.
 
-## Скриншоты
+## Screenshots
 
-| Файл | Содержимое |
+| File | What it shows |
 | --- | --- |
-| [01](01-ubuntu-hyperv-console.jpg) | Консоль загруженной Ubuntu в Hyper-V |
-| [02](02-wms-a-live-grafana.jpg) | Первоначальный снимок Grafana установки A |
-| [03](03-wms-b-live-grafana.jpg) | Работающая независимая установка B |
-| [04](04-wms-a-controlled-outage.jpg) | Контролируемая остановка API A, готовность 0 |
-| [05](05-wms-a-recovered.jpg) | Восстановившаяся установка A, готовность 1 |
-| [06](06-lab-report-preview.jpg) | Обзор результатов проверки стенда |
+| [01 — Ubuntu console](01-ubuntu-hyperv-console.jpg) | Booted Ubuntu guest inside Hyper-V |
+| [02 — A initial state](02-wms-a-live-grafana.jpg) | Grafana dashboard for installation A |
+| [03 — B live](03-wms-b-live-grafana.jpg) | Separately deployed installation B |
+| [04 — A outage](04-wms-a-controlled-outage.jpg) | Controlled API outage on A, readiness = 0 |
+| [05 — A recovered](05-wms-a-recovered.jpg) | API restored on A, readiness = 1 |
+| [06 — report](06-lab-report-preview.jpg) | Summary of lab verification results |
 
-![Восстановившаяся установка A](05-wms-a-recovered.jpg)
+![Installation A monitoring after recovery](05-wms-a-recovered.jpg)
 
-Контрольные суммы файлов: [SHA256SUMS](SHA256SUMS).
+SHA-256 digests for the media files: [SHA256SUMS](SHA256SUMS).
 
-Обе ВМ размещены на одном физическом ПК; проверка независимости сервисов ограничена этим лабораторным стендом. Бэкапы хранятся локально. Подробности эксплуатации — в [документации установщика](../../deployment-installer.md).
+## What this does—and does not—prove
+
+Both VMs run on **one physical PC** and have independent deployment identities, storage, and service configuration. The observed incident illustrates service-level isolation between two installations; it is **not** evidence of physical-host fault tolerance, clustering, or an independently audited disaster-recovery system. Backups remain local in this lab. All published demo data is synthetic.
+
+Technical methodology: [Hyper-V bootstrap](../../hyperv-lab.md) · [Linux installer and operations](../../deployment-installer.md).
