@@ -152,13 +152,26 @@ jobs:
           mkdir -p work/runtime
           chmod 0777 work/runtime
           go_root="$(go env GOROOT)"
-          docker run --rm --entrypoint python3 --env CGO_ENABLED=0 --env GOFLAGS=-buildvcs=false --env GOCACHE=/repo/work/go-build-cache --env GOPATH=/repo/work/go-mod-cache --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/runtime,target=/repo/work" --mount "type=bind,source=$go_root,target=/usr/local/go,readonly" wms-runtime /repo/scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin /usr/lib/postgresql/17/bin --go /usr/local/go/bin/go --report /repo/work/runtime.json
+          docker run --rm --entrypoint python3 --env CGO_ENABLED=0 --env GOROOT=/usr/local/go --env GOFLAGS=-buildvcs=false --env GOCACHE=/repo/work/go-build-cache --env GOPATH=/repo/work/go-mod-cache --mount "type=bind,source=$PWD,target=/repo,readonly" --mount "type=bind,source=$PWD/work/runtime,target=/repo/work" --mount "type=bind,source=$go_root,target=/usr/local/go,readonly" wms-runtime /repo/scripts/test_onprem_recovery_critic.py --runtime-probe --pg-bin /usr/lib/postgresql/17/bin --go /usr/local/go/bin/go --report /repo/work/runtime.json
+      - name: Preserve compiler diagnostics
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          target = Path('work/runtime-diagnostics')
+          target.mkdir(parents=True, exist_ok=True)
+          for source in Path('work/runtime').glob('onprem-runtime-critic-*/build.txt'):
+              shutil.copyfile(source, target / (source.parent.name + '-build.txt'))
+          PY
       - name: Runtime durability evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: runtime-durability-evidence
-          path: work/runtime/runtime.json
+          path: |
+            work/runtime/runtime.json
+            work/runtime-diagnostics/
           if-no-files-found: error
   resilience:
     runs-on: ubuntu-latest

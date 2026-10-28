@@ -93,7 +93,7 @@ def runtime_probe(pg_bin, go, destination, safe_only=False):
     build = subprocess.run([go, 'build', '-o', str(executable), str(work / 'main.go')], cwd=root, capture_output=True, text=True, timeout=120)
     (work / 'build.txt').write_text(build.stdout + build.stderr)
     if build.returncode:
-        raise RuntimeError('Runtime critic helper did not compile; this is not a behavioral RED')
+        raise RuntimeError('Runtime critic helper did not compile; this is not a behavioral RED:\n' + build.stdout + build.stderr)
     report = {'scope': 'Synthetic owned loopback clusters; actual Go hardened constructors and transactions.',
               'work_directory': str(work), 'cases': [], 'failures': [], 'status': 'failed',
               'source_files': {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in (

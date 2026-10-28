@@ -1,0 +1,14 @@
+{
+  "run": "https://github.com/Shpuntyara/wms-platform/actions/runs/40706692864",
+  "revision": "4d1fe8fac7f2fded69263bd664fe28e4bde4e87a",
+  "pipeline": "failed",
+  "passed_jobs": [
+    "security",
+    "hardened",
+    "resilience"
+  ],
+  "failed_stage": "runtime helper compilation before any PostgreSQL negative controls",
+  "classification": "infrastructure failure, never counted as a behavior failure or mutant kill",
+  "job_log_sha256": "bbc8d12d109b07a1a884f2fe9dfc48140d671a9eb22deff21363549231f58f59",
+  "followup": "surface compiler stderr and preserve build diagnostics; explicit container GOROOT; full CI rerun"
+}
