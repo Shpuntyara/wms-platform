@@ -30,6 +30,7 @@ import uuid
 CONFIG = Path('/etc/wms')
 BASE = Path('/opt/wms')
 STATE = Path('/var/lib/wms')
+WORKSPACE_CONFIG = Path('/etc/wms-workplace/workspace.json')
 # Digests obtained from the official Docker Hub/Quay manifest APIs 2026-10-28.
 IMAGES = {'postgres': 'postgres:17.11-bookworm@sha256:839fbb5a4942a7758dd93e18b42ea5649807491a0545b5eeeb8f0b8bb11857a5',
           'keycloak': 'quay.io/keycloak/keycloak:26.8.1@sha256:a78d6b79572168cb25886b80a8b5b8d4ed4390743e3eecb810538683e209dd6b',
@@ -301,18 +302,43 @@ def release_extract(archive, digest, revision):
 
 
 def tls(address):
+    address = str(ipaddress.ip_address(address))
     directory = CONFIG / 'tls'
     directory.mkdir(parents=True, exist_ok=True, mode=0o750)
+    if (directory / 'ca.crt').exists() != (directory / 'ca.key').exists():
+        raise ValueError('Incomplete existing TLS authority; restore its original identity')
+    if (directory / 'server.crt').exists() and not (directory / 'server.key').exists():
+        raise ValueError('Existing TLS leaf private key is missing; restore its original identity')
     if not (directory / 'ca.crt').exists():
+        descriptor = os.open(directory / 'ca.key', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        os.close(descriptor)
         run(['openssl', 'req', '-x509', '-newkey', 'rsa:3072', '-nodes', '-days', '3650',
              '-subj', '/CN=WMS installation private CA', '-keyout', directory / 'ca.key', '-out', directory / 'ca.crt'], sensitive=True)
-    if not (directory / 'server.crt').exists():
-        run(['openssl', 'req', '-newkey', 'rsa:3072', '-nodes', '-subj', '/CN=' + address,
-             '-keyout', directory / 'server.key', '-out', directory / 'server.csr'], sensitive=True)
+    valid = False
+    if (directory / 'server.crt').exists():
+        try:
+            run(['openssl', 'verify', '-CAfile', directory / 'ca.crt', '-verify_ip', address,
+                 '-purpose', 'sslserver', directory / 'server.crt'], sensitive=True)
+            valid = True
+        except RuntimeError:
+            pass
+    if not valid:
+        if (directory / 'server.key').exists():
+            key = ['-key', directory / 'server.key']
+        else:
+            descriptor = os.open(directory / 'server.key', os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            os.close(descriptor)
+            key = ['-newkey', 'rsa:3072', '-nodes', '-keyout', directory / 'server.key']
+        run(['openssl', 'req', '-new', *key, '-subj', '/CN=' + address,
+             '-out', directory / 'server.csr'], sensitive=True)
         private_write(directory / 'extensions', 'subjectAltName=IP:' + address + '\nextendedKeyUsage=serverAuth\n')
+        candidate = directory / ('server.crt.new-' + secrets.token_hex(4))
         run(['openssl', 'x509', '-req', '-in', directory / 'server.csr', '-CA', directory / 'ca.crt',
              '-CAkey', directory / 'ca.key', '-CAcreateserial', '-days', '365', '-extfile', directory / 'extensions',
-             '-out', directory / 'server.crt'], sensitive=True)
+             '-out', candidate], sensitive=True)
+        run(['openssl', 'verify', '-CAfile', directory / 'ca.crt', '-verify_ip', address,
+             '-purpose', 'sslserver', candidate], sensitive=True)
+        os.replace(candidate, directory / 'server.crt')
     for key in ('ca.key', 'server.key'):
         os.chmod(directory / key, 0o640 if key == 'server.key' else 0o600)
     # Caddy reads only its leaf key; the CA private key remains root-only.
@@ -470,6 +496,7 @@ https://{address} {{
     }}
 }}
 ''', 0o644)
+    workplace_env = ['WMS_UI_CONFIG=' + str(WORKSPACE_CONFIG)] if WORKSPACE_CONFIG.is_file() else []
     private_write(CONFIG / 'app.env', '\n'.join([
         'WMS_DATABASE_PROFILE=onprem-v1', 'WMS_DATABASE_URL=postgres://wms_api:' + value['api_password'] + '@127.0.0.1:5432/wms?sslmode=disable',
         'WMS_WORKER_DATABASE_URL=postgres://wms_worker:' + value['worker_password'] + '@127.0.0.1:5432/wms?sslmode=disable',
@@ -477,7 +504,7 @@ https://{address} {{
         'WMS_OIDC_AUDIENCE=' + client, 'WMS_HTTP_ADDR=127.0.0.1:8080', 'WMS_MONITOR_ADDR=127.0.0.1:9091',
         'WMS_OUTBOX_URL=https://' + address + '/lab/events', 'WMS_OUTBOX_ALLOW_PRIVATE=true',
         'WMS_OUTBOX_HMAC_KEY=' + value['outbox_key'], 'WMS_OUTBOX_CONCURRENCY=4', 'WMS_DB_MAX_CONNS=8',
-    ]) + '\n')
+    ] + workplace_env) + '\n')
     private_write(CONFIG / 'sink.env', 'WMS_OUTBOX_HMAC_KEY=' + value['outbox_key'] + '\n')
     private_write(CONFIG / 'identity.json', json.dumps(dict(public_identity(value), address=address,
         issuer=issuer, audience=client, images=IMAGES), indent=2) + '\n', 0o644)
@@ -670,7 +697,7 @@ def restore_database(dump, database, expected, value, identity=None):
         sql('DROP DATABASE ' + rehearsal + ' WITH (FORCE);', 'postgres')
 
 
-def backup(value):
+def backup(value, *, resume=True):
     directory = STATE / 'backups' / datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S-%fZ')
     directory.mkdir(parents=True, mode=0o700)
     dump, kc_dump = directory / 'wms.dump', directory / 'keycloak.dump'
@@ -693,11 +720,15 @@ def backup(value):
         with os.fdopen(descriptor, 'wb') as raw:
             with tarfile.open(fileobj=raw, mode='w:gz') as output:
                 output.add(CONFIG, arcname='wms')
+                if WORKSPACE_CONFIG.exists():
+                    if WORKSPACE_CONFIG.is_symlink() or not WORKSPACE_CONFIG.is_file():
+                        raise ValueError('Workspace backup requires its bound regular configuration file')
+                    output.add(WORKSPACE_CONFIG, arcname='wms-workplace/workspace.json')
             raw.flush()
             os.fsync(raw.fileno())
         snapshot_complete_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
     finally:
-        if was_running:
+        if was_running and resume:
             resume_keycloak()
     wms_proof = restore_database(dump, 'wms', wms_expected, value)
     kc_proof = restore_database(kc_dump, 'keycloak', kc_expected, value, kc_identity)
@@ -746,11 +777,78 @@ def install(args, value):
         raise
 
 
+def _address_change(args, value):
+    """Require the stored previous origin, and bind recovery to this installation."""
+    path = CONFIG / 'identity.json'
+    if not path.exists():
+        return None
+    identity = json.loads(path.read_text())
+    pending = STATE / 'address-change.json'
+    if pending.exists():
+        change = json.loads(pending.read_text())
+        if change.get('status') != 'complete':
+            if (change.get('instance_id') != value['instance_id'] or args.address != change.get('new_address')
+                    or getattr(args, 'previous_address', None) != change.get('old_address')
+                    or identity.get('address') not in (change['old_address'], change['new_address'])):
+                raise ValueError('Pending address recovery belongs to a different explicit origin change')
+            return change
+    if identity['address'] == args.address:
+        return None
+    if (args.action != 'update' or identity.get('instance_id') != value['instance_id']
+            or getattr(args, 'previous_address', None) != identity['address']):
+        raise ValueError('Address/issuer change requires update --previous-address matching the installed origin')
+    old_address = str(ipaddress.ip_address(identity['address']))
+    suffix = '/auth/realms/wms-' + value['instance_id'][:8]
+    if identity.get('issuer') != 'https://' + old_address + suffix:
+        raise ValueError('Stored origin is not this installation Keycloak realm')
+    return {'schema': 1, 'instance_id': value['instance_id'], 'old_address': old_address,
+            'new_address': args.address, 'old_issuer': identity['issuer'],
+            'new_issuer': 'https://' + args.address + suffix, 'status': 'prepared'}
+
+
+def _origin_actors(change):
+    query = "SELECT coalesce(json_agg(json_build_object('id',id::text,'subject',subject,'issuer',issuer) ORDER BY id),'[]'::json) FROM platform.actors WHERE issuer IN (" + literal(change['old_issuer']) + ',' + literal(change['new_issuer']) + ');'
+    rows = json.loads(sql(query))
+    if not isinstance(rows, list) or any(not isinstance(row, dict) or set(row) != {'id', 'subject', 'issuer'}
+            or not all(isinstance(value, str) for value in row.values()) for row in rows):
+        raise ValueError('Unexpected actor identity state during address recovery')
+    for row in rows:
+        uuid.UUID(row['id'])
+    return sorted(rows, key=lambda row: row['id'])
+
+
+def _prepare_address_change(change, receipt):
+    observed = _origin_actors(change)
+    if 'actor_bindings' not in change:
+        if any(row['issuer'] != change['old_issuer'] for row in observed):
+            raise ValueError('The new issuer already has actors; refusing to merge identities')
+        change['actor_bindings'] = [{'id': row['id'], 'subject': row['subject']} for row in observed]
+        change['original_backup'] = receipt
+    expected = sorted(change['actor_bindings'], key=lambda row: row['id'])
+    old = [dict(row, issuer=change['old_issuer']) for row in expected]
+    new = [dict(row, issuer=change['new_issuer']) for row in expected]
+    if observed not in (old, new):
+        raise ValueError('Actor identities changed outside the recorded address recovery')
+    private_write(STATE / 'address-change.json', json.dumps(change, indent=2) + '\n')
+
+
+def _rebind_address_actors(change):
+    expected = sorted(change['actor_bindings'], key=lambda row: row['id'])
+    old = json.dumps([dict(row, issuer=change['old_issuer']) for row in expected])
+    new = json.dumps([dict(row, issuer=change['new_issuer']) for row in expected])
+    # The locked comparison also fences a concurrent administrative identity edit.
+    sql("BEGIN; SET LOCAL lock_timeout='2s'; LOCK TABLE platform.actors IN SHARE ROW EXCLUSIVE MODE;\n"
+        "DO $rebind$ DECLARE observed jsonb; BEGIN\n"
+        "SELECT coalesce(jsonb_agg(jsonb_build_object('id',id::text,'subject',subject,'issuer',issuer) ORDER BY id),'[]'::jsonb) INTO observed FROM platform.actors WHERE issuer IN (" + literal(change['old_issuer']) + ',' + literal(change['new_issuer']) + ");\n"
+        "IF observed IS DISTINCT FROM " + literal(old) + "::jsonb AND observed IS DISTINCT FROM " + literal(new) + "::jsonb THEN RAISE EXCEPTION 'Actor identity drift during origin recovery'; END IF;\n"
+        "UPDATE platform.actors SET issuer=" + literal(change['new_issuer']) + " WHERE issuer=" + literal(change['old_issuer']) + "; END $rebind$; COMMIT;")
+    change['status'] = 'complete'
+    private_write(STATE / 'address-change.json', json.dumps(change, indent=2) + '\n')
+
+
 def _install(args, value, recovery):
     ipaddress.ip_address(args.address)
-    old_identity = CONFIG / 'identity.json'
-    if old_identity.exists() and json.loads(old_identity.read_text())['address'] != args.address:
-        raise ValueError('Address/issuer change requires an explicit identity migration')
+    change = _address_change(args, value)
     release = release_extract(args.archive, args.sha256, args.revision)
     updating = (BASE / 'current').exists()
     if args.action == 'update' and not updating:
@@ -763,8 +861,10 @@ def _install(args, value, recovery):
         except RuntimeError:
             recovery['resume'] = False
         run(['systemctl', 'stop', 'wms-api'])
-        receipt = backup(value)
+        receipt = backup(value, resume=False) if change else backup(value)
         validate_update_preflight(database_settings(), receipt, value['instance_id'])
+        if change:
+            _prepare_address_change(change, receipt)
     issuer = configuration(value, args.address)
     compose('config', '--quiet')
     fetch_images()
@@ -783,7 +883,14 @@ def _install(args, value, recovery):
     run(['systemctl', 'unmask', 'caddy', 'prometheus'])
     run(['systemctl', 'enable', '--now', 'docker', 'caddy', 'prometheus', 'wms-lab-sink'])
     run(['systemctl', 'restart', 'caddy', 'prometheus'])
-    wait_for(lambda: http_json(issuer + '/.well-known/openid-configuration'), 'verified HTTPS OIDC discovery')
+    def discovery():
+        result = http_json(issuer + '/.well-known/openid-configuration')
+        if not isinstance(result, dict) or result.get('issuer') != issuer:
+            raise ValueError('Keycloak discovery does not match the installed issuer')
+        return result
+    wait_for(discovery, 'verified HTTPS OIDC discovery')
+    if change:
+        _rebind_address_actors(change)
     temporary = BASE / ('current.new-' + secrets.token_hex(4))
     temporary.symlink_to(release, target_is_directory=True)
     os.replace(temporary, BASE / 'current')
@@ -807,6 +914,7 @@ def main():
     parser.add_argument('--sha256')
     parser.add_argument('--revision')
     parser.add_argument('--address')
+    parser.add_argument('--previous-address', help='Explicit installed previous address for a verified identity-preserving update')
     args = parser.parse_args()
     if os.geteuid() != 0:
         parser.error('Run through sudo on the intended dedicated guest')
