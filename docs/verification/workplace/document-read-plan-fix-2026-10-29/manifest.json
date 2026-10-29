@@ -1,0 +1,123 @@
+{
+  "feature": "Bound owner candidate index scans without weakening read-plan or permission checks",
+  "initial_CI": {
+    "head": "609c037b8147d869806d5265a3c8bf9a98564237",
+    "run": 40912294411,
+    "full_pipeline_passed": false,
+    "observed_failed_work": 1177,
+    "limit": 1000,
+    "actual_EXPLAIN_retained": false
+  },
+  "local_RED": {
+    "source": "Separate deterministic skew fixture and actual read-only query probes, not a reconstruction of the missing CI EXPLAIN",
+    "generic_first_work": 5141,
+    "generic_deep_work": 5041
+  },
+  "GREEN": {
+    "old_query_plans": 28,
+    "old_max_work": 450,
+    "old_max_blocks": 220,
+    "independent_critic_query_plans": 8,
+    "critic_max_work": 282,
+    "critic_max_blocks": 217,
+    "limits_unchanged": true,
+    "property_cases": 64
+  },
+  "mutation_coverage": {
+    "initial_killed": 3,
+    "initial_survived": 1,
+    "initial_invalid": 0,
+    "coverage_added": "Sparse two-owner HTTP page with a third forbidden owner",
+    "final_killed": 4,
+    "final_survived": 0,
+    "final_invalid": 0
+  },
+  "historical_migrations_modified": false,
+  "final_full_CI": "Required on the next immutable source commit; receipts collected separately",
+  "files": [
+    {
+      "path": "numbering-ci-609c-failure/artifact-receipt.json",
+      "sha256": "f2838af8b435b9aedb41e5abb1dc39cb8ab2520aae213ebc94aba973e9d986a0"
+    },
+    {
+      "path": "numbering-ci-609c-failure/failure-receipt.json",
+      "sha256": "efebccafb3c2504c97c8c300c6a9e150da323fa740b93a740b62cb92c1d5353c"
+    },
+    {
+      "path": "numbering-ci-609c-failure/query-plan-red-events.jsonl",
+      "sha256": "2c7bc9817415a1903ffd237c00bc22e43a6e6128e332c7df847e101d46c5d5bf"
+    },
+    {
+      "path": "document-plan-recovery-tdd/red-source-hashes.json",
+      "sha256": "7554bf80b07e2141808179acefb8c390ce1397c077106ea800b5bcdf5016e546"
+    },
+    {
+      "path": "document-plan-recovery-tdd/implementation-hash.json",
+      "sha256": "4741b0f704e745daba19360a44fea7599791a4597296e7dbadfed9bf3d5dd8c3"
+    },
+    {
+      "path": "document-plan-recovery-tdd/manual-critic-before-plan.json",
+      "sha256": "b7a63d03eca6683afeb4460ce21bae4131b251f497198754c41209204f58a48a"
+    },
+    {
+      "path": "document-plan-recovery-tdd/manual-critic-range-plan.json",
+      "sha256": "0ee824b3549eb558033674c7d5ea2f24d32aef4dc89145d2b5b8ce2ca017323c"
+    },
+    {
+      "path": "document-plan-recovery-tdd/properties-green.jsonl",
+      "sha256": "af94d29d675a4dbc83213390ff2687c790be69d002189f7cdc522c7f488aae9d"
+    },
+    {
+      "path": "document-plan-recovery-tdd/full-read-green.jsonl",
+      "sha256": "6c0033345061071989e6b8317a6bd82defc32e36792f49b204113f719d5a40ea"
+    },
+    {
+      "path": "document-plan-recovery-tdd/final-green-hashes.json",
+      "sha256": "2dbb15a55aaa90c4b2a3e7da305fa818d8761f318d782200142bc4a60aaa05af"
+    },
+    {
+      "path": "document-plan-recovery-tdd/owner-range-mutations.json",
+      "sha256": "3b412709eb2938b9ca6a83e3e64d5627094ec779633af285a8352fc09a1a6836"
+    },
+    {
+      "path": "document-plan-recovery-tdd/sparse-owner-green.jsonl",
+      "sha256": "beba27d08b3ad4306622a563afe2b101e18f14297828d5b63e487d9012438a03"
+    },
+    {
+      "path": "document-plan-recovery-tdd/owner-range-final-mutations.json",
+      "sha256": "38391e65c8dbd565d90445b46e654728fa78f3f11308aa972465808214c8511c"
+    },
+    {
+      "path": "document-planner-critic-tdd/before-first-run-hashes.json",
+      "sha256": "a0fac6c80d6f2e05c68e19ad5cc86714a377aa2df3a52eebf5f08841313ff6a7"
+    },
+    {
+      "path": "document-planner-critic-tdd/first-run-events.jsonl",
+      "sha256": "f9e4525fe46fc6d17fab2a58508268bc45202c12b20282b1c0bd528008d3148a"
+    },
+    {
+      "path": "document-planner-critic-tdd/before-green-hashes.json",
+      "sha256": "fed6b4a731ac40e434f152bd588ee3d224e799ec13dcd3d7bf47eb20df5062e6"
+    },
+    {
+      "path": "document-planner-critic-tdd/green-events.jsonl",
+      "sha256": "bf32528a9e995ee6bad3d5dd5397cf790a5d891ca489f11004f150f4fe2d7436"
+    },
+    {
+      "path": "document-planner-critic-tdd/final-critic-summary.json",
+      "sha256": "89a9523c976432f162c3f507fab9c6cc2128f8016e3a6cda24c53346ad58008d"
+    },
+    {
+      "path": "document-plan-recovery-tdd/green-plans/document-read-plans.json",
+      "sha256": "279156b4a76ded694c170eb64876a9759f27bad193cf8b28163f1baf46fcc16b"
+    },
+    {
+      "path": "document-planner-critic-tdd/first-run-plans/document-planner-critic-plans.json",
+      "sha256": "13ad61412901c52d74fdeebf03018409d62e74bd46d587b7040385b7babe5b77"
+    },
+    {
+      "path": "document-planner-critic-tdd/green-plans/document-planner-critic-plans.json",
+      "sha256": "7a62e1c04e7a6d96ae7d10fe56beeed68631cd89be35a8c84e82d2d92ad5040b"
+    }
+  ]
+}

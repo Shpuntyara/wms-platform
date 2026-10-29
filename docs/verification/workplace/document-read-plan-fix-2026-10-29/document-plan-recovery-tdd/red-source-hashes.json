@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B7D7DEA55B4311EE300CAED09C6F50F4B9BB910A02B1DAECD7317C9EAA87E8B8",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\postgres\\store.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BB8F981935C6AA5F06556396BC817F6B632AFC531635EF312B3C231FC1169117",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\postgres\\store_documents_read_integration_test.go"
+  }
+]

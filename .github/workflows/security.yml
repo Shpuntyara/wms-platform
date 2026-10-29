@@ -73,8 +73,8 @@ jobs:
     env:
       WMS_TEST_ADMIN_DSN: postgres://wms_test_admin@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
       WMS_TEST_RUNTIME_DSN: postgres://wms_go_runtime@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
-      WMS_DOCUMENT_PLAN_DIR: work/document-plans
-      WMS_DOCUMENT_CRITIC_PLAN_DIR: work/document-critic-plans
+      WMS_DOCUMENT_PLAN_DIR: ${{ github.workspace }}/work/document-plans
+      WMS_DOCUMENT_CRITIC_PLAN_DIR: ${{ github.workspace }}/work/document-critic-plans
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

@@ -287,12 +287,20 @@ func (s *Store) List(ctx context.Context, resource inventory.Resource, scope inv
 	args = append(args, f.Limit+1)
 	query := "SELECT " + definition.projection + " FROM contracts_v1." + definition.view + " WHERE " + where.String() + fmt.Sprintf(" ORDER BY id LIMIT $%d", len(args))
 	if resource == inventory.DocumentResource && !scope.AllOwners && f.OwnerID == "" && len(scope.OwnerIDs) > 1 {
-		// Bound each owner's ordered candidates before merging them. A generic
-		// ANY(owner) plan can otherwise walk unrelated owners to fill one page.
-		ownerWhere := strings.Replace(where.String(), "owner_id=ANY($3::text[]::uuid[])", "owner_id=permitted_owner.owner_id", 1)
+		// Keep owner_id in the ordering key: an equality predicate lets a generic
+		// plan walk the warehouse/id index and filter thousands of other owners.
+		// This closed owner range seeks the existing warehouse/owner/id index;
+		// only each owner's page is merged before document lines are hydrated.
+		ownerRange := "owner_id>=permitted_owner.owner_id AND owner_id<=permitted_owner.owner_id"
+		ownerWhere := where.String()
+		if last != "" {
+			ownerWhere = strings.TrimSuffix(ownerWhere, fmt.Sprintf(" AND id>$%d::text::uuid", len(args)-1))
+			ownerRange = fmt.Sprintf("(owner_id,id)>(permitted_owner.owner_id,$%d::text::uuid) AND owner_id<=permitted_owner.owner_id", len(args)-1)
+		}
+		ownerWhere = strings.Replace(ownerWhere, "owner_id=ANY($3::text[]::uuid[])", ownerRange, 1)
 		query = "WITH document_page AS MATERIALIZED (SELECT candidates.id FROM (SELECT DISTINCT unnest($3::text[])::uuid AS owner_id) AS permitted_owner" +
 			" CROSS JOIN LATERAL (SELECT id FROM contracts_v1.documents WHERE " + ownerWhere +
-			fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args)) +
+			fmt.Sprintf(" ORDER BY owner_id,id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args)) +
 			"SELECT " + definition.projection + " FROM document_page JOIN contracts_v1.document_details USING (id) ORDER BY document_details.id"
 	}
 	rows, err := s.pool.Query(ctx, query, args...)

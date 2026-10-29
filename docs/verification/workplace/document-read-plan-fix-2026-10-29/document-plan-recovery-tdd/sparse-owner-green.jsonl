@@ -1,0 +1,8 @@
+{"Time":"2026-10-29T17:51:34.6903854+01:00","Action":"start","Package":"github.com/Shpuntyara/wms-platform/internal/postgres"}
+{"Time":"2026-10-29T17:51:34.7261037+01:00","Action":"run","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners"}
+{"Time":"2026-10-29T17:51:34.7261037+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners","Output":"=== RUN   TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners\n","OutputType":"frame"}
+{"Time":"2026-10-29T17:51:34.9024996+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners","Output":"--- PASS: TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners (0.18s)\n","OutputType":"frame"}
+{"Time":"2026-10-29T17:51:34.9024996+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners","Elapsed":0.18}
+{"Time":"2026-10-29T17:51:34.9024996+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-29T17:51:35.9210756+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"ok  \tgithub.com/Shpuntyara/wms-platform/internal/postgres\t1.231s\n"}
+{"Time":"2026-10-29T17:51:35.9210756+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Elapsed":1.231}

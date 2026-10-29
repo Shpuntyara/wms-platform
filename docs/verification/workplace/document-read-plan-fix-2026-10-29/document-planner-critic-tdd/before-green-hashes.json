@@ -1,0 +1,7 @@
+{
+  "sha256": {
+    "internal/postgres/store.go": "89ac3c58eb2f62abd8e100f608d2ecd91f6208637b93394f3d5fffe5a561fa2b",
+    "internal/postgres/store_documents_planner_critic_integration_test.go": "850929aab6546ee6575a8f436d309f2c8a1925adef4b26ab17c926b7afe6f278"
+  },
+  "note": "test-only incremental plan persistence added after first RED; assertions/limits/fixture unchanged"
+}

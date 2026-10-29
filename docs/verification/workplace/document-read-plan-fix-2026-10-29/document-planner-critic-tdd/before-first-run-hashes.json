@@ -1,0 +1,8 @@
+{
+  "head": "609c037b8147d869806d5265a3c8bf9a98564237",
+  "sha256": {
+    "internal/postgres/store.go": "b7d7dea55b4311ee300caed09c6f50f4b9bb910a02b1daecd7317c9eaa87e8b8",
+    "internal/postgres/store_documents_planner_critic_integration_test.go": "467354617fa7c8932a7bc442c0a1cd7610d2b0367a478ce909567b0da470f93c",
+    "internal/postgres/store_documents_read_integration_test.go": "bb8f981935c6aa5f06556396bc817f6b632afc531635ef312b3c231fc1169117"
+  }
+}

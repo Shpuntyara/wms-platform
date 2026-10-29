@@ -267,7 +267,7 @@ def run(args):
         ('go_definitive_commit_rejection_becomes_retry', 'go', 'internal/postgres/documents.go', 'if _, ok := errors.AsType[*pgconn.PgError](err); ok {', 'if _, ok := errors.AsType[*pgconn.PgError](err); ok && false {', '^TestDocumentCommandsPreserveDefinitiveCommitRejection$'),
         ('go_document_lookahead_removed', 'go', 'internal/postgres/store.go', 'args = append(args, f.Limit+1)', 'args = append(args, f.Limit)', '^TestDocumentPaginationProperties$'),
         ('go_single_owner_scope_removed', 'go', 'internal/postgres/store.go', 'where.WriteString(" AND owner_id=$3::text::uuid")', 'where.WriteString(" AND $3::text IS NOT NULL")', '^TestDocumentPaginationProperties$'),
-        ('go_global_document_candidate_limit_removed', 'go', 'internal/postgres/store.go', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args))', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id) ", len(args))', '^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$'),
+        ('go_global_document_candidate_limit_removed', 'go', 'internal/postgres/store.go', 'fmt.Sprintf(" ORDER BY owner_id,id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args))', 'fmt.Sprintf(" ORDER BY owner_id,id LIMIT $%d) AS candidates ORDER BY candidates.id) ", len(args))', '^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$'),
     ]
     try:
         catalog = load_campaign_mutations(ROOT)

@@ -1,0 +1,12 @@
+{
+  "head": "609c037b8147d869806d5265a3c8bf9a98564237",
+  "run": 40912294411,
+  "failed_tests": [
+    "TestDocumentReadsStayBoundedAsHistoryGrows/10000/owners_deep",
+    "TestDocumentReadsStayBoundedAsHistoryGrows"
+  ],
+  "document_plan_files": 0,
+  "critic_plan_files": 0,
+  "full_CI_passed": false,
+  "missing_plans_reason": "Relative output directories were resolved under the Go package cwd and omitted by the root-work artifact upload."
+}

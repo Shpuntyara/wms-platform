@@ -1,0 +1,25 @@
+{
+  "red_source_hashes_match": true,
+  "green_source_hashes_match": true,
+  "red_failed_work": [
+    5141,
+    5041
+  ],
+  "green_plan_count": 8,
+  "green_max_row_work": 282,
+  "green_max_blocks": 217,
+  "green_complete": true,
+  "final_source_sha256": {
+    "internal/postgres/store.go": "89ac3c58eb2f62abd8e100f608d2ecd91f6208637b93394f3d5fffe5a561fa2b",
+    "internal/postgres/store_documents_planner_critic_integration_test.go": "850929aab6546ee6575a8f436d309f2c8a1925adef4b26ab17c926b7afe6f278"
+  },
+  "limits": {
+    "row_work": 1000,
+    "blocks": 1000
+  },
+  "notes": [
+    "Actual CI failed at1177 but its EXPLAIN was not uploaded; this is separate local reproduction.",
+    "Post-RED test-only evidence persistence changed; fixtures, assertions and thresholds remained unchanged.",
+    "No production source changed by critic."
+  ]
+}
