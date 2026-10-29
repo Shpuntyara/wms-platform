@@ -214,7 +214,7 @@ def main():
         check('separate scoped worker surface works', valid_worker)
     files = ['tests/hardened_profile.py', 'scripts/hardened_gate.py', 'db/profiles/hardened-v1.sql', 'db/bootstrap/hardened-grants.psql', 'db/profiles/onprem-v1.sql', 'db/bootstrap/onprem-grants.psql', 'internal/postgres/hardened.go', 'internal/postgres/hardened_jobs.go', 'internal/postgres/hardened_integration_test.go', 'internal/postgres/hardened_onprem_integration_test.go', 'internal/postgres/hardened_load_integration_test.go', 'cmd/wms-api/main.go', 'cmd/wms-api/runtime_profile.go', 'cmd/wms-api/runtime_profile_test.go']
     files += ['internal/postgres/hardened_durability.go', 'internal/postgres/hardened_durability_test.go', 'internal/postgres/hardened_onprem_critic_integration_test.go']
-    files += ['db/migrations/0010_document_numbering.sql', 'internal/postgres/hardened_numbering_integration_test.go']
+    files += ['db/migrations/0010_document_numbering.sql', 'db/migrations/0011_document_owner_seek.sql', 'internal/postgres/hardened_numbering_integration_test.go']
     files += [str(p.relative_to(ROOT)).replace('\\','/') for p in sorted((ROOT / 'db/migrations').glob('*.sql'))]
     report = {'profile': args.profile, 'deployment_profile': 'hardened-v1' if args.legacy_profile else 'onprem-v1', 'installation_id': installation, 'mutant': args.mutant, 'postgres': sql('SHOW server_version;').stdout.strip(),
               'test_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

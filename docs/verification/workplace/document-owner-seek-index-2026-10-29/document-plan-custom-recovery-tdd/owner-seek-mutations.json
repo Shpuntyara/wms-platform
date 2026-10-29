@@ -1,0 +1,288 @@
+{
+  "status": "passed",
+  "scope": "Scoped non-equivalent inventory, authorization, background, OIDC/HTTP, document and migration mutations; not a whole-repository mutation score.",
+  "source_head": "f94f60e2894835842c1dc07e90f14e762de25bc9",
+  "mutants": [
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentAdversarialOwnerFanoutHydratesOnlyPage"
+      ],
+      "completed_test_events": 1,
+      "seconds": 12.219,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-06bca5dd551743edb51a0da7f67b87e7\\go_global_document_candidate_limit_removed\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "go_global_document_candidate_limit_removed",
+      "kind": "go",
+      "domain": "documents",
+      "source": "internal/postgres/store.go",
+      "before": "fmt.Sprintf(\" ORDER BY owner_id,id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) \", len(args), len(args))",
+      "after": "fmt.Sprintf(\" ORDER BY owner_id,id LIMIT $%d) AS candidates ORDER BY candidates.id) \", len(args))",
+      "source_sha256_lf": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+      "mutant_sha256": "b7626419201f674a79fb451af19208ea62a6cafe02f61344c70b3e6b9a82b6f9"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentPaginationProperties",
+        "TestDocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners"
+      ],
+      "completed_test_events": 2,
+      "seconds": 1.985,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-06bca5dd551743edb51a0da7f67b87e7\\core_authorization_document_owner_predicate_removed\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(DocumentPaginationProperties|DocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners)$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_authorization_document_owner_predicate_removed",
+      "kind": "go",
+      "domain": "authorization",
+      "source": "internal/postgres/store.go",
+      "before": "\"owner_id=permitted_owner.owner_id\"",
+      "after": "\"true\"",
+      "source_sha256_lf": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+      "mutant_sha256": "622f870768571322b65a418133e2a951f1391decc4bc5e2478f1c0ee93e3507f"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentPaginationProperties"
+      ],
+      "completed_test_events": 1,
+      "seconds": 1.828,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-06bca5dd551743edb51a0da7f67b87e7\\core_authorization_document_deep_cursor_inclusive\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentPaginationProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_authorization_document_deep_cursor_inclusive",
+      "kind": "go",
+      "domain": "authorization",
+      "source": "internal/postgres/store.go",
+      "before": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)",
+      "after": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)\n\t\townerWhere = strings.Replace(ownerWhere, \" AND id>\", \" AND id>=\", 1)",
+      "source_sha256_lf": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+      "mutant_sha256": "4155b7ed6a42a33c3dbf979b2f6b3815ac9060d7b1940266fa14686c72e902b7"
+    },
+    {
+      "status": "killed",
+      "failed_tests": [
+        "TestDocumentPaginationProperties"
+      ],
+      "completed_test_events": 1,
+      "seconds": 1.843,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-overlay",
+        "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\mutations-06bca5dd551743edb51a0da7f67b87e7\\core_authorization_document_deep_cursor_ignored\\overlay.json",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^TestDocumentPaginationProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ],
+      "name": "core_authorization_document_deep_cursor_ignored",
+      "kind": "go",
+      "domain": "authorization",
+      "source": "internal/postgres/store.go",
+      "before": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)",
+      "after": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)\n\t\tif last != \"\" { ownerWhere = strings.TrimSuffix(ownerWhere, fmt.Sprintf(\" AND id>$%d::text::uuid\", len(args)-1)) + fmt.Sprintf(\" AND $%d::text IS NOT NULL\", len(args)-1) }",
+      "source_sha256_lf": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+      "mutant_sha256": "6e241186182c5e804a8f4f2b653f36219aef1beac674a3b4ea8c6e5b034618d0"
+    }
+  ],
+  "selected_cases": [
+    "core_authorization_document_owner_predicate_removed",
+    "core_authorization_document_deep_cursor_inclusive",
+    "core_authorization_document_deep_cursor_ignored",
+    "go_global_document_candidate_limit_removed"
+  ],
+  "work_directory": "work\\mutations-06bca5dd551743edb51a0da7f67b87e7",
+  "baseline": {
+    "status": "survived",
+    "failed_tests": [],
+    "completed_test_events": 22,
+    "seconds": 7.047,
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "test",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$|^TestDocumentCommandsRecoverFromCommitTransportFailure$|^TestDocumentPaginationProperties$",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ]
+  },
+  "source_sha256_lf": {
+    "internal/postgres/documents.go": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "internal/postgres/store.go": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+    "scripts/migrate_core.py": "230cc1ec4880f79bfec47f2be650b8522febc2637f662a1a3799daa90a63b9af",
+    "db/migrations/0010_document_numbering.sql": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b",
+    "internal/api/documents.go": "480b42f19137c2b80e496a06cc5f1ddb04218561b7dc3475a7a175b4b222b954",
+    "internal/api/server.go": "63642b3999015016ce8eb149dfceac76698116156e77fecf598ae629166e8619",
+    "internal/auth/oidc.go": "0a3bc86f278ac3751f2a7a4d922d9fd4b6a49431900f606c1f8df3ce604e5410",
+    "internal/inventory/model.go": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67",
+    "internal/jobs/monitor.go": "24123fa004240682cc964ff1c6bdfcb12d8f5d69cfe1574013244bc8ab8f2fab",
+    "internal/jobs/worker.go": "97400ace8abdfa86e4c9231590f6ea738ef43536066bb75bf01cfa149b18b311",
+    "internal/modules/registry.go": "493c148f5677e9327afe82c14b4660134712093b9885a5251f4aeea2d98cfb83",
+    "internal/postgres/documents_numbering_critic_integration_test.go": "e435ff5faa74d1091178db78eff9d07cec5475ec20d19044e7a783458305bac7",
+    "scripts/numbering_mutations.py": "876da84591e46cc2a32198a9bba4a7be61d36e8c3be93a67103ae7b450664bba"
+  },
+  "core_domains": {
+    "inventory": 21,
+    "authorization": 19,
+    "background": 22,
+    "boundary": 20
+  },
+  "numbering_cases": [
+    "numbering_counter_increments_twice",
+    "numbering_counter_does_not_increment",
+    "numbering_warehouse_timezone_ignored",
+    "numbering_receipt_and_transfer_prefix_swapped",
+    "numbering_large_number_truncated",
+    "numbering_manual_reservation_removed",
+    "numbering_manual_rewinds_counter",
+    "numbering_manual_transfer_uses_receipt_prefix",
+    "numbering_administrative_collision_probe_removed",
+    "numbering_replay_allocates_another_number"
+  ],
+  "core_baselines": {
+    "./internal/api": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 54,
+      "seconds": 0.719,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/api",
+        "-run",
+        "^TestDocumentNumberingHTTPContract$|^TestQueryFiltersCannotDisappearOnMalformedEncoding$|^TestRequestBodyLimitIncludesTrailingJSONAndWhitespace$|^TestRequestDeadlineIsShorterThanTheCallerContext$|^TestServerRejectsInvalidRequestsBeforeBackend$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/auth": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 24,
+      "seconds": 1.063,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/auth",
+        "-run",
+        "^TestOIDCAdversarialAlgorithmsAndLifetime$|^TestOIDCSecureRedirects$|^TestOIDCVerifiesAccessTokens$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/inventory": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 3,
+      "seconds": 0.531,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/inventory",
+        "-run",
+        "^TestIdentifierNormalizationProperties$|^TestPrincipalAdversarialGrantScopesAreExact$|^TestQuantityCanonicalDecimalProperties$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/jobs": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 21,
+      "seconds": 0.937,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/jobs",
+        "-run",
+        "^TestBackgroundMonitorExposesCountersAndUnhealthyStatus$|^TestBackgroundReadinessDetectsStallsAndBacklogs$|^TestDeliveryFailureSchedulesRetry$|^TestSenderCopiesSigningKeyAndChecksResponseStatus$|^TestSenderInvalidEnvelopeNeverMakesRequest$|^TestWorkerAckFailureDoesNotCountAsDelivery$|^TestWorkerRejectsPartialFailedClaim$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/modules": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 22,
+      "seconds": 0.532,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/modules",
+        "-run",
+        "^TestNewRegistryRejectsInvalidInstallations$|^TestRegistryAdversarialManifestSnapshotIsImmutable$|^TestRegistryAdversarialRawPolicySnapshotIsImmutable$|^TestRegistryRejectsLegacySDK$|^TestRegistryRejectsRelocatedGuard$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    },
+    "./internal/postgres": {
+      "status": "survived",
+      "failed_tests": [],
+      "completed_test_events": 94,
+      "seconds": 26.093,
+      "command": [
+        "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+        "test",
+        "-tags=integration",
+        "./internal/postgres",
+        "-run",
+        "^Test(DocumentPaginationProperties|DocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners)$|^TestDocumentPaginationProperties$|^TestKernelAuthorizationDeclarativeAlternativesRequireAllConjuncts$|^TestKernelAuthorizationDeclarativeFactsRemainScopedAndUnique$|^TestKernelAuthorizationTypedRulesNeverCoerceOrRound$|^TestKernelBackgroundRejectsInvalidBatchSizes$|^TestKernelExpirySkipsLockedDocumentAndRollsBackAtomically$|^TestKernelInventoryBalanceIdentityIsConcurrentAndNullSafe$|^TestKernelInventoryBusinessRejectionsAreAtomic$|^TestKernelInventoryCommandReplayBindsExactRequest$|^TestKernelInventoryCorrectionCannotReferenceDifferentScope$|^TestKernelInventoryDirectCommandsRejectStaleVersionAndWrongKind$|^TestKernelInventoryExpiredReservationCannotShipButOriginalCommandReplays$|^TestKernelInventoryGeneratedWorkflowConservesLedger$|^TestKernelInventoryHistoryAndBalanceIdentityAreImmutable$|^TestKernelInventoryItemAccountingCannotDriftAfterUse$|^TestKernelInventoryPrepareCannotCommitIncompleteOperation$|^TestKernelInventoryReleaseAndExpiryKeepExactEffects$|^TestKernelInventoryTrackingMismatchCannotRelabelStock$|^TestKernelOutboxConcurrentClaimsAndLeaseRecovery$|^TestKernelOutboxRetryAvailabilityAndDeadLetter$|^TestNumberingCriticAdministrativeLegacyCollision$|^TestNumberingCriticAutoKindsAndDurableReplay$|^TestNumberingCriticManualLegacyAndWarehouseScope$|^TestNumberingCriticWarehouseYearBoundaryAndMinimumWidth$|^TestOnPremAccountingMicroquantityConcurrentWarehousesProperty$",
+        "-count=1",
+        "-timeout=180s",
+        "-json"
+      ]
+    }
+  },
+  "killed": 4,
+  "survived": 0,
+  "invalid": 0
+}

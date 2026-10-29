@@ -1,0 +1,4 @@
+{
+  "scripts/migrate_core.py": "900eb9e159b6cab927be9a3a34b1e3512c447daf80268a2bcdc9dedded385723",
+  "scripts/test_document_numbering_migration_contract.py": "047b8125150ddbb0b56dad3ddaa2f196c2b9337e2b58ff8234ed67b611ccb611"
+}

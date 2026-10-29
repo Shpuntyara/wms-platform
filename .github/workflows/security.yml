@@ -116,6 +116,7 @@ jobs:
       - name: Migration recipes and database upgrade regressions
         run: |
           python3 scripts/verify-migrations.py --psql psql --port 5432
+          python3 tests/document_owner_index_upgrade.py --psql psql --port 5432 --admin wms_test_admin --owner-role wms_test_owner --report work/document-owner-index-upgrade.json
       - name: Formatting and static analysis
         run: |
           test -z "$(gofmt -l cmd internal)"
@@ -146,6 +147,7 @@ jobs:
             work/postgres-kernel.json
             work/verification.json
             work/migration-verification.json
+            work/document-owner-index-upgrade.json
             work/python-tests.txt
             work/installer-tests.txt
             work/hyperv-tests.txt

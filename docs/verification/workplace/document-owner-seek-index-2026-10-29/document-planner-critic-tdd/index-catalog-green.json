@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "complete_live_catalog_definition",
+      "status": "pass"
+    }
+  ],
+  "cleanup_databases": 0,
+  "source_sha256": {
+    "tests/document_owner_index_upgrade.py": "d6a8336eb0efec3569e3274c0f1d3671b30c50241edaa7f6b8450e05512a0e59",
+    "scripts/migrate_core.py": "230cc1ec4880f79bfec47f2be650b8522febc2637f662a1a3799daa90a63b9af",
+    "db/migrations/0011_document_owner_seek.sql": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+  }
+}

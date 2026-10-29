@@ -8,12 +8,61 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
 
 	"github.com/Shpuntyara/wms-platform/internal/inventory"
 )
+
+func assertPlannerCriticCandidateBounds(t *testing.T, raw json.RawMessage, deep bool) {
+	t.Helper()
+	var evidence struct {
+		Explain []struct {
+			Plan map[string]any `json:"Plan"`
+		} `json:"explain"`
+	}
+	if err := json.Unmarshal(raw, &evidence); err != nil || len(evidence.Explain) != 1 {
+		t.Fatalf("invalid captured executed plan: %v", err)
+	}
+	indexConditions := 0
+	var walk func(map[string]any, bool)
+	walk = func(node map[string]any, candidates bool) {
+		if node["Subplan Name"] == "CTE document_page" {
+			candidates = true
+		}
+		if candidates {
+			for _, field := range []string{"Rows Removed by Filter", "Rows Removed by Index Recheck"} {
+				if removed, ok := node[field].(float64); ok && removed > 0 {
+					t.Errorf("candidate scan discarded out-of-range rows: %s=%.0f", field, removed)
+				}
+			}
+			if condition, ok := node["Index Cond"].(string); ok {
+				indexConditions++
+				for _, field := range []string{"organization_id", "warehouse_id", "owner_id"} {
+					if !strings.Contains(condition, field) {
+						t.Errorf("candidate index condition omits %s: %s", field, condition)
+					}
+				}
+				if deep && !regexp.MustCompile(`\bid\s*>\s*`).MatchString(condition) {
+					t.Errorf("candidate cursor is filtered after the index seek: %s", condition)
+				}
+			}
+		}
+		if children, ok := node["Plans"].([]any); ok {
+			for _, child := range children {
+				if value, ok := child.(map[string]any); ok {
+					walk(value, candidates)
+				}
+			}
+		}
+	}
+	walk(evidence.Explain[0].Plan, false)
+	if indexConditions == 0 {
+		t.Error("candidate page did not execute an index seek")
+	}
+}
 
 // Global owner frequencies deliberately disagree with their frequencies inside
 // the requested warehouse. UUID suffixes and ownership are deterministic;
@@ -157,6 +206,7 @@ func TestDocumentPlannerCriticSkewedOwnerHistories(t *testing.T) {
 					if blocks > 1000 || work > 1000 {
 						t.Errorf("skewed-owner document page scanned history: blocks=%d row_work=%.0f for at most21 candidates", blocks, work)
 					}
+					assertPlannerCriticCandidateBounds(t, raw, deep)
 				}
 			})
 		}

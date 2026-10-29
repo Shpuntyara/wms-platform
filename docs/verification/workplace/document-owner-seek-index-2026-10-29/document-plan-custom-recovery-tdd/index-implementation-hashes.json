@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "50799F658DDCEC1302788E9AC0E75E0C7AA18590A32704D5BB8D92A128544E58",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\document_owner_index_upgrade.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "319B3F149053E49A8FA9CEC8751FDD7E110D7DC4FA2309935F204D5C198B8192",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\db\\migrations\\0011_document_owner_seek.sql"
+  }
+]

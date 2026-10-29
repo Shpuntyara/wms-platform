@@ -1,0 +1,154 @@
+[
+  {
+    "documents": 10000,
+    "case": "owners_first",
+    "mode": "force_custom_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = '132f7355-ac52-4d00-a2f9-6e7b1f1e0419'::uuid) AND (owner_id = (((unnest('{b0cdd922-6bdc-4cad-a121-ef6cfcea0f5e,df1f1c76-44bb-47e1-bdfb-b71bedb7c9d3}'::text[])))::uuid)) AND (warehouse_id = '64f7f70a-fc27-4d8d-a357-aace3145341e'::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 49,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 10000,
+    "case": "owners_first",
+    "mode": "force_generic_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = ($1)::uuid) AND (owner_id = (((unnest($3)))::uuid)) AND (warehouse_id = ($2)::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 49,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 10000,
+    "case": "owners_deep",
+    "mode": "force_custom_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = '132f7355-ac52-4d00-a2f9-6e7b1f1e0419'::uuid) AND (owner_id = (((unnest('{b0cdd922-6bdc-4cad-a121-ef6cfcea0f5e,df1f1c76-44bb-47e1-bdfb-b71bedb7c9d3}'::text[])))::uuid)) AND (warehouse_id = '64f7f70a-fc27-4d8d-a357-aace3145341e'::uuid) AND (id > '64f7f70a-fc27-4d8d-a357-000000002000'::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 5,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 17,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 10000,
+    "case": "owners_deep",
+    "mode": "force_generic_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = ($1)::uuid) AND (owner_id = (((unnest($3)))::uuid)) AND (warehouse_id = ($2)::uuid) AND (id > ($4)::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 5,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 17,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 100000,
+    "case": "owners_first",
+    "mode": "force_custom_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = '132f7355-ac52-4d00-a2f9-6e7b1f1e0419'::uuid) AND (owner_id = (((unnest('{b0cdd922-6bdc-4cad-a121-ef6cfcea0f5e,df1f1c76-44bb-47e1-bdfb-b71bedb7c9d3}'::text[])))::uuid)) AND (warehouse_id = '64f7f70a-fc27-4d8d-a357-aace3145341e'::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 49,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 100000,
+    "case": "owners_first",
+    "mode": "force_generic_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = ($1)::uuid) AND (owner_id = (((unnest($3)))::uuid)) AND (warehouse_id = ($2)::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 49,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 100000,
+    "case": "owners_deep",
+    "mode": "force_custom_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = '132f7355-ac52-4d00-a2f9-6e7b1f1e0419'::uuid) AND (owner_id = (((unnest('{b0cdd922-6bdc-4cad-a121-ef6cfcea0f5e,df1f1c76-44bb-47e1-bdfb-b71bedb7c9d3}'::text[])))::uuid)) AND (warehouse_id = '64f7f70a-fc27-4d8d-a357-aace3145341e'::uuid) AND (id > '64f7f70a-fc27-4d8d-a357-000000020000'::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 50,
+        "Shared Read Blocks": 0
+      }
+    ]
+  },
+  {
+    "documents": 100000,
+    "case": "owners_deep",
+    "mode": "force_generic_plan",
+    "nodes": [
+      {
+        "Node Type": "Index Only Scan",
+        "Index Name": "documents_owner_warehouse_page_idx",
+        "Index Cond": "((organization_id = ($1)::uuid) AND (owner_id = (((unnest($3)))::uuid)) AND (warehouse_id = ($2)::uuid) AND (id > ($4)::uuid))",
+        "Filter": null,
+        "Rows Removed by Filter": null,
+        "Rows Removed by Index Recheck": 0,
+        "Actual Rows": 21,
+        "Actual Loops": 2,
+        "Shared Hit Blocks": 50,
+        "Shared Read Blocks": 0
+      }
+    ]
+  }
+]

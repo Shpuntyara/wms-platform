@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "results": [
+    {
+      "name": "complete_live_catalog_definition",
+      "status": "fail",
+      "detail": "Owner lookup replacement must be a valid complete covering btree index"
+    }
+  ]
+}

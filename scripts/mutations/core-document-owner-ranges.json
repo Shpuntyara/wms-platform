@@ -1,23 +1,32 @@
 [
   {
-    "name":"core_authorization_document_first_owner_upper_bound_removed",
-    "kind":"go","domain":"authorization","source":"internal/postgres/store.go",
-    "before":"ownerRange := \"owner_id>=permitted_owner.owner_id AND owner_id<=permitted_owner.owner_id\"",
-    "after":"ownerRange := \"owner_id>=permitted_owner.owner_id\"",
-    "pattern":"^Test(DocumentPaginationProperties|DocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners)$","package":"./internal/postgres"
+    "name": "core_authorization_document_owner_predicate_removed",
+    "before": "\"owner_id=permitted_owner.owner_id\"",
+    "after": "\"true\"",
+    "pattern": "^Test(DocumentPaginationProperties|DocumentSparseOwnerScopeCannotEnumerateOrDuplicateOtherOwners)$",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/postgres/store.go",
+    "package": "./internal/postgres"
   },
   {
-    "name":"core_authorization_document_deep_owner_upper_bound_removed",
-    "kind":"go","domain":"authorization","source":"internal/postgres/store.go",
-    "before":"(owner_id,id)>(permitted_owner.owner_id,$%d::text::uuid) AND owner_id<=permitted_owner.owner_id",
-    "after":"(owner_id,id)>(permitted_owner.owner_id,$%d::text::uuid)",
-    "pattern":"^TestDocumentPaginationProperties$","package":"./internal/postgres"
+    "name": "core_authorization_document_deep_cursor_inclusive",
+    "before": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)",
+    "after": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)\n\t\townerWhere = strings.Replace(ownerWhere, \" AND id>\", \" AND id>=\", 1)",
+    "pattern": "^TestDocumentPaginationProperties$",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/postgres/store.go",
+    "package": "./internal/postgres"
   },
   {
-    "name":"core_authorization_document_deep_owner_cursor_ignored",
-    "kind":"go","domain":"authorization","source":"internal/postgres/store.go",
-    "before":"ownerRange = fmt.Sprintf(\"(owner_id,id)>(permitted_owner.owner_id,$%d::text::uuid) AND owner_id<=permitted_owner.owner_id\", len(args)-1)",
-    "after":"ownerRange = fmt.Sprintf(\"owner_id>=permitted_owner.owner_id AND owner_id<=permitted_owner.owner_id AND $%d::text IS NOT NULL\", len(args)-1)",
-    "pattern":"^TestDocumentPaginationProperties$","package":"./internal/postgres"
+    "name": "core_authorization_document_deep_cursor_ignored",
+    "before": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)",
+    "after": "ownerWhere := strings.Replace(where.String(), \"owner_id=ANY($3::text[]::uuid[])\", \"owner_id=permitted_owner.owner_id\", 1)\n\t\tif last != \"\" { ownerWhere = strings.TrimSuffix(ownerWhere, fmt.Sprintf(\" AND id>$%d::text::uuid\", len(args)-1)) + fmt.Sprintf(\" AND $%d::text IS NOT NULL\", len(args)-1) }",
+    "pattern": "^TestDocumentPaginationProperties$",
+    "kind": "go",
+    "domain": "authorization",
+    "source": "internal/postgres/store.go",
+    "package": "./internal/postgres"
   }
 ]

@@ -1,0 +1,33 @@
+.F..F..
+======================================================================
+FAIL: test_document_owner_seek_upgrade_cannot_be_omitted (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_document_owner_seek_upgrade_cannot_be_omitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 18, in test_document_owner_seek_upgrade_cannot_be_omitted
+    with self.assertRaisesRegex(ValueError,'Missing published migration.*0011_document_owner_seek'):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_online_owner_index_is_validated_in_warehouse_with_the_full_key (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_online_owner_index_is_validated_in_warehouse_with_the_full_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 26, in test_online_owner_index_is_validated_in_warehouse_with_the_full_key
+    try: plan=build_script(root)
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\migrate_core.py", line 135, in build_script
+    table = {'movements_owner_page_idx':'movements','reservations_owner_page_idx':'reservations','stock_owner_page_idx':'stock_balances','outbox_undelivered_health_idx':'outbox'}[index]
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+KeyError: 'documents_owner_warehouse_page_idx'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 27, in test_online_owner_index_is_validated_in_warehouse_with_the_full_key
+    except Exception as error: self.fail('Online owner-seek index has no validated migration recipe: '+str(error))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Online owner-seek index has no validated migration recipe: 'documents_owner_warehouse_page_idx'
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.071s
+
+FAILED (failures=2)

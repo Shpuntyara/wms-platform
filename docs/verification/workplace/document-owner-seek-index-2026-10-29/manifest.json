@@ -1,0 +1,118 @@
+{
+  "feature": "Forward-only covering owner lookup index and exact warehouse/owner/cursor seeks",
+  "primary_RED": {
+    "head": "f94f60e2894835842c1dc07e90f14e762de25bc9",
+    "run": 40916191946,
+    "full_CI_passed": false,
+    "actual_custom_plans_retained": true,
+    "critic_deep_work": 5069,
+    "original_deep_work": 1326
+  },
+  "implementation": [
+    "New0011 builds and validates a covering btree before dropping the original narrow owner index.",
+    "Exact owner equality and scalar cursor bounds remain visible to both plan modes.",
+    "No published0001–0010 migration was changed."
+  ],
+  "local_GREEN": {
+    "original_plans": 28,
+    "original_max_work": 450,
+    "original_max_blocks": 221,
+    "structural_critic_plans": 8,
+    "critic_max_work": 324,
+    "critic_max_blocks": 219,
+    "candidate_discarded_rows": 0,
+    "upgrade_failure_resume_cases": 11,
+    "owned_test_databases_cleaned": 11,
+    "owner_cursor_and_global_limit_mutants_killed": 4,
+    "survived": 0,
+    "invalid": 0
+  },
+  "coverage_note": "Range-predicate faults were rebased to equivalent owner equality and cursor faults after the final seek design; the sparse unauthorized-owner oracle remains active.",
+  "final_full_CI": "Required on the following immutable commit; final artifacts are verified separately.",
+  "files": [
+    {
+      "path": "numbering-ci-f94-failure/artifact-receipt.json",
+      "sha256": "ce1419782cd75e9efbf05af900c4700292bc59e3072b3487a0abd10f0558dadd"
+    },
+    {
+      "path": "numbering-ci-f94-failure/security-test-evidence/document-plans/document-read-plans.json",
+      "sha256": "ca869ba2b46967eb304913619bcbec2c1f71cb3b6f217c066e228dbc22df8fbd"
+    },
+    {
+      "path": "numbering-ci-f94-failure/security-test-evidence/document-critic-plans/document-planner-critic-plans.json",
+      "sha256": "4d4d2bf1e9598908b54bb8d729f593f58a8f84f300d0f9e8c10dbddf4bd65b16"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/actual-ci-red.json",
+      "sha256": "c5e9b9df670786d5486e8aedc1f80a8d8be18b8067ff220ac2b77ee53f9226e5"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/red-source-hashes.json",
+      "sha256": "3586d7a5b388950facafb78c3d95c4dfb4f7c155286105f00aa8854dfea5908d"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/implementation-hashes.json",
+      "sha256": "17ee23d85b639c5b19bb00db99e714a3a06ee5c1a9568e2495381d766f4683db"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/index-implementation-hashes.json",
+      "sha256": "61b182e43e8b2a0f805ce8c42fa43f7ca463874cd46a65b21e3ba019edd137e7"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/before-index-probes.json",
+      "sha256": "9ff565b6587a31da1ac6fb375823efc474ee4e3e7aae32fadae7eb816422cc2b"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/explicit-equality-probes.json",
+      "sha256": "e43dd7e4068ac998a281cb208634d1eeab71de94d0187692646f50b965af53d8"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/full-original-read-green.jsonl",
+      "sha256": "84ec0e6818dcddeb15f4a7b5e604c5fcd83dbe8eac16babb96108c633177aafc"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/structural-candidate-index-evidence.json",
+      "sha256": "7810682d90298aeaf3bfe902fb80b47ef9a3a3b57f2704afe45307a49afadc40"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/structural-critic-green.jsonl",
+      "sha256": "dc5bfc2b84cc241ffb777b7cfa7a63667426e17a75cf4d7aefe450bb85a63754"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/owner-seek-mutations.json",
+      "sha256": "b5765238cf677065b16fc736c627514842951185a94db544b6887a12ce09271c"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/green-plans/document-read-plans.json",
+      "sha256": "12687a8d0eddeff028f3d883384711701003ba64b2835037447a8cca0c970a81"
+    },
+    {
+      "path": "document-plan-custom-recovery-tdd/green-critic-plans/document-planner-critic-plans.json",
+      "sha256": "1e126c2d89c47357ee970353c8c671b98d3340c4e35b9812cffd21c59654277c"
+    },
+    {
+      "path": "document-planner-critic-tdd/index-catalog-red.json",
+      "sha256": "7e0a2c8fb26750fa787cf5dd3708271dda0eff56cc862a0ae1cd2b297995254d"
+    },
+    {
+      "path": "document-planner-critic-tdd/index-catalog-red-hashes.json",
+      "sha256": "04791ca8382f1058a1cc644b204b61f98d7cab6122c0c8584dcc9fed859b3720"
+    },
+    {
+      "path": "document-planner-critic-tdd/index-catalog-green.json",
+      "sha256": "a6806f3659506eb25c25f34d6788e364d33eda2017f5fa754b59057d5933daf8"
+    },
+    {
+      "path": "document-planner-critic-tdd/index-upgrade-strict-tests.json",
+      "sha256": "128ac76dab6a9ee054b041ac0738e97d081857ec9cc0997b900b46e915dcf5ed"
+    },
+    {
+      "path": "document-plan-recovery-tdd/owner-index-recipe-red.txt",
+      "sha256": "67737adbb2940188008d5b4f3ed14cf99476ef68f3de5bac6063d87733a1b3c7"
+    },
+    {
+      "path": "document-plan-recovery-tdd/owner-index-recipe-red-hashes.json",
+      "sha256": "0a2767ddf01a159e44c12ce83a6b2c4eb50f77ae16b478df16d36d662401a7f2"
+    }
+  ]
+}

@@ -21,6 +21,7 @@ PUBLISHED_MIGRATIONS = (
     '0008_background_health_and_policy_v2.sql',
     '0009_warehouse_documents.sql',
     '0010_document_numbering.sql',
+    '0011_document_owner_seek.sql',
 )
 
 def source(path):
@@ -131,9 +132,9 @@ SELECT NOT EXISTS(SELECT 1 FROM wms_migrations.history WHERE name='{name}') AS a
 """)
         check = ''
         for index in re.findall(r'CREATE INDEX CONCURRENTLY IF NOT EXISTS (\w+)', sql):
-            schema = 'platform' if 'outbox' in index else 'inventory'
-            table = {'movements_owner_page_idx':'movements','reservations_owner_page_idx':'reservations','stock_owner_page_idx':'stock_balances','outbox_undelivered_health_idx':'outbox'}[index]
-            columns = "ARRAY['created_at','dead_at']" if table == 'outbox' else "ARRAY['organization_id','warehouse_id','owner_id','id']"
+            schema = 'platform' if 'outbox' in index else 'warehouse' if index.startswith('documents_') else 'inventory'
+            table = {'movements_owner_page_idx':'movements','reservations_owner_page_idx':'reservations','stock_owner_page_idx':'stock_balances','outbox_undelivered_health_idx':'outbox','documents_owner_warehouse_page_idx':'documents'}[index]
+            columns = "ARRAY['created_at','dead_at']" if table == 'outbox' else "ARRAY['organization_id','owner_id','warehouse_id','id']" if table == 'documents' else "ARRAY['organization_id','warehouse_id','owner_id','id']"
             predicate = '(delivered_at IS NULL)' if table == 'outbox' else ''
             key_count = 1 if table == 'outbox' else 4
             check += f"""DO $$ BEGIN

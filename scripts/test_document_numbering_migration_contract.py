@@ -10,6 +10,28 @@ import mutation_runner
 ROOT=Path(__file__).resolve().parents[1]
 
 class DocumentNumberingMigrationContractTests(unittest.TestCase):
+    def test_document_owner_seek_upgrade_cannot_be_omitted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            shutil.copytree(ROOT/'db/migrations',root/'db/migrations')
+            (root/'db/migrations/0011_document_owner_seek.sql').unlink(missing_ok=True)
+            with self.assertRaisesRegex(ValueError,'Missing published migration.*0011_document_owner_seek'):
+                build_script(root)
+
+    def test_online_owner_index_is_validated_in_warehouse_with_the_full_key(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            shutil.copytree(ROOT/'db/migrations',root/'db/migrations')
+            (root/'db/migrations/0011_document_owner_seek.sql').write_text('CREATE INDEX CONCURRENTLY IF NOT EXISTS documents_owner_warehouse_page_idx ON warehouse.documents(organization_id,owner_id,warehouse_id,id);\n')
+            try: plan=build_script(root)
+            except Exception as error: self.fail('Online owner-seek index has no validated migration recipe: '+str(error))
+            start=plan.index("WHERE c.relname='documents_owner_warehouse_page_idx'")
+            check=plan[start:plan.index("THEN RAISE EXCEPTION",start)]
+            self.assertIn("n.nspname='warehouse'",check)
+            self.assertIn("i.indrelid='warehouse.documents'::regclass",check)
+            self.assertIn("ARRAY['organization_id','owner_id','warehouse_id','id']",check)
+            self.assertIn('i.indnkeyatts=4',check)
+
     def test_the_full_campaign_includes_the_independent_sql_numbering_catalog(self):
         load=getattr(mutation_runner,'load_campaign_mutations',None)
         self.assertTrue(callable(load),'The CI campaign must execute numbering faults, not merely unit-test a disconnected catalog')

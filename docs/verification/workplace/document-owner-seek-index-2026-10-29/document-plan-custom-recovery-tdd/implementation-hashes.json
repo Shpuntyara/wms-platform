@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "5F11DEB041BB04DB9E0099AE8A4DFC5CE751AAE4017E716364709C869CC25356",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\postgres\\store.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "319B3F149053E49A8FA9CEC8751FDD7E110D7DC4FA2309935F204D5C198B8192",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\db\\migrations\\0011_document_owner_seek.sql"
+  }
+]
