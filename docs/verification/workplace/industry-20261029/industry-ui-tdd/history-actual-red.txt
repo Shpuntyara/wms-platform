@@ -1,0 +1,42 @@
+
+[WebServer] (node:34068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:6364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+  1) tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Historia', exact: true })
+
+
+      68 |   expect(balance.on_hand).toBe('22');
+      69 |   expect(Object.values(state.commands).filter(c=>JSON.parse(c.body).kind==='issue')).toHaveLength(1);
+    > 70 |   await page.getByRole('button',{name:'Historia',exact:true}).click();
+         |                                                               ^
+      71 |   await page.getByRole('button',{name:doc.number,exact:true}).click();
+      72 |   await expect(page.getByRole('complementary',{name:'Wybrany dokument',exact:true})).toContainText(doc.recipient);
+      73 |   await expect(page.getByRole('complementary',{name:'Wybrany dokument',exact:true})).toContainText('Zamówienie #1');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:70:63
+
+    Error Context: test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once 

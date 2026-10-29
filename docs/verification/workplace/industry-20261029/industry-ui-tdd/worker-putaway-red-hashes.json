@@ -1,0 +1,10 @@
+[
+  {
+    "path": "web/src/app.js",
+    "sha256": "d3f5d4b449fbddf7f94bb5e602aec21815da21a51585b3ab8a7140e5940e2f7c"
+  },
+  {
+    "path": "web/tests/industry-workplace.spec.mjs",
+    "sha256": "5f3341c71a2a8ffc8efaa13ef117fcbf7a2af30a4090a6b755ca2861156ade17"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "sources": [
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "8af10142df53a884744b96f570e0561097ce552362d2c9598339a8a6274f3e32"
+    },
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "404bfd395811cc0482172a4e5c12c8f4e122e1034682aa5ae0e5237dbb98958f"
+    }
+  ],
+  "output_sha256": "f8ea47baceba077799a56ee0d960f0c7ee6635e09bf85bdcff2f9b915d507d40"
+}

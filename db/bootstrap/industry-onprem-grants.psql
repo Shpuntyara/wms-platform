@@ -1,0 +1,2 @@
+\set ON_ERROR_STOP on
+GRANT EXECUTE ON FUNCTION hardened_api.work_orders(text),hardened_api.work_order_command(uuid,text) TO :"api_role";

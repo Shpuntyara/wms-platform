@@ -36,6 +36,7 @@ jobs:
       - name: Independent workplace behavioral mutations
         run: |
           python3 scripts/verify_ui_mutations.py --node node --output work/ui-mutations.json
+          python3 scripts/verify_industry_ui_mutations.py --output work/industry-ui-mutations.json
           python3 tests/ui_backend_mutations.py --go go
           python3 scripts/verify_workplace_setup.py --output work/workplace-setup-mutations.json
           python3 scripts/verify_address_recovery.py --output work/address-recovery-mutations.json
@@ -48,6 +49,7 @@ jobs:
             web/work/
             web/test-results/
             work/ui-mutations*
+            work/industry-ui-mutations*
             work/ui-backend-mutations/
             work/workplace-setup-mutations*
             work/address-recovery-mutations*
@@ -75,6 +77,7 @@ jobs:
       WMS_TEST_RUNTIME_DSN: postgres://wms_go_runtime@127.0.0.1:5432/wms_kernel_test_backend?sslmode=disable
       WMS_DOCUMENT_PLAN_DIR: ${{ github.workspace }}/work/document-plans
       WMS_DOCUMENT_CRITIC_PLAN_DIR: ${{ github.workspace }}/work/document-critic-plans
+      WMS_WORK_ORDER_PLAN_DIR: ${{ github.workspace }}/work/work-order-plans
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -104,6 +107,8 @@ jobs:
           export PYTHONPATH="$PWD/work/hyperv-deps"
           python3 -m unittest discover -s tests -p 'test*installer*.py' 2>&1 | tee work/installer-tests.txt
           python3 -m unittest discover -s tests -p 'test_hyperv_bootstrap.py' 2>&1 | tee work/hyperv-tests.txt
+          python3 tests/test_industry_catalog.py
+          python3 tests/industry_catalog_mutations.py --output work/industry-catalog-mutations.json
           python3 deploy/linux/verify_installer.py
       - name: Monitoring semantics with real Prometheus query evaluation
         run: |
@@ -148,6 +153,7 @@ jobs:
             work/verification.json
             work/migration-verification.json
             work/document-owner-index-upgrade.json
+            work/industry-catalog-mutations.json
             work/python-tests.txt
             work/installer-tests.txt
             work/hyperv-tests.txt
@@ -164,6 +170,7 @@ jobs:
             work/ui-live-browser/
             work/document-plans/
             work/document-critic-plans/
+            work/work-order-plans/
           if-no-files-found: error
   hardened:
     runs-on: ubuntu-latest

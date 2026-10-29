@@ -1,0 +1,19 @@
+recipe_quantity_ignored: killed
+recipe_float_rounding: invalid
+recipe_duplicate_material_lost: killed
+recipe_micro_fraction_truncated: killed
+availability_cross_owner: killed
+availability_cross_warehouse: killed
+availability_uses_physical_not_free: killed
+shortage_surplus_negative: killed
+stock_location_search_removed: killed
+stock_diacritics_not_folded: survived
+reservation_ignores_reserved_quantity: killed
+reservation_uses_physical_stock: killed
+shipment_source_owner_unchecked: killed
+issue_reservation_other_line: killed
+issue_reservation_other_balance: killed
+issue_reservation_active_quantity_unchecked: killed
+issue_wrong_reservation_id: killed
+issue_physical_stock_unchecked: killed
+{"passed": false, "killed": 16, "survived": 1, "invalid": 1, "skipped": 0}

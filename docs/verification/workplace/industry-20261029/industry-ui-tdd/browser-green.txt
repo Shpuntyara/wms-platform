@@ -1,0 +1,70 @@
+
+[WebServer] (node:32848) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 6 workers
+
+(node:10496) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:25332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+(node:28492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:23824) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:33044) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:12312) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/8] tests\industry-workplace.spec.mjs:71:1 › stock WZ rejects unavailable quantity before creating a document
+[2/8] tests\industry-workplace.spec.mjs:105:46 › critic: lost reservation reply survives reload and does not post twice
+[3/8] tests\industry-workplace.spec.mjs:81:1 › bureau plans material demand and work stages without changing physical stock
+[4/8] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+[5/8] tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[6/8] tests\industry-workplace.spec.mjs:105:46 › critic: lost issue reply survives reload and does not post twice
+[7/8] tests\industry-workplace.spec.mjs:157:1 › critic: all stock pages participate in name search
+[8/8] tests\industry-workplace.spec.mjs:178:1 › worker moves stock on an MM while PZ creation remains unavailable
+  1) tests\industry-workplace.spec.mjs:178:1 › worker moves stock on an MM while PZ creation remains unavailable 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Przyjęcia (PZ)', exact: true })
+
+
+      202 |   expect(balances.find(row=>row.position_id===state.workspace.catalog.positions[2].id).on_hand).toBe('3');
+      203 |   await page.getByRole('button',{name:'Biuro',exact:true}).click();
+    > 204 |   await page.getByRole('button',{name:'Przyjęcia (PZ)',exact:true}).click();
+          |                                                                     ^
+      205 |   await expect(page.getByRole('button',{name:'Nowe przyjęcie (PZ)',exact:true})).toHaveCount(0);
+      206 | });
+      207 |
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:204:69
+
+    Error Context: test-results\industry-workplace-worker--3425e-reation-remains-unavailable\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-worker--3425e-reation-remains-unavailable\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-worker--3425e-reation-remains-unavailable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\industry-workplace.spec.mjs:178:1 › worker moves stock on an MM while PZ creation remains unavailable 
+  7 passed (34.2s)

@@ -73,7 +73,8 @@ def main():
     if args.profile == 'hardened':
         historical = (ROOT / 'db/profiles/hardened-v1.sql').read_text()
         forward = '' if args.legacy_profile else (ROOT / 'db/profiles/onprem-v1.sql').read_text()
-        original = historical + forward
+        industry = '' if args.legacy_profile else (ROOT / 'db/profiles/industry-v1.sql').read_text()
+        original = historical + forward + industry
         if args.mutant == 'signature':
             forward = forward.replace('IF difference<>0 OR parts[10]', 'IF false OR parts[10]')
         elif args.mutant == 'action':
@@ -84,12 +85,14 @@ def main():
             historical = historical.replace(" IF p_resource='documents' THEN\n  SELECT", " IF false THEN\n  SELECT")
         elif args.mutant == 'installation':
             forward = forward.replace('parts[2] IS DISTINCT FROM installation_id::text', 'false')
-        profile_source = historical + forward
+        profile_source = historical + forward + industry
         if args.mutant and profile_source == original:
             raise RuntimeError('Mutant did not alter the installed profile')
         sql(f'SET ROLE {owner};\n' + profile_source)
         bootstrap = 'hardened-grants.psql' if args.legacy_profile else 'onprem-grants.psql'
         sql(f'\\set api_role {api}\n\\set worker_role {worker}\n\\set organization_id {ORG}\n\\set warehouse_id {WH}\nSET ROLE {owner};\n' + (ROOT / 'db/bootstrap' / bootstrap).read_text())
+        if not args.legacy_profile:
+            sql(f'\\set api_role {api}\nSET ROLE {owner};\n' + (ROOT/'db/bootstrap/industry-onprem-grants.psql').read_text())
         # Synthetic key exists only in process memory and this disposable DB.
         sql(f"INSERT INTO hardened_private.signing_keys(login,key) VALUES('{api}',decode('{key.hex()}','hex'));")
         if not args.legacy_profile:
@@ -215,6 +218,11 @@ def main():
     files = ['tests/hardened_profile.py', 'scripts/hardened_gate.py', 'db/profiles/hardened-v1.sql', 'db/bootstrap/hardened-grants.psql', 'db/profiles/onprem-v1.sql', 'db/bootstrap/onprem-grants.psql', 'internal/postgres/hardened.go', 'internal/postgres/hardened_jobs.go', 'internal/postgres/hardened_integration_test.go', 'internal/postgres/hardened_onprem_integration_test.go', 'internal/postgres/hardened_load_integration_test.go', 'cmd/wms-api/main.go', 'cmd/wms-api/runtime_profile.go', 'cmd/wms-api/runtime_profile_test.go']
     files += ['internal/postgres/hardened_durability.go', 'internal/postgres/hardened_durability_test.go', 'internal/postgres/hardened_onprem_critic_integration_test.go']
     files += ['db/migrations/0010_document_numbering.sql', 'db/migrations/0011_document_owner_seek.sql', 'internal/postgres/hardened_numbering_integration_test.go']
+    files += ['db/migrations/0012_document_business_context.sql', 'db/migrations/0013_work_orders.sql',
+              'db/profiles/industry-v1.sql', 'db/bootstrap/industry-onprem-grants.psql',
+              'db/bootstrap/industry-backend-grants.psql', 'internal/postgres/work_orders.go',
+              'internal/postgres/hardened_business_documents_integration_test.go',
+              'internal/postgres/hardened_work_orders_integration_test.go']
     files += [str(p.relative_to(ROOT)).replace('\\','/') for p in sorted((ROOT / 'db/migrations').glob('*.sql'))]
     report = {'profile': args.profile, 'deployment_profile': 'hardened-v1' if args.legacy_profile else 'onprem-v1', 'installation_id': installation, 'mutant': args.mutant, 'postgres': sql('SHOW server_version;').stdout.strip(),
               'test_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

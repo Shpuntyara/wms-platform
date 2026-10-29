@@ -1,0 +1,17 @@
+{
+  "exit_code": 1,
+  "failures": 10,
+  "errors": 0,
+  "description": "Baseline delegates former two-item workplace catalog and performs no industrial seed; 10 behavior assertions fail before feature implementation",
+  "sources": [
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "0cc4a41a7fae90eafe24beaf35661e2ff3874d3b32be0dd0cdc986ed02bf0c5a"
+    },
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "89a20d21312fea028678e48d9293845ee413ce6d367f323d128461b0c1349d15"
+    }
+  ],
+  "output_sha256": "563c814dc54b02cd2cf8a283c695b66bf15c8b4a3945203061478cb217380e29"
+}

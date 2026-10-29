@@ -1,0 +1,14 @@
+test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements (__main__.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements) ... FAIL
+
+======================================================================
+FAIL: test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements (__main__.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 372, in test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements
+    self.assertEqual(len(rows),3,'Opening catalog must persist real orders, not UI-only placeholders')
+AssertionError: 0 != 3 : Opening catalog must persist real orders, not UI-only placeholders
+
+----------------------------------------------------------------------
+Ran 1 test in 4.561s
+
+FAILED (failures=1)

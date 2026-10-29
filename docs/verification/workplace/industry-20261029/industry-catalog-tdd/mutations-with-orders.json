@@ -1,0 +1,213 @@
+{
+  "passed": true,
+  "scope": "Selected non-equivalent catalog, opening receipt, replay and configuration faults; not a repository mutation score.",
+  "baseline": {
+    "status": "survived",
+    "seconds": 14.5,
+    "tests": 20,
+    "failures": [],
+    "errors": [],
+    "skipped": [],
+    "output": "test_apply_rejects_changed_private_scope_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_changed_private_scope_before_any_database_change) ... ok\ntest_apply_rejects_foreign_workspace_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change) ... ok\ntest_apply_rejects_stale_origin_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change) ... ok\ntest_example_orders_are_scope_bound_and_compute_real_materials (industry_catalog_checks.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials) ... ok\ntest_known_materials_and_leftovers_have_concrete_stock_places (industry_catalog_checks.IndustryCatalogContract.test_known_materials_and_leftovers_have_concrete_stock_places) ... ok\ntest_merge_keeps_historical_labels_and_rows_except_selected_company_labels (industry_catalog_checks.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels) ... ok\ntest_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (industry_catalog_checks.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data) ... ok\ntest_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (industry_catalog_checks.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe) ... ok\ntest_plan_properties_for_many_scopes_and_both_profiles (industry_catalog_checks.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles) ... ok\ntest_seed_is_transactional_audited_and_does_not_set_stock_amounts (industry_catalog_checks.IndustryCatalogContract.test_seed_is_transactional_audited_and_does_not_set_stock_amounts) ... ok\ntest_stationery_has_color_size_year_and_leftover_composition (industry_catalog_checks.IndustryCatalogContract.test_stationery_has_color_size_year_and_leftover_composition) ... ok\ntest_storage_codes_mean_section_and_level (industry_catalog_checks.IndustryCatalogContract.test_storage_codes_mean_section_and_level) ... ok\ntest_ten_cabinets_have_independent_material_requirements_and_visible_shortages (industry_catalog_checks.IndustryCatalogContract.test_ten_cabinets_have_independent_material_requirements_and_visible_shortages) ... ok\ntest_unknown_profile_or_bad_scope_rejected (industry_catalog_checks.IndustryCatalogContract.test_unknown_profile_or_bad_scope_rejected) ... ok\ntest_actual_postgres_catalog_drift_rejects_atomic_seed (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_catalog_drift_rejects_atomic_seed) ... ok\ntest_actual_postgres_concurrent_seed_posts_one_opening (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_concurrent_seed_posts_one_opening) ... ok\ntest_actual_postgres_foreign_installation_and_fixture_privileges_fail_closed (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_foreign_installation_and_fixture_privileges_fail_closed) ... ok\ntest_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries) ... ok\ntest_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants) ... ok\ntest_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 13.878s\n\nOK\n"
+  },
+  "mutants": [
+    {
+      "name": "wrong_customer_profile",
+      "status": "killed",
+      "seconds": 0.485,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 72, in test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe\n    self.assertEqual(plan['company'], 'METALFORM')\nAssertionError: 'PAPIERNIK' != 'METALFORM'\n- PAPIERNIK\n+ METALFORM\n\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (industry_catalog_checks.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe) ... FAIL\n\n======================================================================\nFAIL: test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (industry_catalog_checks.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 72, in test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe\n    self.assertEqual(plan['company'], 'METALFORM')\nAssertionError: 'PAPIERNIK' != 'METALFORM'\n- PAPIERNIK\n+ METALFORM\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "shelf_level_off_by_one",
+      "status": "killed",
+      "seconds": 0.437,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_storage_codes_mean_section_and_level",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 166, in test_storage_codes_mean_section_and_level\n    self.assertEqual(by_code['B4']['name'], 'Regał B · poziom 4')\nAssertionError: 'Regał B · poziom 5' != 'Regał B · poziom 4'\n- Regał B · poziom 5\n?                  ^\n+ Regał B · poziom 4\n?                  ^\n\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_storage_codes_mean_section_and_level (industry_catalog_checks.IndustryCatalogContract.test_storage_codes_mean_section_and_level) ... FAIL\n\n======================================================================\nFAIL: test_storage_codes_mean_section_and_level (industry_catalog_checks.IndustryCatalogContract.test_storage_codes_mean_section_and_level)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 166, in test_storage_codes_mean_section_and_level\n    self.assertEqual(by_code['B4']['name'], 'Regał B · poziom 4')\nAssertionError: 'Regał B · poziom 5' != 'Regał B · poziom 4'\n- Regał B · poziom 5\n?                  ^\n+ Regał B · poziom 4\n?                  ^\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "bill_of_materials_quantity_replaced_by_one",
+      "status": "killed",
+      "seconds": 0.438,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_ten_cabinets_have_independent_material_requirements_and_visible_shortages",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 105, in test_ten_cabinets_have_independent_material_requirements_and_visible_shortages\n    self.assertEqual(required[sku],Decimal(need),sku)\nAssertionError: Decimal('10') != Decimal('240') : SR-M8X40\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_ten_cabinets_have_independent_material_requirements_and_visible_shortages (industry_catalog_checks.IndustryCatalogContract.test_ten_cabinets_have_independent_material_requirements_and_visible_shortages) ... FAIL\n\n======================================================================\nFAIL: test_ten_cabinets_have_independent_material_requirements_and_visible_shortages (industry_catalog_checks.IndustryCatalogContract.test_ten_cabinets_have_independent_material_requirements_and_visible_shortages)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 105, in test_ten_cabinets_have_independent_material_requirements_and_visible_shortages\n    self.assertEqual(required[sku],Decimal(need),sku)\nAssertionError: Decimal('10') != Decimal('240') : SR-M8X40\n\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "stale_origin_not_validated",
+      "status": "killed",
+      "seconds": 0.39,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 49, in test_apply_rejects_stale_origin_before_any_database_change\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_apply_rejects_stale_origin_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change) ... FAIL\n\n======================================================================\nFAIL: test_apply_rejects_stale_origin_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 49, in test_apply_rejects_stale_origin_before_any_database_change\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.008s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "foreign_workspace_not_validated",
+      "status": "killed",
+      "seconds": 0.407,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 57, in test_apply_rejects_foreign_workspace_before_any_database_change\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_apply_rejects_foreign_workspace_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change) ... FAIL\n\n======================================================================\nFAIL: test_apply_rejects_foreign_workspace_before_any_database_change (industry_catalog_checks.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 57, in test_apply_rejects_foreign_workspace_before_any_database_change\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.008s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "conflicting_catalog_overlooked",
+      "status": "killed",
+      "seconds": 0.453,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 188, in test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (industry_catalog_checks.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data) ... FAIL\n\n======================================================================\nFAIL: test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (industry_catalog_checks.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 188, in test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data\n    with self.assertRaises(ValueError):\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.005s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "movement_replay_command_randomized",
+      "status": "killed",
+      "seconds": 0.5,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 210, in test_plan_properties_for_many_scopes_and_both_profiles\n    self.assertEqual(plan, industry.build_plan(profile, scope))\nAssertionError: {'sch[651 chars]': ['a7f829e8-efcd-4be6-9ecf-d6f08f7bb915', '1[111785 chars]]}]}} != {'sch[651 chars]': ['63d0ec7d-f519-4893-99e6-738810c81eb6', 'c[111785 chars]]}]}}\nDiff is 166574 characters long. Set self.maxDiff to None to see it.\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_plan_properties_for_many_scopes_and_both_profiles (industry_catalog_checks.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles) ... FAIL\n\n======================================================================\nFAIL: test_plan_properties_for_many_scopes_and_both_profiles (industry_catalog_checks.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 210, in test_plan_properties_for_many_scopes_and_both_profiles\n    self.assertEqual(plan, industry.build_plan(profile, scope))\nAssertionError: {'sch[651 chars]': ['a7f829e8-efcd-4be6-9ecf-d6f08f7bb915', '1[111785 chars]]}]}} != {'sch[651 chars]': ['63d0ec7d-f519-4893-99e6-738810c81eb6', 'c[111785 chars]]}]}}\nDiff is 166574 characters long. Set self.maxDiff to None to see it.\n\n----------------------------------------------------------------------\nRan 1 test in 0.102s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "small_stock_leftovers_omitted",
+      "status": "killed",
+      "seconds": 0.453,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_known_materials_and_leftovers_have_concrete_stock_places",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 120, in test_known_materials_and_leftovers_have_concrete_stock_places\n    self.assertEqual(actual.get(sku),place_quantity,sku)\nAssertionError: None != ('B1', '70') : AL-500X300X2\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_known_materials_and_leftovers_have_concrete_stock_places (industry_catalog_checks.IndustryCatalogContract.test_known_materials_and_leftovers_have_concrete_stock_places) ... FAIL\n\n======================================================================\nFAIL: test_known_materials_and_leftovers_have_concrete_stock_places (industry_catalog_checks.IndustryCatalogContract.test_known_materials_and_leftovers_have_concrete_stock_places)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 120, in test_known_materials_and_leftovers_have_concrete_stock_places\n    self.assertEqual(actual.get(sku),place_quantity,sku)\nAssertionError: None != ('B1', '70') : AL-500X300X2\n\n----------------------------------------------------------------------\nRan 1 test in 0.002s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "opening_privileges_not_removed",
+      "status": "killed",
+      "seconds": 3.813,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 291, in test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants\n    self.assertEqual(self.sql('SELECT count(*) FROM platform.actor_grants WHERE actor_id=' + workplace.sql_literal(plan['actor_id']) + ';'), '0')\nAssertionError: '3' != '0'\n- 3\n+ 0\n\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants) ... FAIL\n\n======================================================================\nFAIL: test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 291, in test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants\n    self.assertEqual(self.sql('SELECT count(*) FROM platform.actor_grants WHERE actor_id=' + workplace.sql_literal(plan['actor_id']) + ';'), '0')\nAssertionError: '3' != '0'\n- 3\n+ 0\n\n\n----------------------------------------------------------------------\nRan 1 test in 3.381s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "opening_transaction_removed",
+      "status": "killed",
+      "seconds": 2.562,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 332, in test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries\n    self.assertEqual(self.stock(plan),before)\nAssertionError: {'0362abb1-1ceb-5c49-97af-6d9f66fcc3c0': ['[17478 chars], 1]} != {'12e29df1-d022-5fd9-af81-48b8ca8e8ca0': ['[228 chars], 1]}\nDiff is 18588 characters long. Set self.maxDiff to None to see it.\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries) ... FAIL\n\n======================================================================\nFAIL: test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 332, in test_actual_postgres_interrupted_opening_rolls_back_all_previous_lines_and_retries\n    self.assertEqual(self.stock(plan),before)\nAssertionError: {'0362abb1-1ceb-5c49-97af-6d9f66fcc3c0': ['[17478 chars], 1]} != {'12e29df1-d022-5fd9-af81-48b8ca8e8ca0': ['[228 chars], 1]}\nDiff is 18588 characters long. Set self.maxDiff to None to see it.\n\n----------------------------------------------------------------------\nRan 1 test in 2.152s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "sample_orders_not_persisted",
+      "status": "killed",
+      "seconds": 2.438,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 372, in test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements\n    self.assertEqual(len(rows),3,'Opening catalog must persist real orders, not UI-only placeholders')\nAssertionError: 0 != 3 : Opening catalog must persist real orders, not UI-only placeholders\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements) ... FAIL\n\n======================================================================\nFAIL: test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements (industry_catalog_checks.IndustryCatalogPostgres.test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 372, in test_actual_postgres_sample_plans_persist_once_and_match_fixture_requirements\n    self.assertEqual(len(rows),3,'Opening catalog must persist real orders, not UI-only placeholders')\nAssertionError: 0 != 3 : Opening catalog must persist real orders, not UI-only placeholders\n\n----------------------------------------------------------------------\nRan 1 test in 1.995s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "name": "sample_bom_not_scaled_with_order",
+      "status": "killed",
+      "seconds": 0.406,
+      "tests": 1,
+      "failures": [
+        {
+          "test": "industry_catalog_checks.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials",
+          "detail": "Traceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 147, in test_example_orders_are_scope_bound_and_compute_real_materials\n    self.assertEqual(required['SR-M8X40'],'240')\nAssertionError: '24' != '240'\n- 24\n+ 240\n?   +\n\n"
+        }
+      ],
+      "errors": [],
+      "skipped": [],
+      "output": "test_example_orders_are_scope_bound_and_compute_real_materials (industry_catalog_checks.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials) ... FAIL\n\n======================================================================\nFAIL: test_example_orders_are_scope_bound_and_compute_real_materials (industry_catalog_checks.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_industry_catalog.py\", line 147, in test_example_orders_are_scope_bound_and_compute_real_materials\n    self.assertEqual(required['SR-M8X40'],'240')\nAssertionError: '24' != '240'\n- 24\n+ 240\n?   +\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.003s\n\nFAILED (failures=1)\n"
+    }
+  ],
+  "killed": 12,
+  "survived": 0,
+  "invalid": 0,
+  "source_unchanged": true,
+  "source_sha256": [
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "83e4a753d7722b88159c962179ef2f313c450d0deece2d6f290abd4e5bf753db"
+    },
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "7386e4f60637587b1b89d1425d3a53402265431c1ab2f7e8179479d46ce73452"
+    },
+    {
+      "path": "tests/industry_catalog_mutations.py",
+      "sha256": "d3b30f065905307b6c8eaa8b69ea44c2e555af6bb6285373815dca931ee75b89"
+    }
+  ]
+}

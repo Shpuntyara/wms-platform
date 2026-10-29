@@ -1,0 +1,27 @@
+
+[WebServer] (node:36572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 4 workers
+
+(node:6364) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:24712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:37380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:32228) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] tests\industry-workplace.spec.mjs:217:1 › critic: material and finished-goods WZ inherit the actual order owner
+[2/4] tests\industry-workplace.spec.mjs:267:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending
+[3/4] tests\industry-workplace.spec.mjs:247:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending
+[4/4] tests\industry-workplace.spec.mjs:297:1 › critic: partial reservation is visible and issued before reserving the remaining plan
+  4 passed (3.1s)

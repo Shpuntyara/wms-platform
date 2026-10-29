@@ -1,0 +1,24 @@
+test_apply_rejects_stale_origin_before_any_database_change (__main__.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change) ... FAIL
+test_apply_rejects_foreign_workspace_before_any_database_change (__main__.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change) ... FAIL
+test_apply_rejects_changed_private_scope_before_any_database_change (__main__.IndustryCatalogContract.test_apply_rejects_changed_private_scope_before_any_database_change) ... ok
+
+======================================================================
+FAIL: test_apply_rejects_stale_origin_before_any_database_change (__main__.IndustryCatalogContract.test_apply_rejects_stale_origin_before_any_database_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 48, in test_apply_rejects_stale_origin_before_any_database_change
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_apply_rejects_foreign_workspace_before_any_database_change (__main__.IndustryCatalogContract.test_apply_rejects_foreign_workspace_before_any_database_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 56, in test_apply_rejects_foreign_workspace_before_any_database_change
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.020s
+
+FAILED (failures=2)

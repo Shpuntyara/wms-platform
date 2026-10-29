@@ -1,0 +1,14 @@
+[
+  {
+    "path": "internal/postgres/work_orders_critic_integration_test.go",
+    "sha256": "5209cfc8f98d73ce63ca81f57e612f50d41a2b5783e1de2759e413b8d2d8cf84"
+  },
+  {
+    "path": "internal/postgres/work_orders.go",
+    "sha256": "b1bec94da10152c884a090abe0c73931157090478d4945894ee2f1374fe5cdf3"
+  },
+  {
+    "path": "db/migrations/0013_work_orders.sql",
+    "sha256": "b5c8974dd3c7f8a12a66faba3ce6f4db3324221d36d13b8e1085270b18bcc0b2"
+  }
+]

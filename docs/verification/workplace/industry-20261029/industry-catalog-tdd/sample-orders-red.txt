@@ -1,0 +1,14 @@
+test_example_orders_are_scope_bound_and_compute_real_materials (__main__.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials) ... FAIL
+
+======================================================================
+FAIL: test_example_orders_are_scope_bound_and_compute_real_materials (__main__.IndustryCatalogContract.test_example_orders_are_scope_bound_and_compute_real_materials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 127, in test_example_orders_are_scope_bound_and_compute_real_materials
+    self.assertEqual(len(examples),3,'Each factory needs visible real example orders')
+AssertionError: 0 != 3 : Each factory needs visible real example orders
+
+----------------------------------------------------------------------
+Ran 1 test in 0.005s
+
+FAILED (failures=1)

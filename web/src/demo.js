@@ -1,4 +1,4 @@
-import {movementIntent, remaining, completed} from './domain.js';
+import {movementIntent, remaining, completed, materialRequirements, reservationIntent, issueIntent} from './domain.js';
 const id = n => `22222222-2222-4222-8222-${String(n).padStart(12, '0')}`;
 const scope = {organization_id: id(1), warehouse_id: id(2)};
 const count = text => { const [whole, fraction = ''] = text.split('.'); return BigInt(whole) * 1000000n + BigInt(fraction.padEnd(6, '0')); };
@@ -10,7 +10,7 @@ const sum = (a, b) => {
 function nextNumber(state, body, now) {
   const warehouse = state.workspace.catalog.warehouses.find(row => row.id === body.warehouse_id);
   const year = new Intl.DateTimeFormat('en', {year:'numeric', timeZone:warehouse?.timezone || 'Europe/Warsaw'}).format(now);
-  const prefix = `${body.kind === 'receipt' ? 'PZ' : 'MM'}/${year}/`;
+  const prefix = `${body.kind === 'shipment' ? 'WZ' : (body.kind === 'receipt' ? 'PZ' : 'MM')}/${year}/`;
   const last = state.documents.reduce((highest, doc) => {
     if (doc.organization_id !== body.organization_id || doc.warehouse_id !== body.warehouse_id || doc.kind !== body.kind || !doc.number.startsWith(prefix)) return highest;
     const serial = doc.number.slice(prefix.length);
@@ -41,7 +41,7 @@ function initial() {
     ['PZ-2026-0139', 'closed', ['48', '96'], [10, 12]],
     ['PZ-2026-0138', 'closed', ['100'], [11]]
   ].map(([number, state, quantities, items], index) => ({id: id(300 + index), ...scope, owner_id: id(3), kind: 'receipt', number, state, version: state === 'draft' ? 1 : 2, lines: quantities.map((qty, n) => ({id: id(400 + index * 10 + n), item_id: id(items[n]), requested_qty: qty, fulfilled_qty: state === 'closed' ? qty : '0', reserved_qty: '0'}))}));
-  return {workspace: {actor_id: id(9), scopes: [{...scope, grants: ['document.read','document.create','document.transition','stock.read','movement.create'].map(permission => ({permission, owner_id: null}))}], catalog}, documents: docs, balances, commands: {}};
+  return {workspace: {actor_id: id(9), scopes: [{...scope, grants: ['document.read','document.create','document.issue','document.move','document.transition','stock.read','movement.create','reservation.read','reservation.create'].map(permission => ({permission, owner_id: null}))}], catalog}, documents: docs, balances, orders:[], reservations:[], commands: {}};
 }
 
 // Isolated synthetic training data. This adapter never contacts the warehouse API.
@@ -63,16 +63,38 @@ export class DemoWarehouse {
     if (!body) {
       if (clean.endsWith('/workspace')) data = state.workspace;
       else if (clean.endsWith('/stock-balances')) data = state.balances;
+      else if (clean.endsWith('/work-orders')) data = state.orders || [];
+      else if (clean.endsWith('/reservations')) data = (state.reservations || []).filter(row => !new URLSearchParams(path.split('?')[1]).get('document_line_id') || row.document_line_id === new URLSearchParams(path.split('?')[1]).get('document_line_id'));
       else if (clean.endsWith('/documents')) data = state.documents;
       else data = state.documents.find(doc => doc.id === clean.split('/').at(-1));
       return {data, pagination: {next_cursor: null}};
     }
     if (clean === '/api/v1/documents') {
+      if (body.kind === 'shipment' && !body.recipient?.trim()) throw Object.assign(new Error('Wpisz odbiorcę wydania'),{status:400});
       const number = body.number === '' || body.number == null ? nextNumber(state, body, this.now()) : body.number;
       const document = {id: crypto.randomUUID(), organization_id:body.organization_id, warehouse_id:body.warehouse_id, owner_id: body.owner_id, kind: body.kind, number, state: 'draft', version: 1, lines: body.lines.map(line => ({id: crypto.randomUUID(), item_id: line.item_id, requested_qty: line.quantity, fulfilled_qty: '0', reserved_qty: '0'}))};
+      if (body.recipient) document.recipient = body.recipient;
+      if (body.order_reference) document.order_reference = body.order_reference;
       if (state.documents.some(doc => doc.warehouse_id === body.warehouse_id && doc.kind === body.kind && doc.number === number)) throw Object.assign(new Error('Numer dokumentu już istnieje'), {status: 409});
       state.documents.unshift(document);
       data = {document_id: document.id, document_version: 1, state: 'draft', lines: document.lines};
+    } else if (clean === '/api/v1/work-orders') {
+      const recipe = state.workspace.catalog.recipes?.find(row => row.id === body.recipe_id);
+      const order = {...body,id:crypto.randomUUID(),requirements:recipe?materialRequirements(recipe,body.lines[0].quantity):[],steps:recipe?[...recipe.steps]:[],state:'planned'};
+      state.orders ||= []; state.orders.unshift(order);
+      data = order;
+    } else if (clean === '/api/v1/reservations') {
+      const doc = state.documents.find(row => row.lines.some(line => line.id === body.document_line_id));
+      const line = doc?.lines.find(row => row.id === body.document_line_id);
+      if (!doc || doc.version !== body.expected_document_version) throw Object.assign(new Error('Dokument uległ zmianie. Odśwież dane'),{status:409});
+      const sourceBalance = state.balances.find(row => row.id === body.balance_id);
+      reservationIntent({document:doc,line,item:state.workspace.catalog.items.find(row => row.id === line.item_id),sourceBalance,quantity:body.quantity,scope});
+      const reservation = {id:crypto.randomUUID(),...scope,owner_id:doc.owner_id,item_id:line.item_id,document_line_id:line.id,balance_id:sourceBalance.id,quantity:body.quantity,active_qty:body.quantity};
+      state.reservations ||= []; state.reservations.push(reservation);
+      sourceBalance.available_qty = remaining(sourceBalance.available_qty,body.quantity);
+      sourceBalance.reserved_qty = sum(sourceBalance.reserved_qty,body.quantity);
+      line.reserved_qty = sum(line.reserved_qty,body.quantity); doc.version++;
+      data = {reservation_id:reservation.id,document_version:doc.version};
     } else if (clean.endsWith('/transitions')) {
       const doc = state.documents.find(entry => entry.id === clean.split('/').at(-2));
       if (!doc || doc.version !== body.expected_document_version) throw Object.assign(new Error('Dokument uległ zmianie. Odśwież dane'), {status: 409});
@@ -86,12 +108,20 @@ export class DemoWarehouse {
       if (!doc || doc.version !== body.expected_document_version) throw Object.assign(new Error('Dokument uległ zmianie. Odśwież dane'), {status: 409});
       const targetBalance = state.balances.find(entry => entry.id === body.target_balance_id);
       const sourceBalance = state.balances.find(entry => entry.id === body.source_balance_id);
-      movementIntent({document: doc, line, item: state.workspace.catalog.items.find(item => item.id === line.item_id), targetBalance, sourceBalance, quantity: body.quantity, scope, kind: body.kind});
-      targetBalance.on_hand = sum(targetBalance.on_hand, body.quantity);
-      targetBalance.available_qty = sum(targetBalance.available_qty, body.quantity);
+      if (body.kind === 'issue') {
+        const reservation = (state.reservations || []).find(row => row.id === body.reservation_id);
+        issueIntent({document:doc,line,item:state.workspace.catalog.items.find(row => row.id === line.item_id),sourceBalance,reservation,quantity:body.quantity,scope});
+        reservation.active_qty = remaining(reservation.active_qty,body.quantity);
+        sourceBalance.reserved_qty = remaining(sourceBalance.reserved_qty,body.quantity);
+        line.reserved_qty = remaining(line.reserved_qty,body.quantity);
+      } else {
+        movementIntent({document: doc, line, item: state.workspace.catalog.items.find(item => item.id === line.item_id), targetBalance, sourceBalance, quantity: body.quantity, scope, kind: body.kind});
+        targetBalance.on_hand = sum(targetBalance.on_hand, body.quantity);
+        targetBalance.available_qty = sum(targetBalance.available_qty, body.quantity);
+      }
       if (sourceBalance) {
         sourceBalance.on_hand = remaining(sourceBalance.on_hand, body.quantity);
-        sourceBalance.available_qty = remaining(sourceBalance.available_qty, body.quantity);
+        if (body.kind !== 'issue') sourceBalance.available_qty = remaining(sourceBalance.available_qty, body.quantity);
       }
       line.fulfilled_qty = sum(line.fulfilled_qty, body.quantity);
       doc.version++;

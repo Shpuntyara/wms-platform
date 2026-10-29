@@ -1,0 +1,115 @@
+test_merge_keeps_historical_labels_and_rows_except_selected_company_labels (__main__.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels) ... FAIL
+test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (__main__.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data) ... FAIL
+test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (__main__.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe) ... FAIL
+test_plan_properties_for_many_scopes_and_both_profiles (__main__.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles) ... FAIL
+test_seed_is_transactional_audited_and_does_not_set_stock_amounts (__main__.IndustryCatalogContract.test_seed_is_transactional_audited_and_does_not_set_stock_amounts) ... FAIL
+test_stationery_has_color_size_year_and_leftover_composition (__main__.IndustryCatalogContract.test_stationery_has_color_size_year_and_leftover_composition) ... FAIL
+test_storage_codes_mean_section_and_level (__main__.IndustryCatalogContract.test_storage_codes_mean_section_and_level) ... FAIL
+test_unknown_profile_or_bad_scope_rejected (__main__.IndustryCatalogContract.test_unknown_profile_or_bad_scope_rejected) ... FAIL
+test_actual_postgres_catalog_drift_rejects_atomic_seed (__main__.IndustryCatalogPostgres.test_actual_postgres_catalog_drift_rejects_atomic_seed) ... FAIL
+test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (__main__.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants) ... FAIL
+
+======================================================================
+FAIL: test_merge_keeps_historical_labels_and_rows_except_selected_company_labels (__main__.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 80, in test_merge_keeps_historical_labels_and_rows_except_selected_company_labels
+    self.assertEqual(merged['warehouses'][0]['name'], 'METALFORM · magazyn materiałów i wyrobów')
+AssertionError: 'Magazyn 3847849c' != 'METALFORM · magazyn materiałów i wyrobów'
+- Magazyn 3847849c
++ METALFORM · magazyn materiałów i wyrobów
+
+
+======================================================================
+FAIL: test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (__main__.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 93, in test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (__main__.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 39, in test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe
+    self.assertEqual(plan['company'], 'METALFORM')
+AssertionError: 'Firma testowa' != 'METALFORM'
+- Firma testowa
++ METALFORM
+
+
+======================================================================
+FAIL: test_plan_properties_for_many_scopes_and_both_profiles (__main__.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 121, in test_plan_properties_for_many_scopes_and_both_profiles
+    self.assertEqual(len(plan['balances']), len(ids) * 10)
+AssertionError: 0 != 20
+
+======================================================================
+FAIL: test_seed_is_transactional_audited_and_does_not_set_stock_amounts (__main__.IndustryCatalogContract.test_seed_is_transactional_audited_and_does_not_set_stock_amounts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 101, in test_seed_is_transactional_audited_and_does_not_set_stock_amounts
+    self.assertIn('warehouse.command_document', sql)
+AssertionError: 'warehouse.command_document' not found in 'BEGIN;\nCOMMIT;\n'
+
+======================================================================
+FAIL: test_stationery_has_color_size_year_and_leftover_composition (__main__.IndustryCatalogContract.test_stationery_has_color_size_year_and_leftover_composition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 51, in test_stationery_has_color_size_year_and_leftover_composition
+    self.assertEqual(plan['company'], 'PAPIERNIK')
+AssertionError: 'Firma testowa' != 'PAPIERNIK'
+- Firma testowa
++ PAPIERNIK
+
+
+======================================================================
+FAIL: test_storage_codes_mean_section_and_level (__main__.IndustryCatalogContract.test_storage_codes_mean_section_and_level)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 68, in test_storage_codes_mean_section_and_level
+    self.assertEqual(set(by_code), {letter + str(level) for letter in 'AB' for level in range(1, 5)}
+AssertionError: Items in the first set but not the second:
+'A-01-02'
+Items in the second set but not the first:
+'A4'
+'B2'
+'A2'
+'B3'
+'A1'
+'B4'
+'B1'
+'A3'
+'WYDANIE-01'
+
+======================================================================
+FAIL: test_unknown_profile_or_bad_scope_rejected (__main__.IndustryCatalogContract.test_unknown_profile_or_bad_scope_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 135, in test_unknown_profile_or_bad_scope_rejected
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_actual_postgres_catalog_drift_rejects_atomic_seed (__main__.IndustryCatalogPostgres.test_actual_postgres_catalog_drift_rejects_atomic_seed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 215, in test_actual_postgres_catalog_drift_rejects_atomic_seed
+    self.assertGreaterEqual(len(plan['workspace']['items']), 4, 'Industrial seed must contain enough real catalog items to exercise drift')
+AssertionError: 2 not greater than or equal to 4 : Industrial seed must contain enough real catalog items to exercise drift
+
+======================================================================
+FAIL: test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (__main__.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 193, in test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants
+    self.assertGreater(len(actual), 200)
+AssertionError: 4 not greater than 200
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.413s
+
+FAILED (failures=10)

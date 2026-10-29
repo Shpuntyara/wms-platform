@@ -1,0 +1,152 @@
+
+[WebServer] (node:21140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 4 workers
+
+
+(node:540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:4208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:30480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:30928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[2/4] tests\industry-workplace.spec.mjs:71:1 › stock WZ rejects unavailable quantity before creating a document
+[3/4] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+[4/4] tests\industry-workplace.spec.mjs:81:1 › bureau plans material demand and work stages without changing physical stock
+  1) tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Stany według adresów', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Stany według adresów', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Stany według adresów', exact: true })
+
+
+      22 | test('stock opens first and remains visible for the warehouse employee with shelf and units',async({page})=>{
+      23 |   await seedIndustry(page);
+    > 24 |   await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+         |                                                                                    ^
+      25 |   await page.getByRole('button',{name:'Magazyn',exact:true}).click();
+      26 |   await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+      27 |   const search=page.getByLabel('Szukaj towaru lub miejsca', {exact:true});
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:24:84
+
+    Error Context: test-results\industry-workplace-stock-o-69ff3-ployee-with-shelf-and-units\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-stock-o-69ff3-ployee-with-shelf-and-units\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-stock-o-69ff3-ployee-with-shelf-and-units\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'A1' }).getByRole('button', { name: 'Wydaj towar', exact: true })
+
+
+      39 |   await page.getByRole('button',{name:'Magazyn',exact:true}).click();
+      40 |   const row=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'});
+    > 41 |   await row.getByRole('button',{name:'Wydaj towar',exact:true}).click();
+         |                                                                 ^
+      42 |   await expect(page.getByRole('textbox',{name:'Numer dokumentu',exact:true})).toHaveCount(0);
+      43 |   await page.getByLabel('Ilość planowana',{exact:true}).fill('2');
+      44 |   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:41:65
+
+    Error Context: test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-warehou-93afc-g-then-posting-exactly-once\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  3) tests\industry-workplace.spec.mjs:71:1 › stock WZ rejects unavailable quantity before creating a document 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'A1' }).getByRole('button', { name: 'Wydaj towar', exact: true })
+
+
+      71 | test('stock WZ rejects unavailable quantity before creating a document',async({page})=>{
+      72 |   await seedIndustry(page);
+    > 73 |   await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Wydaj towar',exact:true}).click();
+         |                                                                                                                                      ^
+      74 |   await page.getByLabel('Odbiorca',{exact:true}).fill('MONTER Sp. z o.o.');
+      75 |   await page.getByLabel('Ilość planowana',{exact:true}).fill('25');
+      76 |   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:73:134
+
+    Error Context: test-results\industry-workplace-stock-W-8e8d2--before-creating-a-document\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-stock-W-8e8d2--before-creating-a-document\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-stock-W-8e8d2--before-creating-a-document\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4) tests\industry-workplace.spec.mjs:81:1 › bureau plans material demand and work stages without changing physical stock 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Zamówienia', exact: true })
+
+
+      81 | test('bureau plans material demand and work stages without changing physical stock',async({page})=>{
+      82 |   await seedIndustry(page);
+    > 83 |   await page.getByRole('button',{name:'Zamówienia',exact:true}).click();
+         |                                                                 ^
+      84 |   await page.getByRole('button',{name:'Nowe zamówienie',exact:true}).click();
+      85 |   await page.getByLabel('Firma lub odbiorca',{exact:true}).fill('BIUROMAX Sp. z o.o.');
+      86 |   await page.getByLabel('Numer zamówienia',{exact:true}).fill('Zamówienie #1');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:83:65
+
+    Error Context: test-results\industry-workplace-bureau--0a1aa-out-changing-physical-stock\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-bureau--0a1aa-out-changing-physical-stock\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-bureau--0a1aa-out-changing-physical-stock\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4 failed
+    tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units 
+    tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once 
+    tests\industry-workplace.spec.mjs:71:1 › stock WZ rejects unavailable quantity before creating a document 
+    tests\industry-workplace.spec.mjs:81:1 › bureau plans material demand and work stages without changing physical stock 

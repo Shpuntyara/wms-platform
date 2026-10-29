@@ -1,6 +1,8 @@
 export function errorMessage(error, unconfirmed = false) {
   if (unconfirmed) return 'Nie udało się potwierdzić operacji. Wybierz „Sprawdź wynik”.';
   const messages = {
+    invalid_document_recipient:'Wpisz odbiorcę wydania: firmę, dział lub osobę odbierającą towar.',
+    invalid_work_order:'Sprawdź odbiorcę, towary i ilości w zamówieniu.',
     document_version_conflict:'Dokument zmienił inny pracownik. Odśwież go i sprawdź ilość.',
     forbidden:'Nie masz uprawnień do tej operacji. Skontaktuj się z kierownikiem zmiany.',
     unauthenticated:'Sesja wygasła. Zaloguj się ponownie.',

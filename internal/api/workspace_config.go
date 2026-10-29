@@ -43,6 +43,7 @@ type NamedItem struct {
 	Name           string `json:"name"`
 	Unit           string `json:"unit"`
 	QuantityScale  int    `json:"quantity_scale"`
+	Archived       bool   `json:"archived,omitempty"`
 }
 
 type NamedPosition struct {
@@ -51,6 +52,7 @@ type NamedPosition struct {
 	WarehouseID    string `json:"warehouse_id"`
 	Code           string `json:"code"`
 	Kind           string `json:"kind"`
+	Name           string `json:"name,omitempty"`
 }
 
 // WorkspaceConfig contains operator-maintained labels, never authorization.
@@ -62,6 +64,7 @@ type WorkspaceConfig struct {
 	Owners        []NamedOwner        `json:"owners"`
 	Items         []NamedItem         `json:"items"`
 	Positions     []NamedPosition     `json:"positions"`
+	Recipes       []ProductionRecipe  `json:"recipes,omitempty"`
 }
 
 // DecodeWorkspaceConfig validates an operator-provided UI label catalog.
@@ -125,7 +128,7 @@ func DecodeWorkspaceConfig(raw []byte) (WorkspaceConfig, error) {
 	addresses := map[[3]string]bool{}
 	for _, v := range config.Positions {
 		key := [3]string{v.OrganizationID, v.WarehouseID, strings.ToUpper(v.Code)}
-		if !claim("position", v.ID) || !warehouses[[2]string{v.OrganizationID, v.WarehouseID}] || !label(v.Code, 200) || addresses[key] {
+		if !claim("position", v.ID) || !warehouses[[2]string{v.OrganizationID, v.WarehouseID}] || !label(v.Code, 200) || (v.Name != "" && !label(v.Name, 200)) || addresses[key] {
 			return WorkspaceConfig{}, invalid
 		}
 		switch v.Kind {
@@ -134,6 +137,35 @@ func DecodeWorkspaceConfig(raw []byte) (WorkspaceConfig, error) {
 			return WorkspaceConfig{}, invalid
 		}
 		addresses[key] = true
+	}
+	for _, recipe := range config.Recipes {
+		if !claim("recipe", recipe.ID) || !warehouses[[2]string{recipe.OrganizationID, recipe.WarehouseID}] || !label(recipe.Name, 200) || len(recipe.Components) < 1 || len(recipe.Components) > 200 || len(recipe.Steps) < 1 || len(recipe.Steps) > 20 {
+			return WorkspaceConfig{}, invalid
+		}
+		findItem := func(id string) *NamedItem {
+			for i := range config.Items {
+				if config.Items[i].ID == id && config.Items[i].OrganizationID == recipe.OrganizationID {
+					return &config.Items[i]
+				}
+			}
+			return nil
+		}
+		if findItem(recipe.ProductItemID) == nil {
+			return WorkspaceConfig{}, invalid
+		}
+		components := map[string]bool{}
+		for _, component := range recipe.Components {
+			item := findItem(component.ItemID)
+			if item == nil || component.ItemID == recipe.ProductItemID || components[component.ItemID] || !quantityFitsItem(component.Quantity, item.QuantityScale) {
+				return WorkspaceConfig{}, invalid
+			}
+			components[component.ItemID] = true
+		}
+		for _, step := range recipe.Steps {
+			if !label(step, 200) {
+				return WorkspaceConfig{}, invalid
+			}
+		}
 	}
 	return config, nil
 }

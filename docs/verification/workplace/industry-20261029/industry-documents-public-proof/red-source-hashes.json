@@ -1,0 +1,30 @@
+[
+  {
+    "path": "internal/api/documents_business_test.go",
+    "sha256": "7d8cb65d4859ef9e36f500f63e943d2890c43d5f563ec9d16a7d3d3589c14a73"
+  },
+  {
+    "path": "internal/postgres/documents_business_integration_test.go",
+    "sha256": "1cb11da4358bebeba3fb8ddf184ec526d9b354495f84f69949413685831c311a"
+  },
+  {
+    "path": "internal/inventory/documents.go",
+    "sha256": "c1efac9d9a84601de036b1585032480561f06ff9e8dbcd08091f4999659e56fc"
+  },
+  {
+    "path": "internal/api/documents.go",
+    "sha256": "480b42f19137c2b80e496a06cc5f1ddb04218561b7dc3475a7a175b4b222b954"
+  },
+  {
+    "path": "internal/postgres/documents.go",
+    "sha256": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0"
+  },
+  {
+    "path": "internal/postgres/hardened.go",
+    "sha256": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2"
+  },
+  {
+    "path": "db/migrations/0010_document_numbering.sql",
+    "sha256": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b"
+  }
+]

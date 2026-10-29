@@ -1,0 +1,91 @@
+
+[WebServer] (node:37124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:36440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:4496) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\industry-workplace.spec.mjs:340:41 › critic: a missing order owner cannot fall back to the first catalog entry
+[2/2] tests\industry-workplace.spec.mjs:340:41 › critic: a missing order item cannot fall back to the first catalog entry
+  1) tests\industry-workplace.spec.mjs:340:41 › critic: a missing order item cannot fall back to the first catalog entry 
+
+    Error: expect(locator).not.toBeVisible() failed
+
+    Locator:  getByRole('dialog')
+    Expected: not visible
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "not toBeVisible" getByRole('dialog') with timeout 5000ms
+      - waiting for getByRole('dialog')
+        14 × locator resolved to <dialog open="" id="create-dialog" aria-labelledby="create-title">…</dialog>
+           - unexpected value "visible"
+
+
+      357 |   await page.getByRole('button',{name:/PLAN-BRAK-KARTOTEKI/}).click();
+      358 |   await page.getByRole('button',{name:'Przygotuj wydanie materiałów',exact:true}).click();
+    > 359 |   await expect(page.getByRole('dialog')).not.toBeVisible();
+          |                                              ^
+      360 |   await expect(page.getByRole('alert')).toContainText(missing==='item'?'Brak kartoteki towaru z zamówienia':'Brak kartoteki właściciela z zamówienia');
+      361 |   const shipments=await page.evaluate(()=>JSON.parse(localStorage.getItem('wms-training-v2')).documents.filter(doc=>doc.kind==='shipment'));
+      362 |   expect(shipments).toHaveLength(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:359:46
+
+    Error Context: test-results\industry-workplace-critic--9e90f--to-the-first-catalog-entry\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--9e90f--to-the-first-catalog-entry\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--9e90f--to-the-first-catalog-entry\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\industry-workplace.spec.mjs:340:41 › critic: a missing order owner cannot fall back to the first catalog entry 
+
+    Error: expect(locator).not.toBeVisible() failed
+
+    Locator:  getByRole('dialog')
+    Expected: not visible
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "not toBeVisible" getByRole('dialog') with timeout 5000ms
+      - waiting for getByRole('dialog')
+        14 × locator resolved to <dialog open="" id="create-dialog" aria-labelledby="create-title">…</dialog>
+           - unexpected value "visible"
+
+
+      357 |   await page.getByRole('button',{name:/PLAN-BRAK-KARTOTEKI/}).click();
+      358 |   await page.getByRole('button',{name:'Przygotuj wydanie materiałów',exact:true}).click();
+    > 359 |   await expect(page.getByRole('dialog')).not.toBeVisible();
+          |                                              ^
+      360 |   await expect(page.getByRole('alert')).toContainText(missing==='item'?'Brak kartoteki towaru z zamówienia':'Brak kartoteki właściciela z zamówienia');
+      361 |   const shipments=await page.evaluate(()=>JSON.parse(localStorage.getItem('wms-training-v2')).documents.filter(doc=>doc.kind==='shipment'));
+      362 |   expect(shipments).toHaveLength(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:359:46
+
+    Error Context: test-results\industry-workplace-critic--b2ebb--to-the-first-catalog-entry\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--b2ebb--to-the-first-catalog-entry\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--b2ebb--to-the-first-catalog-entry\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    tests\industry-workplace.spec.mjs:340:41 › critic: a missing order item cannot fall back to the first catalog entry 
+    tests\industry-workplace.spec.mjs:340:41 › critic: a missing order owner cannot fall back to the first catalog entry 

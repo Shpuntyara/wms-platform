@@ -1,0 +1,175 @@
+
+[WebServer] (node:1304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 4 workers
+
+
+(node:36052) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:21748) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:32096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:12488) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+[1/4] tests\industry-workplace.spec.mjs:288:1 › critic: partial reservation is visible and issued before reserving the remaining plan
+[2/4] tests\industry-workplace.spec.mjs:266:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending
+[3/4] tests\industry-workplace.spec.mjs:246:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending
+[4/4] tests\industry-workplace.spec.mjs:216:1 › critic: material and finished-goods WZ inherit the actual order owner
+  1) tests\industry-workplace.spec.mjs:266:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Firma lub odbiorca', { exact: true })
+    Expected: "200"
+    Received: "300"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Firma lub odbiorca', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Firma lub odbiorca', { exact: true })
+        13 × locator resolved to <input name="customer" maxlength="300" id="order-customer" aria-required="true" placeholder="Np. BIUROMAX Sp. z o.o."/>
+           - unexpected value "300"
+
+
+      269 |   const open=()=>page.getByRole('button',{name:'Nowe zamówienie',exact:true}).click();
+      270 |   await open();
+    > 271 |   await expect(page.getByLabel('Firma lub odbiorca',{exact:true})).toHaveAttribute('maxlength','200');
+          |                                                                    ^
+      272 |   await page.getByLabel('Firma lub odbiorca',{exact:true}).fill('Ł'.repeat(200));
+      273 |   await page.getByLabel('Numer zamówienia',{exact:true}).fill('DŁUGA-1');
+      274 |   await page.getByLabel('Ilość zamówiona',{exact:true}).fill('1');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:271:68
+
+    Error Context: test-results\industry-workplace-critic--96bf4-d-blocks-201-before-sending\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--96bf4-d-blocks-201-before-sending\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--96bf4-d-blocks-201-before-sending\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\industry-workplace.spec.mjs:288:1 › critic: partial reservation is visible and issued before reserving the remaining plan 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Ilość rzeczywista', { exact: true })
+    Expected: "2"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Ilość rzeczywista', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Ilość rzeczywista', { exact: true })
+        14 × locator resolved to <input name="scan" id="scan-input" autocomplete="off" inputmode="decimal" aria-describedby="scan-hint"/>
+           - unexpected value ""
+
+
+      309 |   };
+      310 |   await scanSource();
+    > 311 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveValue('2');
+          |                                                                   ^
+      312 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveAttribute('max','2');
+      313 |   await expect(page.getByText('Zarezerwowane pod tym adresem: 2 szt.',{exact:true})).toBeVisible();
+      314 |   await page.getByLabel('Ilość rzeczywista',{exact:true}).fill('3');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:311:67
+
+    Error Context: test-results\industry-workplace-critic--bcdfd-eserving-the-remaining-plan\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--bcdfd-eserving-the-remaining-plan\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--bcdfd-eserving-the-remaining-plan\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  3) tests\industry-workplace.spec.mjs:246:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  getByLabel('Odbiorca', { exact: true })
+    Expected: "200"
+    Received: "300"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" getByLabel('Odbiorca', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Odbiorca', { exact: true })
+        14 × locator resolved to <input value="" id="recipient" maxlength="300" name="recipient" aria-required="true" autocomplete="organization" placeholder="Firma, dział lub osoba odbierająca towar"/>
+           - unexpected value "300"
+
+
+      248 |   const open=()=>page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Wydaj towar',exact:true}).click();
+      249 |   await open();
+    > 250 |   await expect(page.getByLabel('Odbiorca',{exact:true})).toHaveAttribute('maxlength','200');
+          |                                                          ^
+      251 |   await page.getByLabel('Odbiorca',{exact:true}).fill('Ż'.repeat(200));
+      252 |   await page.getByLabel('Ilość planowana',{exact:true}).fill('1');
+      253 |   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:250:58
+
+    Error Context: test-results\industry-workplace-critic--bcc81-d-blocks-201-before-sending\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--bcc81-d-blocks-201-before-sending\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--bcc81-d-blocks-201-before-sending\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4) tests\industry-workplace.spec.mjs:216:1 › critic: material and finished-goods WZ inherit the actual order owner 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Właściciel towaru', { exact: true })
+    Expected: "55555555-5555-4555-8555-555555555555"
+    Received: "22222222-2222-4222-8222-000000000003"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Właściciel towaru', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Właściciel towaru', { exact: true })
+        14 × locator resolved to <select id="owner" name="owner">…</select>
+           - unexpected value "22222222-2222-4222-8222-000000000003"
+
+
+      234 |   for (const action of ['Przygotuj wydanie materiałów','Przygotuj wydanie towaru']) {
+      235 |     await page.getByRole('button',{name:action,exact:true}).click();
+    > 236 |     await expect(page.getByLabel('Właściciel towaru',{exact:true})).toHaveValue(ownerB);
+          |                                                                     ^
+      237 |     await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
+      238 |     await expect(page.getByRole('complementary',{name:'Wybrany dokument',exact:true})).toContainText('Właściciel B');
+      239 |     await page.getByRole('button',{name:'Zamówienia',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:236:69
+
+    Error Context: test-results\industry-workplace-critic--68010-erit-the-actual-order-owner\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--68010-erit-the-actual-order-owner\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--68010-erit-the-actual-order-owner\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4 failed
+    tests\industry-workplace.spec.mjs:216:1 › critic: material and finished-goods WZ inherit the actual order owner 
+    tests\industry-workplace.spec.mjs:246:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending 
+    tests\industry-workplace.spec.mjs:266:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending 
+    tests\industry-workplace.spec.mjs:288:1 › critic: partial reservation is visible and issued before reserving the remaining plan 

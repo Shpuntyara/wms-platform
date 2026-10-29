@@ -63,3 +63,64 @@ export function movementIntent({document, line, item, targetBalance, sourceBalan
 
 export const formatQuantity = value => decimal(units(value)).replace('.', ',');
 export const completed = document => document.lines.length > 0 && document.lines.every(line => remaining(line.requested_qty, line.fulfilled_qty) === '0' && units(line.reserved_qty) === 0n);
+
+export function materialRequirements(recipe, quantity) {
+  const amount = units(parseQuantity(quantity));
+  if (!Array.isArray(recipe?.components) || !recipe.components.length) error('Brak składu produktu');
+  const requirements = new Map();
+  for (const component of recipe.components) {
+    if (typeof component.item_id !== 'string' || !component.item_id) error('Brak towaru w składzie produktu');
+    const product = units(parseQuantity(component.quantity)) * amount;
+    if (product % 1000000n) error('Ilość materiału przekracza dokładność magazynu');
+    const total = (requirements.get(component.item_id) || 0n) + product / 1000000n;
+    if (total > 999999999999999999999999n) error('Ilość materiału jest zbyt duża');
+    requirements.set(component.item_id,total);
+  }
+  return [...requirements].map(([item_id,value]) => ({item_id,quantity:decimal(value)}));
+}
+
+export function materialAvailability(requirements, balances, scope) {
+  return requirements.map(line => {
+    const available = balances.filter(row => row.item_id === line.item_id && row.organization_id === scope.organization_id && row.warehouse_id === scope.warehouse_id && row.owner_id === scope.owner_id && (!row.stock_state || row.stock_state === 'available')).reduce((sum,row) => sum + units(row.available_qty),0n);
+    const shortage = units(line.quantity) > available ? units(line.quantity) - available : 0n;
+    return {...line,available_qty:decimal(available),shortage_qty:decimal(shortage)};
+  });
+}
+
+export function findStock(balances, items, positions, search) {
+  const normalize = value => String(value ?? '').toLocaleLowerCase('pl').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
+  const term = normalize(search.trim());
+  return balances.filter(balance => {
+    const item = items.find(row => row.id === balance.item_id), position = positions.find(row => row.id === balance.position_id);
+    return normalize([item?.sku,item?.name,position?.code,position?.name].join(' ')).includes(term);
+  });
+}
+
+function shipmentQuantity({document,line,item,sourceBalance,quantity,scope}) {
+  if (!document || document.kind !== 'shipment' || document.state !== 'active') error('Wydanie nie jest otwarte do realizacji');
+  if (Number.isSafeInteger(document.version) === false || document.version < 1) error('Odśwież wersję dokumentu');
+  const current = document.lines.find(row => row.id === line?.id && row.item_id === item?.id);
+  if (!current || !line || ['requested_qty','fulfilled_qty','reserved_qty'].some(key => current[key] !== line[key])) error('Pozycja wydania uległa zmianie. Odśwież dokument');
+  if (!sourceBalance || ['organization_id','warehouse_id','owner_id'].some(key => sourceBalance[key] !== document[key]) || sourceBalance.item_id !== item.id) error('Adres nie pasuje do towaru lub właściciela');
+  if (scope.organization_id !== document.organization_id || scope.warehouse_id !== document.warehouse_id) error('Wybrano inny magazyn');
+  if (sourceBalance.stock_state && sourceBalance.stock_state !== 'available') error('Towar nie jest dostępny do wydania');
+  const amount = parseQuantity(quantity,item.quantity_scale);
+  if (units(amount) > units(remaining(line.requested_qty,line.fulfilled_qty))) error('Ilość przekracza pozostałą ilość wydania');
+  if (sourceBalance.serial_id && units(amount) > 1000000n) error('Towar z numerem seryjnym wydawaj po jednej sztuce');
+  return amount;
+}
+
+export function reservationIntent(input) {
+  const amount = shipmentQuantity(input), {document,line,sourceBalance,scope} = input;
+  if (units(amount) > units(remaining(remaining(line.requested_qty,line.fulfilled_qty),line.reserved_qty))) error('Ta ilość została już zarezerwowana do wydania');
+  if (units(amount) > units(input.sourceBalance.available_qty)) error('Pod adresem nie ma wystarczającej ilości dostępnego towaru');
+  return {...scope,document_line_id:line.id,expected_document_version:document.version,balance_id:sourceBalance.id,quantity:amount};
+}
+
+export function issueIntent(input) {
+  const amount = shipmentQuantity(input), {document,line,sourceBalance,reservation,scope} = input;
+  if (!reservation?.id || reservation.document_line_id !== line.id || reservation.balance_id !== sourceBalance.id || reservation.item_id !== line.item_id || reservation.owner_id !== document.owner_id || reservation.organization_id !== document.organization_id || reservation.warehouse_id !== document.warehouse_id) error('Rezerwacja nie należy do tej pozycji i adresu');
+  if (units(amount) > units(reservation.active_qty) || units(amount) > units(line.reserved_qty)) error('Ilość przekracza aktywną rezerwację');
+  if (units(amount) > units(sourceBalance.on_hand)) error('Pod adresem nie ma wystarczającej ilości towaru');
+  return {...scope,document_line_id:line.id,expected_document_version:document.version,kind:'issue',source_balance_id:sourceBalance.id,reservation_id:reservation.id,quantity:amount};
+}

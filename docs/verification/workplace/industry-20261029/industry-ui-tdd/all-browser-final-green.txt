@@ -1,0 +1,48 @@
+
+[WebServer] (node:36836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 6 workers
+
+
+(node:20264) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:13600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:34824) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:29440) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:35208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/17] tests\critic-workplace.spec.mjs:3:1 › critic: the Polish workplace declares its document language
+
+(node:8204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[2/17] tests\critic-workplace.spec.mjs:9:1 › critic: bureau search keeps ordinary sequential typing in the right order
+[3/17] tests\critic-workplace.spec.mjs:29:1 › critic: an unmapped API error still gives the employee a Polish message
+[4/17] tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[5/17] tests\critic-workplace.spec.mjs:18:1 › critic: editing the middle of a search preserves the caret after rerender
+[6/17] tests\critic-workplace.spec.mjs:50:1 › critic: missing source SKU cannot silently become another item in putaway
+[7/17] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+[8/17] tests\industry-workplace.spec.mjs:76:1 › stock WZ rejects unavailable quantity before creating a document
+[9/17] tests\industry-workplace.spec.mjs:86:1 › bureau plans material demand and work stages without changing physical stock
+[10/17] tests\industry-workplace.spec.mjs:110:46 › critic: lost reservation reply survives reload and does not post twice
+[11/17] tests\industry-workplace.spec.mjs:110:46 › critic: lost issue reply survives reload and does not post twice
+[12/17] tests\industry-workplace.spec.mjs:162:1 › critic: all stock pages participate in name search
+[13/17] tests\industry-workplace.spec.mjs:183:1 › worker moves stock on an MM while PZ creation remains unavailable
+[14/17] tests\workplace.spec.mjs:3:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse
+[15/17] tests\workplace.spec.mjs:31:1 › a completed PZ prepares an automatically numbered MM without changing the source plan
+[16/17] tests\workplace.spec.mjs:55:1 › terminal blocks wrong scan and receives one item with keyboard
+[17/17] tests\workplace.spec.mjs:72:1 › worker screen reflows at TSD width and scanning controls remain touch-sized
+  17 passed (7.2s)

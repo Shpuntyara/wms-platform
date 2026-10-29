@@ -1,0 +1,91 @@
+
+[WebServer] (node:5068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+
+(node:34404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:38448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\industry-workplace.spec.mjs:405:1 › new paper documents use working items while explicit historical placement preserves the archived SKU
+[2/2] tests\industry-workplace.spec.mjs:387:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock
+  1) tests\industry-workplace.spec.mjs:387:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('row').filter({ hasText: 'BOLT-M8' })
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('row').filter({ hasText: 'BOLT-M8' }) with timeout 5000ms
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' })
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      389 |   const before=await page.evaluate(()=>localStorage.getItem('wms-training-v2'));
+      390 |   await expect(page.getByRole('row').filter({hasText:'Notes 2027 Czerwony'})).toContainText('52');
+    > 391 |   await expect(page.getByRole('row').filter({hasText:'BOLT-M8'})).toHaveCount(0);
+          |                                                                   ^
+      392 |   await expect(page.getByRole('row').filter({hasText:'CABLE-25'})).toHaveCount(0);
+      393 |   await expect(page.getByRole('region',{name:'Wcześniejsze dane testowe',exact:true})).toContainText('Ukryte pozycje: 2');
+      394 |   await page.getByLabel('Pokaż wcześniejsze dane testowe',{exact:true}).check();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:391:67
+
+    Error Context: test-results\industry-workplace-paper-w-72003-ived-without-changing-stock\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-paper-w-72003-ived-without-changing-stock\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-paper-w-72003-ived-without-changing-stock\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\industry-workplace.spec.mjs:405:1 › new paper documents use working items while explicit historical placement preserves the archived SKU 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByLabel('Towar', { exact: true }).locator('option')
+    Expected: 1
+    Received: 3
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByLabel('Towar', { exact: true }).locator('option') with timeout 5000ms
+      - waiting for getByLabel('Towar', { exact: true }).locator('option')
+        14 × locator resolved to 3 elements
+           - unexpected value "3"
+
+
+      408 |   await page.getByRole('button',{name:'Przyjęcia (PZ)',exact:true}).click();
+      409 |   await page.getByRole('button',{name:'Nowe przyjęcie (PZ)',exact:true}).click();
+    > 410 |   await expect(page.getByLabel('Towar',{exact:true}).locator('option')).toHaveCount(1);
+          |                                                                         ^
+      411 |   await expect(page.getByLabel('Towar',{exact:true})).toHaveValue(ids.notes);
+      412 |   await page.getByRole('button',{name:'Zamknij formularz',exact:true}).click();
+      413 |   await page.getByRole('button',{name:'Zamówienia',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:410:73
+
+    Error Context: test-results\industry-workplace-new-pap-dc4f7--preserves-the-archived-SKU\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-new-pap-dc4f7--preserves-the-archived-SKU\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-new-pap-dc4f7--preserves-the-archived-SKU\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    tests\industry-workplace.spec.mjs:387:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock 
+    tests\industry-workplace.spec.mjs:405:1 › new paper documents use working items while explicit historical placement preserves the archived SKU 

@@ -1,0 +1,8 @@
+{"Time":"2026-10-29T19:13:58.3979864+01:00","Action":"start","Package":"github.com/Shpuntyara/wms-platform/internal/postgres"}
+{"Time":"2026-10-29T19:13:58.4277252+01:00","Action":"run","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ"}
+{"Time":"2026-10-29T19:13:58.4277252+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ","Output":"=== RUN   TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:14:00.5356788+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ","Output":"--- PASS: TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ (2.11s)\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:14:00.5356788+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ","Elapsed":2.11}
+{"Time":"2026-10-29T19:14:00.5356788+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:14:00.5416687+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"ok  \tgithub.com/Shpuntyara/wms-platform/internal/postgres\t2.143s\n"}
+{"Time":"2026-10-29T19:14:00.5416687+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Elapsed":2.144}

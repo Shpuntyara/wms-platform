@@ -85,7 +85,7 @@ async function login(site, role) {
     phase = 'submitting the real employee login';
     await page.getByRole('button', {name:/^(Logowanie|Zaloguj się)$/}).click();
     phase = 'opening the authorized warehouse workspace';
-    await expect(page.getByRole('heading', {name:'Przyjęcie towaru (PZ)', exact:true})).toBeVisible();
+    await expect(page.getByRole('heading', {name:'Stany według adresów', exact:true})).toBeVisible();
     await expect.poll(() => signal.tokenReceived).toBe(true);
   } catch (error) {
     const currentPath = new URL(page.url()).pathname;
@@ -164,6 +164,7 @@ for (const rawSite of input.installations) {
       const beforeReceiving = beforeStock.body.data.find(balance => balance.id === site.catalog.receiving_balance_id);
       const beforeStorage = beforeStock.body.data.find(balance => balance.id === site.catalog.storage_balance_id);
       expect(Boolean(beforeReceiving && beforeStorage)).toBe(true);
+      await bureau.page.getByRole('button',{name:'Przyjęcia (PZ)',exact:true}).click();
       await bureau.page.getByRole('button',{name:'Nowe przyjęcie (PZ)',exact:true}).click();
       await expect(bureau.page.getByRole('textbox',{name:'Numer dokumentu',exact:true})).toHaveCount(0);
       await expect(bureau.page.getByText('Numer zostanie nadany automatycznie po zapisaniu',{exact:true})).toBeVisible();
@@ -191,6 +192,7 @@ for (const rawSite of input.installations) {
       const workerWorkspace = await api(worker,site.origin,'/api/v1/workspace');
       expect(workerWorkspace.status).toBe(200);
       expect(workerWorkspace.body.data.actor_id === workspace.body.data.actor_id).toBe(false);
+      await worker.page.getByRole('button',{name:'Przyjęcia (PZ)',exact:true}).click();
       await expect(worker.page.getByRole('button',{name:'Nowe przyjęcie (PZ)',exact:true})).toHaveCount(0);
       const deniedCreate = await api(worker,site.origin,'/api/v1/documents','POST',{...expectedScope,owner_id:site.catalog.owner_id,kind:'receipt',lines:[{item_id:site.catalog.item_id,quantity}]});
       expect(deniedCreate.status).toBe(403);
@@ -212,7 +214,9 @@ for (const rawSite of input.installations) {
       await worker.page.getByRole('button',{name:'Przyjmij towar',exact:true}).click();
       await worker.page.getByRole('button',{name:'Zakończ przyjęcie (PZ)',exact:true}).click();
       await expect(worker.page.getByRole('heading',{name:'Dokument zrealizowany',exact:true})).toBeVisible();
-      await expect(worker.page.getByRole('button',{name:'Przygotuj przesunięcie (MM)',exact:true})).toHaveCount(0);
+      const canPrepareMM = workerWorkspace.body.data.scopes.some(scope => scope.organization_id === expectedScope.organization_id && scope.warehouse_id === expectedScope.warehouse_id && scope.grants.some(grant => ['document.create','document.move'].includes(grant.permission) && (!grant.owner_id || grant.owner_id === site.catalog.owner_id)));
+      if (canPrepareMM) await expect(worker.page.getByRole('button',{name:'Przygotuj przesunięcie (MM)',exact:true})).toBeVisible();
+      else await expect(worker.page.getByRole('button',{name:'Przygotuj przesunięcie (MM)',exact:true})).toHaveCount(0);
 
       phase = 'preparing a separate putaway document';
       await bureau.page.getByRole('button',{name:'Odśwież',exact:true}).click();

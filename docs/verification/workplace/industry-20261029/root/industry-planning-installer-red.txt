@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_existing_installation_loads_signed_planning_rpc_before_grants (__main__.IndustryInstaller.test_existing_installation_loads_signed_planning_rpc_before_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_installer.py", line 24, in test_existing_installation_loads_signed_planning_rpc_before_grants
+    self.assertEqual(len(profile),1,'existing installation did not receive signed work-order RPCs')
+AssertionError: 0 != 1 : existing installation did not receive signed work-order RPCs
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+FAILED (failures=1)

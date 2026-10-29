@@ -2,11 +2,13 @@ import {test, expect} from '@playwright/test';
 
 test('critic: the Polish workplace declares its document language', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'pl');
 });
 
 test('critic: bureau search keeps ordinary sequential typing in the right order', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   const search = page.getByLabel('Szukaj w załadowanych dokumentach', {exact: true});
   await search.pressSequentially('PZ-2026-0142');
   await expect(search).toHaveValue('PZ-2026-0142');
@@ -15,6 +17,7 @@ test('critic: bureau search keeps ordinary sequential typing in the right order'
 
 test('critic: editing the middle of a search preserves the caret after rerender', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   const search = page.getByLabel('Szukaj w załadowanych dokumentach', {exact: true});
   await search.fill('PZ-2026');
   await search.press('Home');
@@ -46,6 +49,7 @@ test('critic: an unmapped API error still gives the employee a Polish message', 
 
 test('critic: missing source SKU cannot silently become another item in putaway', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   // A customer catalog can temporarily be incomplete. The receipt still
   // contains the original item; another catalog item must not replace it.
   await page.evaluate(async () => {
@@ -57,6 +61,7 @@ test('critic: missing source SKU cannot silently become another item in putaway'
     localStorage.setItem('wms-training-v2', JSON.stringify(state));
   });
   await page.reload();
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: 'PZ-2026-0139', exact: true}).click();
   await page.getByRole('button', {name: 'Przygotuj przesunięcie (MM)', exact: true}).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();

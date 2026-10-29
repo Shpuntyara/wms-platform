@@ -1,0 +1,10 @@
+[
+  {
+    "path": "tests/test_industry_catalog.py",
+    "sha256": "0cc4a41a7fae90eafe24beaf35661e2ff3874d3b32be0dd0cdc986ed02bf0c5a"
+  },
+  {
+    "path": "deploy/linux/industry_catalog.py",
+    "sha256": "89a20d21312fea028678e48d9293845ee413ce6d367f323d128461b0c1349d15"
+  }
+]

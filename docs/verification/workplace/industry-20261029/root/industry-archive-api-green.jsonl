@@ -1,0 +1,8 @@
+{"Time":"2026-10-29T19:31:55.5880868+01:00","Action":"start","Package":"github.com/Shpuntyara/wms-platform/internal/api"}
+{"Time":"2026-10-29T19:31:55.6057369+01:00","Action":"run","Package":"github.com/Shpuntyara/wms-platform/internal/api","Test":"TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog"}
+{"Time":"2026-10-29T19:31:55.6057369+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/api","Test":"TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog","Output":"=== RUN   TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:31:55.606262+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/api","Test":"TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog","Output":"--- PASS: TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:31:55.606262+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/api","Test":"TestIndustryArchiveLabelsRoundTripWithoutErasingCatalog","Elapsed":0}
+{"Time":"2026-10-29T19:31:55.606262+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/api","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-10-29T19:31:55.6083195+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/api","Output":"ok  \tgithub.com/Shpuntyara/wms-platform/internal/api\t0.020s\n"}
+{"Time":"2026-10-29T19:31:55.6083195+01:00","Action":"pass","Package":"github.com/Shpuntyara/wms-platform/internal/api","Elapsed":0.02}

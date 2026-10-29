@@ -1,0 +1,29 @@
+{
+  "captured_at": "2026-10-29T18:03:00.407358+00:00",
+  "sha256": [
+    {
+      "path": "web/src/app.js",
+      "sha256": "b47d79ccadb471911a9344587fa8e909fde07860b60be1223bb6544d78c5b3c7"
+    },
+    {
+      "path": "web/src/domain.js",
+      "sha256": "c75426a07b681b6c30d9ec3a74a831023f80f2101742075e7487d8398e09baeb"
+    },
+    {
+      "path": "web/src/demo.js",
+      "sha256": "3b265396316b1e1025a123b46132f27afd59804584ea8f606bdd564a5d91210d"
+    },
+    {
+      "path": "web/tests/industry-domain.test.mjs",
+      "sha256": "7df056a081ccf51c828728c452bb5f74a212b60e991cf2dc85166db163df7b3e"
+    },
+    {
+      "path": "web/tests/industry-workplace.spec.mjs",
+      "sha256": "f25d99a417bbe684a073e3d9566d0d630fef3aabd66d5845db777cf67a4a65bf"
+    },
+    {
+      "path": "web/playwright.config.mjs",
+      "sha256": "b9f5f7601e057ab532f7f4693705a393e0b5132bf13c0fc58d69546ae21bfbe0"
+    }
+  ]
+}

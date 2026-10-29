@@ -9,6 +9,26 @@ from hardened_gate import main, validate_receipt, validate_plan_evidence, BASELI
 
 
 class HardenedGateTests(unittest.TestCase):
+    def test_green_requires_actual_signed_business_and_order_security_tests(self):
+        report = {'passed': True, 'results': [{'name': str(i), 'status': 'pass'} for i in range(26)], 'go_passed': True, 'go_exit_code': 0}
+        old = '\n'.join('--- PASS: ' + name for name in (
+            'TestHardenedHTTPAndContainment', 'TestHardenedDocumentReadsAtScale',
+            'TestHardenedOnPremiseMultiWarehouse',
+            'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey',
+            'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
+            'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
+            'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
+            'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
+        required = (
+            'TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions',
+            'TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions',
+            'TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions',
+            'TestHardenedWorkOrdersUnknownCommitSignedReplay')
+        for missing in required:
+            output = old + '\n' + '\n'.join('--- PASS: ' + name for name in required if name != missing)
+            with self.subTest(missing=missing), self.assertRaises(ValueError):
+                validate_receipt('green', 0, report, output)
+
     def test_green_requires_a_retained_complete_bounded_plan_artifact(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'plans.json'
@@ -46,6 +66,10 @@ class HardenedGateTests(unittest.TestCase):
             'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
             'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
             'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
+            'TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions',
+            'TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions',
+            'TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions',
+            'TestHardenedWorkOrdersUnknownCommitSignedReplay',
             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
         validate_receipt('green', 0, good, output)
         for name in ('TestHardenedOnPremiseMultiWarehouse', 'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey', 'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants', 'TestHardenedOnPremCriticWorkerRejectsInstallationDrift', 'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions'):
@@ -111,6 +135,10 @@ class HardenedGateTests(unittest.TestCase):
                           '--- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants\n'
                           '--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift\n'
                           '--- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions\n'
+                          '--- PASS: TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions\n'
+                          '--- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions\n'
+                          '--- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions\n'
+                          '--- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay\n'
                           '--- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle') if kind == 'green' else {
                               'worker_fence': '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced',
                               'document_page': '--- FAIL: TestHardenedDocumentReadsAtScale/one-owner-first\nread page scanned history instead of bounded candidates',

@@ -1,0 +1,36 @@
+{
+  "status": "failed",
+  "scope": "Scoped non-equivalent inventory, authorization, background, OIDC/HTTP, document and migration mutations; not a whole-repository mutation score.",
+  "source_head": "5da9d182dc5fa94934f4c2c57316ce15517183ef",
+  "mutants": [],
+  "selected_cases": [
+    "core_boundary_wz_recipient_not_required",
+    "core_boundary_wz_recipient_unicode_limit_relaxed",
+    "core_boundary_wz_reference_limit_relaxed",
+    "core_boundary_wz_manual_number_bypasses_recipient",
+    "core_boundary_wz_recipient_not_persisted",
+    "core_boundary_wz_order_reference_not_persisted",
+    "core_boundary_issue_permission_admits_receipts",
+    "core_boundary_move_permission_admits_shipments"
+  ],
+  "work_directory": "work\\mutations-b42d3d5c7a06405baa2d62b0e0a7c2ae",
+  "baseline": {
+    "status": "killed",
+    "failed_tests": [
+      "TestDocumentCommandProperties"
+    ],
+    "completed_test_events": 22,
+    "seconds": 10.437,
+    "command": [
+      "C:\\Users\\sashk\\Documents\\Codex\\2026-10-27\\erp-wms-crm-blender\\work\\go-toolchain\\go\\bin\\go.exe",
+      "test",
+      "-tags=integration",
+      "./internal/postgres",
+      "-run",
+      "^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$|^TestDocumentCommandsRecoverFromCommitTransportFailure$|^TestDocumentPaginationProperties$",
+      "-count=1",
+      "-timeout=180s",
+      "-json"
+    ]
+  }
+}

@@ -52,7 +52,10 @@ func TestDocumentNumberingHTTPContract(t *testing.T) {
 			t.Run(kind+"/"+number.name, func(t *testing.T) {
 				h, backend := numberingHandler(t, true)
 				body := `{"organization_id":"` + testOrg + `","warehouse_id":"` + testWarehouse + `","owner_id":"` + testActor + `","kind":"` + kind + `"` + number.raw + `,"lines":[{"item_id":"` + testLine + `","quantity":"1"}]}`
-				valid := strings.TrimSpace(number.value) != "" || (number.value == "" && (kind == "receipt" || kind == "transfer"))
+				if kind == "shipment" {
+					body = strings.TrimSuffix(body, "}") + `,"recipient":"Firma Alfa"}`
+				}
+				valid := strings.TrimSpace(number.value) != "" || (number.value == "" && (kind == "receipt" || kind == "transfer" || kind == "shipment"))
 				want, calls := 400, 0
 				if valid {
 					want, calls = 201, 1

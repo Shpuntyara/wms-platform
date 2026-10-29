@@ -2,6 +2,7 @@ import {test, expect} from '@playwright/test';
 
 test('bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: /^Nowe przyjęcie/}).click();
   await expect(page.getByRole('textbox', {name: 'Numer dokumentu', exact: true})).toHaveCount(0);
   await expect(page.getByText('Numer zostanie nadany automatycznie po zapisaniu', {exact:true})).toBeVisible();
@@ -29,6 +30,7 @@ test('bureau saves a PZ without choosing a number, then explicitly hands it to t
 
 test('a completed PZ prepares an automatically numbered MM without changing the source plan', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name:'PZ-2026-0139', exact:true}).click();
   await page.getByRole('button', {name:'Przygotuj przesunięcie (MM)', exact:true}).click();
   await expect(page.getByRole('dialog', {name:'Nowe przesunięcie (MM)', exact:true})).toBeVisible();
@@ -52,6 +54,7 @@ test('a completed PZ prepares an automatically numbered MM without changing the 
 
 test('terminal blocks wrong scan and receives one item with keyboard', async ({page}) => {
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: 'PZ-2026-0142', exact: true}).click();
   await page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true}).click();
   await page.getByLabel('Kod towaru', {exact: true}).fill('WRONG');
@@ -69,6 +72,7 @@ test('terminal blocks wrong scan and receives one item with keyboard', async ({p
 test('worker screen reflows at TSD width and scanning controls remain touch-sized', async ({page}) => {
   await page.setViewportSize({width: 360, height: 740});
   await page.goto('/app/?demo=1');
+  await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: 'PZ-2026-0142', exact: true}).click();
   await page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true}).click();
   await expect(page.getByLabel('Kod towaru', {exact: true})).toBeVisible();

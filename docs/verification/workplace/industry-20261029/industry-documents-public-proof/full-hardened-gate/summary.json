@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "runs": [
+    {
+      "kind": "baseline",
+      "status": "pass",
+      "report": "baseline.json"
+    },
+    {
+      "kind": "green",
+      "status": "pass",
+      "report": "green.json"
+    },
+    {
+      "kind": "signature",
+      "status": "pass",
+      "report": "signature.json"
+    },
+    {
+      "kind": "action",
+      "status": "pass",
+      "report": "action.json"
+    },
+    {
+      "kind": "installation",
+      "status": "pass",
+      "report": "installation.json"
+    },
+    {
+      "kind": "worker_fence",
+      "status": "pass",
+      "report": "worker_fence.json"
+    },
+    {
+      "kind": "document_page",
+      "status": "pass",
+      "report": "document_page.json"
+    }
+  ],
+  "mutants": 5,
+  "killed": 5,
+  "survived": 0,
+  "invalid": 0,
+  "skipped": 0
+}

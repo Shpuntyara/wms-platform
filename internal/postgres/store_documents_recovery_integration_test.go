@@ -222,6 +222,9 @@ func TestDocumentCommandProperties(t *testing.T) {
 		}
 		createKey := id()
 		body := map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "owner_id": f.owner, "kind": kind, "number": id(), "lines": lines}
+		if kind == "shipment" {
+			body["recipient"] = "Odbiorca dokumentu z historii generowanej"
+		}
 		created := f.request(h, "POST", "/api/v1/documents", body, createKey)
 		if created.Code != 201 {
 			t.Logf("seed=%d create=%d: %s", seed, created.Code, created.Body)

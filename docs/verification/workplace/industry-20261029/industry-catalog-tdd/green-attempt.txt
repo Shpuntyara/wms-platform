@@ -1,0 +1,15 @@
+test_merge_keeps_historical_labels_and_rows_except_selected_company_labels (__main__.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels) ... ok
+test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data (__main__.IndustryCatalogContract.test_merge_refuses_conflicting_catalog_instead_of_relabelling_other_data) ... ok
+test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe (__main__.IndustryCatalogContract.test_metal_catalog_is_a_factory_with_dimensions_and_production_recipe) ... ok
+test_plan_properties_for_many_scopes_and_both_profiles (__main__.IndustryCatalogContract.test_plan_properties_for_many_scopes_and_both_profiles) ... ok
+test_seed_is_transactional_audited_and_does_not_set_stock_amounts (__main__.IndustryCatalogContract.test_seed_is_transactional_audited_and_does_not_set_stock_amounts) ... ok
+test_stationery_has_color_size_year_and_leftover_composition (__main__.IndustryCatalogContract.test_stationery_has_color_size_year_and_leftover_composition) ... ok
+test_storage_codes_mean_section_and_level (__main__.IndustryCatalogContract.test_storage_codes_mean_section_and_level) ... ok
+test_unknown_profile_or_bad_scope_rejected (__main__.IndustryCatalogContract.test_unknown_profile_or_bad_scope_rejected) ... ok
+test_actual_postgres_catalog_drift_rejects_atomic_seed (__main__.IndustryCatalogPostgres.test_actual_postgres_catalog_drift_rejects_atomic_seed) ... ok
+test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants (__main__.IndustryCatalogPostgres.test_actual_postgres_opening_replay_preserves_later_activity_and_no_fixture_grants) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 8.183s
+
+OK

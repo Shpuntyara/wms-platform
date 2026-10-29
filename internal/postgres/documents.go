@@ -12,11 +12,13 @@ import (
 )
 
 func (s *Store) CommandDocument(ctx context.Context, p inventory.Principal, command, document string, input inventory.DocumentInput, registry *modules.Registry) (json.RawMessage, error) {
-	permission := "document.create"
+	var scope inventory.Scope
+	var err error
 	if document != "" {
-		permission = "document.transition"
+		scope, err = p.Scope("document.transition", input.OrganizationID, input.WarehouseID)
+	} else {
+		scope, err = input.CreationScope(p)
 	}
-	scope, err := p.Scope(permission, input.OrganizationID, input.WarehouseID)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,47 @@
+
+[WebServer] (node:36064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:33240) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\industry-workplace.spec.mjs:105:46 › critic: lost reservation reply survives reload and does not post twice
+  1) tests\industry-workplace.spec.mjs:105:46 › critic: lost reservation reply survives reload and does not post twice 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByLabel('Kod towaru', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByLabel('Kod towaru', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Kod towaru', { exact: true })
+
+
+      143 |   await expect(page.getByRole('status')).toContainText('Operacja potwierdzona');
+      144 |   if (fault === 'reservation') {
+    > 145 |     await expect(page.getByLabel('Kod towaru',{exact:true})).toBeVisible();
+          |                                                              ^
+      146 |     await scan();
+      147 |     await page.reload();
+      148 |     await page.getByRole('button',{name:'Sprawdź wynik',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:145:62
+
+    Error Context: test-results\industry-workplace-critic--213f4-oad-and-does-not-post-twice\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-critic--213f4-oad-and-does-not-post-twice\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-critic--213f4-oad-and-does-not-post-twice\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\industry-workplace.spec.mjs:105:46 › critic: lost reservation reply survives reload and does not post twice 

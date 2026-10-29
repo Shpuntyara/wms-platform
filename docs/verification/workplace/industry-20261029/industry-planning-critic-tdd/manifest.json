@@ -1,0 +1,79 @@
+{
+  "findings": [
+    {
+      "issue": "Polish customer/reference character limits were counted as UTF-8 bytes",
+      "actual_RED": "api-first.jsonl",
+      "corrected_by_root": true
+    },
+    {
+      "issue": "SQL replay could switch its outer owner after grant change while retaining the old request and return the old owner order",
+      "actual_RED": "postgres-first.jsonl",
+      "attack_scope": "Legacy compatibility kernel/Store caller; no public HTTP forging path is claimed; on-premise signed RPC surface remains separately bounded",
+      "corrected_by_root": true
+    },
+    {
+      "issue": "SQL accepted request/snapshot scope disagreement and unusable Unicode/control business labels",
+      "actual_RED": "postgres-first.jsonl",
+      "corrected_by_root": true
+    }
+  ],
+  "green_api": {
+    "exit_code": 0,
+    "failed": [],
+    "passed": 125,
+    "skipped": []
+  },
+  "green_postgres": {
+    "exit_code": 0,
+    "failed": [],
+    "passed": 22,
+    "skipped": []
+  },
+  "characterization": {
+    "rational_BOM_histories": 64,
+    "rational_duplicate_dispatch_histories": 48,
+    "multiowner_multiwarehouse_pagination_rows": 192,
+    "SQL_grant_revocation_truth": true,
+    "cross_actor_warehouse_filter_cursors": true
+  },
+  "actual_nested_plans": {
+    "passed": true,
+    "count": 8,
+    "collection": "Actual auto_explain nested plans from warehouse.read_work_orders, runtime role; no copied query and no global server settings",
+    "orders": [
+      10000,
+      100000
+    ],
+    "modes": [
+      "force_custom_plan",
+      "force_generic_plan"
+    ],
+    "max_work": 233,
+    "max_blocks": 134,
+    "candidate_filters": 0,
+    "max_hydration": 21
+  },
+  "final_source_sha256": [
+    {
+      "path": "internal/api/work_orders_critic_test.go",
+      "sha256": "47ec1437e0620a54c5c5d5c339d3fc5601178bdf7ea13511cbf48433c0dea1e7"
+    },
+    {
+      "path": "internal/postgres/work_orders_critic_integration_test.go",
+      "sha256": "8961f2093606ff8e1f348d64900f1d2c99379ae24b6da13ba6e0c9f6e0b97695"
+    },
+    {
+      "path": "internal/api/work_orders.go",
+      "sha256": "181e2fe9167738b378b6b1ab98a98d0a7bb262d553cc38439356758382b97ec4"
+    },
+    {
+      "path": "db/migrations/0013_work_orders.sql",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    },
+    {
+      "path": "db/profiles/industry-v1.sql",
+      "sha256": "3d7cd6ea1abc3c45cade203c66579ea04a06569290fdf134813ddfb3c45c63b6"
+    }
+  ],
+  "validation_note": "PostgreSQL GREEN and structural plans precede go fix mechanical for-range modernization only; final-head CI must execute the final test sources. API final GREEN125 events and go vet/go fix-diff pass on current files. No production source was edited by this critic."
+}

@@ -1,0 +1,37 @@
+FFFF
+======================================================================
+FAIL: test_green_requires_actual_signed_business_and_order_security_tests (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_business_and_order_security_tests) (missing='TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 29, in test_green_requires_actual_signed_business_and_order_security_tests
+    with self.subTest(missing=missing), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_business_and_order_security_tests (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_business_and_order_security_tests) (missing='TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 29, in test_green_requires_actual_signed_business_and_order_security_tests
+    with self.subTest(missing=missing), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_business_and_order_security_tests (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_business_and_order_security_tests) (missing='TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 29, in test_green_requires_actual_signed_business_and_order_security_tests
+    with self.subTest(missing=missing), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_business_and_order_security_tests (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_business_and_order_security_tests) (missing='TestHardenedWorkOrdersUnknownCommitSignedReplay')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 29, in test_green_requires_actual_signed_business_and_order_security_tests
+    with self.subTest(missing=missing), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=4)

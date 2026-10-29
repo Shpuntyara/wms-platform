@@ -55,6 +55,7 @@ func New(config Config) (http.Handler, error) {
 	}
 	s := &Server{config: config, mux: http.NewServeMux()}
 	s.mux.HandleFunc("/api/v1/workspace", s.workspace)
+	s.mux.HandleFunc("/api/v1/work-orders", s.workOrders)
 	s.mux.HandleFunc("/livez", func(w http.ResponseWriter, r *http.Request) {
 		if !s.method(w, r, "GET") {
 			return

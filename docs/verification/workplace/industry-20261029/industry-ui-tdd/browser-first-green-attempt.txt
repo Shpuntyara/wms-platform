@@ -1,0 +1,27 @@
+
+[WebServer] (node:26880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 4 workers
+
+
+(node:3796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:5068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:25192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:28548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[2/4] tests\industry-workplace.spec.mjs:71:1 › stock WZ rejects unavailable quantity before creating a document
+[3/4] tests\industry-workplace.spec.mjs:81:1 › bureau plans material demand and work stages without changing physical stock
+[4/4] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+  4 passed (3.4s)

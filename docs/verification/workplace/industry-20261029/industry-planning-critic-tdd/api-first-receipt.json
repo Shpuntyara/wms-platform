@@ -1,0 +1,23 @@
+{
+  "failed": [
+    "TestWorkOrdersCriticUnicodeCustomerAndReference/200_Polish_customer_characters",
+    "TestWorkOrdersCriticUnicodeCustomerAndReference/100_Polish_reference_characters",
+    "TestWorkOrdersCriticUnicodeCustomerAndReference"
+  ],
+  "tests_failed": 3,
+  "sources": [
+    {
+      "path": "internal/api/work_orders.go",
+      "sha256": "0424e8182f8677806ce6189a64ebeb586537fa48dbf691260ebf2be3a4d94d52"
+    },
+    {
+      "path": "internal/api/work_orders_critic_test.go",
+      "sha256": "52ca15e12be702651d54bec94cdfce4fb17575eb8720c823bbaa4e762fc148d2"
+    },
+    {
+      "path": "internal/api/workspace_config.go",
+      "sha256": "ccc2576636c4ba428044d2f18267d34037bd61e9297f9e6241631b4e958a7874"
+    }
+  ],
+  "output_sha256": "cbf6b5635c56487cea78bf658510e58281a12e86968d62caaecedbf5cf41959f"
+}

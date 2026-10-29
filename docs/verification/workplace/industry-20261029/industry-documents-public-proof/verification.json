@@ -1,0 +1,321 @@
+{
+  "feature": "WZ recipient/order reference and worker WZ/MM; signed on-premise customer-order security",
+  "scope": "Owned disposable PostgreSQL17 loopback databases; no real VM changes by this agent",
+  "primary_RED": {
+    "api-red.jsonl": {
+      "top_level_pass": [],
+      "top_level_fail": [
+        "TestDocumentBusinessHTTPRecipientAndOrderReference",
+        "TestDocumentBusinessHTTPWorkerKindSpecificPermissions"
+      ],
+      "skipped_tests": []
+    },
+    "postgres-red.jsonl": {
+      "top_level_pass": [],
+      "top_level_fail": [
+        "TestDocumentBusinessSQLAutomaticWZAndImmutableContext",
+        "TestDocumentBusinessSQLWorkerSpecificPermissions",
+        "TestDocumentBusinessSQLRequiresRecipientEvenWithManualNumber",
+        "TestDocumentBusinessWZConcurrentRollbackAndManualCollision",
+        "TestDocumentBusinessWZUnknownCommitRecovery",
+        "TestDocumentBusinessWZPropertyRejectedAndReplayedCommandsPreserveSeries"
+      ],
+      "skipped_tests": []
+    }
+  },
+  "GREEN": {
+    "api-business-green.jsonl": {
+      "top_level_pass": [
+        "TestDocumentBusinessHTTPRecipientAndOrderReference",
+        "TestDocumentBusinessHTTPWorkerKindSpecificPermissions",
+        "TestDocumentNumberingHTTPContract",
+        "TestAutomaticDocumentNumberingStillRequiresEmployeePermission"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    },
+    "api-business-race-green.jsonl": {
+      "top_level_pass": [
+        "TestDocumentBusinessHTTPRecipientAndOrderReference",
+        "TestDocumentBusinessHTTPWorkerKindSpecificPermissions",
+        "TestDocumentNumberingHTTPContract",
+        "TestAutomaticDocumentNumberingStillRequiresEmployeePermission"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    },
+    "postgres-green.jsonl": {
+      "top_level_pass": [
+        "TestDocumentBusinessSQLAutomaticWZAndImmutableContext",
+        "TestDocumentBusinessSQLWorkerSpecificPermissions",
+        "TestDocumentBusinessSQLRequiresRecipientEvenWithManualNumber",
+        "TestDocumentBusinessWZConcurrentRollbackAndManualCollision",
+        "TestDocumentBusinessWZUnknownCommitRecovery",
+        "TestDocumentBusinessWZPropertyRejectedAndReplayedCommandsPreserveSeries"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    },
+    "numbering-regressions.jsonl": {
+      "top_level_pass": [
+        "TestDocumentAutomaticNumberingSeparateSeriesAndReplay",
+        "TestDocumentAutomaticNumberingManualReservationAndRollback",
+        "TestDocumentAutomaticNumberingConcurrentDistinctCommands",
+        "TestDocumentAutomaticNumberingUpgradeSeedsHistoryWithoutRenumbering",
+        "TestNumberingCriticAutoKindsAndDurableReplay",
+        "TestNumberingCriticConcurrentIndependentAndDuplicateCommands",
+        "TestNumberingCriticRollbackAndPermissionsDoNotConsumeNumbers",
+        "TestNumberingCriticUnknownCommitKeepsOneNumber",
+        "TestNumberingCriticManualLegacyAndWarehouseScope",
+        "TestNumberingCriticConcurrentManualCollision",
+        "TestNumberingCriticAdministrativeLegacyCollision",
+        "TestNumberingCriticWhitespaceCannotBecomeManualOrAuto",
+        "TestNumberingCriticWarehouseYearBoundaryAndMinimumWidth",
+        "TestNumberingCriticCounterCannotBeChangedByRuntimeCredentials",
+        "TestNumberingCriticGeneratedCommandHistories",
+        "TestDocumentCommandsRecoverFromCommitTransportFailure"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    },
+    "ship-workflow-green.jsonl": {
+      "top_level_pass": [
+        "TestDocumentBusinessSQLWorkerSpecificPermissions",
+        "TestWarehouseReceiptPutawayPickAndShipViaAPI"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    },
+    "historical-business-upgrade-green.jsonl": {
+      "top_level_pass": [
+        "TestDocumentBusinessUpgradePreservesHistoricalShipmentReplayAndSeedsWZ"
+      ],
+      "top_level_fail": [],
+      "skipped_tests": []
+    }
+  },
+  "mutations": {
+    "new_business": 8,
+    "retained_numbering_SQL_and_API": 13,
+    "killed": 21,
+    "survived": 0,
+    "invalid": 0,
+    "first_run_rejected_unmutated_baseline": "Existing generated shipment fixture lacked the now-required recipient; only valid shipment input was updated, all64 property assertions retained."
+  },
+  "signed_security_characterization": {
+    "primary_RED": false,
+    "sql_checks": 29,
+    "go_race": true,
+    "shuffled": true,
+    "all_four_new_tests_passed": true,
+    "skipped": 0,
+    "source0013": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca",
+    "gate_required_PASS_test_RED_to_GREEN": true
+  },
+  "historical_upgrade_characterization": "Official0011 to0012 preserves historical missing-recipient shipment/operation/replay/OID/ACL; rejects new missing-recipient requests and seeds existing canonical WZ41 to automatic42.",
+  "pre_final_full_hardened_campaign": {
+    "passed": true,
+    "runs": [
+      {
+        "kind": "baseline",
+        "status": "pass",
+        "report": "baseline.json"
+      },
+      {
+        "kind": "green",
+        "status": "pass",
+        "report": "green.json"
+      },
+      {
+        "kind": "signature",
+        "status": "pass",
+        "report": "signature.json"
+      },
+      {
+        "kind": "action",
+        "status": "pass",
+        "report": "action.json"
+      },
+      {
+        "kind": "installation",
+        "status": "pass",
+        "report": "installation.json"
+      },
+      {
+        "kind": "worker_fence",
+        "status": "pass",
+        "report": "worker_fence.json"
+      },
+      {
+        "kind": "document_page",
+        "status": "pass",
+        "report": "document_page.json"
+      }
+    ],
+    "mutants": 5,
+    "killed": 5,
+    "survived": 0,
+    "invalid": 0,
+    "skipped": 0,
+    "source0013": "b5c8974dd3c7f8a12a66faba3ce6f4db3324221d36d13b8e1085270b18bcc0b2",
+    "limitation": "Pre-final proof only. Root fixed unpublished0013 after this campaign; latest GREEN was rerun, while full immutable final-headCI remains mandatory."
+  },
+  "original_unrelated_API_failures": "api-green.jsonl contains concurrent root work-order RED tests; not counted as a passing suite.",
+  "files_sha256": [
+    {
+      "path": "api-red.jsonl",
+      "sha256": "222709e3e044a699a5e809e2b74230efb20b02ec2f00fd3a70a42b2071cbeb41"
+    },
+    {
+      "path": "postgres-red.jsonl",
+      "sha256": "d29dce49b0cc5d49b1a14ab66f70a9fa15b2697af7dbb1b62dae5f215f9291a9"
+    },
+    {
+      "path": "red-source-hashes.json",
+      "sha256": "92adbb77d368b346d63648e09eb90d70f1efa4d8a447f071d8a9483577ffb01b"
+    },
+    {
+      "path": "api-business-green.jsonl",
+      "sha256": "ce95bb43aebb05f4475731a3e98fa28e131f530b511bfdb2b88a662d25a702fc"
+    },
+    {
+      "path": "api-business-race-green.jsonl",
+      "sha256": "fd7b16b19cda0488c1515ae353171bbb564c7b23d4e24ee3f383a8598177912f"
+    },
+    {
+      "path": "postgres-green.jsonl",
+      "sha256": "dc09c2810ec489d7f85c475ddce319f57f67db5abbb2d958deea9bf4fbc69721"
+    },
+    {
+      "path": "numbering-regressions.jsonl",
+      "sha256": "cd319dd8442529f9503bfa6da1891736a5b5fb52c137961c007e0ff86b627423"
+    },
+    {
+      "path": "ship-workflow-green.jsonl",
+      "sha256": "540787723f8676d7d71df708b48778dd2dc059a7ef1519489bd9fe61b5d82e83"
+    },
+    {
+      "path": "historical-business-upgrade-green.jsonl",
+      "sha256": "8d697c054e010fc8a7c0f819ea6704ff507ab016c4360322e1ce088d05b81d5d"
+    },
+    {
+      "path": "business-mutations.json",
+      "sha256": "ba7af428ee6d55ce70b6b9cf1c3f6159dd0496ccca08ef29fb4069b19a1e007c"
+    },
+    {
+      "path": "business-mutations-green.json",
+      "sha256": "76b88747ae47bba4d04202b2b7798bdbf4f728c44d3ed9c6dfd9ffca07fb9b54"
+    },
+    {
+      "path": "numbering-mutations-green.json",
+      "sha256": "5b1826e6066fc20c76f5e9de2f047444e0198959c439cf0045387730fc1f5692"
+    },
+    {
+      "path": "hardened-required-tests-red.txt",
+      "sha256": "a9ec880bc9281607a29e133e75f39d0a38ddb13010f22a03a535ea324255f36f"
+    },
+    {
+      "path": "hardened-required-tests-red-hashes.json",
+      "sha256": "49cf6eb7f3d37867f3ccb03ce02a00df729a0c994e936e89430c294b24f5542f"
+    },
+    {
+      "path": "hardened-required-tests-green.txt",
+      "sha256": "747c5af6a46dfb96ed0edd2955a49564f2cafd650fd12a33b930373a5f209875"
+    },
+    {
+      "path": "hardened-industry-latest-green.go.txt",
+      "sha256": "38e9dc0a02f906d17b3fdca3447d4c40bd88f4dff2b6923dc99e0da9333860a1"
+    },
+    {
+      "path": "full-hardened-gate/summary.json",
+      "sha256": "684b1a916797c8ef0dd54de840031baf53b710c14e73ebca80351a6d25865258"
+    }
+  ],
+  "current_source_sha256": [
+    {
+      "path": "db/migrations/0012_document_business_context.sql",
+      "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+    },
+    {
+      "path": "internal/inventory/documents.go",
+      "sha256": "b205c1df5def345acb8f37011c2bfbed91e6b98482c82ed867226cc22e50d9c8"
+    },
+    {
+      "path": "internal/api/documents.go",
+      "sha256": "5a163d40b58a41d2f4074d598e5f3d48187898ca5967e20fa31690f648b7eb4b"
+    },
+    {
+      "path": "internal/api/documents_business_test.go",
+      "sha256": "64210be5e123337254c0129e6544d40b4848d2cdd395cf82b3d4c2b1978af63a"
+    },
+    {
+      "path": "internal/api/documents_numbering_test.go",
+      "sha256": "799c43150fb1daa0799e23f53de951a34465e470b8ab03d7905caeb335ebeafc"
+    },
+    {
+      "path": "internal/postgres/documents.go",
+      "sha256": "02495dbccc048ab3989067a155be7a819be499b651bc574b559a16630c55649b"
+    },
+    {
+      "path": "internal/postgres/hardened.go",
+      "sha256": "51fe453356141e8e6aeb251fff0013721a3520a58b09c9a2b39fda649b24d42f"
+    },
+    {
+      "path": "internal/postgres/documents_business_integration_test.go",
+      "sha256": "43078457aa69d6e796364f2aaa0be0240ee44560e67c90898deaf00347d42ef8"
+    },
+    {
+      "path": "internal/postgres/documents_business_upgrade_integration_test.go",
+      "sha256": "352e64776a877c3ff5adaa2217cf6695f87275316af13f91830a04982ad429dd"
+    },
+    {
+      "path": "internal/postgres/hardened_business_documents_integration_test.go",
+      "sha256": "5657e74f9295b3635be14dc9ffc24e7c5283c186bc416262563551f2a5be2ad7"
+    },
+    {
+      "path": "internal/postgres/hardened_work_orders_integration_test.go",
+      "sha256": "c7f02b6160656b2b8851fa31669dd7280857f3ab55233d66e223abf973b9ed19"
+    },
+    {
+      "path": "internal/postgres/store_documents_integration_test.go",
+      "sha256": "004930136f6e9d05ceb07cf87b89c23f9267cdc8b7dfac45f96e23c4428870d0"
+    },
+    {
+      "path": "internal/postgres/store_documents_recovery_integration_test.go",
+      "sha256": "d1e46a1fd7923aa7220a55dfccfa8f02fd384815a60ff3ad72808d0396aa293d"
+    },
+    {
+      "path": "scripts/numbering_mutations.py",
+      "sha256": "9c2d807cfcdb8a15fcce7671e1157d56fba352b0444b565741b053a453f17e32"
+    },
+    {
+      "path": "scripts/mutations/core-document-business.json",
+      "sha256": "96a8cec185c9714032fb0ab9854505b5d43d064662ee1d5dfa0c077436272604"
+    },
+    {
+      "path": "scripts/mutations/core-document-numbering-api.json",
+      "sha256": "a732c48652c9a0bab7e2fad377adc0438941b9788e1553d350015137922da9fe"
+    },
+    {
+      "path": "scripts/hardened_gate.py",
+      "sha256": "9645ce1979699fdaab6b776539a1dbc43acee21789b60140f96981c362724dc8"
+    },
+    {
+      "path": "scripts/test_hardened_gate.py",
+      "sha256": "7229ded860203e4426eeb06e45c0a72a0c5f62e85b94f24954e5cda3d1952e3f"
+    },
+    {
+      "path": "tests/hardened_profile.py",
+      "sha256": "ad170e73f9c2f9d1c9650befaf9445240542cc5101e0696291ea5a6a6ab4a4a0"
+    }
+  ],
+  "final_CI": "Required on final frozen commit; local characterization is not a full-CI result.",
+  "omitted_raw_profile_metadata": [
+    {
+      "path": "hardened-industry-latest-green.json",
+      "sha256": "d032d69548fa056ca5f42f60a355666ee91dcbdcb4f8c3d550cb7c01ab888028",
+      "reason": "Raw metadata retained locally; digest maps with API-named source keys trigger generic-secret false positives. No data/hash values rewritten."
+    }
+  ],
+  "format_note": "Trailing whitespace in the new signed-order test was normalized with gofmt after characterization. Local runs remain pre-final; immutable final-head CI must execute the formatted test source."
+}

@@ -552,8 +552,10 @@ def database_bootstrap(release, value):
         sql('UPDATE hardened_private.installation SET id=' + literal(value['instance_id']) + '::uuid WHERE singleton;')
     if sql('SELECT id::text FROM hardened_private.installation WHERE singleton;') != value['instance_id']:
         raise ValueError('Database installation identity drift')
+    sql('SET ROLE wms_owner;\n' + (release / 'db/profiles/industry-v1.sql').read_text())
     sql('SET ROLE wms_owner;\n\\set api_role wms_api\n\\set worker_role wms_worker\n' +
         (release / 'db/bootstrap/onprem-grants.psql').read_text())
+    sql('SET ROLE wms_owner;\n\\set api_role wms_api\n' + (release / 'db/bootstrap/industry-onprem-grants.psql').read_text())
     sql("INSERT INTO hardened_private.signing_keys(login,key) VALUES('wms_api',decode(" + literal(value['request_key']) + ",'base64')) ON CONFLICT(login) DO NOTHING;")
     if sql("SELECT encode(key,'base64') FROM hardened_private.signing_keys WHERE login='wms_api';") != value['request_key']:
         raise ValueError('Database request signing key drift')

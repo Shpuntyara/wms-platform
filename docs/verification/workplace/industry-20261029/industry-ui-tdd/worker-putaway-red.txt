@@ -1,0 +1,46 @@
+
+[WebServer] (node:37604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:1672) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] tests\industry-workplace.spec.mjs:183:1 › worker moves stock on an MM while PZ creation remains unavailable
+  1) tests\industry-workplace.spec.mjs:183:1 › worker moves stock on an MM while PZ creation remains unavailable 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Przygotuj przesunięcie (MM)', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Przygotuj przesunięcie (MM)', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Przygotuj przesunięcie (MM)', exact: true })
+
+
+      211 |   await expect(page.getByRole('button',{name:'Nowe przyjęcie (PZ)',exact:true})).toHaveCount(0);
+      212 |   await page.getByRole('button',{name:'PZ-2026-0139',exact:true}).click();
+    > 213 |   await expect(page.getByRole('button',{name:'Przygotuj przesunięcie (MM)',exact:true})).toBeVisible();
+          |                                                                                          ^
+      214 | });
+      215 |
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:213:90
+
+    Error Context: test-results\industry-workplace-worker--3425e-reation-remains-unavailable\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-worker--3425e-reation-remains-unavailable\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-worker--3425e-reation-remains-unavailable\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\industry-workplace.spec.mjs:183:1 › worker moves stock on an MM while PZ creation remains unavailable 

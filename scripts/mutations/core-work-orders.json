@@ -1,0 +1,122 @@
+[
+  {
+    "name": "core_boundary_order_bom_multiplier_ignored",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/work_orders.go",
+    "before": "new(big.Int).Mul(quantityMicros(component.Quantity), quantityMicros(input.Lines[0].Quantity))",
+    "after": "new(big.Int).Mul(quantityMicros(component.Quantity), big.NewInt(1_000_000))",
+    "pattern": "^TestWorkOrdersCalculateRecipeBeforePersisting$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_order_quantity_uint64_overflow",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/work_orders.go",
+    "before": "return n\n",
+    "after": "return new(big.Int).SetUint64(n.Uint64())\n",
+    "pattern": "^TestWorkOrdersCalculateRecipeBeforePersisting$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_order_worker_may_plan",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/work_orders.go",
+    "before": "p.Scope(\"document.create\", input.OrganizationID, input.WarehouseID)",
+    "after": "p.Scope(\"document.read\", input.OrganizationID, input.WarehouseID)",
+    "pattern": "^TestWorkOrdersRejectBeforeWriting$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_order_foreign_owner_accepted",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/work_orders.go",
+    "before": "if !scope.AllowsOwner(input.OwnerID) {",
+    "after": "if false && !scope.AllowsOwner(input.OwnerID) {",
+    "pattern": "^TestWorkOrdersRejectBeforeWriting$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_order_polish_name_byte_count",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/work_orders.go",
+    "before": "utf8.RuneCountInString(value) <= limit",
+    "after": "len(value) <= limit",
+    "pattern": "^TestWorkOrdersCriticUnicodeCustomerAndReference$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_order_commit_retry_lost",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/postgres/work_orders.go",
+    "before": "return nil, &inventory.Problem{Status: 503, Code: \"operation_interrupted\", Detail: \"The operation could not be confirmed. Retry with the same command identifier.\"}",
+    "after": "return nil, translate(err)",
+    "pattern": "^TestWorkOrdersRecoverUnknownCommit$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_order_cursor_scope_binding_ignored",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/postgres/work_orders.go",
+    "before": "c.Binding != binding",
+    "after": "false",
+    "pattern": "^TestWorkOrdersCriticRandomPaginationAndCrossScopeCursors$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_authorization_order_request_scope_binding_removed",
+    "kind": "sql_function",
+    "domain": "authorization",
+    "signature": "warehouse.command_work_order(uuid,uuid,jsonb)",
+    "before": "IF p_input->'request'->>key IS DISTINCT FROM p_input->>key THEN",
+    "after": "IF false THEN",
+    "pattern": "^TestWorkOrdersCriticRequestScopeMustMatchSnapshot$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_authorization_order_database_grant_ignored",
+    "kind": "sql_function",
+    "domain": "authorization",
+    "signature": "warehouse.command_work_order(uuid,uuid,jsonb)",
+    "before": "AND permission='document.create') THEN",
+    "after": "AND permission='document.create') AND false THEN",
+    "pattern": "^TestWorkOrdersCriticDatabaseGrantTruthOverridesForgedPrincipal$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_order_unicode_sql_guard_removed",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.work_order_label(text,integer)",
+    "before": "SELECT length(p_value) BETWEEN 1 AND p_limit",
+    "after": "SELECT true OR length(p_value) BETWEEN 1 AND p_limit",
+    "pattern": "^TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_order_replay_request_ignored",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_work_order(uuid,uuid,jsonb)",
+    "before": "OR prior.request IS DISTINCT FROM p_input->'request'",
+    "after": "OR false",
+    "pattern": "^TestWorkOrdersDurableReplayScopeAndRollback$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_authorization_order_owner_seek_removed",
+    "kind": "sql_function",
+    "domain": "authorization",
+    "signature": "warehouse.read_work_orders(uuid,uuid,uuid,jsonb)",
+    "before": "AND o.owner_id=permitted.owner_id ",
+    "after": "",
+    "pattern": "^TestWorkOrdersCriticRandomPaginationAndCrossScopeCursors$",
+    "package": "./internal/postgres"
+  }
+]

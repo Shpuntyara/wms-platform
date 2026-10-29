@@ -1,0 +1,18 @@
+✔ material plan multiplies exact decimal recipe quantities and sums repeated components (2.3329ms)
+✔ material requirements reject a fraction smaller than one inventory micro-unit (0.6175ms)
+✔ material requirements preserve integer precision above Number.MAX_SAFE_INTEGER (0.2226ms)
+✔ material requirements do not admit zero, negative quantities or malformed components (0.3386ms)
+✔ property: recipe totals match an independent integer multiplication oracle (7.1179ms)
+✔ availability uses the correct warehouse and owner and sums only available quantities (0.2843ms)
+✔ surplus materials show zero shortage rather than a negative need (0.1732ms)
+✔ stock search matches Polish names, SKU and shelf code while preserving row identity (0.719ms)
+✔ shipment reservation validates remaining quantity and genuinely available source stock (0.6959ms)
+✔ shipment issue requires its own active reservation and never another document or balance (1.2327ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 166.5396

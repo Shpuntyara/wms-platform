@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 
 	"github.com/Shpuntyara/wms-platform/internal/inventory"
@@ -31,15 +32,18 @@ func (s *Server) documentCommand(w http.ResponseWriter, r *http.Request, transit
 	permission := "document.create"
 	if transition {
 		document, err = inventory.NormalizeID(r.PathValue("id"))
-		if err == nil && (input.ExpectedVersion < 1 || (input.State != "active" && input.State != "closed" && input.State != "cancelled") || input.OwnerID != "" || input.Kind != "" || input.Number != "" || input.Lines != nil) {
+		if err == nil && (input.ExpectedVersion < 1 || (input.State != "active" && input.State != "closed" && input.State != "cancelled") || input.OwnerID != "" || input.Kind != "" || input.Number != "" || input.Recipient != "" || input.OrderReference != "" || input.Lines != nil) {
 			err = inventory.Invalid("invalid_document_transition")
 		}
 		permission = "document.transition"
 	} else {
 		input.OwnerID, err = inventory.NormalizeID(input.OwnerID)
-		automaticNumber := input.Number == "" && (input.Kind == "receipt" || input.Kind == "transfer")
+		automaticNumber := input.Number == "" && (input.Kind == "receipt" || input.Kind == "transfer" || input.Kind == "shipment")
 		if err == nil && (input.ExpectedVersion != 0 || input.State != "" || len(input.Lines) < 1 || len(input.Lines) > 200 || (!automaticNumber && strings.TrimSpace(input.Number) == "") || utf8.RuneCountInString(input.Number) > 100 || (input.Kind != "receipt" && input.Kind != "shipment" && input.Kind != "transfer" && input.Kind != "adjustment")) {
 			err = inventory.Invalid("invalid_document_input")
+		}
+		if err == nil && (!documentLabel(input.Recipient, 200) || !documentLabel(input.OrderReference, 100) || (input.Kind == "shipment" && strings.TrimSpace(input.Recipient) == "")) {
+			err = inventory.Invalid("invalid_document_recipient")
 		}
 		if err == nil {
 			for i := range input.Lines {
@@ -60,7 +64,12 @@ func (s *Server) documentCommand(w http.ResponseWriter, r *http.Request, transit
 		return
 	}
 	p := principal(r)
-	scope, err := p.Scope(permission, input.OrganizationID, input.WarehouseID)
+	var scope inventory.Scope
+	if transition {
+		scope, err = p.Scope(permission, input.OrganizationID, input.WarehouseID)
+	} else {
+		scope, err = input.CreationScope(p)
+	}
 	if err != nil {
 		s.problem(w, r, err)
 		return
@@ -75,4 +84,8 @@ func (s *Server) documentCommand(w http.ResponseWriter, r *http.Request, transit
 		return
 	}
 	writeJSON(w, 201, map[string]any{"data": result})
+}
+
+func documentLabel(value string, maximum int) bool {
+	return utf8.RuneCountInString(value) <= maximum && !strings.ContainsFunc(value, unicode.IsControl)
 }

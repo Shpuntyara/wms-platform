@@ -1,0 +1,301 @@
+{
+  "feature": "Polish stock-first workplace, WZ recipients and exact material/work-order planning",
+  "collected_at": "2026-10-29T18:35:29.893419+00:00",
+  "primary_RED": {
+    "domain_assertions": 10,
+    "browser_cases": 4,
+    "files": [
+      "domain-red.txt",
+      "browser-red.txt",
+      "red-hashes.json"
+    ]
+  },
+  "additional_RED_GREEN": [
+    {
+      "problem": "A confirmed reservation could not restore the active shipment after page reload.",
+      "red": "recovery-red.txt",
+      "source_and_test_hashes": "recovery-red-hashes.json",
+      "green": "all-browser-final-green.txt"
+    },
+    {
+      "problem": "Worker sidebar/history were unavailable and history rendered active tasks instead of closed documents.",
+      "red": "history-actual-red.txt",
+      "source_and_test_hashes": "history-red-hashes.json",
+      "green": "all-browser-final-green.txt"
+    },
+    {
+      "problem": "An employee with document.move could not prepare placement from a closed PZ.",
+      "red": "worker-putaway-red.txt",
+      "source_and_test_hashes": "worker-putaway-red-hashes.json",
+      "green": "all-browser-final-green.txt"
+    },
+    {
+      "problem": "Derived WZ used the first owner instead of the order owner; frontend text limits disagreed with the backend; an existing partial reservation was not exposed as the next issue quantity.",
+      "red": "crosscritic-red.txt",
+      "source_and_test_hashes": "crosscritic-red-hashes.json",
+      "green": "crosscritic-final-browser-green.txt"
+    },
+    {
+      "problem": "A missing order material or owner could silently fall back to the first catalog entry.",
+      "red": "order-catalog-fallback-red.txt",
+      "source_and_test_hashes": "order-catalog-fallback-red-hashes.json",
+      "green": "crosscritic-final-browser-green.txt"
+    },
+    {
+      "problem": "Earlier positive metal trial stock and legacy product selectors were mixed into the paper workplace.",
+      "red": "paper-archive-red.txt",
+      "source_and_test_hashes": "paper-archive-red-hashes.json",
+      "green": "final-archive-all-browser-green.txt",
+      "data_fidelity": "The complete adapter state is byte-identical before and after archive-view navigation; exact archived balances remain visible through the explicit toggle."
+    }
+  ],
+  "GREEN": {
+    "node_tests": 58,
+    "browser_tests": 25,
+    "new_property_cases": 320,
+    "failed": 0,
+    "skipped": 0,
+    "legacy_mutants_killed": 37,
+    "new_mutants_killed": 18,
+    "survived": 0,
+    "invalid": 0
+  },
+  "mutation_audit": {
+    "first_campaign": "industry-mutations-first.json",
+    "first_result": {
+      "killed": 16,
+      "survived": 1,
+      "invalid": 1
+    },
+    "survivor_resolution": "Added a name-only Polish accent oracle; the SKU previously masked missing accent normalization.",
+    "invalid_resolution": "The first float mutation raised an unexpected domain exception and was not counted as killed. Replaced with a reviewed precision-loss mutation that remains executable and fails assertions.",
+    "final_campaign": "industry-mutations-green.json"
+  },
+  "notes": [
+    "The first history-red.txt exposed test timing before async document closure; the test now waits for the confirmed closed heading. history-actual-red.txt is the valid history RED.",
+    "Additional properties and final operational browser cases are not represented as preimplementation RED when they were introduced after implementation.",
+    "Old PZ/MM browser assertions are preserved and explicitly navigate from the new stock-first entry screen.",
+    "Planning snapshots do not reserve, consume or produce stock. WZ confirms physical issue through the existing reservation and movement APIs.",
+    "Browser fault cases use the synthetic training adapter. Root must verify the business workflows through actual PostgreSQL and the installed onprem-v1 profile."
+  ],
+  "sources_sha256_lf": [
+    {
+      "path": "web/src/app.js",
+      "sha256": "936812dda984e0e7d1a99643a39cc2a017f9f4a32d5ccf7998a2802dad5c3eed"
+    },
+    {
+      "path": "web/src/domain.js",
+      "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+    },
+    {
+      "path": "web/src/demo.js",
+      "sha256": "2fa703e68499aa921a31ca74560969dbe672d902564c714d9d647d6e9dee74b8"
+    },
+    {
+      "path": "web/src/messages.js",
+      "sha256": "f1d3ef44d52ffc051e0b31e6083e589c5b0fb1e11c16e5768535bf26143aa8a8"
+    },
+    {
+      "path": "web/style.css",
+      "sha256": "0e5f5defc04f9b95e906a38c26b34536e167644f2749fc8feca9de5ec7276aaa"
+    },
+    {
+      "path": "web/playwright.config.mjs",
+      "sha256": "b9f5f7601e057ab532f7f4693705a393e0b5132bf13c0fc58d69546ae21bfbe0"
+    },
+    {
+      "path": "web/tests/industry-domain.test.mjs",
+      "sha256": "052420b9786b2cd93fbb2c70f75fcc4da46958e962921832c8017cd1e8d32225"
+    },
+    {
+      "path": "web/tests/industry-property.test.mjs",
+      "sha256": "dc78205ba64744f271fb8b75cb461b7bf661a732910bc316d0a89a69f39befc4"
+    },
+    {
+      "path": "web/tests/industry-workplace.spec.mjs",
+      "sha256": "3554ff15dbbd7c6ecbb3ddb8f539a1f2e4bc2725105e1284ecd8cc9bd5ac5ced"
+    },
+    {
+      "path": "web/tests/workplace.spec.mjs",
+      "sha256": "35adcfdcfb30873b7b0b016e13a9045380483e0c2d7331591941f39a75e717e5"
+    },
+    {
+      "path": "web/tests/critic-workplace.spec.mjs",
+      "sha256": "46727c6184732cb0080d7135e784a74500c054d0f0b8561c6320f0e5f8e283b6"
+    },
+    {
+      "path": "web/tests/live-workflow.spec.mjs",
+      "sha256": "97aa250da50b862f5c69fbcb8d4889b4e70f00c4c7a5bb4e99e4837001dea599"
+    },
+    {
+      "path": "web/tests/installation-workflow.spec.mjs",
+      "sha256": "aaf19bb8f2ba1e17459549a99c8a74f1f3bc78cef62c0e94c6fbbe703ae04d3e"
+    },
+    {
+      "path": "scripts/verify_industry_ui_mutations.py",
+      "sha256": "5aa0c505dedce399448f0ab86742bacd5b35d01bdf54b980041c4dd044fce355"
+    }
+  ],
+  "evidence_sha256": [
+    {
+      "path": "all-browser-final-green.txt",
+      "sha256": "0fceab4274620b15337327a5e6f20c2f5dab5186c862321a545894662e67bea9"
+    },
+    {
+      "path": "all-browser-green.txt",
+      "sha256": "ceef4d62eb7518f2312ee59be86149594dd945fc97ad56fff0de38328481d274"
+    },
+    {
+      "path": "all-node-first.txt",
+      "sha256": "60fa70cf8a104ec170d0c332693a8dd64de82d6e4b39ac7f5e74f1c0ed612784"
+    },
+    {
+      "path": "all-node-green.txt",
+      "sha256": "556dcf73ea89377e2f6ff3ab6f4088dff6b9aed479da3eab050dbb6ca644cec0"
+    },
+    {
+      "path": "browser-first-green-attempt.txt",
+      "sha256": "892b6b344161ad1f519d34f6634941e7d5e4e6d43f9a05bd50d3b2b333bd40e1"
+    },
+    {
+      "path": "browser-green.txt",
+      "sha256": "1095d38406b946aa0dfc2e12497b1f24115e19edfd98432ad1f1c7eb9aae548a"
+    },
+    {
+      "path": "browser-red.txt",
+      "sha256": "8cc0e97c3b9cb8cd9d153cd34954a4e57276bd28fed735cd939eaa6f0391c160"
+    },
+    {
+      "path": "crosscritic-all-browser-green.txt",
+      "sha256": "c5096513fb27da2d9724a802741fe56f003bbb6c7283749c0d8761257904edc8"
+    },
+    {
+      "path": "crosscritic-all-node-green.txt",
+      "sha256": "d814767b3a49afee2a155d5438310c9e98fb86a02c7f6468c119284b7788b62d"
+    },
+    {
+      "path": "crosscritic-final-browser-green.txt",
+      "sha256": "dba2409b2fa08432fc02ec46c7852aa4847f2f460b8e22485a4d36151ce6f0c9"
+    },
+    {
+      "path": "crosscritic-first-green-attempt.txt",
+      "sha256": "f87934e9b15f9566def91cbd820f0b60ae522134a441b8447da284e1ee061453"
+    },
+    {
+      "path": "crosscritic-industry-mutations.json",
+      "sha256": "eeaee38d3bcc45f17528abe435718671e29cea7328d34465618462c1c9497893"
+    },
+    {
+      "path": "crosscritic-industry-mutations.txt",
+      "sha256": "72423f71a9bb091af00b35542d5e7a4533cde521a49cc572270222a7338bdba7"
+    },
+    {
+      "path": "crosscritic-legacy-mutations.json",
+      "sha256": "414f090a849130b0ed1a63e563123e00618fce81bd496b8694d3a2a4f42b94d1"
+    },
+    {
+      "path": "crosscritic-legacy-mutations.txt",
+      "sha256": "09f25ea831de958a09bbf2237656fb7d5c231b13946b3cdec6594c960544aedd"
+    },
+    {
+      "path": "crosscritic-red-hashes.json",
+      "sha256": "e256d097c0405cc37f1a3e976cbc41888538d4434c497cf133dc13ca1b012ad1"
+    },
+    {
+      "path": "crosscritic-red.txt",
+      "sha256": "62c0142fc9cf3ae1a8937aa42dce7c4c98ffb25948690721b555f052108e5994"
+    },
+    {
+      "path": "domain-green.txt",
+      "sha256": "864c77eaf58224e0c70c9981f9b0cba5eaac325e6b512da6251a881489226740"
+    },
+    {
+      "path": "domain-red.txt",
+      "sha256": "63b327db1d9d8758a2936511bcd037f9f01204faa2ec9a5758c55557cc10785f"
+    },
+    {
+      "path": "final-archive-all-browser-green.txt",
+      "sha256": "2c60d3c99434fd9eacf65898b6f405c29043a0b83e6e637b68a4a03aa18804e0"
+    },
+    {
+      "path": "final-archive-all-node-green.txt",
+      "sha256": "0b6c25781f0d85888804fb74e598d63ff50532be9710581bfecf8e9c889a914e"
+    },
+    {
+      "path": "history-actual-red.txt",
+      "sha256": "3f75e93c014e65c83c0fb3c378c8a43b2c25ddceb98ba490fe113cb9bd265ce4"
+    },
+    {
+      "path": "history-red-hashes.json",
+      "sha256": "1976ddc0972474e4580a62115941e903ecd8b3c18cc909a55e029b1079ccc43e"
+    },
+    {
+      "path": "history-red.txt",
+      "sha256": "92b8bcb7e48c7eb444dd7d78536a1d95d7e3a480aa8cfbb03ffca6e9cedaefd1"
+    },
+    {
+      "path": "industry-mutations-first.json",
+      "sha256": "365b4b5cd386b828a4056a293a80badaa2e514824a1d706e724188363fe2218f"
+    },
+    {
+      "path": "industry-mutations-first.txt",
+      "sha256": "4b4357659460d605cd1128e90554384de90aec63766255be1e5aceadb0ea3002"
+    },
+    {
+      "path": "industry-mutations-green.json",
+      "sha256": "e9241da4d7979c470647b1137b3f5be2b1d0cb552f48e44d3e9b697cd9ab810e"
+    },
+    {
+      "path": "industry-mutations-green.txt",
+      "sha256": "72423f71a9bb091af00b35542d5e7a4533cde521a49cc572270222a7338bdba7"
+    },
+    {
+      "path": "legacy-ui-mutations.json",
+      "sha256": "fdcc88b5efb095c44ae7a2a4cd11db9dbf15c1bce67a4bf6f904be72bde09306"
+    },
+    {
+      "path": "legacy-ui-mutations.txt",
+      "sha256": "09f25ea831de958a09bbf2237656fb7d5c231b13946b3cdec6594c960544aedd"
+    },
+    {
+      "path": "order-catalog-fallback-red-hashes.json",
+      "sha256": "48cd7c504dafba78fdbb1c6ad4b366b2ebf548e4dc9219c98a11fc148ade578a"
+    },
+    {
+      "path": "order-catalog-fallback-red.txt",
+      "sha256": "d20124e5f60f30046f4b6ccb869c34188c52fe78d1d9238fcf2addb44c18e4f8"
+    },
+    {
+      "path": "paper-archive-green.txt",
+      "sha256": "711fa7a6599246e118b2e4cbc3a66b744249d2859ec97bfdb3a0a428bfb9c904"
+    },
+    {
+      "path": "paper-archive-red-hashes.json",
+      "sha256": "6c954b9756bf4097269f8a0cd8ccd417b7593ba33d353f69c2b8c42eedeefcbc"
+    },
+    {
+      "path": "paper-archive-red.txt",
+      "sha256": "591074e72f5883be9d9585862353326f3c13d89caaf71ce2e718edba5db44278"
+    },
+    {
+      "path": "recovery-red-hashes.json",
+      "sha256": "897e0ed0625f2236c05ce2de2d50a78db270dee83dede302ca48d50279b5e8cd"
+    },
+    {
+      "path": "recovery-red.txt",
+      "sha256": "2e44ebbc4a4e00f0c92a30265e6f3e63ef7e4fff35d246f17fa55de16d73c754"
+    },
+    {
+      "path": "red-hashes.json",
+      "sha256": "84f5007620e2d273736291346145a414dcdd03baf276d649e5515522d1aae65e"
+    },
+    {
+      "path": "worker-putaway-red-hashes.json",
+      "sha256": "78a4d6b2febf89d0f98802b2b0b89623f186f6200e902842b2408b6340fc8c66"
+    },
+    {
+      "path": "worker-putaway-red.txt",
+      "sha256": "62e76fd14ee19cfba49a2ceccc00929d0aef0355ca5cd2641a3f5f402fbcdad5"
+    }
+  ]
+}

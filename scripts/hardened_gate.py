@@ -49,6 +49,10 @@ def validate_receipt(kind, exit_code, report, go_output):
                      'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
                      'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
                      'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
+                     'TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions',
+                     'TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions',
+                     'TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions',
+                     'TestHardenedWorkOrdersUnknownCommitSignedReplay',
                      'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle')))
     elif kind == 'baseline':
         valid = exit_code == 1 and failed == BASELINE_FAILURES and report.get('passed') is False

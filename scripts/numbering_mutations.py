@@ -20,11 +20,11 @@ _CASES = [
     _case('counter_increments_twice', _ALLOCATE, 'last_value=last_value+1', 'last_value=last_value+2', 'AutoKindsAndDurableReplay'),
     _case('counter_does_not_increment', _ALLOCATE, 'last_value=last_value+1', 'last_value=last_value', 'AutoKindsAndDurableReplay'),
     _case('warehouse_timezone_ignored', _ALLOCATE, 'p_at AT TIME ZONE zone', "p_at AT TIME ZONE 'UTC'", 'WarehouseYearBoundaryAndMinimumWidth'),
-    _case('receipt_and_transfer_prefix_swapped', _ALLOCATE, "WHEN 'receipt' THEN 'PZ' ELSE 'MM'", "WHEN 'receipt' THEN 'MM' ELSE 'PZ'", 'AutoKindsAndDurableReplay'),
+    _case('receipt_and_transfer_prefix_swapped', _ALLOCATE, "WHEN 'receipt' THEN 'PZ' WHEN 'transfer' THEN 'MM' ELSE 'WZ'", "WHEN 'receipt' THEN 'MM' WHEN 'transfer' THEN 'PZ' ELSE 'WZ'", 'AutoKindsAndDurableReplay'),
     _case('large_number_truncated', _ALLOCATE, 'greatest(6,length(serial_value::text))', '6', 'WarehouseYearBoundaryAndMinimumWidth'),
     _case('manual_reservation_removed', _COMMAND, "PERFORM warehouse.reserve_document_number(org,wh,p_input->>'kind',v_number);", 'NULL;', 'ManualLegacyAndWarehouseScope'),
     _case('manual_rewinds_counter', _RESERVE, 'greatest(counters.last_value,excluded.last_value)', 'excluded.last_value', 'ManualLegacyAndWarehouseScope'),
-    _case('manual_transfer_uses_receipt_prefix', _RESERVE, "prefix:=CASE p_kind WHEN 'receipt' THEN 'PZ' ELSE 'MM' END;", "prefix:='PZ';", 'ManualLegacyAndWarehouseScope'),
+    _case('manual_transfer_uses_receipt_prefix', _RESERVE, "prefix:=CASE p_kind WHEN 'receipt' THEN 'PZ' WHEN 'transfer' THEN 'MM' ELSE 'WZ' END;", "prefix:='PZ';", 'ManualLegacyAndWarehouseScope'),
     _case('administrative_collision_probe_removed', _ALLOCATE, 'IF NOT EXISTS(SELECT 1 FROM warehouse.documents', 'IF true OR NOT EXISTS(SELECT 1 FROM warehouse.documents', 'AdministrativeLegacyCollision'),
     _case('replay_allocates_another_number', _COMMAND, 'RETURN previous.result;', "IF p_document IS NULL AND coalesce(p_input->>'number','')='' THEN PERFORM warehouse.allocate_document_number(org,wh,p_input->>'kind',created); END IF; RETURN previous.result;", 'AutoKindsAndDurableReplay'),
 ]

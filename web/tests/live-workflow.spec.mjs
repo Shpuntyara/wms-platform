@@ -39,8 +39,10 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await page.goto('/app/');
   const login = page.getByRole('button', {name: 'Zaloguj się do WMS', exact: true});
   const createReceipt = page.getByRole('button', {name: 'Nowe przyjęcie (PZ)', exact: true});
-  await expect(login.or(createReceipt)).toBeVisible();
+  const stockHeading = page.getByRole('heading', {name:'Stany według adresów',exact:true});
+  await expect(login.or(stockHeading)).toBeVisible();
   if (await login.isVisible()) await login.click();
+  await page.getByRole('button', {name:'Przyjęcia (PZ)',exact:true}).click();
   await expect(createReceipt).toBeVisible();
   await page.setViewportSize({width:1024,height:900});
   await expect(page.getByRole('button',{name:'Wyloguj',exact:true})).toBeVisible();

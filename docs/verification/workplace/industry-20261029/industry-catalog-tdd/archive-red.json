@@ -1,0 +1,15 @@
+{
+  "exit_code": 1,
+  "source_sha256": [
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "83e4a753d7722b88159c962179ef2f313c450d0deece2d6f290abd4e5bf753db"
+    },
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "8b0451ecb5cba20ac40c01c6f719a782a3643c9e953419b8d3ec9d045b98bfa7"
+    }
+  ],
+  "output_sha256": "2ae6686437ea1213eefc2eaa824cd29be0d5a4e347a9876aae91a7419dedc45c",
+  "characterization": "Unknown UUID with old SKU was already preserved; actual known legacy archival and updated merge expectation fail before implementation."
+}

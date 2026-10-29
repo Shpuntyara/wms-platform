@@ -1,0 +1,3 @@
+\set ON_ERROR_STOP on
+-- Compatibility service role only. On-premise logins receive signed RPCs instead.
+GRANT EXECUTE ON FUNCTION warehouse.command_work_order(uuid,uuid,jsonb),warehouse.read_work_orders(uuid,uuid,uuid,jsonb) TO :"runtime_role";

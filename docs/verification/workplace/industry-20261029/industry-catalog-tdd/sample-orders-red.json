@@ -1,0 +1,15 @@
+{
+  "exit_code": 1,
+  "description": "Actual missing visible example-order behavior before catalog implementation change",
+  "source_sha256": [
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "404bfd395811cc0482172a4e5c12c8f4e122e1034682aa5ae0e5237dbb98958f"
+    },
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "4174a9780a4c5419cee162f440867398f67a65c75316b0b54befac0977e49e07"
+    }
+  ],
+  "output_sha256": "cfef06519446eab41c47bfcb9cebb388dfae51249e847fc98ef61065edd1ae50"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "core_boundary_wz_recipient_not_required",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/documents.go",
+    "before": "(input.Kind == \"shipment\" && strings.TrimSpace(input.Recipient) == \"\")",
+    "after": "false",
+    "pattern": "^TestDocumentBusinessHTTPRecipientAndOrderReference$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_wz_recipient_unicode_limit_relaxed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/documents.go",
+    "before": "documentLabel(input.Recipient, 200)",
+    "after": "documentLabel(input.Recipient, 201)",
+    "pattern": "^TestDocumentBusinessHTTPRecipientAndOrderReference$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_wz_reference_limit_relaxed",
+    "kind": "go",
+    "domain": "boundary",
+    "source": "internal/api/documents.go",
+    "before": "documentLabel(input.OrderReference, 100)",
+    "after": "documentLabel(input.OrderReference, 101)",
+    "pattern": "^TestDocumentBusinessHTTPRecipientAndOrderReference$",
+    "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_wz_manual_number_bypasses_recipient",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+    "before": "p_input->>'kind'='shipment' AND coalesce(btrim(p_input->>'recipient'",
+    "after": "p_input->>'kind'='shipment' AND coalesce(p_input->>'number','')='' AND coalesce(btrim(p_input->>'recipient'",
+    "pattern": "^TestDocumentBusinessSQLRequiresRecipientEvenWithManualNumber$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_wz_recipient_not_persisted",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+    "before": "created,coalesce(p_input->>'recipient',''),coalesce(p_input->>'order_reference','')",
+    "after": "created,'',coalesce(p_input->>'order_reference','')",
+    "pattern": "^TestDocumentBusinessSQLAutomaticWZAndImmutableContext$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_wz_order_reference_not_persisted",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+    "before": "created,coalesce(p_input->>'recipient',''),coalesce(p_input->>'order_reference','')",
+    "after": "created,coalesce(p_input->>'recipient',''),''",
+    "pattern": "^TestDocumentBusinessSQLAutomaticWZAndImmutableContext$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_issue_permission_admits_receipts",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+    "before": "p_input->>'kind'='shipment' AND g.permission='document.issue'",
+    "after": "p_input->>'kind' IN('shipment','receipt') AND g.permission='document.issue'",
+    "pattern": "^TestDocumentBusinessSQLWorkerSpecificPermissions$",
+    "package": "./internal/postgres"
+  },
+  {
+    "name": "core_boundary_move_permission_admits_shipments",
+    "kind": "sql_function",
+    "domain": "boundary",
+    "signature": "warehouse.command_document(uuid,uuid,uuid,jsonb)",
+    "before": "p_input->>'kind'='transfer' AND g.permission='document.move'",
+    "after": "p_input->>'kind' IN('transfer','shipment') AND g.permission='document.move'",
+    "pattern": "^TestDocumentBusinessSQLWorkerSpecificPermissions$",
+    "package": "./internal/postgres"
+  }
+]

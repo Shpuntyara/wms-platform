@@ -1,0 +1,17 @@
+{
+  "exit_code": 1,
+  "failed": [
+    "TestWorkOrdersCriticReplayCannotSwitchOwnerAfterGrantChange",
+    "TestWorkOrdersCriticRequestScopeMustMatchSnapshot/organization_id",
+    "TestWorkOrdersCriticRequestScopeMustMatchSnapshot/warehouse_id",
+    "TestWorkOrdersCriticRequestScopeMustMatchSnapshot/owner_id",
+    "TestWorkOrdersCriticRequestScopeMustMatchSnapshot",
+    "TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels/blank_Unicode_customer",
+    "TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels/control_customer",
+    "TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels/blank_Unicode_reference",
+    "TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels/control_reference",
+    "TestWorkOrdersCriticRawSQLRejectsInvisibleBusinessLabels",
+    null
+  ],
+  "skipped": []
+}

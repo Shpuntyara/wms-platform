@@ -1,0 +1,17 @@
+
+[WebServer] (node:38528) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+(node:26696) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+(node:19304) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\industry-workplace.spec.mjs:387:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock
+[2/2] tests\industry-workplace.spec.mjs:405:1 › new paper documents use working items while explicit historical placement preserves the archived SKU
+  2 passed (2.2s)

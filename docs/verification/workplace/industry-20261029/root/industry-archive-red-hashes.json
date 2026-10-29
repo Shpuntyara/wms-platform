@@ -1,0 +1,14 @@
+[
+  {
+    "path": "internal/api/workspace_config_industry_test.go",
+    "sha256": "a11f95060d330538b082c2469a7b6a763b8d437adea7d9613b5f523b7b0ebb29"
+  },
+  {
+    "path": "internal/api/workspace_config.go",
+    "sha256": "ccc2576636c4ba428044d2f18267d34037bd61e9297f9e6241631b4e958a7874"
+  },
+  {
+    "path": "work/industry-archive-api-red.jsonl",
+    "sha256": "e97817681c39410493c6d74c7d834f912bf5f6255c1b2a4382ec3ce2c43810b0"
+  }
+]

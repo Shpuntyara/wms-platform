@@ -1,0 +1,274 @@
+✖ material plan multiplies exact decimal recipe quantities and sums repeated components (1.3608ms)
+✖ material requirements reject a fraction smaller than one inventory micro-unit (0.6007ms)
+✖ material requirements preserve integer precision above Number.MAX_SAFE_INTEGER (0.1357ms)
+✖ material requirements do not admit zero, negative quantities or malformed components (0.1664ms)
+✖ property: recipe totals match an independent integer multiplication oracle (0.1658ms)
+✖ availability uses the correct warehouse and owner and sums only available quantities (0.2224ms)
+✖ surplus materials show zero shortage rather than a negative need (0.1585ms)
+✖ stock search matches Polish names, SKU and shelf code while preserving row identity (0.1699ms)
+✖ shipment reservation validates remaining quantity and genuinely available source stock (0.1851ms)
+✖ shipment issue requires its own active reservation and never another document or balance (0.2481ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 0
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 303.4022
+
+✖ failing tests:
+
+test at web\tests\industry-domain.test.mjs:12:1
+✖ material plan multiplies exact decimal recipe quantities and sums repeated components (1.3608ms)
+  AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:13:16)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:17:1
+✖ material requirements reject a fraction smaller than one inventory micro-unit (0.6007ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /dokładność|precyzj/. Input:
+  
+  'AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow\n' +
+    '+ actual - expected\n' +
+    '\n' +
+    "+ 'undefined'\n" +
+    "- 'function'\n"
+  
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:18:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+        at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+        at file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:18:21
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:18:10)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12),
+    expected: /dokładność|precyzj/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:21:1
+✖ material requirements preserve integer precision above Number.MAX_SAFE_INTEGER (0.1357ms)
+  AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:22:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:25:1
+✖ material requirements do not admit zero, negative quantities or malformed components (0.1664ms)
+  AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:26:19)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:31:1
+✖ property: recipe totals match an independent integer multiplication oracle (0.1658ms)
+  AssertionError [ERR_ASSERTION]: materialRequirements must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:32:19)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:38:1
+✖ availability uses the correct warehouse and owner and sums only available quantities (0.2224ms)
+  AssertionError [ERR_ASSERTION]: materialAvailability must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:40:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:43:1
+✖ surplus materials show zero shortage rather than a negative need (0.1585ms)
+  AssertionError [ERR_ASSERTION]: materialAvailability must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:44:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:47:1
+✖ stock search matches Polish names, SKU and shelf code while preserving row identity (0.1699ms)
+  AssertionError [ERR_ASSERTION]: findStock must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:50:78)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:54:1
+✖ shipment reservation validates remaining quantity and genuinely available source stock (0.1851ms)
+  AssertionError [ERR_ASSERTION]: reservationIntent must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:55:17)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at web\tests\industry-domain.test.mjs:62:1
+✖ shipment issue requires its own active reservation and never another document or balance (0.2481ms)
+  AssertionError [ERR_ASSERTION]: issueIntent must be available to the employee workflow
+  + actual - expected
+  
+  + 'undefined'
+  - 'function'
+  
+      at requireFunction (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:10:41)
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/industry-domain.test.mjs:63:15)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: 'function',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

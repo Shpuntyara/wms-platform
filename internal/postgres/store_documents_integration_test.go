@@ -19,6 +19,9 @@ func TestWarehouseReceiptPutawayPickAndShipViaAPI(t *testing.T) {
 	}
 	create := func(kind string) (string, string) {
 		body := map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "owner_id": f.owner, "kind": kind, "number": id(), "lines": []any{map[string]any{"item_id": f.item, "quantity": "4"}}}
+		if kind == "shipment" {
+			body["recipient"] = "Odbiorca testowej wysyłki"
+		}
 		key := id()
 		w := f.request(h, "POST", "/api/v1/documents", body, key)
 		requireStatus(t, w, 201)

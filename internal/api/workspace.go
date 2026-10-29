@@ -59,6 +59,7 @@ func (c WorkspaceConfig) catalog(p inventory.Principal) map[string]any {
 	owners := []NamedOwner{}
 	items := []NamedItem{}
 	positions := []NamedPosition{}
+	recipes := []ProductionRecipe{}
 	readOrganizations := map[string]bool{}
 	readWarehouses := map[[2]string]bool{}
 	for _, g := range p.Grants {
@@ -95,5 +96,10 @@ func (c WorkspaceConfig) catalog(p inventory.Principal) map[string]any {
 			positions = append(positions, entry)
 		}
 	}
-	return map[string]any{"organizations": organizations, "warehouses": warehouses, "owners": owners, "items": items, "positions": positions}
+	for _, entry := range c.Recipes {
+		if readWarehouses[[2]string{entry.OrganizationID, entry.WarehouseID}] {
+			recipes = append(recipes, entry)
+		}
+	}
+	return map[string]any{"organizations": organizations, "warehouses": warehouses, "owners": owners, "items": items, "positions": positions, "recipes": recipes}
 }

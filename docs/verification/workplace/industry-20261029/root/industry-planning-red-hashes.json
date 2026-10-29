@@ -1,0 +1,30 @@
+[
+  {
+    "path": "internal/api/work_orders_test.go",
+    "sha256": "62497cd46b7fd768cd36660e4e7ea824d7d9849d94d928d0f948c159288621a1"
+  },
+  {
+    "path": "internal/api/workspace_config.go",
+    "sha256": "3ac2ea93ae82e69ac61fed5891723a09b2a9360baf7a51739a2953007caa3be5"
+  },
+  {
+    "path": "internal/api/server.go",
+    "sha256": "63642b3999015016ce8eb149dfceac76698116156e77fecf598ae629166e8619"
+  },
+  {
+    "path": "internal/api/workspace.go",
+    "sha256": "40d37e8f78dadd5ea2814cf8895fe9ac7ae1a8d89c8dae5602337ea15b4d0c62"
+  },
+  {
+    "path": "internal/postgres/work_orders_integration_test.go",
+    "sha256": "7a571e01b3a576300644687ebb1a6bca4bdfb1cd78d9cf9de74f4a1c37b9ade3"
+  },
+  {
+    "path": "work/industry-planning-api-red.jsonl",
+    "sha256": "6c862ad1d957d8f9aa70437d3ed0ba308fec5220db0b924fe29eba79fa277598"
+  },
+  {
+    "path": "work/industry-planning-postgres-red.jsonl",
+    "sha256": "cde0c04a4134beec6df1ae9c7fe46ad1b5260e3063578d8b925bda5cfc081261"
+  }
+]

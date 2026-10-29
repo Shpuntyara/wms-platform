@@ -1,0 +1,132 @@
+{
+  "primary_red": {
+    "exit_code": 1,
+    "failures": 10,
+    "errors": 0,
+    "description": "Baseline delegates former two-item workplace catalog and performs no industrial seed; 10 behavior assertions fail before feature implementation",
+    "sources": [
+      {
+        "path": "tests/test_industry_catalog.py",
+        "sha256": "0cc4a41a7fae90eafe24beaf35661e2ff3874d3b32be0dd0cdc986ed02bf0c5a"
+      },
+      {
+        "path": "deploy/linux/industry_catalog.py",
+        "sha256": "89a20d21312fea028678e48d9293845ee413ce6d367f323d128461b0c1349d15"
+      }
+    ],
+    "output_sha256": "563c814dc54b02cd2cf8a283c695b66bf15c8b4a3945203061478cb217380e29"
+  },
+  "preflight_red": {
+    "exit_code": 1,
+    "sources": [
+      {
+        "path": "tests/test_industry_catalog.py",
+        "sha256": "8af10142df53a884744b96f570e0561097ce552362d2c9598339a8a6274f3e32"
+      },
+      {
+        "path": "deploy/linux/industry_catalog.py",
+        "sha256": "1f49625b22b327a3527f1939db0e0888efe9f3ef84b431fecadd968c1258f0cb"
+      }
+    ],
+    "output_sha256": "efe1f242e5ed79c4ef82a1231276dd0bf6c6a394f4ba1c82864b6c535a056ab5"
+  },
+  "final_green": {
+    "tests": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "mutations": {
+    "killed": 14,
+    "survived": 0,
+    "invalid": 0,
+    "first_invalid_honestly_retained": "mutations-first-invalid.json"
+  },
+  "source_sha256": [
+    {
+      "path": "deploy/linux/industry_catalog.py",
+      "sha256": "2d3ee6d1af8fcaba5bdc6a5dd0d74bf62306cd2a8184a8c29c0f9df4a23ec0b3"
+    },
+    {
+      "path": "tests/test_industry_catalog.py",
+      "sha256": "8b0451ecb5cba20ac40c01c6f719a782a3643c9e953419b8d3ec9d045b98bfa7"
+    },
+    {
+      "path": "tests/industry_catalog_mutations.py",
+      "sha256": "495d6a124d47a2b4342d8d6dac79a1daad8ab64ecd3f00bbe6f91cd96d070977"
+    }
+  ],
+  "profiles": [
+    {
+      "profile": "metal",
+      "company": "METALFORM",
+      "items": 24,
+      "positions": 10,
+      "opening_lines": 24,
+      "balances": 240,
+      "recipes": 2,
+      "sample_orders": 3
+    },
+    {
+      "profile": "stationery",
+      "company": "PAPIERNIK",
+      "items": 25,
+      "positions": 10,
+      "opening_lines": 23,
+      "balances": 250,
+      "recipes": 2,
+      "sample_orders": 3
+    }
+  ],
+  "limitations": [
+    "Synthetic inventory and BOM samples, not real customer records.",
+    "Existing historic products/positions/operations remain present.",
+    "Opening fixture is root-only and runs normal kernel guards; it refuses catalog drift or unexpected synthetic actor privileges.",
+    "Publishing workspace requires operator service restart; no guest deployment was performed by this subagent."
+  ],
+  "sample_orders_red": {
+    "exit_code": 1,
+    "description": "Actual missing visible example-order behavior before catalog implementation change",
+    "source_sha256": [
+      {
+        "path": "deploy/linux/industry_catalog.py",
+        "sha256": "404bfd395811cc0482172a4e5c12c8f4e122e1034682aa5ae0e5237dbb98958f"
+      },
+      {
+        "path": "tests/test_industry_catalog.py",
+        "sha256": "4174a9780a4c5419cee162f440867398f67a65c75316b0b54befac0977e49e07"
+      }
+    ],
+    "output_sha256": "cfef06519446eab41c47bfcb9cebb388dfae51249e847fc98ef61065edd1ae50"
+  },
+  "sample_orders_postgres_red": {
+    "exit_code": 1,
+    "source_sha256": [
+      {
+        "path": "deploy/linux/industry_catalog.py",
+        "sha256": "404bfd395811cc0482172a4e5c12c8f4e122e1034682aa5ae0e5237dbb98958f"
+      },
+      {
+        "path": "tests/test_industry_catalog.py",
+        "sha256": "7386e4f60637587b1b89d1425d3a53402265431c1ab2f7e8179479d46ce73452"
+      }
+    ],
+    "output_sha256": "c635eec14ec1bd248b87fafd77f86bdaa7f4d96a79ee8cbf9d685bb3a980c715"
+  },
+  "archive_red": {
+    "exit_code": 1,
+    "source_sha256": [
+      {
+        "path": "deploy/linux/industry_catalog.py",
+        "sha256": "83e4a753d7722b88159c962179ef2f313c450d0deece2d6f290abd4e5bf753db"
+      },
+      {
+        "path": "tests/test_industry_catalog.py",
+        "sha256": "8b0451ecb5cba20ac40c01c6f719a782a3643c9e953419b8d3ec9d045b98bfa7"
+      }
+    ],
+    "output_sha256": "2ae6686437ea1213eefc2eaa824cd29be0d5a4e347a9876aae91a7419dedc45c",
+    "characterization": "Unknown UUID with old SKU was already preserved; actual known legacy archival and updated merge expectation fail before implementation."
+  },
+  "legacy_catalog_preservation": "Only two known UUIDv5 legacy IDs with expected SKUs and organization receive archived=true metadata; all DB amounts, IDs, labels and history remain intact. Other products are not archived."
+}

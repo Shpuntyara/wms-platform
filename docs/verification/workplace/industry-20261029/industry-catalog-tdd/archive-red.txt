@@ -1,0 +1,36 @@
+test_only_the_two_known_legacy_items_are_archived_without_data_changes (__main__.IndustryCatalogContract.test_only_the_two_known_legacy_items_are_archived_without_data_changes) ... FAIL
+test_unknown_uuid_with_legacy_sku_is_not_silently_archived (__main__.IndustryCatalogContract.test_unknown_uuid_with_legacy_sku_is_not_silently_archived) ... ok
+test_merge_keeps_historical_labels_and_rows_except_selected_company_labels (__main__.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels) ... FAIL
+
+======================================================================
+FAIL: test_only_the_two_known_legacy_items_are_archived_without_data_changes (__main__.IndustryCatalogContract.test_only_the_two_known_legacy_items_are_archived_without_data_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 192, in test_only_the_two_known_legacy_items_are_archived_without_data_changes
+    self.assertIs(by_id[original['id']].get('archived'),True)
+AssertionError: None is not True
+
+======================================================================
+FAIL: test_merge_keeps_historical_labels_and_rows_except_selected_company_labels (__main__.IndustryCatalogContract.test_merge_keeps_historical_labels_and_rows_except_selected_company_labels)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_industry_catalog.py", line 178, in test_merge_keeps_historical_labels_and_rows_except_selected_company_labels
+    self.assertEqual(by_id[row['id']], dict(row,archived=True))
+AssertionError: {'id'[147 chars]kowana', 'unit': 'szt.', 'quantity_scale': 0} != {'id'[147 chars]kowana', 'unit': 'szt.', 'quantity_scale': 0, 'archived': True}
++ {'archived': True,
+- {'id': 'c06f1ce5-14b9-53e4-9000-2b6b02032d75',
+? ^
+
++  'id': 'c06f1ce5-14b9-53e4-9000-2b6b02032d75',
+? ^
+
+   'name': 'Śruba M8 × 40, ocynkowana',
+   'organization_id': '8da4bd50-a9c2-5492-8fd0-2c2057da5881',
+   'quantity_scale': 0,
+   'sku': 'BOLT-M8',
+   'unit': 'szt.'}
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.007s
+
+FAILED (failures=2)
