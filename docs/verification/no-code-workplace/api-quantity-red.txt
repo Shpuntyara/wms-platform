@@ -1,0 +1,49 @@
+[WebServer] (node:3084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:43380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\selection-workplace.spec.mjs:121:1 › MM source lists accept PostgreSQL fixed-six numeric quantities for whole pieces
+  1) tests\selection-workplace.spec.mjs:121:1 › MM source lists accept PostgreSQL fixed-six numeric quantities for whole pieces 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000201"]')
+    Expected: 1
+    Received: 0
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000201"]') with timeout 5000ms
+      - waiting for getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000201"]')
+        14 × locator resolved to 0 elements
+           - unexpected value "0"
+
+
+      129 |   await page.reload();
+      130 |   await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(ids.lines[0]);
+    > 131 |   await expect(page.getByLabel('Miejsce źródłowe',{exact:true}).locator(`option[value="${ids.source}"]`)).toHaveCount(1);
+          |                                                                                                           ^
+      132 |   await page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(ids.source);
+      133 |   await page.getByLabel('Miejsce docelowe',{exact:true}).selectOption(ids.target);
+      134 |   await page.getByLabel('Ilość rzeczywista',{exact:true}).fill('3');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\selection-workplace.spec.mjs:131:107
+
+    Error Context: test-results\selection-workplace-MM-sou-dadf8-quantities-for-whole-pieces\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\selection-workplace-MM-sou-dadf8-quantities-for-whole-pieces\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\selection-workplace-MM-sou-dadf8-quantities-for-whole-pieces\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\selection-workplace.spec.mjs:121:1 › MM source lists accept PostgreSQL fixed-six numeric quantities for whole pieces 

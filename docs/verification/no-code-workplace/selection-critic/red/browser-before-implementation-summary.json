@@ -1,0 +1,22 @@
+{
+  "exit_code": 1,
+  "stats": {
+    "startTime": "2026-10-29T20:04:28.733Z",
+    "duration": 28198.052000000003,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  },
+  "source_unchanged_during_run": true,
+  "before": {
+    "web/src/app.js": "9f2eae140db176bbe154dc84cc4292604d936d07c68cc67115d2edf5adb698cd",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/non-scanner-critic.spec.mjs": "00da98036a37e1b1e4c3da417ee053596abf5956c794d59ccae155c169918e4b"
+  },
+  "after": {
+    "web/src/app.js": "9f2eae140db176bbe154dc84cc4292604d936d07c68cc67115d2edf5adb698cd",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/non-scanner-critic.spec.mjs": "00da98036a37e1b1e4c3da417ee053596abf5956c794d59ccae155c169918e4b"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "status": "passed",
+  "evidence_kind": "Postimplementation characterization; no implementation changes and no RED claimed.",
+  "base_head": "061a0a4964d07377f1383025e83a30ff38f35ce1",
+  "tests": {
+    "top_level": [
+      "TestSelectionMMChainsPreserveItemSKUOwnerLotAndSerial",
+      "TestSelectionMMGeneratedPartialRoutesConserveExactIdentityAndQuantities",
+      "TestSelectionMMRejectsAmbiguousTrackingAndForeignTargetWithoutEffects",
+      "TestSelectionWZUsesSamePermissionsScopeVersionAndReplayWithoutScanner"
+    ],
+    "top_level_count": 4,
+    "passing_test_events": 25,
+    "failed": 0,
+    "skipped": 0,
+    "race": true
+  },
+  "routes": {
+    "tracking": [
+      "none",
+      "lot",
+      "serial",
+      "lot_serial"
+    ],
+    "fixed_chained_MM_transfers": 20,
+    "generated_histories": 16,
+    "generated_MM_transfers": 107,
+    "total_MM_transfers": 127,
+    "identical_replays_per_MM_after_close": 2,
+    "quantities": "Exact integer micro-unit oracle; no floating-point arithmetic."
+  },
+  "assertions": [
+    "MM preserves original catalog item UUID and SKU, owner, lot, serial and balance position identities.",
+    "Repeated MM does not create catalog products or codes.",
+    "Changing physical locations conserves every independently predicted quantity and the movement ledger.",
+    "A different item, owner, lot/serial or identical source/destination is rejected without stock, document or operation effects.",
+    "WZ selected by IDs executes reserve/issue/close with the saved recipient.",
+    "Foreign stock and stale document versions fail; replay after revoked permission returns403; valid replay does not duplicate stock changes."
+  ],
+  "applied_migration_source_checksums_verified": 13,
+  "limits": [
+    "HTTP token authentication uses a controlled test double; PostgreSQL, WMS functions, grants and posting effects are real.",
+    "These tests characterize unchanged backend behavior. The new UI has separate RED/GREEN evidence and final immutable-head CI remains required."
+  ],
+  "source_sha256": [
+    {
+      "path": "internal/postgres/selection_fulfillment_critic_integration_test.go",
+      "sha256": "0676e00215e7a6005ca77e4cb2f21d07e02d83123c01e8d439719677eb4bfa22"
+    },
+    {
+      "path": "internal/postgres/store.go",
+      "sha256": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356"
+    },
+    {
+      "path": "internal/postgres/documents.go",
+      "sha256": "02495dbccc048ab3989067a155be7a819be499b651bc574b559a16630c55649b"
+    },
+    {
+      "path": "internal/inventory/documents.go",
+      "sha256": "b205c1df5def345acb8f37011c2bfbed91e6b98482c82ed867226cc22e50d9c8"
+    },
+    {
+      "path": "internal/api/documents.go",
+      "sha256": "5a163d40b58a41d2f4074d598e5f3d48187898ca5967e20fa31690f648b7eb4b"
+    },
+    {
+      "path": "db/migrations/0001_inventory_schema.sql",
+      "sha256": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+    },
+    {
+      "path": "db/migrations/0002_inventory_commands.sql",
+      "sha256": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+    },
+    {
+      "path": "db/migrations/0003_backend_api.sql",
+      "sha256": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+    },
+    {
+      "path": "db/migrations/0004_module_integrity.sql",
+      "sha256": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+    },
+    {
+      "path": "db/migrations/0005_inventory_pagination.sql",
+      "sha256": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045"
+    },
+    {
+      "path": "db/migrations/0006_security_boundary.sql",
+      "sha256": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+    },
+    {
+      "path": "db/migrations/0007_background_jobs.sql",
+      "sha256": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261"
+    },
+    {
+      "path": "db/migrations/0008_background_health_and_policy_v2.sql",
+      "sha256": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213"
+    },
+    {
+      "path": "db/migrations/0009_warehouse_documents.sql",
+      "sha256": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+    },
+    {
+      "path": "db/migrations/0010_document_numbering.sql",
+      "sha256": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b"
+    },
+    {
+      "path": "db/migrations/0011_document_owner_seek.sql",
+      "sha256": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+    },
+    {
+      "path": "db/migrations/0012_document_business_context.sql",
+      "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+    },
+    {
+      "path": "db/migrations/0013_work_orders.sql",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    }
+  ],
+  "files_sha256": [
+    {
+      "path": "characterization.jsonl",
+      "sha256": "8b56c51e101599d8c02d50a1397b1156643c84f06cc3487c1456770133a3a4eb"
+    },
+    {
+      "path": "migration-receipts.json",
+      "sha256": "436ad4c6646963477215199ba1fa377b0e0eb60f94bc3f68cef17bfc571fe1b2"
+    }
+  ]
+}

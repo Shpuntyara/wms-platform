@@ -1,0 +1,361 @@
+TAP version 13
+# Subtest: critic: duplicate item names and repeated product lines retain separate line identities
+not ok 1 - critic: duplicate item names and repeated product lines retain separate line identities
+  ---
+  duration_ms: 2.1426
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper lineChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:36:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: critic: choices fail closed for inactive document, foreign warehouse and missing catalog item
+not ok 2 - critic: choices fail closed for inactive document, foreign warehouse and missing catalog item
+  ---
+  duration_ms: 0.2991
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper lineChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:41:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: critic: source choices use available stock, owner and complete scope rather than physical stock
+not ok 3 - critic: source choices use available stock, owner and complete scope rather than physical stock
+  ---
+  duration_ms: 0.2679
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper balanceChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    choices (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:26:32)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:56:20)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: WZ with zero free stock can resume only its own exact active reservation
+not ok 4 - critic: WZ with zero free stock can resume only its own exact active reservation
+  ---
+  duration_ms: 0.2658
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper balanceChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    choices (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:26:32)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:65:20)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: zero-quantity PZ target is selectable only in receiving positions
+not ok 5 - critic: zero-quantity PZ target is selectable only in receiving positions
+  ---
+  duration_ms: 0.2658
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper balanceChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    choices (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:26:32)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:74:20)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: MM target is a different storage position with identical lot serial and state
+not ok 6 - critic: MM target is a different storage position with identical lot serial and state
+  ---
+  duration_ms: 0.2965
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper balanceChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    choices (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:26:32)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:89:20)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: selecting one of several lots at the same named address never substitutes the first lot
+not ok 7 - critic: selecting one of several lots at the same named address never substitutes the first lot
+  ---
+  duration_ms: 0.2266
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:92:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper resolveSelection must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    resolve (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:27:25)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:99:18)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: stale removed source ID is rejected even when another balance occupies the same address
+not ok 8 - critic: stale removed source ID is rejected even when another balance occupies the same address
+  ---
+  duration_ms: 0.2014
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:104:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper resolveSelection must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:107:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: missing or duplicate selected IDs must never fall back to the first visible option
+not ok 9 - critic: missing or duplicate selected IDs must never fall back to the first visible option
+  ---
+  duration_ms: 0.2858
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:111:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper resolveSelection must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:112:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic property: randomized multi-owner source choices equal an independent identity and availability oracle
+not ok 10 - critic property: randomized multi-owner source choices equal an independent identity and availability oracle
+  ---
+  duration_ms: 0.3661
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:119:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper balanceChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:120:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic property: shuffled same-address lots preserve explicit selected source and target identity
+not ok 11 - critic property: shuffled same-address lots preserve explicit selected source and target identity
+  ---
+  duration_ms: 0.3065
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:129:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper resolveSelection must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:130:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic property: completed lines are excluded without coalescing repeated product lines
+not ok 12 - critic property: completed lines are excluded without coalescing repeated product lines
+  ---
+  duration_ms: 0.2517
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:143:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Selection helper lineChoices must exist before the employee can safely choose a balance
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:10:10)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:144:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 0
+# fail 12
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 138.9231

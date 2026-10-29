@@ -1,0 +1,139 @@
+{
+  "base_revision": "061a0a4964d07377f1383025e83a30ff38f35ce1",
+  "claim": "Local TDD evidence; final-head full CI and installed acceptance are separate root-owned gates.",
+  "primary_first_red": {
+    "failed": 5,
+    "passed": 0,
+    "source_sha256": "9f2eae140db176bbe154dc84cc4292604d936d07c68cc67115d2edf5adb698cd",
+    "test_sha256": "be7f8d8608d04b8f5c9d7660ebf6ea1fdbc58cbba37192757f2544bc3c534fca",
+    "test_snapshot": "primary-first.test.mjs",
+    "log": "primary-red.txt"
+  },
+  "primary_first_green": {
+    "failed": 0,
+    "passed": 5,
+    "app_sha256": "765ab0b5c5f923150583f0b14f06413c3d3597f0fcfd121dda820650a533f579",
+    "selection_sha256": "9b6562c6b7283c472791f557416c49be4b53ec172331bae78181ad9b0fc4fb2d",
+    "test_sha256": "be7f8d8608d04b8f5c9d7660ebf6ea1fdbc58cbba37192757f2544bc3c534fca",
+    "log": "primary-first-green.txt",
+    "app_snapshot": "app-first-green.js.txt",
+    "selection_snapshot": "selection-first-green.js.txt"
+  },
+  "additional_actual_red": [
+    {
+      "case": "Confirmed movement/read refresh failure leaves worker no refresh action",
+      "failed": 1,
+      "log": "refresh-red.txt"
+    },
+    {
+      "case": "PostgreSQL fixed-six quantity representation hides whole-piece MM source",
+      "failed": 1,
+      "log": "api-quantity-red.txt"
+    }
+  ],
+  "independent_critics": "Independent agent reports record helper identity/property RED, API fixed-six RED, empty serial target RED and optional scanner reserved-quantity RED separately.",
+  "final_local": {
+    "node": {
+      "passed": 83,
+      "failed": 0,
+      "skipped": 0,
+      "log": "node-green.txt"
+    },
+    "browser": {
+      "passed": 45,
+      "failed": 0,
+      "skipped": 0,
+      "log": "browser-green.txt"
+    },
+    "legacy_ui_mutations": {
+      "killed": 37,
+      "survived": 0,
+      "invalid": 0
+    },
+    "industry_ui_mutations": {
+      "killed": 18,
+      "survived": 0,
+      "invalid": 0
+    },
+    "real_postgres_browser": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "real-postgres-green.txt",
+      "scope": "HTTP + PostgreSQL + shipped browser; real committed-response loss and exact replay; external IdP adapter replaced"
+    }
+  },
+  "test_boundaries": "Training browser tests exercise native UI, exact quantity intents and durable journal with synthetic state. live-workflow drives real Go HTTP and PostgreSQL; only its identity provider is substituted. Installation workflow uses real IdP and TLS and must run after deployment.",
+  "source_and_tests_sha256": [
+    {
+      "path": "web/src/app.js",
+      "sha256": "3fff3d76e8f5d8c3c62736e5217d60785d754b3456b8258dc5b6669f72a68117"
+    },
+    {
+      "path": "web/src/selection.js",
+      "sha256": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222"
+    },
+    {
+      "path": "web/style.css",
+      "sha256": "87d0bd83dee9ecd5a8600c382c77110e3635f967d3efa062dc80fa262b609690"
+    },
+    {
+      "path": "web/tests/selection-workplace.spec.mjs",
+      "sha256": "cca49fcbda6afc69f05634f85222ff1676526d86af5f9ceee2ff9bcb977c703e"
+    },
+    {
+      "path": "web/tests/live-workflow.spec.mjs",
+      "sha256": "465f9f7680748ab6409b717968b70ba000001638bc9c186eed2114703ff4ff62"
+    },
+    {
+      "path": "web/tests/installation-workflow.spec.mjs",
+      "sha256": "9b92cad2951e6990ce9d2fb20094992dc7207e1e91d37332fe0e04a0beed0709"
+    },
+    {
+      "path": "web/playwright.config.mjs",
+      "sha256": "5820daa86c5493176f03bd1c194a94db28bff75194ab7725cdc9e2bc766ee20a"
+    }
+  ],
+  "proof_files_sha256": [
+    {
+      "path": "api-quantity-red.txt",
+      "sha256": "86d8707cc4a7bac2b44fe1566de30c0c53679809e699a340694e155f6cd81395"
+    },
+    {
+      "path": "app-first-green.js.txt",
+      "sha256": "765ab0b5c5f923150583f0b14f06413c3d3597f0fcfd121dda820650a533f579"
+    },
+    {
+      "path": "browser-green.txt",
+      "sha256": "d239f76291b30cd1996d9c08fcab954a40c7c42af53c26b7adc934cb9352432c"
+    },
+    {
+      "path": "node-green.txt",
+      "sha256": "8c79049a575f8555b4f2275841f77bdbfc393eebac742c650a3260c81016237f"
+    },
+    {
+      "path": "primary-first-green.txt",
+      "sha256": "29628a59d7da24c780bb35ecfc4cf61f272a3159e4b6e23e4cf007990f2e5fb2"
+    },
+    {
+      "path": "primary-first.test.mjs",
+      "sha256": "be7f8d8608d04b8f5c9d7660ebf6ea1fdbc58cbba37192757f2544bc3c534fca"
+    },
+    {
+      "path": "primary-red.txt",
+      "sha256": "bc34f1baad0054bbfa93cfdfc1ff326e209162e3ffe1f6e2c067475313e72dba"
+    },
+    {
+      "path": "real-postgres-green.txt",
+      "sha256": "813f5f98891e5ab5e52fae5a039b61ef6be4baf8f57bcccd61919890c0495edf"
+    },
+    {
+      "path": "refresh-red.txt",
+      "sha256": "481655abdc94c7c706fac05705bb112b5733be3bf52ea9b18c5d20c4e68829ba"
+    },
+    {
+      "path": "selection-first-green.js.txt",
+      "sha256": "9b6562c6b7283c472791f557416c49be4b53ec172331bae78181ad9b0fc4fb2d"
+    }
+  ]
+}

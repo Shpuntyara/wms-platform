@@ -1,0 +1,187 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "../work/no-code-selection-critic/playwright.api-quantity.config.mjs"
+    ],
+    "configFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\playwright.api-quantity.config.mjs",
+    "rootDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/browser-api-quantity-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "api-quantity-browser-critic.spec.mjs"
+        ],
+        "timeout": 8000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\browser-api-quantity-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "snapshotDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "testIgnore": [],
+        "testMatch": [
+          "api-quantity-browser-critic.spec.mjs"
+        ],
+        "timeout": 8000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18744",
+          "trace": "off"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/browser-api-quantity-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node serve.mjs --port 18744",
+      "url": "http://127.0.0.1:18744/app/",
+      "reuseExistingServer": true,
+      "cwd": "C:/Users/sashk/Documents/WMS/wms-platform/web"
+    }
+  },
+  "suites": [
+    {
+      "title": "api-quantity-browser-critic.spec.mjs",
+      "file": "api-quantity-browser-critic.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "API-shaped WZ reservation remains usable on the explicit optional scanner path",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 8000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 400,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:16:20.749Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86173ec8b5a9eab4b522-3f5b7e14202e629a98d2",
+          "file": "api-quantity-browser-critic.spec.mjs",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "API-shaped piece quantities populate the default no-code source selector",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 8000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 272,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:16:21.291Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86173ec8b5a9eab4b522-54b14f583a4b707c7afd",
+          "file": "api-quantity-browser-critic.spec.mjs",
+          "line": 38,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-29T20:16:19.791Z",
+    "duration": 2184.406,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

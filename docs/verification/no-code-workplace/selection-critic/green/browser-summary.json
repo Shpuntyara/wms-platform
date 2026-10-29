@@ -1,0 +1,24 @@
+{
+  "exit_code": 0,
+  "stats": {
+    "startTime": "2026-10-29T20:23:30.581Z",
+    "duration": 5948.9980000000005,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "source_unchanged_during_run": true,
+  "source_sha256": {
+    "web/src/app.js": "3fff3d76e8f5d8c3c62736e5217d60785d754b3456b8258dc5b6669f72a68117",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/src/selection.js": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222",
+    "web/tests/non-scanner-critic.spec.mjs": "d0d0c7404f1bb9a687dfc6879dec1f1a81053c3de10562dfd6a984ab1a40bea1"
+  },
+  "source_sha256_lf": {
+    "web/src/app.js": "1e5b07c77de78f40574f4ecb350b2dafc679dce98d84a91888536c842f2f0dcc",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/src/selection.js": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222",
+    "web/tests/non-scanner-critic.spec.mjs": "d0d0c7404f1bb9a687dfc6879dec1f1a81053c3de10562dfd6a984ab1a40bea1"
+  }
+}

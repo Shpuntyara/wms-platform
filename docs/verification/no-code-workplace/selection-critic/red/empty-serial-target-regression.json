@@ -1,0 +1,17 @@
+{
+  "exit_code": 1,
+  "before": {
+    "web/src/selection.js": "6167da9a7eff473583e7f1c0b0f96453ecbfe20e75fe87e35c1e1027d5191106",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/tests/selection-api-quantity-critic.test.mjs": "c970362029000959ff47557b8951b335c6644595042b37fae840402bdea11030"
+  },
+  "after": {
+    "web/src/selection.js": "6167da9a7eff473583e7f1c0b0f96453ecbfe20e75fe87e35c1e1027d5191106",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/tests/selection-api-quantity-critic.test.mjs": "c970362029000959ff47557b8951b335c6644595042b37fae840402bdea11030"
+  },
+  "source_unchanged_during_run": true,
+  "output_sha256": "b661e7bf92a87606bfdc42e30a285cf8ea470b03f5416dd7b9dd23d7a19a9632"
+}

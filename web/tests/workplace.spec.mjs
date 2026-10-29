@@ -1,4 +1,9 @@
 import {test, expect} from '@playwright/test';
+async function useScanner(page) {
+  const button=page.getByRole('button',{name:'Skaner / wpisz kod',exact:true});
+  if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
+}
+
 
 test('bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse', async ({page}) => {
   await page.goto('/app/?demo=1');
@@ -57,9 +62,11 @@ test('terminal blocks wrong scan and receives one item with keyboard', async ({p
   await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: 'PZ-2026-0142', exact: true}).click();
   await page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true}).click();
+  await useScanner(page);
   await page.getByLabel('Kod towaru', {exact: true}).fill('WRONG');
   await page.getByLabel('Kod towaru', {exact: true}).press('Enter');
   await expect(page.getByRole('alert')).toContainText('Nie znaleziono kodu');
+  await useScanner(page);
   await page.getByLabel('Kod towaru', {exact: true}).fill('BOLT-M8');
   await page.getByLabel('Kod towaru', {exact: true}).press('Enter');
   await page.getByLabel('Adres przyjęcia', {exact: true}).fill('PRZYJECIE-01');
@@ -75,6 +82,7 @@ test('worker screen reflows at TSD width and scanning controls remain touch-size
   await page.getByRole('button', {name:'Przyjęcia (PZ)', exact:true}).click();
   await page.getByRole('button', {name: 'PZ-2026-0142', exact: true}).click();
   await page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true}).click();
+  await useScanner(page);
   await expect(page.getByLabel('Kod towaru', {exact: true})).toBeVisible();
   const size = await page.getByLabel('Kod towaru', {exact: true}).boundingBox();
   expect(size.height).toBeGreaterThanOrEqual(48);

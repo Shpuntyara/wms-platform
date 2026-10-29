@@ -1,0 +1,217 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "../work/no-code-selection-critic/playwright.api-quantity.config.mjs"
+    ],
+    "configFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\playwright.api-quantity.config.mjs",
+    "rootDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/browser-api-quantity-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "api-quantity-browser-critic.spec.mjs"
+        ],
+        "timeout": 8000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\browser-api-quantity-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "snapshotDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "testIgnore": [],
+        "testMatch": [
+          "api-quantity-browser-critic.spec.mjs"
+        ],
+        "timeout": 8000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18744",
+          "trace": "off"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/browser-api-quantity-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "node serve.mjs --port 18744",
+      "url": "http://127.0.0.1:18744/app/",
+      "reuseExistingServer": true,
+      "cwd": "C:/Users/sashk/Documents/WMS/wms-platform/web"
+    }
+  },
+  "suites": [
+    {
+      "title": "api-quantity-browser-critic.spec.mjs",
+      "file": "api-quantity-browser-critic.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "API-shaped WZ reservation remains usable on the explicit optional scanner path",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 8000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5457,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Ilość rzeczywista', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByLabel('Ilość rzeczywista', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Ilość rzeczywista', { exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Ilość rzeczywista', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByLabel('Ilość rzeczywista', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Ilość rzeczywista', { exact: true })\u001b[22m\n\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\api-quantity-browser-critic.spec.mjs:29:67",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\api-quantity-browser-critic.spec.mjs",
+                      "column": 67,
+                      "line": 29
+                    },
+                    "snippet": "  27 |   await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');\n  28 |   await page.getByLabel('Adres źródłowy',{exact:true}).press('Enter');\n> 29 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toBeVisible();\n     |                                                                   ^\n  30 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveValue('2');\n  31 |   await expect(page.getByText('Zarezerwowane pod tym adresem: 2 szt.',{exact:false})).toBeVisible();\n  32 |   await expect(page.getByRole('alert')).toHaveCount(0);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\api-quantity-browser-critic.spec.mjs",
+                        "column": 67,
+                        "line": 29
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Ilość rzeczywista', { exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByLabel('Ilość rzeczywista', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Ilość rzeczywista', { exact: true })\u001b[22m\n\n\n  27 |   await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');\n  28 |   await page.getByLabel('Adres źródłowy',{exact:true}).press('Enter');\n> 29 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toBeVisible();\n     |                                                                   ^\n  30 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveValue('2');\n  31 |   await expect(page.getByText('Zarezerwowane pod tym adresem: 2 szt.',{exact:false})).toBeVisible();\n  32 |   await expect(page.getByRole('alert')).toHaveCount(0);\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\api-quantity-browser-critic.spec.mjs:29:67"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:12:42.873Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\browser-api-quantity-artifacts\\api-quantity-browser-criti-4ec38-licit-optional-scanner-path\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\api-quantity-browser-critic.spec.mjs",
+                    "column": 67,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "86173ec8b5a9eab4b522-3f5b7e14202e629a98d2",
+          "file": "api-quantity-browser-critic.spec.mjs",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "API-shaped piece quantities populate the default no-code source selector",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 8000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 343,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:12:49.049Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "86173ec8b5a9eab4b522-54b14f583a4b707c7afd",
+          "file": "api-quantity-browser-critic.spec.mjs",
+          "line": 38,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-29T20:12:41.818Z",
+    "duration": 8071.511,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

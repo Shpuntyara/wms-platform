@@ -1,0 +1,387 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "work/non-scanner-critic-tdd/playwright.config.mjs"
+    ],
+    "configFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\non-scanner-critic-tdd\\playwright.config.mjs",
+    "rootDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/work/non-scanner-critic-browser-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "non-scanner-critic.spec.mjs"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\work\\non-scanner-critic-browser-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "",
+        "testDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "snapshotDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "testIgnore": [],
+        "testMatch": [
+          "non-scanner-critic.spec.mjs"
+        ],
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18744",
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json",
+        {
+          "outputFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\non-scanner-critic-tdd\\browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": {
+      "command": "node serve.mjs --port 18744",
+      "url": "http://127.0.0.1:18744/app/",
+      "reuseExistingServer": true,
+      "cwd": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web"
+    }
+  },
+  "suites": [
+    {
+      "title": "non-scanner-critic.spec.mjs",
+      "file": "non-scanner-critic.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "critic non-scanner: repeated product lines remain independently selectable in PZ",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 979,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:31.844Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-7723b73ac998389b0969",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 78,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: same-address lots preserve the explicitly selected MM balance identities",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 940,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:31.802Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-aecbe8e531c82ca02a33",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 97,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: WZ resumes its own reservation even when no free quantity remains",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 721,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:33.039Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-b1dc192398fafca41049",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 119,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: changing a document line clears source target and quantity",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 740,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:33.046Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-817a3ccccebeffe00239",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 134,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: fresh document-version invalidates selection before a write attempt",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 879,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:33.780Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-eb5a03380c4ac2cf35f5",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 144,
+          "column": 63
+        },
+        {
+          "title": "critic non-scanner: fresh available-quantity invalidates selection before a write attempt",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 990,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:33.803Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-7994093f0649cb73a06e",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 144,
+          "column": 63
+        },
+        {
+          "title": "critic non-scanner: lost MM reply locks selectors and replays the exact selected lot after reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 1254,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:34.677Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-94366822aed8e9eaf4ea",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 161,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: write-attempt observer records a valid MM as a positive control",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 966,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:23:34.809Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-4d68d851e0147aa76122",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 181,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-29T20:23:30.581Z",
+    "duration": 5948.9980000000005,
+    "expected": 8,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

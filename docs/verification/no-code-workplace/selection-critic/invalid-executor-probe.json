@@ -1,0 +1,818 @@
+{
+  "passed": false,
+  "scope": "Selected non-equivalent line, scope, stock, tracking, reservation and API quantity selection faults; not a whole-UI mutation score.",
+  "source_sha256": {
+    "web/src/selection.js": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/tests/selection-api-quantity-critic.test.mjs": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78",
+    "scripts/verify_selection_mutations.py": "ad9e349672d25f5b7db6a026f45103842581926a385017b0e459d0a919237ee6"
+  },
+  "source_sha256_lf": {
+    "web/src/selection.js": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/tests/selection-api-quantity-critic.test.mjs": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78",
+    "scripts/verify_selection_mutations.py": "ad9e349672d25f5b7db6a026f45103842581926a385017b0e459d0a919237ee6"
+  },
+  "tests": [
+    "tests/selection-critic.test.mjs",
+    "tests/selection-api-quantity-critic.test.mjs"
+  ],
+  "mutations": [
+    {
+      "name": "inactive_document_allowed",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "15626a084b1d3775f76d783223c7973ec9cb1984913144dbc79c32f642363797",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "organization_scope_ignored",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "3ac937c0bfcd089e5cb718c26cf00a0300b6a3dae2e3fb465536a95e50671014",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "warehouse_scope_ignored",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "f18673f67e78627cd4637885f8273e530441e341b7b8293cf9de9f12837044cc",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "completed_document_line_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "28507d511f2244ac87b594b3727a97915e357d879acb4cc091da0ce8a7a0c64b",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "balance_owner_ignored",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "b5c8908fd4fb54e4b30415eeaf07992ece0d062f73107ab12152a6b7bdf0d3e4",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "balance_item_ignored",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "674d27c5d507cd077483d9ffaa3f843875a33af4562d8e2024a5b435c8ea92a8",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "nonavailable_stock_state_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "7fd6e84b432851fbd116e2477e071659b7ad8491e5bf259aa8a318bb1267b5b4",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "source_physical_quantity_used",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "e6ffeda18af196067d190b6701993fc3cd45c27aa92a424316aaa607ef255622",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "reservation_other_line_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "b18dad9dc7a155a27e5e84c64323cee05bbf7cc3c612564989c4f617e70720a6",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "reservation_other_balance_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "9f2626795652a8adff84af0df047ff6d0d500818c6bf9480b56064b6d0078c24",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "reservation_other_owner_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "5ee5e902fdac59b45181aa5601745f2a209f0ac9f88208d9605f576f036e935a",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "reservation_zero_quantity_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "b041be811e21339aa420891d3aebe342f308517d079f922618a79e82dcaa980b",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "mm_borrows_wz_reservation",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "7cd5c12b944c5792ed49c1cbfcb8c614f3d27be1d7dd96627bfe11766f8ba5c7",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "receipt_target_wrong_kind",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "4821f543c4d05a64685f93bea895cbf260ff5294fb790b4a01be58bea26e58d6",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "mm_target_wrong_kind",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "f85b4f277a735e7ff6c430f8d93353e06694167a3bc0736b814310eb0898f95c",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "mm_target_other_lot",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "0b679a41f4db32e1b9e11d4fc0323803c2743cfa47bdb3a6543413b222451494",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "mm_target_other_serial",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "8c7b2887af7494296f0754b1f3652fe6b37b5d75ac1ae6fa421240bb4ca04d2d",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "empty_serial_target_never_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "30d7014c55fb30ed17f3e25fee4045eaa709708605743e7971420d76308b7531",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "occupied_or_malformed_serial_target_offered",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "e796a92d916a79a4ea1765a9affbf6abf242f070beb2a00b907044f616eef5f1",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "api_quantity_normalization_removed",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "de1c1c53cb6022c09db3c11a8aa0144847edb1313e35ae4a29da904809622eb9",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "fractional_pieces_admitted",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "38caba8a8c2a5bbc1e025ff9bd0ca596a1cd8bc78bfefba830efb49acbf0a78f",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "api_quantity_float_rounding",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "1630a35204dc04424c1422b76a8b4d5f0af08c4e8ea543a67291d6e84be1e057",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "missing_balance_identity_falls_through",
+      "status": "survived",
+      "source": "web/src/selection.js",
+      "mutant_sha256": "9e58dfc0f4ff306edc5ccc33fa5ac13c7080edb237237a00aefa151057936dc0",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "tests/selection-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "tests/selection-api-quantity-critic.test.mjs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "killed": 0,
+  "survived": 23,
+  "invalid": 0,
+  "skipped": 0,
+  "baseline": {
+    "status": "survived",
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "results": [
+      {
+        "name": "tests/selection-critic.test.mjs",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "tests/selection-api-quantity-critic.test.mjs",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      }
+    ]
+  },
+  "source_unchanged": true
+}

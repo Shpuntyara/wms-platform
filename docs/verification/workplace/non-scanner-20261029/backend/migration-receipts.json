@@ -1,0 +1,67 @@
+[
+  {
+    "name": "0001_inventory_schema.sql",
+    "checksum": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479",
+    "execution_checksum": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+  },
+  {
+    "name": "0002_inventory_commands.sql",
+    "checksum": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929",
+    "execution_checksum": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+  },
+  {
+    "name": "0003_backend_api.sql",
+    "checksum": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f",
+    "execution_checksum": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+  },
+  {
+    "name": "0004_module_integrity.sql",
+    "checksum": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882",
+    "execution_checksum": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+  },
+  {
+    "name": "0005_inventory_pagination.sql",
+    "checksum": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045",
+    "execution_checksum": "40dcbd15bfecc5c7e6c84a22ee02f0b6f509edb50815fb0764c7b9acd167d995"
+  },
+  {
+    "name": "0006_security_boundary.sql",
+    "checksum": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72",
+    "execution_checksum": "043104e36fc84567adffeb1899e2f7a01bbb51285774683fdca387e7d909be72"
+  },
+  {
+    "name": "0007_background_jobs.sql",
+    "checksum": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817",
+    "execution_checksum": "24470446f185013c123b53565ccfcafcd8a4a55a48a0b4212f742b0629840817"
+  },
+  {
+    "name": "0008_background_health_and_policy_v2.sql",
+    "checksum": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213",
+    "execution_checksum": "908d8488254e7d445ff955c36a65916fbc7f3e1df51525914084a2272110fbe1"
+  },
+  {
+    "name": "0009_warehouse_documents.sql",
+    "checksum": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431",
+    "execution_checksum": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+  },
+  {
+    "name": "0010_document_numbering.sql",
+    "checksum": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b",
+    "execution_checksum": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b"
+  },
+  {
+    "name": "0011_document_owner_seek.sql",
+    "checksum": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192",
+    "execution_checksum": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+  },
+  {
+    "name": "0012_document_business_context.sql",
+    "checksum": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3",
+    "execution_checksum": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+  },
+  {
+    "name": "0013_work_orders.sql",
+    "checksum": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca",
+    "execution_checksum": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+  }
+]

@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+not ok 1 - real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 3.1094
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:20:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'source'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'source'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:23:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+not ok 2 - real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.3259
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:20:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'source'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'source'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:23:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+not ok 3 - real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.2197
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:20:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'source'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'source'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:23:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real API quantities: WZ fully reserved for this line remains selectable
+not ok 4 - real API quantities: WZ fully reserved for this line remains selectable
+  ---
+  duration_ms: 0.2777
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:26:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   'source'
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'source'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:30:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real API quantities: receipt cannot target an already occupied serial balance
+not ok 5 - real API quantities: receipt cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.3351
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:33:43'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     available_qty: '1.000000',
+    +     id: 'target',
+    +     item_id: 'item',
+    +     lot_id: null,
+    +     on_hand: '1.000000',
+    +     organization_id: 'org',
+    +     owner_id: 'owner',
+    +     position_id: 'PZ',
+    +     reserved_qty: '0.000000',
+    +     serial_id: 'SERIAL-1',
+    +     stock_state: 'available',
+    +     warehouse_id: 'wh'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      id: 'target'
+      organization_id: 'org'
+      warehouse_id: 'wh'
+      owner_id: 'owner'
+      item_id: 'item'
+      position_id: 'PZ'
+      stock_state: 'available'
+      lot_id: ~
+      serial_id: 'SERIAL-1'
+      on_hand: '1.000000'
+      reserved_qty: '0.000000'
+      available_qty: '1.000000'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:37:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real API quantities: transfer cannot target an already occupied serial balance
+not ok 6 - real API quantities: transfer cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.2317
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\no-code-selection-critic\\primary-red-reproducer\\tests\\selection-api-quantity-critic.test.mjs:33:43'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   {
+    +     available_qty: '1.000000',
+    +     id: 'target',
+    +     item_id: 'item',
+    +     lot_id: null,
+    +     on_hand: '1.000000',
+    +     organization_id: 'org',
+    +     owner_id: 'owner',
+    +     position_id: 'B1',
+    +     reserved_qty: '0.000000',
+    +     serial_id: 'SERIAL-1',
+    +     stock_state: 'available',
+    +     warehouse_id: 'wh'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      id: 'target'
+      organization_id: 'org'
+      warehouse_id: 'wh'
+      owner_id: 'owner'
+      item_id: 'item'
+      position_id: 'B1'
+      stock_state: 'available'
+      lot_id: ~
+      serial_id: 'SERIAL-1'
+      on_hand: '1.000000'
+      reserved_qty: '0.000000'
+      available_qty: '1.000000'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/work/no-code-selection-critic/primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs:37:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real API quantities: normalization must not admit fractional pieces
+ok 7 - real API quantities: normalization must not admit fractional pieces
+  ---
+  duration_ms: 0.2832
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 1
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.7504

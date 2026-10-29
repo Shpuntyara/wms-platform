@@ -1,0 +1,188 @@
+TAP version 13
+# Subtest: real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+ok 1 - real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 1.8177
+  type: 'test'
+  ...
+# Subtest: real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+ok 2 - real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.2534
+  type: 'test'
+  ...
+# Subtest: real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+ok 3 - real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.2364
+  type: 'test'
+  ...
+# Subtest: real API quantities: WZ fully reserved for this line remains selectable
+ok 4 - real API quantities: WZ fully reserved for this line remains selectable
+  ---
+  duration_ms: 0.2713
+  type: 'test'
+  ...
+# Subtest: real API quantities: receipt cannot target an already occupied serial balance
+ok 5 - real API quantities: receipt cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.1881
+  type: 'test'
+  ...
+# Subtest: real API quantities: transfer cannot target an already occupied serial balance
+ok 6 - real API quantities: transfer cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.1126
+  type: 'test'
+  ...
+# Subtest: real API quantities: normalization must not admit fractional pieces
+ok 7 - real API quantities: normalization must not admit fractional pieces
+  ---
+  duration_ms: 0.1739
+  type: 'test'
+  ...
+# Subtest: API serialization property: exact permitted micro-unit quantities stay selectable at every item scale
+ok 8 - API serialization property: exact permitted micro-unit quantities stay selectable at every item scale
+  ---
+  duration_ms: 12.3151
+  type: 'test'
+  ...
+# Subtest: API serialization property: serialized positive serial quantities never appear empty at receipt or MM targets
+ok 9 - API serialization property: serialized positive serial quantities never appear empty at receipt or MM targets
+  ---
+  duration_ms: 3.616
+  type: 'test'
+  ...
+# Subtest: critic: duplicate item names and repeated product lines retain separate line identities
+ok 10 - critic: duplicate item names and repeated product lines retain separate line identities
+  ---
+  duration_ms: 2.3208
+  type: 'test'
+  ...
+# Subtest: critic: choices fail closed for inactive document, foreign warehouse and missing catalog item
+ok 11 - critic: choices fail closed for inactive document, foreign warehouse and missing catalog item
+  ---
+  duration_ms: 0.1904
+  type: 'test'
+  ...
+# Subtest: critic: source choices use available stock, owner and complete scope rather than physical stock
+ok 12 - critic: source choices use available stock, owner and complete scope rather than physical stock
+  ---
+  duration_ms: 0.8338
+  type: 'test'
+  ...
+# Subtest: critic: WZ with zero free stock can resume only its own exact active reservation
+ok 13 - critic: WZ with zero free stock can resume only its own exact active reservation
+  ---
+  duration_ms: 0.806
+  type: 'test'
+  ...
+# Subtest: critic: zero-quantity PZ target is selectable only in receiving positions
+ok 14 - critic: zero-quantity PZ target is selectable only in receiving positions
+  ---
+  duration_ms: 0.2347
+  type: 'test'
+  ...
+# Subtest: critic: MM target is a different storage position with identical lot serial and state
+not ok 15 - critic: MM target is a different storage position with identical lot serial and state
+  ---
+  duration_ms: 1.3563
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\selection-critic.test.mjs:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + []
+    - [
+    -   {
+    -     available_qty: '0',
+    -     id: 'balance-target',
+    -     item_id: 'item',
+    -     lot_id: 'lot-A',
+    -     on_hand: '0',
+    -     organization_id: 'org',
+    -     owner_id: 'owner',
+    -     position_id: 'target',
+    -     reserved_qty: '0',
+    -     serial_id: 'serial-A',
+    -     stock_state: 'available',
+    -     version: 1,
+    -     warehouse_id: 'warehouse'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      organization_id: 'org'
+      warehouse_id: 'warehouse'
+      owner_id: 'owner'
+      item_id: 'item'
+      stock_state: 'available'
+      lot_id: 'lot-A'
+      serial_id: 'serial-A'
+      version: 1
+      id: 'balance-target'
+      position_id: 'target'
+      on_hand: '0'
+      reserved_qty: '0'
+      available_qty: '0'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/selection-critic.test.mjs:89:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: critic: selecting one of several lots at the same named address never substitutes the first lot
+ok 16 - critic: selecting one of several lots at the same named address never substitutes the first lot
+  ---
+  duration_ms: 0.6802
+  type: 'test'
+  ...
+# Subtest: critic: stale removed source ID is rejected even when another balance occupies the same address
+ok 17 - critic: stale removed source ID is rejected even when another balance occupies the same address
+  ---
+  duration_ms: 0.4573
+  type: 'test'
+  ...
+# Subtest: critic: missing or duplicate selected IDs must never fall back to the first visible option
+ok 18 - critic: missing or duplicate selected IDs must never fall back to the first visible option
+  ---
+  duration_ms: 0.5528
+  type: 'test'
+  ...
+# Subtest: critic property: randomized multi-owner source choices equal an independent identity and availability oracle
+ok 19 - critic property: randomized multi-owner source choices equal an independent identity and availability oracle
+  ---
+  duration_ms: 12.4977
+  type: 'test'
+  ...
+# Subtest: critic property: shuffled same-address lots preserve explicit selected source and target identity
+ok 20 - critic property: shuffled same-address lots preserve explicit selected source and target identity
+  ---
+  duration_ms: 31.1149
+  type: 'test'
+  ...
+# Subtest: critic property: completed lines are excluded without coalescing repeated product lines
+ok 21 - critic property: completed lines are excluded without coalescing repeated product lines
+  ---
+  duration_ms: 7.2965
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 181.0893

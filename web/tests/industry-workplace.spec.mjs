@@ -1,4 +1,9 @@
 import {test,expect} from '@playwright/test';
+async function useScanner(page) {
+  const button=page.getByRole('button',{name:'Skaner / wpisz kod',exact:true});
+  if (await button.getAttribute('aria-pressed') !== 'true') await button.click();
+}
+
 
 async function seedIndustry(page) {
   await page.goto('/app/?demo=1');
@@ -47,6 +52,7 @@ test('warehouse employee issues WZ to a named recipient from stock, reserving th
   await page.getByLabel('Numer zamówienia',{exact:true}).fill('Zamówienie #1');
   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
   await page.getByRole('button',{name:'Przekaż do realizacji',exact:true}).click();
+  await useScanner(page);
   await page.getByLabel('Kod towaru',{exact:true}).fill('BOLT-M8');
   await page.getByLabel('Kod towaru',{exact:true}).press('Enter');
   await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');
@@ -133,6 +139,7 @@ for (const fault of ['reservation','issue']) test(`critic: lost ${fault} reply s
   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
   await page.getByRole('button',{name:'Przekaż do realizacji',exact:true}).click();
   const scan=async()=>{
+    await useScanner(page);
     await page.getByLabel('Kod towaru',{exact:true}).fill('BOLT-M8');
     await page.getByLabel('Kod towaru',{exact:true}).press('Enter');
     await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');
@@ -194,6 +201,7 @@ test('worker moves stock on an MM while PZ creation remains unavailable',async({
   await page.getByLabel('Ilość planowana',{exact:true}).fill('3');
   await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
   await page.getByRole('button',{name:'Przekaż do realizacji',exact:true}).click();
+  await useScanner(page);
   for(const [label,value] of [['Kod towaru','BOLT-M8'],['Adres źródłowy','A1'],['Adres docelowy','B1']]) {
     await page.getByLabel(label,{exact:true}).fill(value); await page.getByLabel(label,{exact:true}).press('Enter');
   }
@@ -311,6 +319,7 @@ test('critic: partial reservation is visible and issued before reserving the rem
   });
   await page.reload();
   const scanSource=async()=>{
+    await useScanner(page);
     await page.getByLabel('Kod towaru',{exact:true}).fill('BOLT-M8');
     await page.getByLabel('Kod towaru',{exact:true}).press('Enter');
     await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');

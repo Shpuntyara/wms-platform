@@ -1,0 +1,41 @@
+[WebServer] (node:42720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:38088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\api-quantity-browser-critic.spec.mjs:22:1 › API-shaped WZ reservation remains usable on the explicit optional scanner path (5.5s)
+(node:11628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\api-quantity-browser-critic.spec.mjs:38:1 › API-shaped piece quantities populate the default no-code source selector (343ms)
+
+
+  1) tests\api-quantity-browser-critic.spec.mjs:22:1 › API-shaped WZ reservation remains usable on the explicit optional scanner path 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByLabel('Ilość rzeczywista', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByLabel('Ilość rzeczywista', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Ilość rzeczywista', { exact: true })
+
+
+      27 |   await page.getByLabel('Adres źródłowy',{exact:true}).fill('A1');
+      28 |   await page.getByLabel('Adres źródłowy',{exact:true}).press('Enter');
+    > 29 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toBeVisible();
+         |                                                                   ^
+      30 |   await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveValue('2');
+      31 |   await expect(page.getByText('Zarezerwowane pod tym adresem: 2 szt.',{exact:false})).toBeVisible();
+      32 |   await expect(page.getByRole('alert')).toHaveCount(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\api-quantity-browser-critic.spec.mjs:29:67
+
+    Error Context: ..\work\no-code-selection-critic\browser-api-quantity-artifacts\api-quantity-browser-criti-4ec38-licit-optional-scanner-path\error-context.md
+
+  1 failed
+    tests\api-quantity-browser-critic.spec.mjs:22:1 › API-shaped WZ reservation remains usable on the explicit optional scanner path 
+  1 passed (8.1s)

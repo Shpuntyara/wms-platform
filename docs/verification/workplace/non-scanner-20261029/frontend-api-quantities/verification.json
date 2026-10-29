@@ -1,0 +1,219 @@
+{
+  "status": "focused checks passed",
+  "base_head": "061a0a4964d07377f1383025e83a30ff38f35ce1",
+  "date": "2026-10-29",
+  "evidence_kind": "Actual new behavior failures before UI implementation fixes; independently repeated green runs afterwards.",
+  "primary_node_red": {
+    "tests": 7,
+    "pass": 1,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "reconstructed_primary_red_reproduced": {
+    "tests": 7,
+    "pass": 1,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "intermediate_empty_serial_node_red": {
+    "tests": 13,
+    "pass": 11,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "scanner_browser_red": {
+    "tests": 2,
+    "pass": 1,
+    "fail": 1,
+    "skipped": 0,
+    "observed_error": "Dopuszczalna liczba miejsc po przecinku: 0",
+    "failure_type": "Expected quantity field did not appear; error context records the business validation error. Not a mutation result."
+  },
+  "final_node_green": {
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "final_browser_green": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "skipped": 0
+  },
+  "properties": [
+    {
+      "name": "Exact API six-place quantities at scales 0 to 6",
+      "runs": 220,
+      "seed": 2026102912,
+      "oracle": "Independent integer BigInt quanta, no floating point"
+    },
+    {
+      "name": "Positive API six-place serial stock is occupied for receipt and MM targets",
+      "runs": 180,
+      "seed": 2026102913
+    }
+  ],
+  "snapshot_provenance": "Reconstructed exact historical bytes, verified against SHA-256 receipts captured during the actual RED runs. Reports retain their original bytes; the primary reconstructed snapshot was independently rerun.",
+  "historical_source_snapshot_checks": [
+    {
+      "stage": "primary-red",
+      "path": "primary-red-reproducer/src/selection.js",
+      "sha256": "9b6562c6b7283c472791f557416c49be4b53ec172331bae78181ad9b0fc4fb2d",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "primary-red",
+      "path": "primary-red-reproducer/src/domain.js",
+      "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "primary-red",
+      "path": "primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs",
+      "sha256": "9a7b4c2bc4fafb92c0c2190c28133e076b4a98da17ecb0f079993cfcb68f1b5f",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "secondary-red",
+      "path": "secondary-red-snapshots/web/src/selection.js",
+      "sha256": "6167da9a7eff473583e7f1c0b0f96453ecbfe20e75fe87e35c1e1027d5191106",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "secondary-red",
+      "path": "secondary-red-snapshots/web/src/app.js",
+      "sha256": "dd7cfb3e5bf3cb270cefd11afa5c0bae6400a85d5e02e4c749de73b434048d17",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "secondary-red",
+      "path": "secondary-red-snapshots/web/tests/selection-api-quantity-critic.test.mjs",
+      "sha256": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78",
+      "matches_captured_red_sha256": true
+    },
+    {
+      "stage": "secondary-red",
+      "path": "secondary-red-snapshots/web/tests/api-quantity-browser-critic.spec.mjs",
+      "sha256": "d94ee75bf6249d0c9a0584acc1ed0fe253930e04a11f31282d2cb878906896f6",
+      "matches_captured_red_sha256": true
+    }
+  ],
+  "current_source_sha256": [
+    {
+      "path": "web/src/app.js",
+      "sha256": "3fff3d76e8f5d8c3c62736e5217d60785d754b3456b8258dc5b6669f72a68117"
+    },
+    {
+      "path": "web/src/selection.js",
+      "sha256": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222"
+    },
+    {
+      "path": "web/src/domain.js",
+      "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+    },
+    {
+      "path": "web/tests/selection-api-quantity-critic.test.mjs",
+      "sha256": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78"
+    },
+    {
+      "path": "web/tests/api-quantity-browser-critic.spec.mjs",
+      "sha256": "d94ee75bf6249d0c9a0584acc1ed0fe253930e04a11f31282d2cb878906896f6"
+    },
+    {
+      "path": "web/playwright.config.mjs",
+      "sha256": "5820daa86c5493176f03bd1c194a94db28bff75194ab7725cdc9e2bc766ee20a"
+    }
+  ],
+  "limits": [
+    "Browser uses real production UI with a controlled demo adapter and PostgreSQL-shaped numeric text; not real OIDC or a direct PostgreSQL browser integration.",
+    "Real PostgreSQL backend characterization is published separately under ../backend/ and is not labeled RED.",
+    "These focused checks do not certify full final-revision CI or the two VM installations."
+  ],
+  "files_sha256": [
+    {
+      "path": "primary-red-reproducer/src/domain.js",
+      "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+    },
+    {
+      "path": "primary-red-reproducer/src/selection.js",
+      "sha256": "9b6562c6b7283c472791f557416c49be4b53ec172331bae78181ad9b0fc4fb2d"
+    },
+    {
+      "path": "primary-red-reproducer/tests/selection-api-quantity-critic.test.mjs",
+      "sha256": "9a7b4c2bc4fafb92c0c2190c28133e076b4a98da17ecb0f079993cfcb68f1b5f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "13dcc7b386ae6564935453555529181988d3306d6ce63a677a646da4cf933323"
+    },
+    {
+      "path": "reports/api-quantity-final-green-tap.txt",
+      "sha256": "de84c279b78d39b42c3e3bbd7f0dc0f64389966e7b1cb66ada2bb112b29b647d"
+    },
+    {
+      "path": "reports/api-quantity-red-hashes.json",
+      "sha256": "fda605c11cc2c8e0ac21c5ff12529cb5725b6d98015f62500a616fcecbe2a729"
+    },
+    {
+      "path": "reports/api-quantity-red-tap.txt",
+      "sha256": "d4b218acf510be5280b4e198e6ae4b2624ff5b33db0ac18f9d44e9a66f16ed13"
+    },
+    {
+      "path": "reports/api-quantity-zero-and-scanner-red-hashes.json",
+      "sha256": "765fb39d6fd9b1766a28b7a2cc357b517b8b92c140d8c96307711fc04ea1f805"
+    },
+    {
+      "path": "reports/api-quantity-zero-red-tap.txt",
+      "sha256": "9942fe2ae4fa1959b294849c8d188e4bc0445d425477317b8f97899ac05c74fc"
+    },
+    {
+      "path": "reports/browser-api-quantity-green.txt",
+      "sha256": "680b1ab218a6bd40c6e3701b9c09b661e3eaee35e65bf0e545ba5027c90e4cb6"
+    },
+    {
+      "path": "reports/browser-api-quantity-red-context.md",
+      "sha256": "693965988e8e61312f097be9ac5721ee98c916084535092f89c11dcf1bea1980"
+    },
+    {
+      "path": "reports/browser-api-quantity-red-results.json",
+      "sha256": "74d52f21b6a579543008255bf545e55b397b3b15182fcb0e4b349a6ebf6aa3d8"
+    },
+    {
+      "path": "reports/browser-api-quantity-red.txt",
+      "sha256": "c97df935cc4c1f025fee3bc9e79fb44e71aa6ec350a911152c0247b764f2592f"
+    },
+    {
+      "path": "reports/browser-api-quantity-results.json",
+      "sha256": "765852c87655fb754faedfbd2f2f23bd1003ffaeef25120475cc729584c22630"
+    },
+    {
+      "path": "reports/primary-red-reproducer.txt",
+      "sha256": "e13dbde31876de8a03484cef28349723f4aa4acea05aaebc5a1b88c0cc25ca2b"
+    },
+    {
+      "path": "reports/secondary-red-snapshot-verification.json",
+      "sha256": "5f5ebeeee56ee8b82f85ef0a4af1877a6facfa721fd0b3676082e5eae8a8852c"
+    },
+    {
+      "path": "secondary-red-snapshots/web/src/app.js",
+      "sha256": "dd7cfb3e5bf3cb270cefd11afa5c0bae6400a85d5e02e4c749de73b434048d17"
+    },
+    {
+      "path": "secondary-red-snapshots/web/src/selection.js",
+      "sha256": "6167da9a7eff473583e7f1c0b0f96453ecbfe20e75fe87e35c1e1027d5191106"
+    },
+    {
+      "path": "secondary-red-snapshots/web/tests/api-quantity-browser-critic.spec.mjs",
+      "sha256": "d94ee75bf6249d0c9a0584acc1ed0fe253930e04a11f31282d2cb878906896f6"
+    },
+    {
+      "path": "secondary-red-snapshots/web/tests/selection-api-quantity-critic.test.mjs",
+      "sha256": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78"
+    }
+  ]
+}

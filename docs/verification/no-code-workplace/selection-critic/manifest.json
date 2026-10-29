@@ -1,0 +1,73 @@
+{
+  "scope": "Independent pure selection properties and training-browser adversarial checks; real PostgreSQL/SSO proofs and final CI are reported separately.",
+  "first_RED": {
+    "helper_assertion_failures": 12,
+    "helper_implementation_existed": false,
+    "initial_browser_failed": 7,
+    "preimplementation_source_snapshot_hashes_verified": true
+  },
+  "actual_followup_defect": {
+    "case": "Valid empty serial targets were rejected because the positive human-input parser rejects zero.",
+    "red_unit_tests": 21,
+    "red_failed": 1,
+    "red_helper_source_hash_verified": true,
+    "root_ui_agent_fixed_production_after_RED": true
+  },
+  "harness_corrections": [
+    "The first browser candidate had two test-harness failures: a Polish inflection did not match the error regex and a late prototype patch could not replace an already bound request method. These were not counted as product defects.",
+    "The corrected request observer is installed before application binding and has a positive control proving that a valid MM records a write attempt; stale-version/availability cases record none.",
+    "The first programmatic Node --eval executor reported only two file passes rather than 25 actual cases. Its mutation score is invalid; its apparent survivors are not product survivors. A real .mjs executor and an explicit 25-case baseline guard replaced it."
+  ],
+  "local_GREEN": {
+    "helper_and_API_quantity_tests": 25,
+    "selection_mutants_killed": 23,
+    "survived": 0,
+    "invalid": 0,
+    "skipped": 0,
+    "browser_cases": 8,
+    "browser_unexpected": 0,
+    "browser_flaky": 0
+  },
+  "property_campaigns": {
+    "count": 5,
+    "generated_cases_per_baseline": 940,
+    "independent_oracles": "Identity/available-stock filtering, shuffled batch identities, distinct document lines, exact serialized quantities at each scale and occupied serial target exclusion."
+  },
+  "browser_proofs": [
+    "Repeated product lines retain line IDs",
+    "Same-address batches retain explicit source and target balance IDs",
+    "WZ own reservation remains usable with zero free stock",
+    "Changing a line clears dependent selections and quantity",
+    "Fresh document version and fresh available quantity reject before writes",
+    "Lost MM response locks selections and replays the same key/body/lot after reload",
+    "Write-attempt recorder has a successful MM positive control"
+  ],
+  "source_sha256_lf": {
+    "web/src/app.js": "1e5b07c77de78f40574f4ecb350b2dafc679dce98d84a91888536c842f2f0dcc",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "web/src/selection.js": "e03322305c48a0e9a5decb91241b19c61031fff64ecafef18e994e703b64a222",
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/tests/non-scanner-critic.spec.mjs": "d0d0c7404f1bb9a687dfc6879dec1f1a81053c3de10562dfd6a984ab1a40bea1",
+    "web/tests/selection-api-quantity-critic.test.mjs": "2855edcec057b4ae0d979d79bcf4e536d47ecbe47310f4a5eb1da7e4e62e1a78",
+    "scripts/verify_selection_mutations.py": "23968bed1a3c2a1fd5f867a7cdf8a5963ba43fdc35b726a5af04c666693ec7c1",
+    "scripts/test_selection_mutations.py": "ae420091de2edc607112e83b35a38fce74ccd76941e9bceb0756ba9bf733f167"
+  },
+  "full_final_CI": "Required on the final immutable commit; not claimed by these local receipts.",
+  "files_sha256": {
+    "invalid-executor-probe.json": "919b0e8df3f7c3ba999c7b6f89feeadb74d023c6745d3635b2a435c516b60965",
+    "before-implementation/manifest.json": "2af0222bfb9032f5a322e769a36e2b2ee96342266965dfda7eb90b2b980394ef",
+    "before-implementation/web/src/app.js": "9f2eae140db176bbe154dc84cc4292604d936d07c68cc67115d2edf5adb698cd",
+    "before-implementation/web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+    "before-implementation/web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "green/browser-results.json": "3ba8eb79d5191ec82e4c5a34a5440d7e2b3ea71c19b70619b4014af45899e150",
+    "green/browser-summary.json": "57f73cc01822a8c1763c9a9d9a8aeaf624e588c758ebec8e4c0830aef40d7620",
+    "green/selection-mutations.json": "9025fdbf278e0361bff30e837565037cc36c83ffd22c631931dfc5f1e607eaca",
+    "red/browser-before-implementation-summary.json": "969fe9f3c1447bc850c497ec9e53f962a8e6205ab20ace6a2cab5dc0e5c3d040",
+    "red/browser-before-implementation.json": "0ecb834df80e1e43695b12134d9f3975ef58a67e9173c66925cd97cd704cfcb2",
+    "red/empty-serial-target-regression.json": "330f75ed5ec164a3516d56d46d7204ffd6a6eb6f951d2b111345a5b78e6a8bad",
+    "red/empty-serial-target-regression.tap": "b661e7bf92a87606bfdc42e30a285cf8ea470b03f5416dd7b9dd23d7a19a9632",
+    "red/empty-serial-target-selection.js": "6167da9a7eff473583e7f1c0b0f96453ecbfe20e75fe87e35c1e1027d5191106",
+    "red/helper-availability.json": "9467e6bc2344308d63f6eefcfea94079be5e33571318d43fe978872d563443bd",
+    "red/helper-availability.tap": "8e05834939b2d62b9b65eab511553405b24451a29a2da9a03d3791cc65c87b6c"
+  }
+}

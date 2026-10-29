@@ -1,0 +1,10 @@
+{
+  "exit_code": 1,
+  "selection_implementation_exists": false,
+  "source_sha256": {
+    "web/tests/selection-critic.test.mjs": "29a0071523b3fc66d1a153f13428627553d561e7bedfdf9b7503a5b326c4148e",
+    "web/src/app.js": "9f2eae140db176bbe154dc84cc4292604d936d07c68cc67115d2edf5adb698cd",
+    "web/src/domain.js": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+  },
+  "output_sha256": "8e05834939b2d62b9b65eab511553405b24451a29a2da9a03d3791cc65c87b6c"
+}

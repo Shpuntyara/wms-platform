@@ -1,0 +1,18 @@
+[
+  {
+    "path": "web/src/selection.js",
+    "original_red_hash_matches": true
+  },
+  {
+    "path": "web/src/app.js",
+    "original_red_hash_matches": true
+  },
+  {
+    "path": "web/tests/selection-api-quantity-critic.test.mjs",
+    "original_red_hash_matches": true
+  },
+  {
+    "path": "web/tests/api-quantity-browser-critic.spec.mjs",
+    "original_red_hash_matches": true
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "path": "web/src/selection.js",
+    "sha256": "9b6562c6b7283c472791f557416c49be4b53ec172331bae78181ad9b0fc4fb2d"
+  },
+  {
+    "path": "web/src/domain.js",
+    "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+  },
+  {
+    "path": "web/tests/selection-api-quantity-critic.test.mjs",
+    "sha256": "9a7b4c2bc4fafb92c0c2190c28133e076b4a98da17ecb0f079993cfcb68f1b5f"
+  }
+]

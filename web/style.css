@@ -251,3 +251,12 @@ input[aria-invalid=true] { border-color: #b55749; }
 .recipient-line,.order-customer,.order-card{overflow-wrap:anywhere}
 .reservation-note{padding:14px 16px;margin:18px 0;background:#edf6f3;border-left:3px solid #087b70;color:#24564e;font-size:14px}.reservation-note p{margin:7px 0 0;line-height:1.5}
 .archive-note{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 20px;margin-bottom:20px;background:#fff7e8;border:1px solid #ead8b3;border-radius:5px;color:#665136}.archive-note p{font-size:13px;margin:6px 0 0;line-height:1.5}.badge.archived{display:inline-flex;margin-top:6px;background:#f4ebdd;color:#755a35;border:1px solid #e5d4b7}.archive-note .check-label{color:#665136}@media(max-width:700px){.archive-note{align-items:flex-start;flex-direction:column;gap:12px}}
+/* Native controls preserve familiar keyboard operation without a scanner. */
+.entry-mode {display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 22px}
+.entry-mode [aria-pressed="true"] {border-color:var(--accent,#24725f);background:#eaf4f0;color:#155442}
+.selection-card fieldset {border:0;padding:0;margin:0;min-width:0;display:grid;gap:10px}
+.selection-card label {font-weight:650;margin-top:10px}
+.selection-card select,.selection-card input {width:100%;min-width:0;min-height:52px;padding:12px;border:1px solid #bbc9c4;border-radius:8px;background:#fff;color:#20342d;font:inherit}
+.selection-card select:focus-visible,.selection-card input:focus-visible {outline:3px solid #24725f;outline-offset:3px}
+.selection-card :disabled {opacity:.65;cursor:wait}
+.selection-remaining {margin:4px 0 0;color:#465f54}

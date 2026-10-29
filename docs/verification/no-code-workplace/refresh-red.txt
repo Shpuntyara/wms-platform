@@ -1,0 +1,42 @@
+[WebServer] (node:32540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:43232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\selection-workplace.spec.mjs:163:1 › a confirmed PZ with a failed refresh freezes choices and offers a read-only refresh without replaying the movement
+  1) tests\selection-workplace.spec.mjs:163:1 › a confirmed PZ with a failed refresh freezes choices and offers a read-only refresh without replaying the movement 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Odśwież', exact: true })
+
+
+      184 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toBeDisabled();
+      185 |   await expect(page.getByRole('button',{name:'Sprawdź wynik',exact:true})).toHaveCount(0);
+    > 186 |   await page.getByRole('button',{name:'Odśwież',exact:true}).click();
+          |                                                              ^
+      187 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toBeEnabled();
+      188 |   expect(Object.values((await snapshot(page)).commands).filter(row=>JSON.parse(row.body).kind==='receipt')).toHaveLength(1);
+      189 |   expect((await snapshot(page)).documents.find(row=>row.id===ids.doc).lines[0].fulfilled_qty).toBe('1');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\selection-workplace.spec.mjs:186:62
+
+    Error Context: test-results\selection-workplace-a-conf-ba4d4-hout-replaying-the-movement\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\selection-workplace-a-conf-ba4d4-hout-replaying-the-movement\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\selection-workplace-a-conf-ba4d4-hout-replaying-the-movement\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\selection-workplace.spec.mjs:163:1 › a confirmed PZ with a failed refresh freezes choices and offers a read-only refresh without replaying the movement 

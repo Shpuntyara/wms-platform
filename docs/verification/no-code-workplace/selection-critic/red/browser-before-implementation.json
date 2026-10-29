@@ -1,0 +1,598 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "work/non-scanner-critic-tdd/playwright.config.mjs"
+    ],
+    "configFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\non-scanner-critic-tdd\\playwright.config.mjs",
+    "rootDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/sashk/Documents/WMS/wms-platform/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/sashk/Documents/WMS/wms-platform/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "non-scanner-critic.spec.mjs"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "name": "",
+        "testDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "snapshotDir": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests",
+        "testIgnore": [],
+        "testMatch": [
+          "non-scanner-critic.spec.mjs"
+        ],
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:18744",
+          "trace": "retain-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json",
+        {
+          "outputFile": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\non-scanner-critic-tdd\\browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 2,
+    "webServer": {
+      "command": "node serve.mjs --port 18744",
+      "url": "http://127.0.0.1:18744/app/",
+      "reuseExistingServer": true,
+      "cwd": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web"
+    }
+  },
+  "suites": [
+    {
+      "title": "non-scanner-critic.spec.mjs",
+      "file": "non-scanner-critic.spec.mjs",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "critic non-scanner: repeated product lines remain independently selectable in PZ",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6214,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:58:14",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:58:14"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:29.865Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--9d72c-ependently-selectable-in-PZ\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--9d72c-ependently-selectable-in-PZ\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-7723b73ac998389b0969",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 57,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: same-address lots preserve the explicitly selected MM balance identities",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 6231,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:77:3",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:77:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:29.849Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--e5f07-ected-MM-balance-identities\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--e5f07-ected-MM-balance-identities\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-aecbe8e531c82ca02a33",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 76,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: WZ resumes its own reservation even when no free quantity remains",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5863,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:99:3",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:99:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:37.185Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--163ae-en-no-free-quantity-remains\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--163ae-en-no-free-quantity-remains\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-b1dc192398fafca41049",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 98,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: changing a document line clears source target and quantity",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 5790,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:114:14",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:114:14"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:37.187Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--fe8f5--source-target-and-quantity\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--fe8f5--source-target-and-quantity\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-817a3ccccebeffe00239",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 113,
+          "column": 1
+        },
+        {
+          "title": "critic non-scanner: fresh document-version invalidates selection before a write attempt",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 5757,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:124:3",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:124:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:43.997Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--a1e80-tion-before-a-write-attempt\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--a1e80-tion-before-a-write-attempt\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-eb5a03380c4ac2cf35f5",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 123,
+          "column": 63
+        },
+        {
+          "title": "critic non-scanner: fresh available-quantity invalidates selection before a write attempt",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5753,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:124:3",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:124:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:44.076Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--397dd-tion-before-a-write-attempt\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--397dd-tion-before-a-write-attempt\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-7994093f0649cb73a06e",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 123,
+          "column": 63
+        },
+        {
+          "title": "critic non-scanner: lost MM reply locks selectors and replays the exact selected lot after reload",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 1,
+                  "status": "failed",
+                  "duration": 5628,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:144:3",
+                    "location": {
+                      "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                      "column": 69,
+                      "line": 42
+                    },
+                    "snippet": "  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                        "column": 69,
+                        "line": 42
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Towar do realizacji', { exact: true })\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m0\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveCount\" getByLabel('Towar do realizacji', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Towar do realizacji', { exact: true })\u001b[22m\n\u001b[2m    14 \u00d7 locator resolved to 0 elements\u001b[22m\n\u001b[2m       - unexpected value \"0\"\u001b[22m\n\n\n  40 |   await page.getByRole('button',{name:seeded.number,exact:true}).click();\n  41 |   await page.getByRole('button',{name:kind==='receipt'?'Rozpocznij przyjmowanie':kind==='shipment'?'Rozpocznij wydanie':'Rozpocznij przesuni\u0119cie',exact:true}).click();\n> 42 |   await expect(page.getByLabel('Towar do realizacji',{exact:true})).toHaveCount(1);\n     |                                                                     ^\n  43 |   return seeded;\n  44 | }\n  45 |\n    at seedChoiceTask (C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:42:69)\n    at C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs:144:3"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-29T20:04:50.619Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--d0e3f-t-selected-lot-after-reload\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\test-results\\non-scanner-critic-critic--d0e3f-t-selected-lot-after-reload\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\non-scanner-critic.spec.mjs",
+                    "column": 69,
+                    "line": 42
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "afce68e030c569d483eb-94366822aed8e9eaf4ea",
+          "file": "non-scanner-critic.spec.mjs",
+          "line": 143,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-29T20:04:28.733Z",
+    "duration": 28198.052000000003,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 7,
+    "flaky": 0
+  }
+}

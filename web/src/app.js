@@ -3,6 +3,7 @@ import {parseQuantity, remaining, matchScan, movementIntent, completed, formatQu
 import {CommandJournal} from './journal.js';
 import {DemoWarehouse} from './demo.js';
 import {errorMessage} from './messages.js';
+import {lineChoices,balanceChoices,resolveSelection} from './selection.js';
 
 const root = document.getElementById('app');
 const e = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -10,7 +11,7 @@ const paths = {box:'m3 7 9-5 9 5v10l-9 5-9-5V7Zm0 0 9 5 9-5M12 12v10M7.5 4.5l9 5
 const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name] || paths.box}"/></svg>`;
 const states = {draft:'Do przygotowania', active:'Do realizacji', closed:'Zrealizowany', cancelled:'Anulowany'};
 const kinds = {receipt:'Przyjęcie towaru (PZ)', transfer:'Przesunięcie towaru (MM)', shipment:'Wydanie towaru (WZ)', adjustment:'Korekta'};
-const S = {demo:new URLSearchParams(location.search).get('demo') === '1', mode:'bureau', section:'stock', filter:'all', search:'', documents:[], balances:[], orders:[], selected:null, busy:false, message:'', error:'', work:null};
+const S = {demo:new URLSearchParams(location.search).get('demo') === '1', mode:'bureau', entryMode:'select', section:'stock', filter:'all', search:'', documents:[], balances:[], orders:[], selected:null, busy:false, message:'', error:'', work:null};
 let request, identity, workspace, journal;
 const named = (group,id,fallback='Brak konfiguracji') => workspace?.catalog[group]?.find(row => row.id === id)?.name ?? fallback;
 const itemById = id => workspace.catalog.items.find(row => row.id === id);
@@ -66,6 +67,7 @@ async function selectDocument(id) {
 function resetWork() {
   const line = S.selected?.lines.find(row => remaining(row.requested_qty,row.fulfilled_qty) !== '0');
   S.work = line ? {line,item:itemById(line.item_id),stage:'item'} : null;
+  S.selection = {lineID:'',sourceID:'',targetID:'',quantity:'',reservations:[]};
 }
 function render() {
   if (!workspace) return;
@@ -74,7 +76,7 @@ function render() {
   root.innerHTML = `<a class="skip-link" href="#main">Przejdź do obszaru roboczego</a>${S.demo?'<div class="training-bar">Magazyn szkoleniowy <span>Dane przykładowe · tylko w tej przeglądarce</span><a href="/app/">Do instalacji roboczej</a></div>':''}
   <header class="topbar"><a class="brand" href="/app/${S.demo?'?demo=1':''}">${icon('box')}<span>MAGAZYN<small>stanowisko pracy</small></span></a><div class="warehouse"><span class="eyebrow">MAGAZYN</span><label class="visually-hidden" for="warehouse">Magazyn roboczy</label><select id="warehouse" ${blocked||S.busy?'disabled':''}>${workspace.scopes.filter(row => row.grants.some(g => g.permission === 'document.read')).map(row => `<option value="${e(row.organization_id+'|'+row.warehouse_id)}" ${row.warehouse_id === S.scope?.warehouse_id && row.organization_id === S.scope?.organization_id?'selected':''}>${e(named('warehouses',row.warehouse_id,'Magazyn bez nazwy'))}</option>`).join('')}</select></div><nav class="mode-switch" aria-label="Stanowisko pracy"><button data-mode="bureau" aria-pressed="${S.mode === 'bureau'}">Biuro</button><button data-mode="worker" aria-pressed="${S.mode === 'worker'}">${icon('scan')} Magazyn</button></nav><div class="user"><span class="avatar">${S.demo?'S':'P'}</span><span>${S.demo?'Zmiana szkoleniowa':e(identity?.tokenParsed?.preferred_username || 'Pracownik')}<small>${S.demo?'Przykład lokalny':'Operator magazynu'}</small></span>${!S.demo?'<button class="text-button" data-action="logout">Wyloguj</button>':''}</div></header>
   <div class="app-shell"><aside class="sidebar"><span class="eyebrow sidebar-label">OPERACJE</span><nav aria-label="Operacje magazynowe">${[['stock','grid','Stany'],['orders','box','Zamówienia'],['shipment','arrow','Wydania (WZ)'],['receipt','receive','Przyjęcia (PZ)'],['transfer','move','Przesunięcia (MM)'],['history','history','Historia']].map(([section,graphic,label]) => `<button class="nav-item ${S.section === section?'selected':''}" data-section="${section}" ${section === 'stock'&&!can('stock.read')?'disabled':''}>${icon(graphic)}<span>${label}</span>${['receipt','transfer','shipment'].includes(section)?`<span class="nav-count" aria-hidden="true">${S.documents.filter(doc => doc.kind === section && doc.state === 'active').length}</span>`:''}</button>`).join('')}</nav><div class="sidebar-bottom"><span class="connection-dot"></span>${S.demo?'Tryb szkoleniowy':'Instalacja robocza'}<small>${e(named('warehouses',S.scope?.warehouse_id))}</small></div></aside>
-  <main id="main" tabindex="-1">${blocked?`<div class="pending"><div><strong>Operacja oczekuje na potwierdzenie</strong><p>Nie otrzymano odpowiedzi. Sprawdź wynik przed następną operacją.</p></div><button class="button warning" data-action="retry" ${S.busy||blocked.broken?'disabled':''}>${icon('refresh')} Sprawdź wynik</button></div>`:''}${S.error?`<div class="notice error" role="alert">${e(S.error)}</div>`:''}<div class="notice success ${S.message?'':'empty'}" role="status">${e(S.message)}</div>${!S.scope?'<div class="empty-state"><h1>Brak dostępnych magazynów</h1><p>Kierownik musi nadać Ci dostęp do dokumentów magazynu.</p></div>':S.section === 'stock'?stockView():S.section === 'orders'?ordersView():S.section === 'history'?bureau():S.mode === 'worker'?worker():bureau()}</main></div><dialog id="create-dialog" aria-labelledby="create-title"></dialog>`;
+  <main id="main" tabindex="-1">${blocked?`<div class="pending"><div><strong>Operacja oczekuje na potwierdzenie</strong><p>Nie otrzymano odpowiedzi. Sprawdź wynik przed następną operacją.</p></div><button class="button warning" data-action="retry" ${S.busy||blocked.broken?'disabled':''}>${icon('refresh')} Sprawdź wynik</button></div>`:''}${S.error?`<div class="notice error" role="alert">${e(S.error)}</div>`:''}<div class="notice success ${S.message?'':'empty'}" role="status">${e(S.message)}</div>${S.needsRefresh && S.mode === 'worker' && ['receipt','transfer','shipment'].includes(S.section)?'<button class="button" data-action="refresh">Odśwież</button>':''}${!S.scope?'<div class="empty-state"><h1>Brak dostępnych magazynów</h1><p>Kierownik musi nadać Ci dostęp do dokumentów magazynu.</p></div>':S.section === 'stock'?stockView():S.section === 'orders'?ordersView():S.section === 'history'?bureau():S.mode === 'worker'?worker():bureau()}</main></div><dialog id="create-dialog" aria-labelledby="create-title"></dialog>`;
   bind();
 }
 function bureau() {
@@ -123,11 +125,86 @@ function worker() {
   const work = S.work, receive = doc.kind === 'receipt', shipment = doc.kind === 'shipment';
   if (doc.state !== 'active'||!work) return `<div class="terminal-container"><button class="text-button" data-action="back-tasks">← Do dokumentów</button><div class="terminal-complete">${icon('check')}<h1>${doc.state === 'closed'?'Dokument zrealizowany':'Wszystkie towary potwierdzone'}</h1><p>${e(doc.number)} · ${done(doc)} z ${doc.lines.length} pozycji</p>${documentActions(doc)}</div></div>`;
   if (!work.item) return '<div class="terminal-container"><h1>Skonfiguruj towar</h1><p>Brakuje kodu lub dokładności towaru. Skontaktuj się z kierownikiem zmiany.</p><button class="button" data-mode="bureau">Wróć do biura</button></div>';
+  if (S.entryMode !== 'scan') return selectionWorker(doc);
   const stages = receive?['Towar','Adres','Ilość']:shipment?['Towar','Źródło','Ilość']:['Towar','Źródło','Cel','Ilość'];
   const index = work.stage === 'item'?0:work.stage === 'source'?1:work.stage === 'target'?(receive?1:2):stages.length-1;
   const label = work.stage === 'item'?'Kod towaru':work.stage === 'source'?'Adres źródłowy':work.stage === 'target'?(receive?'Adres przyjęcia':'Adres docelowy'):'Ilość rzeczywista';
   const heading = work.stage === 'item'?'Zeskanuj towar':work.stage === 'source'?'Zeskanuj adres źródłowy':work.stage === 'target'?(receive?'Zeskanuj adres przyjęcia':'Zeskanuj adres składowania'):'Potwierdź ilość';
-  return `<div class="terminal-container"><div class="terminal-document"><button class="text-button" data-action="back-tasks">← Dokumenty</button><span class="mono">${e(doc.number)}</span>${badge(doc)}</div><div class="terminal-heading"><span class="eyebrow">${receive?'PRZYJĘCIE TOWARU (PZ)':shipment?'WYDANIE TOWARU (WZ)':'PRZESUNIĘCIE TOWARU (MM)'}</span><h1>${heading}</h1>${shipment?`<p>Odbiorca: <strong>${e(doc.recipient)}</strong>${doc.order_reference?` · ${e(doc.order_reference)}`:''}</p>`:''}</div><ol class="steps">${stages.map((stage,n) => `<li class="${n === index?'current':n < index?'done':''}" ${n === index?'aria-current="step"':''}><span>${n < index?'✓':n+1}</span>${stage}</li>`).join('')}</ol><section class="scan-card"><div class="terminal-item"><span class="item-icon">${icon('box')}</span><div><span class="eyebrow">POZYCJA ${doc.lines.findIndex(line => line.id === work.line.id)+1} Z ${doc.lines.length}</span><h2>${e(work.item.name)}</h2><p class="mono">${e(work.item.sku)}</p></div></div><div class="terminal-quantity"><span>Pozostało ${receive?'do przyjęcia':shipment?'do wydania':'do przesunięcia'}</span><strong>${e(qty(remaining(work.line.requested_qty,work.line.fulfilled_qty)))} <small>${e(work.item.unit)}</small></strong></div>${work.sourceBalance?`<div class="scan-confirmed">✓ Źródło: <b class="mono">${e(positionById(work.sourceBalance.position_id)?.code)}</b></div>`:''}${work.targetBalance?`<div class="scan-confirmed">✓ ${receive?'Przyjęcia':'Cel'}: <b class="mono">${e(positionById(work.targetBalance.position_id)?.code)}</b></div>`:''}${shipment&&work.reservationQuantity?`<div class="reservation-note" id="reservation-hint"><strong>Zarezerwowane pod tym adresem: ${e(qty(work.reservationQuantity))} ${e(work.item.unit)}</strong><p>Wydaj najpierw tę rezerwację. Potem możesz zarezerwować i wydać pozostałą ilość dokumentu.</p></div>`:''}<form id="scan-form"><label for="scan-input">${label}</label><div class="scan-input-wrap">${icon(work.stage === 'quantity'?'box':'scan')}<input id="scan-input" name="scan" autocomplete="off" ${work.stage === 'quantity'?'inputmode="decimal"':''} ${work.stage === 'quantity'&&work.reservationQuantity?`value="${e(qty(work.reservationQuantity))}" max="${e(work.reservationQuantity)}"`:''} aria-describedby="scan-hint${shipment&&work.reservationQuantity?' reservation-hint':''}" ${S.busy||pending()?'disabled':''}></div><p id="scan-hint" class="hint">${work.stage === 'quantity'?'Wpisz przeliczoną ilość. Część dziesiętną możesz oddzielić przecinkiem.':'Skaner z klawiszem Enter lub ręczne wpisanie dokładnego kodu.'}</p><button class="button primary full" ${S.busy||pending()?'disabled':''}>${work.stage === 'quantity'?(receive?'Przyjmij towar':shipment?'Wydaj towar':'Przesuń towar'):'Dalej'} ${icon(work.stage === 'quantity'?'check':'arrow')}</button></form>${index > 0?'<button class="text-button" data-action="restart-scan">Skanuj ponownie</button>':''}</section><div class="terminal-footer"><span>Wykonane pozycje: <b>${done(doc)} / ${doc.lines.length}</b></span><button class="text-button" data-mode="bureau">Do dokumentu w biurze</button></div></div>`;
+  return `<div class="terminal-container"><div class="terminal-document"><button class="text-button" data-action="back-tasks">← Dokumenty</button><span class="mono">${e(doc.number)}</span>${badge(doc)}</div>${entryModeButtons()}<div class="terminal-heading"><span class="eyebrow">${receive?'PRZYJĘCIE TOWARU (PZ)':shipment?'WYDANIE TOWARU (WZ)':'PRZESUNIĘCIE TOWARU (MM)'}</span><h1>${heading}</h1>${shipment?`<p>Odbiorca: <strong>${e(doc.recipient)}</strong>${doc.order_reference?` · ${e(doc.order_reference)}`:''}</p>`:''}${doc.kind === 'transfer'?'<p>Kod towaru i partia pozostają bez zmian. Przesunięcie nie wymaga nowej etykiety.</p>':''}</div><ol class="steps">${stages.map((stage,n) => `<li class="${n === index?'current':n < index?'done':''}" ${n === index?'aria-current="step"':''}><span>${n < index?'✓':n+1}</span>${stage}</li>`).join('')}</ol><section class="scan-card"><div class="terminal-item"><span class="item-icon">${icon('box')}</span><div><span class="eyebrow">POZYCJA ${doc.lines.findIndex(line => line.id === work.line.id)+1} Z ${doc.lines.length}</span><h2>${e(work.item.name)}</h2><p class="mono">${e(work.item.sku)}</p></div></div><div class="terminal-quantity"><span>Pozostało ${receive?'do przyjęcia':shipment?'do wydania':'do przesunięcia'}</span><strong>${e(qty(remaining(work.line.requested_qty,work.line.fulfilled_qty)))} <small>${e(work.item.unit)}</small></strong></div>${work.sourceBalance?`<div class="scan-confirmed">✓ Źródło: <b class="mono">${e(positionById(work.sourceBalance.position_id)?.code)}</b></div>`:''}${work.targetBalance?`<div class="scan-confirmed">✓ ${receive?'Przyjęcia':'Cel'}: <b class="mono">${e(positionById(work.targetBalance.position_id)?.code)}</b></div>`:''}${shipment&&work.reservationQuantity?`<div class="reservation-note" id="reservation-hint"><strong>Zarezerwowane pod tym adresem: ${e(qty(work.reservationQuantity))} ${e(work.item.unit)}</strong><p>Wydaj najpierw tę rezerwację. Potem możesz zarezerwować i wydać pozostałą ilość dokumentu.</p></div>`:''}<form id="scan-form"><label for="scan-input">${label}</label><div class="scan-input-wrap">${icon(work.stage === 'quantity'?'box':'scan')}<input id="scan-input" name="scan" autocomplete="off" ${work.stage === 'quantity'?'inputmode="decimal"':''} ${work.stage === 'quantity'&&work.reservationQuantity?`value="${e(qty(work.reservationQuantity))}" max="${e(work.reservationQuantity)}"`:''} aria-describedby="scan-hint${shipment&&work.reservationQuantity?' reservation-hint':''}" ${S.busy||S.needsRefresh||pending()?'disabled':''}></div><p id="scan-hint" class="hint">${work.stage === 'quantity'?'Wpisz przeliczoną ilość. Część dziesiętną możesz oddzielić przecinkiem.':'Skaner z klawiszem Enter lub ręczne wpisanie dokładnego kodu.'}</p><button class="button primary full" ${S.busy||S.needsRefresh||pending()?'disabled':''}>${work.stage === 'quantity'?(receive?'Przyjmij towar':shipment?'Wydaj towar':'Przesuń towar'):'Dalej'} ${icon(work.stage === 'quantity'?'check':'arrow')}</button></form>${index > 0?'<button class="text-button" data-action="restart-scan">Skanuj ponownie</button>':''}</section><div class="terminal-footer"><span>Wykonane pozycje: <b>${done(doc)} / ${doc.lines.length}</b></span><button class="text-button" data-mode="bureau">Do dokumentu w biurze</button></div></div>`;
+}
+const selectionBlocked = () => Boolean(S.busy || S.selectSubmitting || S.selection?.loading || S.needsRefresh || pending());
+function entryModeButtons() {
+  return `<div class="entry-mode" role="group" aria-label="Sposób wprowadzania"><button class="button" data-entry-mode="select" aria-pressed="${S.entryMode !== 'scan'}" ${selectionBlocked()?'disabled':''}>Wybierz z listy</button><button class="button" data-entry-mode="scan" aria-pressed="${S.entryMode === 'scan'}" ${selectionBlocked()?'disabled':''}>${icon('scan')} Skaner / wpisz kod</button></div>`;
+}
+function ownReservations(line,balance,reservations=S.selection?.reservations||[]) {
+  return reservations.filter(row => row.organization_id === S.scope.organization_id && row.warehouse_id === S.scope.warehouse_id && row.owner_id === S.selected.owner_id && row.item_id === line.item_id && row.document_line_id === line.id && row.balance_id === balance?.id && qty(row.active_qty) !== '0');
+}
+function selectionWorker(doc) {
+  const selection=S.selection, rows=lineChoices(doc,workspace.catalog.items,S.scope);
+  const chosen=rows.find(row => row.line.id === selection.lineID), line=chosen?.line,item=chosen?.item;
+  const args={document:doc,line,item,balances:S.balances,positions:workspace.catalog.positions,scope:S.scope,reservations:selection.reservations};
+  const sources=line?balanceChoices({...args,role:'source'}):[];
+  const source=sources.find(row => row.id === selection.sourceID);
+  const targets=line?balanceChoices({...args,role:'target',sourceBalance:source}):[];
+  const reserved=source?ownReservations(line,source):[];
+  const balanceLabel=balance => {
+    const place=positionById(balance.position_id);
+    return `${place.code}${place.name?' · '+place.name:''} · Dostępne: ${qty(balance.available_qty)} ${item.unit} · ${named('owners',balance.owner_id)}${balance.lot_id?' · Partia: '+balance.lot_id:''}${balance.serial_id?' · Numer seryjny: '+balance.serial_id:''} · Stan: dostępny`;
+  };
+  const options=(balances,id) => '<option value="">Wybierz miejsce i stan towaru</option>'+balances.map(balance => `<option value="${e(balance.id)}" ${balance.id === id?'selected':''}>${e(balanceLabel(balance))}</option>`).join('');
+  return `<div class="terminal-container"><div class="terminal-document"><button class="text-button" data-action="back-tasks">← Dokumenty</button><span class="mono">${e(doc.number)}</span>${badge(doc)}</div>${entryModeButtons()}<div class="terminal-heading"><span class="eyebrow">${e(kinds[doc.kind])}</span><h1>${doc.kind === 'receipt'?'Przyjmij towar':doc.kind === 'shipment'?'Wydaj towar':'Przenieś towar'}</h1><p>Wybierz towar i miejsce z listy. Skaner jest opcjonalny.</p>${doc.kind === 'transfer'?'<p>Kod towaru i partia pozostają bez zmian. Przesunięcie nie wymaga nowej etykiety.</p>':''}${doc.kind === 'shipment'?`<p>Odbiorca: <strong>${e(doc.recipient)}</strong>${doc.order_reference?` · ${e(doc.order_reference)}`:''}</p>`:''}</div><section class="scan-card selection-card"><form id="selection-form"><fieldset ${selectionBlocked()?'disabled':''}><legend class="visually-hidden">Potwierdzenie operacji magazynowej</legend><label for="selection-line">Towar do realizacji</label><select id="selection-line"><option value="">Wybierz pozycję dokumentu</option>${rows.map(row => `<option value="${e(row.line.id)}" ${row.line.id === selection.lineID?'selected':''}>${doc.lines.findIndex(line => line.id === row.line.id)+1}. ${e(row.item.name)} · ${e(row.item.sku)} · Pozostało: ${e(qty(remaining(row.line.requested_qty,row.line.fulfilled_qty)))} ${e(row.item.unit)}</option>`).join('')}</select>${line?`<p class="selection-remaining">Pozostało do ${doc.kind === 'receipt'?'przyjęcia':doc.kind === 'shipment'?'wydania':'przesunięcia'}: <strong>${e(qty(remaining(line.requested_qty,line.fulfilled_qty)))} ${e(item.unit)}</strong></p>`:''}${doc.kind !== 'receipt'?`<label for="selection-source">Miejsce źródłowe</label><select id="selection-source" ${!line?'disabled':''}>${options(sources,selection.sourceID)}</select>`:''}${doc.kind !== 'shipment'?`<label for="selection-target">${doc.kind === 'receipt'?'Miejsce przyjęcia':'Miejsce docelowe'}</label><select id="selection-target" ${!line || (doc.kind === 'transfer'&&!source)?'disabled':''}>${options(targets,selection.targetID)}</select>`:''}${selection.loading?'<p role="status">Sprawdzanie rezerwacji tej pozycji…</p>':''}${reserved.length?`<div class="reservation-note"><strong>Zarezerwowane dla tej pozycji pod tym adresem: ${reserved.map(row=>e(qty(row.active_qty))).join(' + ')} ${e(item.unit)}</strong><p>Wydaj najpierw tę rezerwację. Potem przygotujesz pozostałą ilość dokumentu.</p></div>`:''}<label for="selection-quantity">Ilość rzeczywista</label><input id="selection-quantity" inputmode="decimal" autocomplete="off" value="${e(selection.quantity)}" ${!line || (doc.kind !== 'receipt'&&!source) || (doc.kind !== 'shipment'&&!selection.targetID)?'disabled':''}${reserved.length === 1?` max="${e(reserved[0].active_qty)}"`:''}><p class="hint">Wpisz policzoną ilość${item?' w jednostce '+e(item.unit):''}. Część dziesiętną możesz oddzielić przecinkiem.</p><button class="button primary full" ${!line || (doc.kind !== 'receipt'&&!source) || (doc.kind !== 'shipment'&&!selection.targetID)?'disabled':''}>${doc.kind === 'receipt'?'Przyjmij towar':doc.kind === 'shipment'?'Wydaj towar':'Przesuń towar'} ${icon('check')}</button></fieldset></form></section><div class="terminal-footer"><span>Wykonane pozycje: <b>${done(doc)} / ${doc.lines.length}</b></span><button class="text-button" data-mode="bureau">Do dokumentu w biurze</button></div></div>`;
+}
+function renderSelectionFocus(id) {
+  render();
+  const input=root.querySelector('#'+id);
+  if (input && !input.disabled) input.focus();
+}
+async function selectionLineChanged(id) {
+  const selection={lineID:id,sourceID:'',targetID:'',quantity:'',reservations:[],loading:S.selected.kind === 'shipment' && Boolean(id)};
+  S.selection=selection; S.error=''; renderSelectionFocus('selection-line');
+  if (!selection.loading) return;
+  try {
+    const params=new URLSearchParams({...S.scope,document_line_id:id,limit:'200'});
+    const page=await request(`/api/v1/reservations?${params}`);
+    if (page.pagination?.next_cursor) throw new Error('Pozycja ma wiele rezerwacji. Poproś kierownika o ich sprawdzenie.');
+    if (S.selection === selection) selection.reservations=page.data;
+  } finally {if (S.selection === selection) {selection.loading=false;renderSelectionFocus('selection-line');}}
+}
+async function confirmSelection() {
+  if (selectionBlocked()) return;
+  const selected={...S.selection}, documentID=S.selected.id, version=S.selected.version;
+  S.selectSubmitting=true; render();
+  try {
+    const current=(await request(`/api/v1/documents/${documentID}?${query()}`)).data;
+    if (current.version !== version || current.id !== documentID) {
+      S.selected=current; resetWork();
+      throw new Error('Dokument zmienił się. Sprawdź aktualne ilości i ponownie wybierz pozycję.');
+    }
+    const stock=[],cursors=new Set();let cursor;
+    do {
+      const params=new URLSearchParams({...S.scope,owner_id:current.owner_id,limit:'200'});
+      if (cursor) params.set('cursor',cursor);
+      const page=await request(`/api/v1/stock-balances?${params}`);
+      stock.push(...page.data);cursor=page.pagination?.next_cursor;
+      if (cursor && cursors.has(cursor)) throw new Error('Nie udało się sprawdzić aktualnego stanu. Odśwież magazyn.');
+      if (cursor) cursors.add(cursor);
+    } while (cursor);
+    let reservations=[];
+    if (current.kind === 'shipment') {
+      const params=new URLSearchParams({...S.scope,document_line_id:selected.lineID,limit:'200'});
+      const page=await request(`/api/v1/reservations?${params}`);
+      if (page.pagination?.next_cursor) throw new Error('Pozycja ma wiele rezerwacji. Poproś kierownika o ich sprawdzenie.');
+      reservations=page.data;
+    }
+    const work=resolveSelection({document:current,lineID:selected.lineID,items:workspace.catalog.items,balances:stock,positions:workspace.catalog.positions,scope:S.scope,sourceID:selected.sourceID,targetID:selected.targetID,reservations});
+    S.selected=current;
+    S.balances=[...S.balances.filter(row=>row.owner_id !== current.owner_id),...stock];
+    if (current.kind === 'shipment') await issueShipment(work,selected.quantity);
+    else {
+      const body=movementIntent({...work,document:current,scope:S.scope,quantity:selected.quantity,kind:current.kind});
+      await write('/api/v1/movements',body,current.kind === 'receipt'?'Towar przyjęty':'Towar przesunięty');
+    }
+  } finally {S.selectSubmitting=false;render();}
 }
 function bind() {
   root.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => {S.mode = button.dataset.mode; sessionStorage.setItem(`wms-mode:${workspace.actor_id}`,S.mode); S.error = ''; render(); focusScan();});
@@ -148,6 +225,30 @@ function bind() {
   root.querySelector('#warehouse').onchange = event => run(async () => {const [org,wh] = event.target.value.split('|'); setScope(workspace.scopes.find(row => row.organization_id === org&&row.warehouse_id === wh)); await refresh(); render();});
   const form = root.querySelector('#scan-form');
   if (form) form.onsubmit = event => {event.preventDefault(); const value = root.querySelector('#scan-input').value; run(() => scanInput(value));};
+  root.querySelectorAll('[data-entry-mode]').forEach(button => button.onclick=()=>{
+    if (selectionBlocked()) return;
+    S.entryMode=button.dataset.entryMode;sessionStorage.setItem(`wms-entry:${workspace.actor_id}`,S.entryMode);
+    resetWork();S.error='';render();
+    if (S.entryMode === 'scan') focusScan();else root.querySelector('#selection-line')?.focus();
+  });
+  const line=root.querySelector('#selection-line');
+  if (line) line.onchange=()=>run(()=>selectionLineChanged(line.value));
+  const source=root.querySelector('#selection-source');
+  if (source) source.onchange=()=>{
+    if (selectionBlocked()) return;
+    S.selection.sourceID=source.value;S.selection.targetID='';S.selection.quantity='';
+    const line=S.selected.lines.find(row=>row.id === S.selection.lineID),balance=S.balances.find(row=>row.id === source.value);
+    const reserved=ownReservations(line,balance);
+    if (reserved.length === 1) S.selection.quantity=qty(reserved[0].active_qty);
+    S.error='';renderSelectionFocus('selection-source');
+  };
+  const target=root.querySelector('#selection-target');
+  if (target) target.onchange=()=>{if (selectionBlocked()) return;S.selection.targetID=target.value;S.selection.quantity='';S.error='';renderSelectionFocus('selection-target');};
+  const quantity=root.querySelector('#selection-quantity');
+  if (quantity) quantity.oninput=()=>{S.selection.quantity=quantity.value;};
+  const selectionForm=root.querySelector('#selection-form');
+  if (selectionForm) selectionForm.onsubmit=event=>{event.preventDefault();run(confirmSelection);};
+  if (selectionBlocked()) root.querySelectorAll('[data-mode],[data-section],[data-document],[data-worker-document],#warehouse,[data-action="back-tasks"],[data-action="restart-scan"]').forEach(control=>control.disabled=true);
 }
 function focusScan() {requestAnimationFrame(() => root.querySelector('#scan-input')?.focus());}
 async function run(fn) {
@@ -227,7 +328,7 @@ async function advanceScan(value) {
     if (work.stage === 'source' && S.selected.kind === 'shipment') {
       const reservations = await shipmentReservations(work.line,work.sourceBalance);
       if (reservations.length > 1) throw new Error('Pod adresem jest kilka aktywnych rezerwacji tej pozycji. Poproś kierownika o wskazanie rezerwacji.');
-      work.reservationQuantity = reservations.length ? parseQuantity(reservations[0].active_qty,work.item.quantity_scale) : null;
+      work.reservationQuantity = reservations.length ? parseQuantity(qty(reservations[0].active_qty),work.item.quantity_scale) : null;
     }
     work.stage = work.stage === 'source'&&S.selected.kind !== 'shipment'?'target':'quantity';
   } else {
@@ -394,6 +495,7 @@ async function start() {
     const saved = sessionStorage.getItem(`wms-open:${workspace.actor_id}`);
     if (saved&&S.scope) {try {S.selected = (await request(`/api/v1/documents/${saved}?${query()}`)).data; S.section = S.selected.kind;} catch {}}
     if (sessionStorage.getItem(`wms-mode:${workspace.actor_id}`) === 'worker') S.mode = 'worker';
+    if (sessionStorage.getItem(`wms-entry:${workspace.actor_id}`) === 'scan') S.entryMode = 'scan';
     render();
   } catch (err) {root.innerHTML = `<main class="login-screen"><h1>Nie udało się otworzyć magazynu</h1><div class="notice error" role="alert">${e(problem(err))}</div><a class="button primary" href="/app/">Zaloguj się ponownie</a><a href="/app/?demo=1">Otwórz magazyn szkoleniowy</a></main>`;}
 }

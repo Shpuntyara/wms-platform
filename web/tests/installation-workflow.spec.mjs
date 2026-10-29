@@ -131,11 +131,6 @@ async function openDocument(page, number) {
   await expect(page.getByRole('heading', {name:number,exact:true})).toBeVisible();
 }
 
-async function scan(page,label,value) {
-  await page.getByLabel(label,{exact:true}).fill(value);
-  await page.getByLabel(label,{exact:true}).press('Enter');
-}
-
 function units(value) {
   const [whole, fraction = ''] = value.split('.');
   return BigInt(whole) * 1000000n + BigInt(fraction.padEnd(6,'0'));
@@ -207,8 +202,10 @@ for (const rawSite of input.installations) {
       phase = 'receiving and closing the receipt';
       await openDocument(worker.page,receiptNumber);
       await worker.page.getByRole('button',{name:'Rozpocznij przyjmowanie',exact:true}).click();
-      await scan(worker.page,'Kod towaru',site.catalog.sku);
-      await scan(worker.page,'Adres przyjęcia',site.catalog.receiving_code);
+      await expect(worker.page.getByLabel('Kod towaru',{exact:true})).toHaveCount(0);
+      await worker.page.getByLabel('Towar do realizacji',{exact:true}).selectOption(receipt.lines[0].id);
+      await expect(worker.page.getByLabel('Miejsce przyjęcia',{exact:true}).locator(`option[value="${site.catalog.storage_balance_id}"]`)).toHaveCount(0);
+      await worker.page.getByLabel('Miejsce przyjęcia',{exact:true}).selectOption(site.catalog.receiving_balance_id);
       await worker.page.getByLabel('Ilość rzeczywista',{exact:true}).fill(quantity);
       await worker.page.screenshot({path:test.info().outputPath('magazynier-real-login.png'),fullPage:true});
       await worker.page.getByRole('button',{name:'Przyjmij towar',exact:true}).click();
@@ -243,9 +240,12 @@ for (const rawSite of input.installations) {
       await openDocument(worker.page,putawayNumber);
       phase = 'moving the goods to storage';
       await worker.page.getByRole('button',{name:'Rozpocznij przesunięcie',exact:true}).click();
-      await scan(worker.page,'Kod towaru',site.catalog.sku);
-      await scan(worker.page,'Adres źródłowy',site.catalog.receiving_code);
-      await scan(worker.page,'Adres docelowy',site.catalog.storage_code);
+      await expect(worker.page.getByText('Kod towaru i partia pozostają bez zmian. Przesunięcie nie wymaga nowej etykiety.',{exact:true})).toBeVisible();
+      await expect(worker.page.getByLabel('Kod towaru',{exact:true})).toHaveCount(0);
+      await worker.page.getByLabel('Towar do realizacji',{exact:true}).selectOption(savedPutaway.lines[0].id);
+      await worker.page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(site.catalog.receiving_balance_id);
+      await expect(worker.page.getByLabel('Miejsce docelowe',{exact:true}).locator(`option[value="${site.catalog.receiving_balance_id}"]`)).toHaveCount(0);
+      await worker.page.getByLabel('Miejsce docelowe',{exact:true}).selectOption(site.catalog.storage_balance_id);
       await worker.page.getByLabel('Ilość rzeczywista',{exact:true}).fill(quantity);
       await worker.page.getByRole('button',{name:'Przesuń towar',exact:true}).click();
       await worker.page.getByRole('button',{name:'Zakończ przesunięcie (MM)',exact:true}).click();

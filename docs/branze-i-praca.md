@@ -17,11 +17,21 @@ Po zalogowaniu jako `magazynier` otwiera się **Stany**. Każdy wiersz pokazuje 
 Wyszukaj nazwę, kod, kolor, rozmiar albo adres, np. `A1`.
 Opcja **Pokaż puste miejsca** pozwala sprawdzić również skonfigurowane adresy z zerowym stanem.
 
-- **Wydaj towar**: wybierz ilość i wpisz odbiorcę — firmę, dział albo osobę. Zapisz WZ, przekaż do realizacji, a następnie otwórz wydanie w trybie magazynowym. Potwierdź kod towaru, adres źródłowy i rzeczywistą ilość. Po wykonaniu pozycji zakończ wydanie. System kontroluje rezerwację i dostępny stan.
-- **Przenieś towar**: zapisz MM, przekaż do realizacji i potwierdź towar, adres źródłowy, adres docelowy oraz ilość. Przesunięcie zmienia miejsce towaru, zachowując jego łączną ilość.
+- **Wydaj towar**: wybierz ilość i wpisz odbiorcę — firmę, dział albo osobę. Zapisz WZ, przekaż do realizacji, a następnie otwórz wydanie w trybie magazynowym. Wybierz **Towar do realizacji** i **Miejsce źródłowe** z list, wpisz **Ilość rzeczywista** i potwierdź wydanie. Po wykonaniu pozycji zakończ dokument. System kontroluje rezerwację i dostępny stan.
+- **Przenieś towar**: zapisz MM i przekaż do realizacji. Wybierz towar, miejsce źródłowe i miejsce docelowe z list, wpisz ilość i potwierdź przesunięcie. MM zmienia miejsce towaru, zachowując jego łączną ilość, właściciela, partię i numer seryjny.
 - **Historia**: pokazuje wykonane dokumenty, odbiorcę WZ i powiązany numer zamówienia.
 
 Numery PZ, MM i WZ nadaje system po zapisaniu. Przy utracie odpowiedzi użyj **Sprawdź wynik** — polecenie zachowuje ten sam identyfikator. Nie twórz nowego dokumentu w zastępstwie niepotwierdzonej operacji.
+
+## Praca bez kodów kreskowych
+
+Domyślnie używaj **Wybierz z listy**. Towar rozpoznasz po nazwie, a miejsce po oznaczeniu i opisie. Nie musisz znać ani wpisywać kodu towaru lub adresu. Przy PZ wybierz **Miejsce przyjęcia**. Przy MM wybierz **Miejsce źródłowe** i **Miejsce docelowe**. Listy rozróżniają stany i partie; nie łączą ich w jedną pozycję tylko dlatego, że mają tę samą nazwę.
+
+Przycisk **Skaner / wpisz kod** udostępnia dodatkowy sposób pracy dla stanowisk ze skanerem. Skanowanie nie jest warunkiem przyjęcia, wydania ani przesunięcia.
+
+Artykuł zachowuje ten sam kod podczas kolejnych przesunięć. Przekazanie go ze składu na stanowisko spawania, a potem lakierowania nie wymaga nowej etykiety. Każdy taki obszar trzeba wcześniej skonfigurować jako osobne miejsce magazynowe. MM rejestruje zmianę miejsca; nie potwierdza wykonania spawania ani lakierowania. WZ zapisuje wydanie odbiorcy i zmniejsza stan magazynowy.
+
+Nowy wyrób, np. szafa złożona z paneli, śrub i zamków, jest innym towarem niż jego materiały. Zwykłego przekazania tych samych materiałów między miejscami nie należy zapisywać jako tworzenia nowego wyrobu.
 
 ## Biuro
 

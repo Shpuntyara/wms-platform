@@ -1,0 +1,32 @@
+
+[WebServer] (node:42916) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 5 workers
+
+
+(node:38220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:29384) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+(node:2924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:26356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:41508) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/5] tests\selection-workplace.spec.mjs:60:1 › MM moves an existing item between named workplaces without creating a SKU or label
+[2/5] tests\selection-workplace.spec.mjs:107:1 › confirmation rechecks current availability before any MM write
+[3/5] tests\selection-workplace.spec.mjs:91:1 › changing a line or a source clears dependent choices and counted quantity
+[4/5] tests\selection-workplace.spec.mjs:45:1 › PZ receives the chosen second line using names and a receiving list without exact codes
+[5/5] tests\selection-workplace.spec.mjs:75:1 › WZ issues to its saved recipient from a labeled source without entering any codes
+  5 passed (4.0s)

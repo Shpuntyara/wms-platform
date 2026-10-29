@@ -3,7 +3,7 @@ import {writeFile} from 'node:fs/promises';
 
 // The identity provider is the only replaced dependency. UI, HTTP handlers and
 // all document/stock operations use the real Go/PostgreSQL fixture.
-test('bureau receipt and scanner putaway survive a lost committed response', async ({page}) => {
+test('bureau receipt and no-code putaway survive a lost committed response with optional scanner validation', async ({page}) => {
   const actor = process.env.WMS_UI_LIVE_ACTOR || 'placeholder-actor';
   await page.route('**/app/vendor/keycloak.js', route => route.fulfill({
     contentType: 'text/javascript',
@@ -56,6 +56,10 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await expect(page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true})).toBeEnabled();
   await page.screenshot({path: test.info().outputPath('bureau.png'), fullPage: true});
   await page.getByRole('button', {name: 'Rozpocznij przyjmowanie', exact: true}).click();
+  await expect(page.getByLabel('Towar do realizacji',{exact:true})).toBeVisible();
+  await expect(page.getByLabel('Kod towaru',{exact:true})).toHaveCount(0);
+  // Keep the original scanner rejection checks as an optional input path.
+  await page.getByRole('button',{name:'Skaner / wpisz kod',exact:true}).click();
   await page.getByLabel('Kod towaru', {exact: true}).fill('WRONG-SKU');
   await page.getByLabel('Kod towaru', {exact: true}).press('Enter');
   await expect(page.getByLabel('Kod towaru', {exact: true})).toBeVisible();
@@ -67,8 +71,23 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await page.getByLabel('Adres przyjęcia', {exact: true}).press('Enter');
   await expect(page.getByLabel('Adres przyjęcia', {exact: true})).toBeVisible();
   await expect(page.getByLabel('Ilość rzeczywista', {exact: true})).toHaveCount(0);
-  await page.getByLabel('Adres przyjęcia', {exact: true}).fill('PRZYJECIE-01');
-  await page.getByLabel('Adres przyjęcia', {exact: true}).press('Enter');
+  const scope={organization_id:receiptDocument.organization_id,warehouse_id:receiptDocument.warehouse_id};
+  const workspaceResponse=await page.request.get('/api/v1/workspace',{headers:{Authorization:'Bearer valid'}});
+  expect(workspaceResponse.status()).toBe(200);
+  const workspace=(await workspaceResponse.json()).data;
+  const stockResponse=await page.request.get(`/api/v1/stock-balances?${new URLSearchParams({...scope,item_id:process.env.WMS_UI_LIVE_ITEM,owner_id:process.env.WMS_UI_LIVE_OWNER,limit:'200'})}`,{headers:{Authorization:'Bearer valid'}});
+  expect(stockResponse.status()).toBe(200);
+  const stock=(await stockResponse.json()).data;
+  const at=code=>{
+    const position=workspace.catalog.positions.find(row=>row.code===code&&row.organization_id===scope.organization_id&&row.warehouse_id===scope.warehouse_id);
+    const matches=stock.filter(row=>row.item_id===process.env.WMS_UI_LIVE_ITEM&&row.owner_id===process.env.WMS_UI_LIVE_OWNER&&row.position_id===position.id);
+    expect(matches).toHaveLength(1);return matches[0].id;
+  };
+  const receivingID=at('PRZYJECIE-01'),storageID=at('A-01-02');
+  await page.getByRole('button',{name:'Wybierz z listy',exact:true}).click();
+  await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(receiptDocument.lines[0].id);
+  await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator(`option[value="${storageID}"]`)).toHaveCount(0);
+  await page.getByLabel('Miejsce przyjęcia',{exact:true}).selectOption(receivingID);
   await page.getByLabel('Ilość rzeczywista', {exact: true}).fill('4');
   await page.screenshot({path: test.info().outputPath('worker.png'), fullPage: true});
   await page.setViewportSize({width: 390, height: 844});
@@ -131,6 +150,8 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await expect(page.getByRole('button', {name: 'Sprawdź wynik', exact: true})).toHaveCount(0);
   await page.getByRole('button', {name: 'Odśwież', exact: true}).click();
   await page.getByRole('button', {name: 'Rozpocznij przesunięcie', exact: true}).click();
+  await expect(page.getByText('Kod towaru i partia pozostają bez zmian. Przesunięcie nie wymaga nowej etykiety.',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Skaner / wpisz kod',exact:true}).click();
   await page.getByLabel('Kod towaru', {exact: true}).fill('BOLT-M8');
   await page.getByLabel('Kod towaru', {exact: true}).press('Enter');
   await page.getByLabel('Adres źródłowy', {exact: true}).fill('PRZYJECIE-01');
@@ -162,6 +183,13 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await expect(page.getByLabel('Ilość rzeczywista', {exact: true})).toHaveCount(0);
   await page.getByLabel('Adres docelowy', {exact: true}).fill('A-01-02');
   await page.getByLabel('Adres docelowy', {exact: true}).press('Enter');
+  await page.unroute(balancePattern);
+  // Actual putaway is confirmed from the default lists, without typing codes.
+  await page.getByRole('button',{name:'Wybierz z listy',exact:true}).click();
+  await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(putawayDocument.lines[0].id);
+  await page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(receivingID);
+  await expect(page.getByLabel('Miejsce docelowe',{exact:true}).locator(`option[value="${receivingID}"]`)).toHaveCount(0);
+  await page.getByLabel('Miejsce docelowe',{exact:true}).selectOption(storageID);
   await page.getByLabel('Ilość rzeczywista', {exact: true}).fill('4');
   await page.getByRole('button', {name: 'Przesuń towar', exact: true}).click();
   await page.getByRole('button', {name: 'Zakończ przesunięcie (MM)', exact: true}).click();

@@ -1,0 +1,88 @@
+TAP version 13
+# Subtest: real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+ok 1 - real API quantities: MM pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 2.0344
+  type: 'test'
+  ...
+# Subtest: real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+ok 2 - real API quantities: WZ pieces remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.147
+  type: 'test'
+  ...
+# Subtest: real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+ok 3 - real API quantities: MM millimetre-scale goods remain selectable with PostgreSQL six-place serialization
+  ---
+  duration_ms: 0.149
+  type: 'test'
+  ...
+# Subtest: real API quantities: WZ fully reserved for this line remains selectable
+ok 4 - real API quantities: WZ fully reserved for this line remains selectable
+  ---
+  duration_ms: 0.2242
+  type: 'test'
+  ...
+# Subtest: real API quantities: receipt cannot target an already occupied serial balance
+ok 5 - real API quantities: receipt cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.1804
+  type: 'test'
+  ...
+# Subtest: real API quantities: transfer cannot target an already occupied serial balance
+ok 6 - real API quantities: transfer cannot target an already occupied serial balance
+  ---
+  duration_ms: 0.1503
+  type: 'test'
+  ...
+# Subtest: real API quantities: receipt offers a valid empty serial balance
+ok 7 - real API quantities: receipt offers a valid empty serial balance
+  ---
+  duration_ms: 0.1625
+  type: 'test'
+  ...
+# Subtest: real API quantities: transfer offers a valid empty serial balance
+ok 8 - real API quantities: transfer offers a valid empty serial balance
+  ---
+  duration_ms: 0.1142
+  type: 'test'
+  ...
+# Subtest: real API quantities: receipt does not treat malformed serial stock as an empty balance
+ok 9 - real API quantities: receipt does not treat malformed serial stock as an empty balance
+  ---
+  duration_ms: 0.1538
+  type: 'test'
+  ...
+# Subtest: real API quantities: transfer does not treat malformed serial stock as an empty balance
+ok 10 - real API quantities: transfer does not treat malformed serial stock as an empty balance
+  ---
+  duration_ms: 0.1671
+  type: 'test'
+  ...
+# Subtest: real API quantities: normalization must not admit fractional pieces
+ok 11 - real API quantities: normalization must not admit fractional pieces
+  ---
+  duration_ms: 0.1593
+  type: 'test'
+  ...
+# Subtest: API serialization property: exact permitted micro-unit quantities stay selectable at every item scale
+ok 12 - API serialization property: exact permitted micro-unit quantities stay selectable at every item scale
+  ---
+  duration_ms: 11.6365
+  type: 'test'
+  ...
+# Subtest: API serialization property: serialized positive serial quantities never appear empty at receipt or MM targets
+ok 13 - API serialization property: serialized positive serial quantities never appear empty at receipt or MM targets
+  ---
+  duration_ms: 2.3656
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 137.8696
