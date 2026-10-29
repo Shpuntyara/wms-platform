@@ -1,0 +1,47 @@
+
+[WebServer] (node:25120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:9612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\industry-workplace.spec.mjs:433:1 › a stationery dispatch order prepares goods for its customer without a production-material path
+  1) tests\industry-workplace.spec.mjs:433:1 › a stationery dispatch order prepares goods for its customer without a production-material path 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Towary do wydania', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Towary do wydania', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Towary do wydania', exact: true })
+
+
+      448 |   await page.getByRole('button',{name:'Zamówienia',exact:true}).click();
+      449 |   await page.getByRole('button',{name:/^PAPIERNIK-KLIENT-1/}).click();
+    > 450 |   await expect(page.getByRole('heading',{name:'Towary do wydania',exact:true})).toBeVisible();
+          |                                                                                 ^
+      451 |   await expect(page.getByRole('heading',{name:'Materiały do przygotowania',exact:true})).toHaveCount(0);
+      452 |   await expect(page.getByRole('button',{name:'Przygotuj wydanie materiałów',exact:true})).toHaveCount(0);
+      453 |   await page.getByRole('button',{name:'Przygotuj wydanie towaru',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\industry-workplace.spec.mjs:450:81
+
+    Error Context: test-results\industry-workplace-a-stati-7b2c0--a-production-material-path\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\industry-workplace-a-stati-7b2c0--a-production-material-path\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\industry-workplace-a-stati-7b2c0--a-production-material-path\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\industry-workplace.spec.mjs:433:1 › a stationery dispatch order prepares goods for its customer without a production-material path 

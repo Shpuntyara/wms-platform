@@ -1,0 +1,57 @@
+{
+  "problem": "A plain sales order with no recipe or production steps offered a misleading material issue to production.",
+  "actual_RED": "Dispatch-only Notes and Kalendarz order lacked Towary do wydania and offered the material issue action.",
+  "correction": "Dispatch shows goods availability and only the goods issue action; recipe/step orders retain production material actions.",
+  "local_GREEN": {
+    "browser_tests": 26,
+    "node_tests": 58,
+    "legacy_ui_mutants": 37,
+    "industry_ui_mutants": 18,
+    "survived": 0,
+    "invalid": 0,
+    "skipped": 0
+  },
+  "preceding_CI": {
+    "head": "9731533d382f629ad721343930ce133dc296ee30",
+    "jobs": 6,
+    "steps": 65,
+    "failed": 0,
+    "skipped": 0,
+    "artifacts_verified": 5
+  },
+  "final_CI": "The next immutable commit must rerun every required CI job and step.",
+  "files": [
+    {
+      "path": "dispatch-ux-all-browser-green.txt",
+      "sha256": "b429bef79edf44cf1de89648655c874e2e6f486db193d7ab63793024cefc1621"
+    },
+    {
+      "path": "dispatch-ux-all-node-green.txt",
+      "sha256": "37639afd012cdf6fc91d3225680b713ad389bc99ed7021f37713f27c477bfa1c"
+    },
+    {
+      "path": "dispatch-ux-industry-mutations.json",
+      "sha256": "0bdfef7399c2752e7624229cb99cce88664f6de4ab7f249383d09183865b315d"
+    },
+    {
+      "path": "dispatch-ux-industry-mutations.txt",
+      "sha256": "72423f71a9bb091af00b35542d5e7a4533cde521a49cc572270222a7338bdba7"
+    },
+    {
+      "path": "dispatch-ux-legacy-mutations.json",
+      "sha256": "134fc1856aa161b38c6f8ad486c5a3356cf1a05be3ea81b5d82c08d5cc8ee773"
+    },
+    {
+      "path": "dispatch-ux-legacy-mutations.txt",
+      "sha256": "09f25ea831de958a09bbf2237656fb7d5c231b13946b3cdec6594c960544aedd"
+    },
+    {
+      "path": "dispatch-ux-red-hashes.json",
+      "sha256": "6b870be5fa62aa6124fce8745de37851e4636268933ca2a3aa876a27d04ff8c7"
+    },
+    {
+      "path": "dispatch-ux-red.txt",
+      "sha256": "e4b326b4d29b09e1e7ac0932ce4d7cb2c11eb25eba53e536764255c15072a900"
+    }
+  ]
+}

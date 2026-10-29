@@ -1,0 +1,57 @@
+
+[WebServer] (node:19996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 6 workers
+
+
+(node:9496) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:27060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:9760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/26] tests\critic-workplace.spec.mjs:3:1 › critic: the Polish workplace declares its document language
+(node:1324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/26] tests\critic-workplace.spec.mjs:18:1 › critic: editing the middle of a search preserves the caret after rerender
+(node:15572) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:35552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[3/26] tests\critic-workplace.spec.mjs:29:1 › critic: an unmapped API error still gives the employee a Polish message
+[4/26] tests\critic-workplace.spec.mjs:50:1 › critic: missing source SKU cannot silently become another item in putaway
+[5/26] tests\critic-workplace.spec.mjs:9:1 › critic: bureau search keeps ordinary sequential typing in the right order
+[6/26] tests\industry-workplace.spec.mjs:22:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[7/26] tests\industry-workplace.spec.mjs:37:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+[8/26] tests\industry-workplace.spec.mjs:76:1 › stock WZ rejects unavailable quantity before creating a document
+[9/26] tests\industry-workplace.spec.mjs:86:1 › bureau plans material demand and work stages without changing physical stock
+[10/26] tests\industry-workplace.spec.mjs:111:46 › critic: lost reservation reply survives reload and does not post twice
+[11/26] tests\industry-workplace.spec.mjs:111:46 › critic: lost issue reply survives reload and does not post twice
+[12/26] tests\industry-workplace.spec.mjs:163:1 › critic: all stock pages participate in name search
+[13/26] tests\industry-workplace.spec.mjs:184:1 › worker moves stock on an MM while PZ creation remains unavailable
+[14/26] tests\industry-workplace.spec.mjs:217:1 › critic: material and finished-goods WZ inherit the actual order owner
+[15/26] tests\industry-workplace.spec.mjs:247:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending
+[16/26] tests\industry-workplace.spec.mjs:267:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending
+[17/26] tests\industry-workplace.spec.mjs:297:1 › critic: partial reservation is visible and issued before reserving the remaining plan
+[18/26] tests\industry-workplace.spec.mjs:340:41 › critic: a missing order item cannot fall back to the first catalog entry
+[19/26] tests\industry-workplace.spec.mjs:340:41 › critic: a missing order owner cannot fall back to the first catalog entry
+[20/26] tests\industry-workplace.spec.mjs:387:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock
+[21/26] tests\industry-workplace.spec.mjs:405:1 › new paper documents use working items while explicit historical placement preserves the archived SKU
+[22/26] tests\industry-workplace.spec.mjs:433:1 › a stationery dispatch order prepares goods for its customer without a production-material path
+[23/26] tests\workplace.spec.mjs:3:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse
+[24/26] tests\workplace.spec.mjs:31:1 › a completed PZ prepares an automatically numbered MM without changing the source plan
+[25/26] tests\workplace.spec.mjs:55:1 › terminal blocks wrong scan and receives one item with keyboard
+[26/26] tests\workplace.spec.mjs:72:1 › worker screen reflows at TSD width and scanning controls remain touch-sized
+  26 passed (11.5s)

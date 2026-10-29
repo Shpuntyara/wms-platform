@@ -429,3 +429,36 @@ test('new paper documents use working items while explicit historical placement 
   await page.getByRole('button',{name:'Zamknij formularz',exact:true}).click();
   expect(await page.evaluate(()=>localStorage.getItem('wms-training-v2'))).toBe(before);
 });
+
+test('a stationery dispatch order prepares goods for its customer without a production-material path',async({page})=>{
+  const ids=await seedPaperWithLegacyStock(page);
+  const ownerB='55555555-5555-4555-8555-555555555555';
+  const calendar='88888888-8888-4888-8888-888888888888';
+  await page.evaluate(({notes,owner,calendar})=>{
+    const state=JSON.parse(localStorage.getItem('wms-training-v2')),scope=state.workspace.scopes[0];
+    const note=state.workspace.catalog.items.find(item=>item.id===notes);
+    state.workspace.catalog.items.push({...note,id:calendar,sku:'KAL-2027-BIALY-A5',name:'Kalendarz 2027 biały A5'});
+    state.workspace.catalog.owners.push({...state.workspace.catalog.owners[0],id:owner,name:'Właściciel B'});
+    const lines=[{item_id:notes,quantity:'40'},{item_id:calendar,quantity:'20'}];
+    state.orders=[{id:'99999999-9999-4999-8999-999999999999',organization_id:scope.organization_id,warehouse_id:scope.warehouse_id,owner_id:owner,
+      customer:'Biuro Projektowe Forma Sp. z o.o.',reference:'PAPIERNIK-KLIENT-1',lines,recipe_id:null,requirements:structuredClone(lines),steps:[],state:'planned'}];
+    localStorage.setItem('wms-training-v2',JSON.stringify(state));
+  },{notes:ids.notes,owner:ownerB,calendar});
+  await page.reload();
+  await page.getByRole('button',{name:'Zamówienia',exact:true}).click();
+  await page.getByRole('button',{name:/^PAPIERNIK-KLIENT-1/}).click();
+  await expect(page.getByRole('heading',{name:'Towary do wydania',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Materiały do przygotowania',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Przygotuj wydanie materiałów',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Przygotuj wydanie towaru',exact:true}).click();
+  await expect(page.getByLabel('Odbiorca',{exact:true})).toHaveValue('Biuro Projektowe Forma Sp. z o.o.');
+  await expect(page.getByLabel('Właściciel towaru',{exact:true})).toHaveValue(ownerB);
+  await expect(page.getByLabel('Numer zamówienia',{exact:true})).toHaveValue('PAPIERNIK-KLIENT-1');
+  await expect(page.getByLabel('Towar',{exact:true}).nth(0)).toHaveValue(ids.notes);
+  await expect(page.getByLabel('Towar',{exact:true}).nth(1)).toHaveValue(calendar);
+  await page.getByRole('button',{name:'Zapisz dokument',exact:true}).click();
+  await expect(page.getByRole('complementary',{name:'Wybrany dokument',exact:true})).toContainText('Biuro Projektowe Forma Sp. z o.o.');
+  const doc=await page.evaluate(()=>JSON.parse(localStorage.getItem('wms-training-v2')).documents.find(doc=>doc.kind==='shipment'));
+  expect(doc.owner_id).toBe(ownerB);expect(doc.order_reference).toBe('PAPIERNIK-KLIENT-1');
+  expect(doc.lines.map(line=>({item_id:line.item_id,quantity:line.requested_qty}))).toEqual([{item_id:ids.notes,quantity:'40'},{item_id:calendar,quantity:'20'}]);
+});
