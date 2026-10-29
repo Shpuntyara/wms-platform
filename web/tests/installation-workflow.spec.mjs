@@ -25,6 +25,9 @@ function assertOrigin(site) {
   }
   return origin.origin;
 }
+if (new Set(input.installations.map(assertOrigin)).size !== 2) {
+  throw new Error('The acceptance run must target two different installation origins');
+}
 
 async function login(site, role) {
   const profileRoot = process.env.WMS_INSTALLATION_PROFILE_ROOT;
@@ -48,6 +51,7 @@ async function login(site, role) {
   const page = await context.newPage();
   const signal = {authorizationCode:false, pkceS256:false, exactRedirect:false, tokenReceived:false};
   let accessToken;
+  let phase = 'opening the HTTPS application';
   page.on('request', request => {
     const url = new URL(request.url());
     if (url.origin === site.origin && url.pathname.endsWith('/protocol/openid-connect/auth')) {
@@ -66,15 +70,28 @@ async function login(site, role) {
   });
   try {
     await page.goto(site.origin + '/app/');
+    phase = 'waiting for the real identity provider form';
+    await page.getByLabel(/Nazwa użytkownika|Adres e-mail|Login/i).waitFor({state:'visible'});
+    phase = 'checking the Polish login document';
     await expect(page.locator('html')).toHaveAttribute('lang', /^pl(?:-PL)?$/i);
+    const publicControls = await page.locator('button,input[type=submit]').evaluateAll(elements => elements.map(element => ({
+      text:(element.textContent || '').trim(), value:element.getAttribute('value'), name:element.getAttribute('name'), type:element.getAttribute('type'),
+    })));
+    await writeFile(test.info().outputPath(`login-controls-${site.name}-${role}.json`),JSON.stringify(publicControls,null,2));
+    phase = 'locating the username field';
     await page.getByLabel(/Nazwa użytkownika|Adres e-mail|Login/i).fill(site.users[role].username);
+    phase = 'locating the password field';
     await page.getByLabel('Hasło', {exact:true}).fill(site.users[role].password);
-    await page.getByRole('button', {name:'Zaloguj się', exact:true}).click();
+    phase = 'submitting the real employee login';
+    await page.getByRole('button', {name:/^(Logowanie|Zaloguj się)$/}).click();
+    phase = 'opening the authorized warehouse workspace';
     await expect(page.getByRole('heading', {name:'Przyjęcia', exact:true})).toBeVisible();
     await expect.poll(() => signal.tokenReceived).toBe(true);
-  } catch {
+  } catch (error) {
+    const currentPath = new URL(page.url()).pathname;
+    await writeFile(test.info().outputPath(`login-failure-${site.name}-${role}.json`),JSON.stringify({phase,path:currentPath,kind:error.message.split('\n')[0].split(':')[0],signal},null,2));
     await context.close();
-    throw new Error(`Real Polish Keycloak login failed for ${site.name}/${role}; credential details suppressed`);
+    throw new Error(`Real Polish Keycloak login failed for ${site.name}/${role} while ${phase}; credential details suppressed`);
   }
   expect(signal).toEqual({authorizationCode:true, pkceS256:true, exactRedirect:true, tokenReceived:true});
   expect(new URL(page.url()).pathname).toBe('/app/');
@@ -134,6 +151,7 @@ for (const rawSite of input.installations) {
     const expectedScope = {organization_id:site.catalog.organization_id,warehouse_id:site.catalog.warehouse_id};
     let receiptID, putawayID;
     let completed = false;
+    let verification;
     try {
       const bureau = await login(site,'biuro'); sessions.push(bureau);
       const workspace = await api(bureau,site.origin,'/api/v1/workspace');
@@ -199,6 +217,7 @@ for (const rawSite of input.installations) {
       await expect(bureau.page.getByRole('button',{name:'Rozpocznij pracę',exact:true})).toHaveCount(0);
 
       await worker.page.reload();
+      await worker.page.getByRole('button',{name:'Rozmieszczenie',exact:true}).click();
       await openDocument(worker.page,putawayNumber);
       await worker.page.getByRole('button',{name:'Otwórz na stanowisku magazynowym',exact:true}).click();
       await scan(worker.page,'Kod towaru',site.catalog.sku);
@@ -225,13 +244,14 @@ for (const rawSite of input.installations) {
       await worker.page.getByRole('button',{name:'Stany',exact:true}).click();
       await expect(worker.page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
       await worker.page.screenshot({path:test.info().outputPath('stany-after-putaway.png'),fullPage:true});
-      await writeFile(test.info().outputPath('verified-workflow.json'),JSON.stringify({
-        installation:site.name,origin:site.origin,profile:'onprem-v1',identityAdapterReplaced:false,
+      verification = {
+        installation:site.name,origin:site.origin,identityAdapterReplaced:false,
+        databaseProfileVerification:'Checked separately by the guest deployment/status verifier; the browser does not introspect SQL runtime configuration',
         tlsValidation:true,receipt_id:receiptID,receipt_number:receiptNumber,putaway_id:putawayID,putaway_number:putawayNumber,
         quantity,roles:{bureau_create:true,bureau_movement_denied:deniedMovement.status,worker_create_denied:deniedCreate.status},
         auth:{bureau:bureau.signal,worker:worker.signal,foreign_installation_token_rejected:true,anonymous_rejected:true},
         documents:{receipt:finalReceipt,putaway:finalPutaway},before_balances:[beforeReceiving,beforeStorage],balances,
-      },null,2));
+      };
       completed = true;
     } finally {
       let logoutFailed = false;
@@ -245,5 +265,6 @@ for (const rawSite of input.installations) {
       }
       if (completed && logoutFailed) throw new Error('The completed workflow failed to confirm real employee logout');
     }
+    await writeFile(test.info().outputPath('verified-workflow.json'),JSON.stringify({...verification,logout_verified:true},null,2));
   });
 }

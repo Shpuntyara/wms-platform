@@ -25,6 +25,9 @@ test('bureau receipt and scanner putaway survive a lost committed response', asy
   await expect(login.or(createReceipt)).toBeVisible();
   if (await login.isVisible()) await login.click();
   await expect(createReceipt).toBeVisible();
+  await page.setViewportSize({width:1024,height:900});
+  await expect(page.getByRole('button',{name:'Wyloguj',exact:true})).toBeVisible();
+  await page.setViewportSize({width:1440,height:1000});
   await createReceipt.click();
   await page.getByLabel('Numer dokumentu', {exact: true}).fill(documentNumber);
   await page.getByLabel('Właściciel towaru', {exact: true}).selectOption(process.env.WMS_UI_LIVE_OWNER);
