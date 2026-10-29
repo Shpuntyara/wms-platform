@@ -1,0 +1,4 @@
+=== RUN   TestWorkspaceCatalogPropertyMatchesIndependentPermissionScopes
+--- PASS: TestWorkspaceCatalogPropertyMatchesIndependentPermissionScopes (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/api	0.031s

@@ -21,6 +21,8 @@ import (
 	"github.com/Shpuntyara/wms-platform/internal/jobs"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
 	"github.com/Shpuntyara/wms-platform/internal/postgres"
+	"github.com/Shpuntyara/wms-platform/internal/ui"
+	"github.com/Shpuntyara/wms-platform/web"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -166,7 +168,15 @@ func run(logger *slog.Logger) error {
 		concurrency = n
 	}
 	worker := jobs.Worker{Store: jobStore, Sender: sender, Logger: logger, Concurrency: concurrency}
-	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger})
+	workspace, err := loadWorkspaceConfig(os.Getenv("WMS_UI_CONFIG"), issuer, os.Getenv("WMS_UI_CLIENT_ID"))
+	if err != nil {
+		return err
+	}
+	handler, err := api.New(api.Config{Backend: store, Auth: verifier, Modules: registry, Logger: logger, Workspace: workspace})
+	if err != nil {
+		return err
+	}
+	handler, err = ui.New(handler, web.Assets, workspace.OIDC)
 	if err != nil {
 		return err
 	}

@@ -1,0 +1,13 @@
+{
+  "name": "wms-workplace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "vendor": "node vendor.mjs"
+  },
+  "dependencies": {"keycloak-js": "26.2.5"},
+  "devDependencies": {"@playwright/test": "1.64.1", "fast-check": "4.10.2"}
+}

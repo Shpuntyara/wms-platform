@@ -1,0 +1,47 @@
+
+> test
+> node --test tests/*.test.mjs
+
+✔ critic: Russian scanner and keyboard input normalize without rounding (1.7327ms)
+✔ critic: quantity rejects coercion, exponents, signs, zeros and excessive precision (0.6148ms)
+✔ critic: remaining keeps micro-units above Number precision (0.2765ms)
+✔ critic: scan preserves significant zeros and refuses ambiguous or wrong codes (0.54ms)
+✔ critic: receiving intent preserves exact quantity and captured version (0.7307ms)
+✔ critic: zero available target is valid for receiving; missing target is not (0.2671ms)
+✔ critic: receiving refuses over-fulfilment and unsupported item precision (0.285ms)
+✔ critic: line must belong to captured document and item (0.2635ms)
+✔ critic: a stale line object cannot borrow a freshly refreshed document version (0.2288ms)
+✔ critic: intent refuses inactive documents and document-kind mismatch (0.3638ms)
+✔ critic: version cannot silently round or accept invalid optimistic lock (0.2688ms)
+✔ critic: receiving cannot cross organization, warehouse or owner (0.4231ms)
+✔ critic: putaway maps both balances and exact document line (1.1774ms)
+✔ critic: putaway uses available stock, never physical on-hand with reservations (0.4175ms)
+✔ critic: putaway refuses same position, foreign scope, owner and item (0.3597ms)
+✔ critic: putaway cannot launder lot, serial or stock-state identity (0.3105ms)
+✔ critic: serial operations accept one unit and refuse a multi-unit scan count (0.2209ms)
+✔ critic: closing requires every line fulfilled and every reservation released (0.2157ms)
+✔ critic: displayed quantity retains every significant digit and Russian decimal separator (0.1218ms)
+✔ critic property: independently computed micro-unit differences remain exact (2.061ms)
+✔ critic: a forbidden retry cannot disprove a previously unconfirmed commit (4.4151ms)
+✔ critic: reading a pending intent cannot mutate the saved request (0.3255ms)
+✔ critic: caller mutation while a request waits cannot alter the recorded write (0.3044ms)
+✔ training mode receives the same command once, persists and exposes configured human names (8.9514ms)
+✔ a lost reply survives reload and retries the exact original request (3.576ms)
+✔ a second command and double click cannot replace an unresolved intent (0.3776ms)
+✔ failure to persist stops a write before it reaches the server (2.6201ms)
+✔ a definitive version conflict clears the intent, a transport/server failure does not (1.3544ms)
+✔ recovery is scoped to employee, organization and warehouse (0.3044ms)
+✔ Polish is the product language, including errors and training data (3.6876ms)
+✔ unmapped API errors never expose English server detail to warehouse staff (1.3304ms)
+✔ a lost write gives recovery guidance, a failed read gives refresh guidance (0.1649ms)
+✔ specific Polish validation stays precise (0.1468ms)
+✔ property: exact positive decimals round-trip and subtraction cancels for 1500 generated cases (15.6185ms)
+✔ vendored Keycloak includes its runtime imports and exact pinned bytes (2.8382ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 173.4189

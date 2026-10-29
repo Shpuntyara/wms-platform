@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "9A7F8B3F1545EC17442F1E3991202463A9A253A0CC57F461AE0EE3100AF5956A",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\critic-journal.test.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "7A8D0277DB536867B1EA92FA3801130F1EBEC6D0A59AADACD12A4425FF7CA299",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\journal.js"
+  }
+]

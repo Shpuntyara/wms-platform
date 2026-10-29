@@ -45,3 +45,4 @@ dist/
 *.log
 !docs/verification/load/**/*.log
 !docs/verification/document-reads/*.log
+web/test-results/

@@ -1,0 +1,304 @@
+=== RUN   TestRequestDeadlineIsShorterThanTheCallerContext
+--- PASS: TestRequestDeadlineIsShorterThanTheCallerContext (0.00s)
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace
+=== RUN   TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value
+--- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace (0.04s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_whitespace_remains_valid (0.00s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/small_second_value_is_rejected (0.00s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_trailing_whitespace (0.02s)
+    --- PASS: TestRequestBodyLimitIncludesTrailingJSONAndWhitespace/oversized_second_value (0.02s)
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/item_id=%
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/position_id=%Q0
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=00000000-0000-4000-8000-000000000005;ignored=value
+=== RUN   TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz&owner_id=00000000-0000-4000-8000-000000000005
+--- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/item_id=% (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/position_id=%Q0 (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=00000000-0000-4000-8000-000000000005;ignored=value (0.00s)
+    --- PASS: TestQueryFiltersCannotDisappearOnMalformedEncoding/owner_id=%zz&owner_id=00000000-0000-4000-8000-000000000005 (0.00s)
+=== RUN   TestRequestBodySizeBoundaryIsExact
+=== RUN   TestRequestBodySizeBoundaryIsExact/exactly_one_MiB
+=== RUN   TestRequestBodySizeBoundaryIsExact/one_byte_above_limit
+--- PASS: TestRequestBodySizeBoundaryIsExact (0.03s)
+    --- PASS: TestRequestBodySizeBoundaryIsExact/exactly_one_MiB (0.01s)
+    --- PASS: TestRequestBodySizeBoundaryIsExact/one_byte_above_limit (0.01s)
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unauthenticated
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/invalid_token
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/missing_scope
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/invalid_limit
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/negative_limit
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/foreign_warehouse
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/missing_idempotency
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/bad_idempotency
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/numeric_quantity
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/zero_quantity
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unknown_fields
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/trailing_json
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/wrong_media_type
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/large_body
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/method_not_allowed
+=== RUN   TestServerRejectsInvalidRequestsBeforeBackend/unknown_route
+--- PASS: TestServerRejectsInvalidRequestsBeforeBackend (0.02s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unauthenticated (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/invalid_token (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/missing_scope (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/invalid_limit (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/negative_limit (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/foreign_warehouse (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/missing_idempotency (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/bad_idempotency (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/numeric_quantity (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/zero_quantity (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unknown_fields (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/trailing_json (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/wrong_media_type (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/large_body (0.01s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/method_not_allowed (0.00s)
+    --- PASS: TestServerRejectsInvalidRequestsBeforeBackend/unknown_route (0.00s)
+=== RUN   TestServerReturnsDecimalStringsAndAuthenticatedActor
+--- PASS: TestServerReturnsDecimalStringsAndAuthenticatedActor (0.00s)
+=== RUN   TestServerRedactsUnexpectedErrors
+--- PASS: TestServerRedactsUnexpectedErrors (0.00s)
+=== RUN   TestServerHealth
+--- PASS: TestServerHealth (0.00s)
+=== RUN   TestAdjustmentsRequireSeparatePermission
+--- PASS: TestAdjustmentsRequireSeparatePermission (0.00s)
+=== RUN   TestReleaseReasonUnicodeLength
+=== PAUSE TestReleaseReasonUnicodeLength
+=== RUN   TestReadinessSurvivesBackgroundFailure
+--- PASS: TestReadinessSurvivesBackgroundFailure (0.00s)
+=== RUN   TestDocumentInputValidationPrecedesBackend
+=== RUN   TestDocumentInputValidationPrecedesBackend/empty_lines
+=== RUN   TestDocumentInputValidationPrecedesBackend/float_quantity
+=== RUN   TestDocumentInputValidationPrecedesBackend/unknown_field
+=== RUN   TestDocumentInputValidationPrecedesBackend/transition_cannot_change_lines
+=== RUN   TestDocumentInputValidationPrecedesBackend/invalid_transition_state
+--- PASS: TestDocumentInputValidationPrecedesBackend (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/empty_lines (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/float_quantity (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/unknown_field (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/transition_cannot_change_lines (0.00s)
+    --- PASS: TestDocumentInputValidationPrecedesBackend/invalid_transition_state (0.00s)
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_item
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_SKU
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_scan_address
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/wrong_address_warehouse
+--- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs (0.01s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_item (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_SKU (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_scan_address (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/wrong_address_warehouse (0.00s)
+=== RUN   TestWorkspaceCatalogPropertyMatchesIndependentPermissionScopes
+--- PASS: TestWorkspaceCatalogPropertyMatchesIndependentPermissionScopes (0.04s)
+=== RUN   TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes
+--- PASS: TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes (0.00s)
+=== RUN   TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC
+--- PASS: TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC (0.00s)
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/no_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/invalid_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected
+--- PASS: TestWorkspaceRequiresAuthenticationAndGet (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/no_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/invalid_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected (0.00s)
+=== CONT  TestReleaseReasonUnicodeLength
+=== RUN   TestReleaseReasonUnicodeLength/ASCII/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/ASCII/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== RUN   TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== RUN   TestReleaseReasonUnicodeLength/emoji/within_limit
+=== PAUSE TestReleaseReasonUnicodeLength/emoji/within_limit
+=== RUN   TestReleaseReasonUnicodeLength/emoji/over_limit
+=== PAUSE TestReleaseReasonUnicodeLength/emoji/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/Cyrillic/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/emoji/within_limit
+=== CONT  TestReleaseReasonUnicodeLength/ASCII/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/emoji/over_limit
+=== CONT  TestReleaseReasonUnicodeLength/Cyrillic/within_limit
+=== CONT  TestReleaseReasonUnicodeLength/ASCII/within_limit
+--- PASS: TestReleaseReasonUnicodeLength (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/ASCII/over_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/emoji/within_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/ASCII/within_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/Cyrillic/within_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/Cyrillic/over_limit (0.00s)
+    --- PASS: TestReleaseReasonUnicodeLength/emoji/over_limit (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/api	1.202s
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/style
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application_module
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/OIDC_adapter
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/bootstrap
+--- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/style (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application_module (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/OIDC_adapter (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/bootstrap (0.00s)
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/../go.mod
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/%2e%2e/go.mod
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/tests/private.js
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/config.example.json
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/missing.js
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/../index.html
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src%5capp.js
+--- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/../go.mod (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/%2e%2e/go.mod (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/ (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/tests/private.js (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/config.example.json (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/missing.js (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/../index.html (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src%5capp.js (0.00s)
+=== RUN   TestHandlerKeepsAPIAuthenticationAndMethodSemantics
+--- PASS: TestHandlerKeepsAPIAuthenticationAndMethodSemantics (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/ui	1.058s
+=== RUN   TestDatabaseTLSChecksEveryEndpoint
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint
+=== RUN   TestMonitoringListenerMustStayOnLoopback
+--- PASS: TestMonitoringListenerMustStayOnLoopback (0.00s)
+=== RUN   TestDatabaseProfileConfigurationFailsClosed
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/default_requires_hardened_configuration
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/hardened_default
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/explicit_legacy
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/on_premise
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/old_single_warehouse_profile_requires_upgrade
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/unknown_profile
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/missing_signing_key
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/missing_worker_login
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/bad_base64
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/short_key
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/hardened_settings_accidentally_in_legacy
+=== RUN   TestDatabaseProfileConfigurationFailsClosed/worker_setting_accidentally_in_legacy
+--- PASS: TestDatabaseProfileConfigurationFailsClosed (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/default_requires_hardened_configuration (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/hardened_default (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/explicit_legacy (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/on_premise (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/old_single_warehouse_profile_requires_upgrade (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/unknown_profile (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/missing_signing_key (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/missing_worker_login (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/bad_base64 (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/short_key (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/hardened_settings_accidentally_in_legacy (0.00s)
+    --- PASS: TestDatabaseProfileConfigurationFailsClosed/worker_setting_accidentally_in_legacy (0.00s)
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/separate_login
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/same_login
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_database
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_port
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_host
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/worker_fallback_targets_another_endpoint
+=== RUN   TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/TLS_fallback_on_same_endpoint
+--- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/separate_login (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/same_login (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_database (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_port (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/wrong_host (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/worker_fallback_targets_another_endpoint (0.00s)
+    --- PASS: TestHardenedWorkerUsesSeparateLoginOnTheSameDatabase/TLS_fallback_on_same_endpoint (0.00s)
+=== RUN   TestHardenedAPIRejectsFallbackToAnotherEndpoint
+--- PASS: TestHardenedAPIRejectsFallbackToAnotherEndpoint (0.00s)
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/same_client_installation_distinct_logins
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/same_effective_login
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/different_client_installation
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/malformed_installation
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/nil_installation
+=== RUN   TestHardenedDeploymentRejectsMismatchedBinding/empty_installation
+--- PASS: TestHardenedDeploymentRejectsMismatchedBinding (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/same_client_installation_distinct_logins (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/same_effective_login (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/different_client_installation (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/malformed_installation (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/nil_installation (0.00s)
+    --- PASS: TestHardenedDeploymentRejectsMismatchedBinding/empty_installation (0.00s)
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/secret_rejected
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/other_issuer
+--- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog (0.01s)
+    --- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/secret_rejected (0.00s)
+    --- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/other_issuer (0.00s)
+=== CONT  TestDatabaseTLSChecksEveryEndpoint
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/local_IPv4
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/local_IPv4
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/local_IPv6
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/local_IPv6
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/verified_remote
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/verified_remote
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/remote_plaintext
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/remote_plaintext
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/unverified_remote_TLS
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/unverified_remote_TLS
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/plaintext_fallback
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/plaintext_fallback
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/local_primary_remote_fallback
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/local_primary_remote_fallback
+=== RUN   TestDatabaseTLSChecksEveryEndpoint/verified_multiple_hosts
+=== PAUSE TestDatabaseTLSChecksEveryEndpoint/verified_multiple_hosts
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/local_IPv4
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/verified_remote
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/local_IPv6
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/local_primary_remote_fallback
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/verified_multiple_hosts
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/plaintext_fallback
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/unverified_remote_TLS
+=== CONT  TestDatabaseTLSChecksEveryEndpoint/remote_plaintext
+--- PASS: TestDatabaseTLSChecksEveryEndpoint (0.00s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/verified_remote (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/local_IPv4 (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/local_primary_remote_fallback (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/remote_plaintext (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/verified_multiple_hosts (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/unverified_remote_TLS (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/local_IPv6 (0.01s)
+    --- PASS: TestDatabaseTLSChecksEveryEndpoint/plaintext_fallback (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/cmd/wms-api	1.077s

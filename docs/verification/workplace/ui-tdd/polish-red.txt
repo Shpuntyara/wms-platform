@@ -1,0 +1,31 @@
+✖ Polish is the product language, including errors and training data (1.2839ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 72.901
+
+✖ failing tests:
+
+test at web\tests\language.test.mjs:4:1
+✖ Polish is the product language, including errors and training data (1.2839ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /<html lang="pl">/. Input:
+  
+  '<!doctype html>\n' +
+    '<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Склад · WMS</title><link rel="stylesheet" href="/app/style.css"></head><body><div id="app"><p>Загрузка рабочего места…</p></div><script type="module" src="/app/src/app.js"></script></body></html>\n'
+  
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/language.test.mjs:6:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<!doctype html>\n<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Склад · WMS</title><link rel="stylesheet" href="/app/style.css"></head><body><div id="app"><p>Загрузка рабочего места…</p></div><script type="module" src="/app/src/app.js"></script></body></html>\n',
+    expected: /<html lang="pl">/,
+    operator: 'match',
+    diff: 'simple'
+  }

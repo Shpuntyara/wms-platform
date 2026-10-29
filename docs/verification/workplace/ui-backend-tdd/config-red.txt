@@ -1,0 +1,44 @@
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size
+    workspace_config_test.go:25: invalid or secret-bearing UI config was accepted
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact
+    workspace_config_test.go:29: valid configuration lost: {OIDC:{URL: Realm: ClientID:} Organizations:[] Warehouses:[] Owners:[] Items:[] Positions:[]}
+--- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size (0.00s)
+    --- FAIL: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/api	0.021s
+FAIL

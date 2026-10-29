@@ -1,0 +1,85 @@
+✖ a lost reply survives reload and retries the exact original request (1.6881ms)
+✖ a second command and double click cannot replace an unresolved intent (0.2204ms)
+✖ failure to persist stops a write before it reaches the server (0.8189ms)
+✖ a definitive version conflict clears the intent, a transport/server failure does not (0.2882ms)
+✖ recovery is scoped to employee, organization and warehouse (0.2046ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 79.2931
+
+✖ failing tests:
+
+test at tests\journal.test.mjs:13:1
+✖ a lost reply survives reload and retries the exact original request (1.6881ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/journal.test.mjs:21:3)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\journal.test.mjs:30:1
+✖ a second command and double click cannot replace an unresolved intent (0.2204ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/journal.test.mjs:35:3)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\journal.test.mjs:42:1
+✖ failure to persist stops a write before it reaches the server (0.8189ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/journal.test.mjs:47:3)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /сохранить/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\journal.test.mjs:51:1
+✖ a definitive version conflict clears the intent, a transport/server failure does not (0.2882ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/journal.test.mjs:54:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\journal.test.mjs:64:1
+✖ recovery is scoped to employee, organization and warehouse (0.2046ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/journal.test.mjs:66:3)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

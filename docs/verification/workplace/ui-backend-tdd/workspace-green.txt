@@ -1,0 +1,12 @@
+=== RUN   TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes
+--- PASS: TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes (0.00s)
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/no_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/invalid_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected
+--- PASS: TestWorkspaceRequiresAuthenticationAndGet (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/no_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/invalid_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/api	0.035s

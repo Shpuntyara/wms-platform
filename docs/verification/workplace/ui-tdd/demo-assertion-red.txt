@@ -1,0 +1,25 @@
+✖ training mode receives the same command once, persists and exposes configured human names (1.1896ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 92.6786
+
+✖ failing tests:
+
+test at web\tests\demo.test.mjs:8:1
+✖ training mode receives the same command once, persists and exposes configured human names (1.1896ms)
+  AssertionError [ERR_ASSERTION]: workspace must expose a catalog for training
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo.test.mjs:12:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

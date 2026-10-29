@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "754FCEC5057BD391ADFD84BE2363E1139060D60DEE35F5B68C4F8B1550EAD97A",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_ui_backend_mutations.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "885AE88D2F90924EA9007A05FEEBDEC40609AF2069AE283F5AA21E2E865B3082",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\ui_backend_mutations.py"
+  }
+]

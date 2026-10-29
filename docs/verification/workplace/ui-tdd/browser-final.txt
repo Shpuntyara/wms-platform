@@ -1,0 +1,31 @@
+
+> test:browser
+> playwright test
+
+[WebServer] (node:20476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 6 workers
+
+(node:27700) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:28860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8900) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10040) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 tests\critic-workplace.spec.mjs:3:1 › critic: the Polish workplace declares its document language (708ms)
+  ok 5 tests\critic-workplace.spec.mjs:26:1 › critic: an unmapped API error still gives the employee a Polish message (671ms)
+  ok 1 tests\critic-workplace.spec.mjs:16:1 › critic: editing the middle of a search preserves the caret after rerender (776ms)
+  ok 6 tests\critic-workplace.spec.mjs:47:1 › critic: missing source SKU cannot silently become another item in putaway (770ms)
+  ok 4 tests\workplace.spec.mjs:3:1 › bureau can create and start a receipt using names, not UUIDs (811ms)
+  ok 3 tests\critic-workplace.spec.mjs:8:1 › critic: bureau search keeps ordinary sequential typing in the right order (854ms)
+  ok 7 tests\workplace.spec.mjs:31:1 › worker screen reflows at TSD width and scanning controls remain touch-sized (413ms)
+  ok 8 tests\workplace.spec.mjs:15:1 › terminal blocks wrong scan and receives one item with keyboard (586ms)
+
+  8 passed (2.4s)

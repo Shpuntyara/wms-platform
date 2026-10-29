@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: critic: a forbidden retry cannot disprove a previously unconfirmed commit
+not ok 1 - critic: a forbidden retry cannot disprove a previously unconfirmed commit
+  ---
+  duration_ms: 2.4929
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\critic-journal.test.mjs:11:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    retry status 400 destroyed original intent
+    + actual - expected
+    
+    + null
+    - {
+    -   body: {
+    -     expected_document_version: 2,
+    -     quantity: '1'
+    -   },
+    -   id: 'fixed-command',
+    -   path: '/api/v1/movements'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    id: 'fixed-command'
+    path: '/api/v1/movements'
+    body:
+      quantity: '1'
+      expected_document_version: 2
+  actual: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/critic-journal.test.mjs:23:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+# Subtest: critic: reading a pending intent cannot mutate the saved request
+ok 2 - critic: reading a pending intent cannot mutate the saved request
+  ---
+  duration_ms: 0.4012
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.2488

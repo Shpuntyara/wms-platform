@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "60E378F3495A51C97CEF55B95D3EE85B7ADD42E272D110ADE11D7EA2AF7CA9C3",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\vendor.test.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "74F18B824576D3B9087417866A0C29EA7A595F26B48AB0E31A7D1611DDFD8333",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\vendor.mjs"
+  }
+]

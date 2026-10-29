@@ -1,0 +1,138 @@
+TAP version 13
+# Subtest: critic: Russian scanner and keyboard input normalize without rounding
+ok 1 - critic: Russian scanner and keyboard input normalize without rounding
+  ---
+  duration_ms: 1.1072
+  type: 'test'
+  ...
+# Subtest: critic: quantity rejects coercion, exponents, signs, zeros and excessive precision
+ok 2 - critic: quantity rejects coercion, exponents, signs, zeros and excessive precision
+  ---
+  duration_ms: 0.3719
+  type: 'test'
+  ...
+# Subtest: critic: remaining keeps micro-units above Number precision
+ok 3 - critic: remaining keeps micro-units above Number precision
+  ---
+  duration_ms: 0.1673
+  type: 'test'
+  ...
+# Subtest: critic: scan preserves significant zeros and refuses ambiguous or wrong codes
+ok 4 - critic: scan preserves significant zeros and refuses ambiguous or wrong codes
+  ---
+  duration_ms: 0.3805
+  type: 'test'
+  ...
+# Subtest: critic: receiving intent preserves exact quantity and captured version
+ok 5 - critic: receiving intent preserves exact quantity and captured version
+  ---
+  duration_ms: 0.7415
+  type: 'test'
+  ...
+# Subtest: critic: zero available target is valid for receiving; missing target is not
+ok 6 - critic: zero available target is valid for receiving; missing target is not
+  ---
+  duration_ms: 0.2341
+  type: 'test'
+  ...
+# Subtest: critic: receiving refuses over-fulfilment and unsupported item precision
+ok 7 - critic: receiving refuses over-fulfilment and unsupported item precision
+  ---
+  duration_ms: 0.1966
+  type: 'test'
+  ...
+# Subtest: critic: line must belong to captured document and item
+ok 8 - critic: line must belong to captured document and item
+  ---
+  duration_ms: 0.1545
+  type: 'test'
+  ...
+# Subtest: critic: a stale line object cannot borrow a freshly refreshed document version
+not ok 9 - critic: a stale line object cannot borrow a freshly refreshed document version
+  ---
+  duration_ms: 0.6495
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\critic-domain.test.mjs:71:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/critic-domain.test.mjs:74:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: critic: intent refuses inactive documents and document-kind mismatch
+ok 10 - critic: intent refuses inactive documents and document-kind mismatch
+  ---
+  duration_ms: 0.3023
+  type: 'test'
+  ...
+# Subtest: critic: version cannot silently round or accept invalid optimistic lock
+ok 11 - critic: version cannot silently round or accept invalid optimistic lock
+  ---
+  duration_ms: 0.1765
+  type: 'test'
+  ...
+# Subtest: critic: receiving cannot cross organization, warehouse or owner
+ok 12 - critic: receiving cannot cross organization, warehouse or owner
+  ---
+  duration_ms: 0.9118
+  type: 'test'
+  ...
+# Subtest: critic: putaway maps both balances and exact document line
+ok 13 - critic: putaway maps both balances and exact document line
+  ---
+  duration_ms: 0.166
+  type: 'test'
+  ...
+# Subtest: critic: putaway uses available stock, never physical on-hand with reservations
+ok 14 - critic: putaway uses available stock, never physical on-hand with reservations
+  ---
+  duration_ms: 0.248
+  type: 'test'
+  ...
+# Subtest: critic: putaway refuses same position, foreign scope, owner and item
+ok 15 - critic: putaway refuses same position, foreign scope, owner and item
+  ---
+  duration_ms: 0.2325
+  type: 'test'
+  ...
+# Subtest: critic: putaway cannot launder lot, serial or stock-state identity
+ok 16 - critic: putaway cannot launder lot, serial or stock-state identity
+  ---
+  duration_ms: 0.2196
+  type: 'test'
+  ...
+# Subtest: critic: closing requires every line fulfilled and every reservation released
+ok 17 - critic: closing requires every line fulfilled and every reservation released
+  ---
+  duration_ms: 0.2643
+  type: 'test'
+  ...
+# Subtest: critic: displayed quantity retains every significant digit and Russian decimal separator
+ok 18 - critic: displayed quantity retains every significant digit and Russian decimal separator
+  ---
+  duration_ms: 0.0812
+  type: 'test'
+  ...
+# Subtest: critic property: independently computed micro-unit differences remain exact
+ok 19 - critic property: independently computed micro-unit differences remain exact
+  ---
+  duration_ms: 1.0282
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 18
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 106.6829

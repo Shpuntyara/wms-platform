@@ -1,0 +1,27 @@
+✖ vendored Keycloak includes its runtime imports and exact pinned bytes (30.2878ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 124.4352
+
+✖ failing tests:
+
+test at web\tests\vendor.test.mjs:4:1
+✖ vendored Keycloak includes its runtime imports and exact pinned bytes (30.2878ms)
+  AssertionError [ERR_ASSERTION]: missing runtime module deprecations.js
+      at TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/vendor.test.mjs:7:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

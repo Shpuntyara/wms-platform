@@ -1,0 +1,34 @@
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/style
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application_module
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/OIDC_adapter
+=== RUN   TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/bootstrap
+--- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/style (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/application_module (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/OIDC_adapter (0.00s)
+    --- PASS: TestHandlerServesOnlyPublicAssetsAndOIDCBootstrap/bootstrap (0.00s)
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/../go.mod
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/%2e%2e/go.mod
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/tests/private.js
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/config.example.json
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/missing.js
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/../index.html
+=== RUN   TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src%5capp.js
+--- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/../go.mod (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/%2e%2e/go.mod (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/ (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/tests/private.js (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/config.example.json (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/missing.js (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src/../index.html (0.00s)
+    --- PASS: TestHandlerRejectsTraversalDirectoriesAndPrivateFiles//app/src%5capp.js (0.00s)
+=== RUN   TestHandlerKeepsAPIAuthenticationAndMethodSemantics
+--- PASS: TestHandlerKeepsAPIAuthenticationAndMethodSemantics (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/ui	0.019s

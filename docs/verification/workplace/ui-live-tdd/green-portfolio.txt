@@ -1,0 +1,13 @@
+=== RUN   TestBrowserReceiptAndPutawayAgainstPostgres
+    ui_workflow_integration_test.go:105: Browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\ui-live-tdd\green-portfolio\7db560b2-9d7e-47f8-a3ef-e98b08864a8c
+        
+        Running 1 test using 1 worker
+        
+        (node:22208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          ok 1 tests\live-workflow.spec.mjs:6:1 › bureau receipt and scanner putaway survive a lost committed response (2.1s)
+        
+          1 passed (2.7s)
+--- PASS: TestBrowserReceiptAndPutawayAgainstPostgres (3.40s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	4.447s

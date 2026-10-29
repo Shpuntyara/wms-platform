@@ -1,0 +1,4 @@
+{
+  "oidc": {"url": "https://wms.example.internal/auth", "realm": "warehouse", "clientId": "wms-browser"},
+  "organizations": [], "warehouses": [], "owners": [], "items": [], "positions": []
+}

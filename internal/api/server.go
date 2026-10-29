@@ -35,6 +35,7 @@ type Config struct {
 	Modules        *modules.Registry
 	RequestTimeout time.Duration
 	Logger         *slog.Logger
+	Workspace      WorkspaceConfig
 }
 type Server struct {
 	config Config
@@ -53,6 +54,7 @@ func New(config Config) (http.Handler, error) {
 		config.Logger = slog.New(slog.NewTextHandler(io.Discard, nil))
 	}
 	s := &Server{config: config, mux: http.NewServeMux()}
+	s.mux.HandleFunc("/api/v1/workspace", s.workspace)
 	s.mux.HandleFunc("/livez", func(w http.ResponseWriter, r *http.Request) {
 		if !s.method(w, r, "GET") {
 			return

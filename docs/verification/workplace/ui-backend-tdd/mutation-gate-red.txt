@@ -1,0 +1,103 @@
+test_complete_baseline_is_green (test_ui_backend_mutations.UIMutationClassificationTests.test_complete_baseline_is_green) ... FAIL
+test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) ... 
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='empty output') ... FAIL
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='missing tests') ... FAIL
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='build failure') ... FAIL
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='another package did not build') ... FAIL
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='skipped test') ... FAIL
+  test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='inconsistent zero exit') ... FAIL
+test_real_failed_test_kills_mutant (test_ui_backend_mutations.UIMutationClassificationTests.test_real_failed_test_kills_mutant) ... ok
+test_survivor_is_not_killed (test_ui_backend_mutations.UIMutationClassificationTests.test_survivor_is_not_killed) ... FAIL
+
+======================================================================
+FAIL: test_complete_baseline_is_green (test_ui_backend_mutations.UIMutationClassificationTests.test_complete_baseline_is_green)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 30, in test_complete_baseline_is_green
+    self.assertEqual('green', gate.classify(events(), 0, baseline=True))
+AssertionError: 'green' != 'killed'
+- green
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='empty output')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='missing tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='build failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='another package did not build')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='skipped test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) (name='inconsistent zero exit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 43, in test_invalid_runs_are_not_kills
+    self.assertEqual('invalid', gate.classify(output, returncode))
+AssertionError: 'invalid' != 'killed'
+- invalid
++ killed
+
+
+======================================================================
+FAIL: test_survivor_is_not_killed (test_ui_backend_mutations.UIMutationClassificationTests.test_survivor_is_not_killed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_ui_backend_mutations.py", line 27, in test_survivor_is_not_killed
+    self.assertEqual('survived', gate.classify(events(), 0))
+AssertionError: 'survived' != 'killed'
+- survived
++ killed
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (failures=8)

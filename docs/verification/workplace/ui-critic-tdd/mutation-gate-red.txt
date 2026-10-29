@@ -1,0 +1,93 @@
+.FFFFFFFF
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='module')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='syntax')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='runtime type error')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='skipped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='no tests')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='lost test')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_incomplete_or_infrastructure_failure_is_invalid (test_verify_ui_mutations.MutationAccounting.test_incomplete_or_infrastructure_failure_is_invalid) (name='unrelated failure mixed with assertion')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 32, in test_incomplete_or_infrastructure_failure_is_invalid
+    self.assertEqual(module.classify(1, output, 16), 'invalid')
+AssertionError: 'killed' != 'invalid'
+- killed
++ invalid
+
+
+======================================================================
+FAIL: test_success_is_survived (test_verify_ui_mutations.MutationAccounting.test_success_is_survived)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_ui_mutations.py", line 18, in test_success_is_survived
+    self.assertEqual(module.classify(0, output, 16), 'survived')
+AssertionError: 'killed' != 'survived'
+- killed
++ survived
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (failures=8)

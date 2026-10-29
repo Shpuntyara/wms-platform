@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "0873B1F774F4F1AADA4FACA1F1D9EA467615FDCBCF280FB28479BC5F3DBB9DA5",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\messages.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BAB01BC498A90D57D9D6CCE57C28E701A6ABE5DBE1F4866C76A6B7A3B62AF369",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\messages.test.mjs"
+  }
+]

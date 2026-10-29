@@ -8,6 +8,46 @@ concurrency:
   group: security-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  workplace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Pinned browser dependencies and runtime adapter integrity
+        working-directory: web
+        run: |
+          node --version
+          npm ci --ignore-scripts --no-fund
+          npm audit --omit=dev --audit-level=high
+          npx playwright install --with-deps chromium --only-shell
+      - name: Polish workplace, exact quantities and persistent command regressions
+        working-directory: web
+        run: |
+          mkdir -p work
+          set -o pipefail
+          npm test 2>&1 | tee work/unit-tests.txt
+          npm run test:browser 2>&1 | tee work/browser-tests.txt
+      - name: Independent workplace behavioral mutations
+        run: |
+          python3 scripts/verify_ui_mutations.py --node node --output work/ui-mutations.json
+          python3 tests/ui_backend_mutations.py --go go
+      - name: Workplace evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: workplace-test-evidence
+          path: |
+            web/work/
+            web/test-results/
+            work/ui-mutations*
+            work/ui-backend-mutations/
+          if-no-files-found: error
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -46,6 +86,12 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_*.py' 2>&1 | tee work/python-tests.txt
       - name: Prepare disposable database
         run: python3 scripts/prepare-test-db.py --psql psql --port 5432
+      - name: Browser for real PostgreSQL receiving and putaway workflow
+        working-directory: web
+        run: |
+          node --version
+          npm ci --ignore-scripts --no-fund
+          npx playwright install --with-deps chromium --only-shell
       - name: Installer, Hyper-V driver and deployment mutation regressions
         run: |
           set -o pipefail
@@ -109,6 +155,7 @@ jobs:
             work/mutations-*/**/python-events.json
             work/mutations-*/**/scripts/migrate_core.py
             work/windows-migration-verification.json
+            work/ui-live-browser/
             work/document-plans/
             work/document-critic-plans/
           if-no-files-found: error

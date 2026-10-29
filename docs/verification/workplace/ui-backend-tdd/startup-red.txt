@@ -1,0 +1,6 @@
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog
+    ui_test.go:13: wrong default public client: {OIDC:{URL: Realm: ClientID:} Organizations:[] Warehouses:[] Owners:[] Items:[] Positions:[]}
+--- FAIL: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/cmd/wms-api	0.024s
+FAIL

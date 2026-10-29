@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "95109817D47485A4CDEF30CA5DE9A75B2714E0AC93A4C034792C6BE0B2E77284",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\postgres\\ui_workflow_integration_test.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "9A2B160FB74D2CD073B2D99465E9E1544CD62F5ADD438F240C1889332EF810FB",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\live-workflow.spec.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "C2C71C847AA0CE339539A80F96055E2AA083289C205DF8A9DC5321F3B824369A",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\playwright.live.config.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "81B2E35149D74C060D3A93ACF31CEAB758B34297C43F08D282A5FF8FD883FAA2",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\app.js"
+  }
+]

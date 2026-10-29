@@ -1,0 +1,32 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "789FDD2FDEBFCE7ADF1EE14A2E577D4D5D7712DF0DEE65A3F672827FFB7864F3",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\language.test.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "5366D7422297BA0AB4159653D2FBE4156AADB00740B07CF782477D373A11BDD3",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\index.html"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E8E39E753503C7D40F5871686EA8CAB32DED94916419F4BA6D67CFA39D79F96C",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\app.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "90931186DF474EFFB03352740632CD09F01DC7CCC622699E3B09453E874F1872",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\demo.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "F135099EACC20289D9B72BF211DF8CC9DBA09E5B8D5CF42925E35E1CCCF60237",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\domain.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "8C5BCDC61D3FCC71D80BE45D1D0FFAAAF84050CF1DD9630AD8BEB643B65762EB",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\journal.js"
+  }
+]

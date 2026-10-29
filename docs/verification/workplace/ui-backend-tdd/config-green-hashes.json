@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "6242444F073489997410E6DDDBC129548CA3C2FD11FD158B1BB3A9B3BF8EECEF",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\api\\workspace_config_test.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "3AC2EA93AE82E69AC61FED5891723A09B2A9360BAF7A51739A2953007CAA3BE5",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\api\\workspace_config.go"
+  }
+]

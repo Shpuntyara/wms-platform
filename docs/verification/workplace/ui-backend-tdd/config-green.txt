@@ -1,0 +1,50 @@
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_item
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_SKU
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_scan_address
+=== RUN   TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/wrong_address_warehouse
+--- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_field (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/secret_OIDC_field (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/multiple_values (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_identifier (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/foreign_organization (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/invalid_precision (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/negative_precision (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/plaintext_OIDC (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_credentials (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/URL_query (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/empty_name (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/excess_size (0.00s)
+    --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_item (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_SKU (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/duplicate_scan_address (0.00s)
+        --- PASS: TestDecodeWorkspaceConfigRejectsSecretsAndAmbiguousCatalogs/valid_config_remains_exact/wrong_address_warehouse (0.00s)
+=== RUN   TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes
+--- PASS: TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes (0.00s)
+=== RUN   TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC
+--- PASS: TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC (0.00s)
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/no_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/invalid_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected
+--- PASS: TestWorkspaceRequiresAuthenticationAndGet (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/no_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/invalid_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/api	0.024s

@@ -1,0 +1,15 @@
+=== RUN   TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes
+    workspace_test.go:21: workspace should be available to authenticated employee, status=404 body={"code":"resource_not_found","detail":"The resource was not found in the permitted scope.","status":404,"title":"Not Found","trace_id":"5MVNJH3NB4XLPULB4GP5J6CY4L","type":"urn:wms:problem:resource_not_found"}
+--- FAIL: TestWorkspaceListsOnlyFreshlyResolvedPrincipalScopes (0.00s)
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/no_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/invalid_token
+=== RUN   TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected
+    workspace_test.go:67: status=404 body={"code":"resource_not_found","detail":"The resource was not found in the permitted scope.","status":404,"title":"Not Found","trace_id":"VBSGAJHTKZSMHJZDMSKNG4LMMW","type":"urn:wms:problem:resource_not_found"}
+--- FAIL: TestWorkspaceRequiresAuthenticationAndGet (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/no_token (0.00s)
+    --- PASS: TestWorkspaceRequiresAuthenticationAndGet/invalid_token (0.00s)
+    --- FAIL: TestWorkspaceRequiresAuthenticationAndGet/mutation_rejected (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/api	0.022s
+FAIL

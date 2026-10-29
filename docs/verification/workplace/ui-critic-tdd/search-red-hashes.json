@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "CE05E90E5D7AA5177B5E9127E8725A85B80A14B453DE78AAE7B88CAD2CA61C82",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\critic-workplace.spec.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "E8E39E753503C7D40F5871686EA8CAB32DED94916419F4BA6D67CFA39D79F96C",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\app.js"
+  }
+]

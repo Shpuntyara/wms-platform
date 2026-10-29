@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "D5AC76E7369811A9889482812CAAB7B648025F6F1A11314A8B877F9FA3AFBC9F",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\domain.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "FE48E7720A80B347140057FED5A9418EA7F746F519AF441C9460E5504E74A4B7",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\journal.js"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "655BCC3115ED10603CFDE6D482FB5EA70A9C45CCF7159CE0AEA66AAD517892DC",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\journal.test.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "136C76E78933D98A6A2EF8D774BE69E14F53191F34AC0A02B8EDAB6C396A7038",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\critic-domain.test.mjs"
+  }
+]

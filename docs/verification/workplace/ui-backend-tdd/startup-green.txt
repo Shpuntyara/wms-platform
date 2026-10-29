@@ -1,0 +1,8 @@
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/secret_rejected
+=== RUN   TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/other_issuer
+--- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog (0.00s)
+    --- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/secret_rejected (0.00s)
+    --- PASS: TestLoadWorkspaceConfigUsesPublicBrowserClientAndSeparateCatalog/other_issuer (0.00s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/cmd/wms-api	0.027s

@@ -1,0 +1,54 @@
+=== RUN   TestBrowserReceiptAndPutawayAgainstPostgres
+    ui_workflow_integration_test.go:97: Browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\ui-live-tdd\scan-race-red-valid\c7d09b77-035a-4283-91ce-04a7ba9e544d
+        
+        Running 1 test using 1 worker
+        
+        (node:256) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          x  1 tests\live-workflow.spec.mjs:6:1 › bureau receipt and scanner putaway survive a lost committed response (9.7s)
+        
+        
+          1) tests\live-workflow.spec.mjs:6:1 › bureau receipt and scanner putaway survive a lost committed response 
+        
+            Error: expect(locator).toBeVisible() failed
+        
+            Locator: getByLabel('Куда разместить', { exact: true })
+            Expected: visible
+            Timeout: 8000ms
+            Error: element(s) not found
+        
+            Call log:
+              - Expect "toBeVisible" getByLabel('Куда разместить', { exact: true }) with timeout 8000ms
+              - waiting for getByLabel('Куда разместить', { exact: true })
+        
+        
+              100 |   releaseLookup();
+              101 |   await expect.poll(() => activeLookups).toBe(0);
+            > 102 |   await expect(page.getByLabel('Куда разместить', {exact: true})).toBeVisible();
+                  |                                                                   ^
+              103 |   await expect(page.getByLabel('Фактическое количество', {exact: true})).toHaveCount(0);
+              104 |   await page.getByLabel('Куда разместить', {exact: true}).fill('A-01-02');
+              105 |   await page.getByLabel('Куда разместить', {exact: true}).press('Enter');
+                at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\live-workflow.spec.mjs:102:67
+        
+            attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+            ..\work\ui-live-tdd\scan-race-red-valid\c7d09b77-035a-4283-91ce-04a7ba9e544d\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\test-failed-1.png
+            ────────────────────────────────────────────────────────────────────────────────────────────────
+        
+            Error Context: ..\work\ui-live-tdd\scan-race-red-valid\c7d09b77-035a-4283-91ce-04a7ba9e544d\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\error-context.md
+        
+            attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+            ..\work\ui-live-tdd\scan-race-red-valid\c7d09b77-035a-4283-91ce-04a7ba9e544d\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\trace.zip
+            Usage:
+        
+                npx playwright show-trace ..\work\ui-live-tdd\scan-race-red-valid\c7d09b77-035a-4283-91ce-04a7ba9e544d\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\trace.zip
+        
+            ────────────────────────────────────────────────────────────────────────────────────────────────
+        
+          1 failed
+            tests\live-workflow.spec.mjs:6:1 › bureau receipt and scanner putaway survive a lost committed response 
+    ui_workflow_integration_test.go:99: real PostgreSQL browser workflow failed: exit status 1
+--- FAIL: TestBrowserReceiptAndPutawayAgainstPostgres (11.14s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	11.162s
+FAIL

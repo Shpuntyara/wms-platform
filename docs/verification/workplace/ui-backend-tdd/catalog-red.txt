@@ -1,0 +1,6 @@
+=== RUN   TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC
+    workspace_test.go:89: catalog was omitted or broadened beyond read grants: {"data":{"actor_id":"00000000-0000-4000-8000-000000000003","scopes":[{"organization_id":"00000000-0000-4000-8000-000000000001","warehouse_id":"00000000-0000-4000-8000-000000000002","grants":[{"permission":"document.read","owner_id":"00000000-0000-4000-8000-000000000005"}]},{"organization_id":"00000000-0000-4000-8000-000000000001","warehouse_id":"00000000-0000-4000-8000-000000000004","grants":[{"permission":"document.create","owner_id":null}]}]}}
+--- FAIL: TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC (0.00s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/api	0.020s
+FAIL

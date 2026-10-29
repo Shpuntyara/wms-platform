@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2C3FDD38046CC7DA203D441DD7D7312F4CA1DA503724B211408D85D679157F27",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\ui\\handler.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "4CE3CF63B6B572BD4C2929DA9EBD458684387ABA1D9DAB76E2841EBDFF688E03",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\ui\\handler_test.go"
+  }
+]

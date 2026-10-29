@@ -24,6 +24,10 @@
     {
       "name": "Health",
       "description": "Liveness and database readiness."
+    },
+    {
+      "name": "Workspace",
+      "description": "Current employee permissions and configured browser catalog."
     }
   ],
   "paths": {
@@ -1213,6 +1217,48 @@
           }
         }
       ]
+    },
+    "/api/v1/workspace": {
+      "get": {
+        "summary": "Read the authenticated employee workspace",
+        "description": "Returns the actor and grants resolved from the database for this request. No organization or warehouse query is required. Scopes include every current grant; catalog labels are limited to scopes with document.read or stock.read. Owner labels are the union of owners allowed by these read grants across the organization; each operation still checks the selected warehouse and owner. Items are scoped by readable organization and positions by readable organization and warehouse. The operator-maintained catalog supplies display metadata and does not change database permissions, stock or item precision. Missing configured labels produce empty catalog arrays. Browser OIDC bootstrap settings are served separately at /app/config.json and are not included in this response.",
+        "operationId": "getEmployeeWorkspace",
+        "tags": [
+          "Workspace"
+        ],
+        "security": [
+          {
+            "BearerAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current actor, deduplicated permission scopes and filtered display catalog. Every array is present, including when empty.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Problem401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Problem403"
+          },
+          "405": {
+            "$ref": "#/components/responses/Problem405"
+          },
+          "500": {
+            "$ref": "#/components/responses/Problem500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Problem503"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2294,6 +2340,273 @@
           "data",
           "pagination"
         ]
+      },
+      "WorkspaceResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EmployeeWorkspace"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EmployeeWorkspace": {
+        "type": "object",
+        "required": [
+          "actor_id",
+          "scopes",
+          "catalog"
+        ],
+        "properties": {
+          "actor_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceScope"
+            }
+          },
+          "catalog": {
+            "$ref": "#/components/schemas/WorkspaceCatalog"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspaceScope": {
+        "type": "object",
+        "required": [
+          "organization_id",
+          "warehouse_id",
+          "grants"
+        ],
+        "properties": {
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "grants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceGrant"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Scopes are ordered by organization ID and warehouse ID. Grants are deduplicated and ordered by permission and owner ID. A scope may contain write grants without a read grant; such a scope does not expose catalog labels."
+      },
+      "WorkspaceGrant": {
+        "type": "object",
+        "required": [
+          "permission",
+          "owner_id"
+        ],
+        "properties": {
+          "permission": {
+            "type": "string",
+            "description": "Permission code as resolved from the employee database grants."
+          },
+          "owner_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "A UUID restricts this permission to one stock owner. Null permits all owners for this permission within the scope."
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspaceCatalog": {
+        "type": "object",
+        "required": [
+          "organizations",
+          "warehouses",
+          "owners",
+          "items",
+          "positions"
+        ],
+        "properties": {
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceOrganization"
+            }
+          },
+          "warehouses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceWarehouse"
+            }
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceOwner"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceItem"
+            }
+          },
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspacePosition"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "description": "Configured labels and scan codes filtered by current read grants. The catalog contains no OIDC credentials or stock quantities; entries remain in configured order."
+      },
+      "WorkspaceOrganization": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspaceWarehouse": {
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspaceOwner": {
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspaceItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "sku",
+          "name",
+          "unit",
+          "quantity_scale"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string",
+            "description": "Configured SKU used for product lookup and scanner input."
+          },
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "quantity_scale": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6,
+            "description": "Configured display precision; posting is validated against the actual PostgreSQL item contract."
+          }
+        },
+        "additionalProperties": false
+      },
+      "WorkspacePosition": {
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "warehouse_id",
+          "code",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouse_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "description": "Configured address code used for scanner input."
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "receiving",
+              "storage",
+              "staging",
+              "shipping",
+              "returns",
+              "quarantine"
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     },
     "responses": {

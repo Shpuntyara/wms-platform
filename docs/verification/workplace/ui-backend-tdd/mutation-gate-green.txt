@@ -1,0 +1,9 @@
+test_complete_baseline_is_green (test_ui_backend_mutations.UIMutationClassificationTests.test_complete_baseline_is_green) ... ok
+test_invalid_runs_are_not_kills (test_ui_backend_mutations.UIMutationClassificationTests.test_invalid_runs_are_not_kills) ... ok
+test_real_failed_test_kills_mutant (test_ui_backend_mutations.UIMutationClassificationTests.test_real_failed_test_kills_mutant) ... ok
+test_survivor_is_not_killed (test_ui_backend_mutations.UIMutationClassificationTests.test_survivor_is_not_killed) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK

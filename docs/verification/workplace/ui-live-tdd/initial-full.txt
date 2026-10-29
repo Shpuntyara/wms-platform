@@ -1,0 +1,54 @@
+=== RUN   TestBrowserReceiptAndPutawayAgainstPostgres
+    ui_workflow_integration_test.go:97: Browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\ui-live-tdd\initial-full\551b575e-7d97-47c9-b640-1beaa0d7dce9
+        
+        Running 1 test using 1 worker
+        
+        (node:16260) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          x  1 tests\live-workflow.spec.mjs:5:1 › bureau receipt and scanner putaway survive a lost committed response (8.2s)
+        
+        
+          1) tests\live-workflow.spec.mjs:5:1 › bureau receipt and scanner putaway survive a lost committed response 
+        
+            Error: expect(locator).toBeVisible() failed
+        
+            Locator: getByRole('button', { name: 'Новая приёмка', exact: true })
+            Expected: visible
+            Timeout: 8000ms
+            Error: element(s) not found
+        
+            Call log:
+              - Expect "toBeVisible" getByRole('button', { name: 'Новая приёмка', exact: true }) with timeout 8000ms
+              - waiting for getByRole('button', { name: 'Новая приёмка', exact: true })
+        
+        
+              22 |   const login = page.getByRole('button', {name: 'Войти в WMS', exact: true});
+              23 |   if (await login.isVisible()) await login.click();
+            > 24 |   await expect(page.getByRole('button', {name: 'Новая приёмка', exact: true})).toBeVisible();
+                 |                                                                                ^
+              25 |   await page.getByRole('button', {name: 'Новая приёмка', exact: true}).click();
+              26 |   await page.getByLabel('Номер документа', {exact: true}).fill(documentNumber);
+              27 |   await page.getByLabel('Владелец товара', {exact: true}).selectOption(process.env.WMS_UI_LIVE_OWNER);
+                at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\live-workflow.spec.mjs:24:80
+        
+            attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+            ..\work\ui-live-tdd\initial-full\551b575e-7d97-47c9-b640-1beaa0d7dce9\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\test-failed-1.png
+            ────────────────────────────────────────────────────────────────────────────────────────────────
+        
+            Error Context: ..\work\ui-live-tdd\initial-full\551b575e-7d97-47c9-b640-1beaa0d7dce9\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\error-context.md
+        
+            attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+            ..\work\ui-live-tdd\initial-full\551b575e-7d97-47c9-b640-1beaa0d7dce9\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\trace.zip
+            Usage:
+        
+                npx playwright show-trace ..\work\ui-live-tdd\initial-full\551b575e-7d97-47c9-b640-1beaa0d7dce9\browser\live-workflow-bureau-recei-fd5cf-e-a-lost-committed-response\trace.zip
+        
+            ────────────────────────────────────────────────────────────────────────────────────────────────
+        
+          1 failed
+            tests\live-workflow.spec.mjs:5:1 › bureau receipt and scanner putaway survive a lost committed response 
+    ui_workflow_integration_test.go:99: real PostgreSQL browser workflow failed: exit status 1
+--- FAIL: TestBrowserReceiptAndPutawayAgainstPostgres (10.65s)
+FAIL
+FAIL	github.com/Shpuntyara/wms-platform/internal/postgres	10.677s
+FAIL

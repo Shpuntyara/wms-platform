@@ -1,0 +1,85 @@
+[WebServer] (node:27064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\critic-workplace.spec.mjs:3:1 › critic: bureau search keeps ordinary sequential typing in the right order (5.3s)
+(node:19084) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 tests\critic-workplace.spec.mjs:11:1 › critic: editing the middle of a search preserves the caret after rerender (5.3s)
+
+
+  1) tests\critic-workplace.spec.mjs:3:1 › critic: bureau search keeps ordinary sequential typing in the right order 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Поиск по загруженным документам', { exact: true })
+    Expected: "ПР-2026-0142"
+    Received: "2410-6202-РП"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Поиск по загруженным документам', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Поиск по загруженным документам', { exact: true })
+        14 × locator resolved to <input id="search" type="search" value="2410-6202-РП" placeholder="Найти документ"/>
+           - unexpected value "2410-6202-РП"
+
+
+       5 |   const search = page.getByLabel('Поиск по загруженным документам', {exact: true});
+       6 |   await search.pressSequentially('ПР-2026-0142');
+    >  7 |   await expect(search).toHaveValue('ПР-2026-0142');
+         |                        ^
+       8 |   await expect(page.getByRole('button', {name: 'ПР-2026-0142', exact: true})).toBeVisible();
+       9 | });
+      10 |
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\critic-workplace.spec.mjs:7:24
+
+    Error Context: work\critic-browser-artifacts\critic-workplace-critic-bu-69851-l-typing-in-the-right-order\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    work\critic-browser-artifacts\critic-workplace-critic-bu-69851-l-typing-in-the-right-order\trace.zip
+    Usage:
+
+        npx playwright show-trace work\critic-browser-artifacts\critic-workplace-critic-bu-69851-l-typing-in-the-right-order\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests\critic-workplace.spec.mjs:11:1 › critic: editing the middle of a search preserves the caret after rerender 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  getByLabel('Поиск по загруженным документам', { exact: true })
+    Expected: "ПXYР-2026"
+    Received: "YПXР-2026"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveValue" getByLabel('Поиск по загруженным документам', { exact: true }) with timeout 5000ms
+      - waiting for getByLabel('Поиск по загруженным документам', { exact: true })
+        14 × locator resolved to <input id="search" type="search" value="YПXР-2026" placeholder="Найти документ"/>
+           - unexpected value "YПXР-2026"
+
+
+      16 |   await search.press('ArrowRight');
+      17 |   await search.pressSequentially('XY');
+    > 18 |   await expect(search).toHaveValue('ПXYР-2026');
+         |                        ^
+      19 | });
+      20 |
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\critic-workplace.spec.mjs:18:24
+
+    Error Context: work\critic-browser-artifacts\critic-workplace-critic-ed-35be5-es-the-caret-after-rerender\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    work\critic-browser-artifacts\critic-workplace-critic-ed-35be5-es-the-caret-after-rerender\trace.zip
+    Usage:
+
+        npx playwright show-trace work\critic-browser-artifacts\critic-workplace-critic-ed-35be5-es-the-caret-after-rerender\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests\critic-workplace.spec.mjs:3:1 › critic: bureau search keeps ordinary sequential typing in the right order 
+    tests\critic-workplace.spec.mjs:11:1 › critic: editing the middle of a search preserves the caret after rerender 

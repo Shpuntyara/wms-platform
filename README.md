@@ -4,7 +4,11 @@
 
 Go · PostgreSQL · OIDC · Hyper-V · PowerShell · Python · Ubuntu · Docker · Prometheus · Grafana
 
-> **Project status:** Engineering prototype / portfolio project. The backend, deployment automation, and selected operational scenarios are implemented and tested. There is **no finished end-user WMS interface**, and the project is **not certified or warranted for production use**.
+> **Project status:** Engineering prototype / portfolio project. The backend, deployment automation, and selected operational scenarios are implemented and tested. A first **Polish bureau and warehouse workplace** now covers receiving and putaway at `/app/`; installation-specific employee login and catalog setup are still required. The project is **not certified or warranted for production use**.
+
+## Polish receiving and putaway workplace
+
+The [workplace guide](docs/workplace.md) describes document preparation in **Biuro**, keyboard/scanner operations in **Magazyn**, exact quantities, and recovery of unconfirmed commands. The browser/PostgreSQL test drives the real API and SQL; it replaces only the external identity adapter. A clearly marked browser-local training warehouse is available at `/app/?demo=1`.
 
 ## See the infrastructure working
 
@@ -90,7 +94,7 @@ The documented core/SDK baseline is **core 0.4.0 / SDK 2.0.0**, with subsequent 
 
 ## Limitations and responsible disclosure
 
-This repository is an engineering portfolio, not a turnkey system. The user interface, customer integrations, operational SLAs, third-party security review, and production deployment guarantees are out of scope or incomplete. Some linked documentation and test evidence remain in Russian.
+This repository is an engineering portfolio, not a turnkey system. The interface covers a first receiving/putaway slice; catalog editing, customer integrations, operational SLAs, third-party security review, and production deployment guarantees remain incomplete. Some linked documentation and test evidence remain in Russian.
 
 **No real passwords, private keys, access tokens, client data, or production backups should be committed.** Use unique per-installation secrets and keep protected runtime evidence outside Git. Before public release, scan the **entire Git history**, review screenshots/video for visible confidential information, and rotate any credentials that might have been committed, even if later removed.
 
