@@ -1,0 +1,4 @@
+{
+  "scripts/hardened_gate.py": "eb6258402ff75e8b7744efd8a70959ab329eff901bdf9306b916cd00ebbab175",
+  "scripts/test_hardened_gate.py": "1dcba2c8bd0264cf897897d8b68877e6ecff3e1f2f45e1815b512f4a8a94d988"
+}

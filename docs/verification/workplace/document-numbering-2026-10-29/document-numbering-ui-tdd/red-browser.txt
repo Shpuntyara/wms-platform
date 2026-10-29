@@ -1,0 +1,47 @@
+[WebServer] (node:12392) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:24612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\workplace.spec.mjs:3:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse (5.4s)
+
+
+  1) tests\workplace.spec.mjs:3:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('textbox', { name: 'Numer dokumentu', exact: true })
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByRole('textbox', { name: 'Numer dokumentu', exact: true }) with timeout 5000ms
+      - waiting for getByRole('textbox', { name: 'Numer dokumentu', exact: true })
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      4 |   await page.goto('/app/?demo=1');
+      5 |   await page.getByRole('button', {name: /^Nowe przyjęcie/}).click();
+    > 6 |   await expect(page.getByRole('textbox', {name: 'Numer dokumentu', exact: true})).toHaveCount(0);
+        |                                                                                   ^
+      7 |   await expect(page.getByText('Numer zostanie nadany automatycznie po zapisaniu', {exact:true})).toBeVisible();
+      8 |   await expect(page.getByRole('dialog', {name:'Nowe przyjęcie (PZ)', exact:true})).toBeVisible();
+      9 |   await page.getByLabel('Ilość planowana', {exact: true}).fill('4');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\workplace.spec.mjs:6:83
+
+    Error Context: test-results\workplace-bureau-saves-a-P-f3f06-y-hands-it-to-the-warehouse\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\workplace-bureau-saves-a-P-f3f06-y-hands-it-to-the-warehouse\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\workplace-bureau-saves-a-P-f3f06-y-hands-it-to-the-warehouse\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests\workplace.spec.mjs:3:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse 

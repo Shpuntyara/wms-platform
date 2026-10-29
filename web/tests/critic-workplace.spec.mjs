@@ -58,7 +58,7 @@ test('critic: missing source SKU cannot silently become another item in putaway'
   });
   await page.reload();
   await page.getByRole('button', {name: 'PZ-2026-0139', exact: true}).click();
-  await page.getByRole('button', {name: 'Utwórz rozmieszczenie', exact: true}).click();
+  await page.getByRole('button', {name: 'Przygotuj przesunięcie (MM)', exact: true}).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(page.getByRole('alert')).toHaveText('Brak kartoteki towaru z dokumentu. Poproś administratora o uzupełnienie danych.');
 });

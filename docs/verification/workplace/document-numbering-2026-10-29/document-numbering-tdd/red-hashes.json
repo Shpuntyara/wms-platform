@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "EF5CB740346CB4992378E3398FAA600C4FB039301B15BC0B56F3C75E5077FA5E",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\internal\\postgres\\document_numbering_integration_test.go"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "078A259DE16AE83C3368AFFB4F21887D6290BC0B8B4B6AF06024F890B2A34431",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\db\\migrations\\0009_warehouse_documents.sql"
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "sha256": {
+    "internal/postgres/documents_numbering_critic_integration_test.go": "e435ff5faa74d1091178db78eff9d07cec5475ec20d19044e7a783458305bac7",
+    "internal/postgres/hardened_numbering_integration_test.go": "0aa6b18c06a463af929b141b7baaa9e03f5c49823091d35a952cba1115e30dc5",
+    "scripts/numbering_mutations.py": "cb93c315d703770b4de013827ce3b171dd63cf1dbfc1921821df8e778fb93ce9",
+    "scripts/test_numbering_mutations.py": "9394efe9a92ca38b2595c6e08a97e475898e27af53fd403fe2563c7106d4f4ad",
+    "internal/api/documents.go": "480b42f19137c2b80e496a06cc5f1ddb04218561b7dc3475a7a175b4b222b954",
+    "internal/postgres/documents.go": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "internal/postgres/hardened.go": "d9cc42075a3879fb7d9cbb2cec67a242374728478b341dcee831883a8def56e2",
+    "db/migrations/0010_document_numbering.sql": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b"
+  },
+  "integration_run": "first-green-events.jsonl",
+  "hardened_run": "hardened-characterization.go.txt",
+  "hardened_profile_receipt": "hardened-characterization.json",
+  "local_race": false
+}

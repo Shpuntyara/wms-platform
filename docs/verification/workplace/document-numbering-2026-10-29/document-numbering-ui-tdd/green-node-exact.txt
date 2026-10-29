@@ -1,0 +1,58 @@
+
+> test
+> node --test tests/*.test.mjs
+
+✔ critic: Russian scanner and keyboard input normalize without rounding (1.6888ms)
+✔ critic: quantity rejects coercion, exponents, signs, zeros and excessive precision (0.6207ms)
+✔ critic: remaining keeps micro-units above Number precision (0.2385ms)
+✔ critic: scan preserves significant zeros and refuses ambiguous or wrong codes (0.9264ms)
+✔ critic: receiving intent preserves exact quantity and captured version (1.7322ms)
+✔ critic: zero available target is valid for receiving; missing target is not (0.294ms)
+✔ critic: receiving refuses over-fulfilment and unsupported item precision (0.3307ms)
+✔ critic: line must belong to captured document and item (0.2464ms)
+✔ critic: a stale line object cannot borrow a freshly refreshed document version (0.2483ms)
+✔ critic: intent refuses inactive documents and document-kind mismatch (0.677ms)
+✔ critic: version cannot silently round or accept invalid optimistic lock (7.9455ms)
+✔ critic: receiving cannot cross organization, warehouse or owner (0.6476ms)
+✔ critic: putaway maps both balances and exact document line (1.5789ms)
+✔ critic: putaway uses available stock, never physical on-hand with reservations (0.4024ms)
+✔ critic: putaway refuses same position, foreign scope, owner and item (0.6806ms)
+✔ critic: putaway cannot launder lot, serial or stock-state identity (0.3639ms)
+✔ critic: serial operations accept one unit and refuse a multi-unit scan count (0.2304ms)
+✔ critic: closing requires every line fulfilled and every reservation released (0.229ms)
+✔ critic: displayed quantity retains every significant digit and Russian decimal separator (0.1342ms)
+✔ critic property: independently computed micro-unit differences remain exact (1.9315ms)
+✔ critic: a forbidden retry cannot disprove a previously unconfirmed commit (5.5317ms)
+✔ critic: reading a pending intent cannot mutate the saved request (0.3016ms)
+✔ critic: caller mutation while a request waits cannot alter the recorded write (0.4765ms)
+✔ property: demo numbering agrees with independent per-warehouse, kind and year counters including replays (574.4802ms)
+✔ demo assigns a PZ number after save without manual number or stock movement (35.8943ms)
+✔ demo numbers increment independently for PZ and MM (4.1443ms)
+✔ demo replays the same command after year rollover without consuming a number (4.0032ms)
+✔ demo series are isolated by warehouse and use each warehouse local calendar year (3.864ms)
+✔ demo reload retains a series and resumes after an existing automatic number (2.5794ms)
+✔ demo adapters opened before either save do not overwrite or duplicate document numbers (2.1268ms)
+✔ demo storage failure cannot consume a document number or expose an unsaved document (1.6853ms)
+✔ demo year falls back to the Polish calendar for older catalog data without timezone (1.6704ms)
+✔ demo preserves exact successive serials beyond the JavaScript safe integer range (2.1585ms)
+✔ demo treats the empty legacy number as automatic allocation, matching the backend (2.2967ms)
+✔ training mode receives the same command once, persists and exposes configured human names (8.9546ms)
+✔ a lost reply survives reload and retries the exact original request (2.7421ms)
+✔ a second command and double click cannot replace an unresolved intent (1.9854ms)
+✔ failure to persist stops a write before it reaches the server (1.7078ms)
+✔ a definitive version conflict clears the intent, a transport/server failure does not (1.1977ms)
+✔ recovery is scoped to employee, organization and warehouse (0.2684ms)
+✔ Polish is the product language, including errors and training data (4.5638ms)
+✔ unmapped API errors never expose English server detail to warehouse staff (3.5326ms)
+✔ a lost write gives recovery guidance, a failed read gives refresh guidance (0.7652ms)
+✔ specific Polish validation stays precise (0.2171ms)
+✔ property: exact positive decimals round-trip and subtraction cancels for 1500 generated cases (32.3894ms)
+✔ vendored Keycloak includes its runtime imports and exact pinned bytes (3.1726ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 788.288

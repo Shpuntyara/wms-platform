@@ -7,10 +7,23 @@ const sum = (a, b) => {
   const tail = String(value % 1000000n).padStart(6, '0').replace(/0+$/, '');
   return `${value / 1000000n}${tail ? '.' + tail : ''}`;
 };
+function nextNumber(state, body, now) {
+  const warehouse = state.workspace.catalog.warehouses.find(row => row.id === body.warehouse_id);
+  const year = new Intl.DateTimeFormat('en', {year:'numeric', timeZone:warehouse?.timezone || 'Europe/Warsaw'}).format(now);
+  const prefix = `${body.kind === 'receipt' ? 'PZ' : 'MM'}/${year}/`;
+  const last = state.documents.reduce((highest, doc) => {
+    if (doc.organization_id !== body.organization_id || doc.warehouse_id !== body.warehouse_id || doc.kind !== body.kind || !doc.number.startsWith(prefix)) return highest;
+    const serial = doc.number.slice(prefix.length);
+    if (!/^\d{6,}$/.test(serial)) return highest;
+    const value = BigInt(serial);
+    return value > highest ? value : highest;
+  }, 0n);
+  return prefix + String(last + 1n).padStart(6, '0');
+}
 function initial() {
   const catalog = {
     organizations: [{id: id(1), name: 'Firma magazynowa'}],
-    warehouses: [{id: id(2), organization_id: id(1), name: 'Magazyn Północny'}],
+    warehouses: [{id: id(2), organization_id: id(1), name: 'Magazyn Północny', timezone:'Europe/Warsaw'}],
     owners: [{id: id(3), organization_id: id(1), name: 'Północ · Zaopatrzenie'}],
     items: [
       {id: id(10), organization_id: id(1), sku: 'BOLT-M8', name: 'Śruba M8 × 40, ocynkowana', unit: 'szt.', quantity_scale: 0},
@@ -33,12 +46,13 @@ function initial() {
 
 // Isolated synthetic training data. This adapter never contacts the warehouse API.
 export class DemoWarehouse {
-  constructor(storage) {
+  constructor(storage, {now = () => new Date()} = {}) {
     this.storage = storage;
+    this.now = now;
     this.state = JSON.parse(storage.getItem('wms-training-v2') || 'null') || initial();
   }
   async request(path, body, command) {
-    const state = structuredClone(this.state);
+    const state = structuredClone(JSON.parse(this.storage.getItem('wms-training-v2') || 'null') || this.state);
     let data;
     const clean = path.split('?')[0];
     if (command && state.commands[command]) {
@@ -54,8 +68,9 @@ export class DemoWarehouse {
       return {data, pagination: {next_cursor: null}};
     }
     if (clean === '/api/v1/documents') {
-      const document = {id: crypto.randomUUID(), ...scope, owner_id: body.owner_id, kind: body.kind, number: body.number, state: 'draft', version: 1, lines: body.lines.map(line => ({id: crypto.randomUUID(), item_id: line.item_id, requested_qty: line.quantity, fulfilled_qty: '0', reserved_qty: '0'}))};
-      if (state.documents.some(doc => doc.kind === body.kind && doc.number === body.number)) throw Object.assign(new Error('Numer dokumentu już istnieje'), {status: 409});
+      const number = body.number === '' || body.number == null ? nextNumber(state, body, this.now()) : body.number;
+      const document = {id: crypto.randomUUID(), organization_id:body.organization_id, warehouse_id:body.warehouse_id, owner_id: body.owner_id, kind: body.kind, number, state: 'draft', version: 1, lines: body.lines.map(line => ({id: crypto.randomUUID(), item_id: line.item_id, requested_qty: line.quantity, fulfilled_qty: '0', reserved_qty: '0'}))};
+      if (state.documents.some(doc => doc.warehouse_id === body.warehouse_id && doc.kind === body.kind && doc.number === number)) throw Object.assign(new Error('Numer dokumentu już istnieje'), {status: 409});
       state.documents.unshift(document);
       data = {document_id: document.id, document_version: 1, state: 'draft', lines: document.lines};
     } else if (clean.endsWith('/transitions')) {

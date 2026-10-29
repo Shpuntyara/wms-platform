@@ -1,0 +1,9 @@
+-test.shuffle 1793290607332165600
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/receipt
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/transfer
+--- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions (0.17s)
+    --- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/receipt (0.04s)
+    --- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/transfer (0.01s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	0.193s

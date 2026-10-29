@@ -1,0 +1,29 @@
+{
+  "files_sha256": {
+    "internal/postgres/documents_numbering_critic_integration_test.go": "e435ff5faa74d1091178db78eff9d07cec5475ec20d19044e7a783458305bac7",
+    "internal/postgres/hardened_numbering_integration_test.go": "0aa6b18c06a463af929b141b7baaa9e03f5c49823091d35a952cba1115e30dc5",
+    "scripts/numbering_mutations.py": "876da84591e46cc2a32198a9bba4a7be61d36e8c3be93a67103ae7b450664bba",
+    "scripts/test_numbering_mutations.py": "bbb193ba0cdc7ae4a9d9973db30f4b6fea86dd863e8696b63f38025c967014cc"
+  },
+  "integration_pass_events": 34,
+  "integration_skipped": 0,
+  "generated_histories": 48,
+  "hardened_characterization_pass": true,
+  "hardened_local_race": false,
+  "mutations": {
+    "numbering-mutations": {
+      "status": "passed",
+      "killed": 10,
+      "survived": 0,
+      "invalid": 0
+    },
+    "numbering-api-mutations": {
+      "status": "passed",
+      "killed": 3,
+      "survived": 0,
+      "invalid": 0
+    }
+  },
+  "catalog_tests": 4,
+  "note": "No implementation SQL/Go/JS modified by critic. New signed smoke is characterization; actual feature RED and SQL whitespace RED predate implementation. Final full CI belongs to root."
+}

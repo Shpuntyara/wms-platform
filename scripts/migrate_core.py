@@ -20,6 +20,7 @@ PUBLISHED_MIGRATIONS = (
     '0007_background_jobs.sql',
     '0008_background_health_and_policy_v2.sql',
     '0009_warehouse_documents.sql',
+    '0010_document_numbering.sql',
 )
 
 def source(path):

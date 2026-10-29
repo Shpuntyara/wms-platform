@@ -1,0 +1,138 @@
+✖ demo assigns a PZ number after save without manual number or stock movement (5.2759ms)
+✖ demo numbers increment independently for PZ and MM (1.6105ms)
+✖ demo replays the same command after year rollover without consuming a number (0.8728ms)
+✖ demo series are isolated by warehouse and use each warehouse local calendar year (0.5511ms)
+✖ demo reload retains a series and resumes after an existing automatic number (0.6838ms)
+✖ demo adapters opened before either save do not overwrite or duplicate document numbers (0.6644ms)
+✖ demo storage failure cannot consume a document number or expose an unsaved document (2.2886ms)
+✖ demo year falls back to the Polish calendar for older catalog data without timezone (1.239ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 0
+ℹ fail 8
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.4118
+
+✖ failing tests:
+
+test at web\tests\demo-numbering.test.mjs:35:1
+✖ demo assigns a PZ number after save without manual number or stock movement (5.2759ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:38:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:46:1
+✖ demo numbers increment independently for PZ and MM (1.6105ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:48:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:54:1
+✖ demo replays the same command after year rollover without consuming a number (0.8728ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:57:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:66:1
+✖ demo series are isolated by warehouse and use each warehouse local calendar year (0.5511ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:69:19)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:79:1
+✖ demo reload retains a series and resumes after an existing automatic number (0.6838ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:85:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:90:1
+✖ demo adapters opened before either save do not overwrite or duplicate document numbers (0.6644ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:93:14)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:100:1
+✖ demo storage failure cannot consume a document number or expose an unsaved document (2.2886ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:109:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }
+
+test at web\tests\demo-numbering.test.mjs:112:1
+✖ demo year falls back to the Polish calendar for older catalog data without timezone (1.239ms)
+  AssertionError [ERR_ASSERTION]: the assigned number must be available through GET
+      at create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:31:10)
+      at async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:118:17)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'undefined',
+    expected: /^(PZ|MM)\/\d{4}\/\d{6,}$/,
+    operator: 'match',
+    diff: 'simple'
+  }

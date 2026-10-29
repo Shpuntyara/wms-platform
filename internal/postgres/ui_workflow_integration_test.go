@@ -6,14 +6,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"testing"
 	"time"
 
 	"github.com/Shpuntyara/wms-platform/internal/api"
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
 	"github.com/Shpuntyara/wms-platform/internal/modules"
 	"github.com/Shpuntyara/wms-platform/internal/ui"
 	"github.com/Shpuntyara/wms-platform/web"
@@ -85,7 +88,6 @@ func TestBrowserReceiptAndPutawayAgainstPostgres(t *testing.T) {
 	if err := os.MkdirAll(evidence, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	number := "PZ-TEST-" + f.org[:8]
 	ctx, cancel := context.WithTimeout(t.Context(), 2*time.Minute)
 	defer cancel()
 	command := exec.CommandContext(ctx, node, cli, "test", "--config", "playwright.live.config.mjs")
@@ -95,7 +97,6 @@ func TestBrowserReceiptAndPutawayAgainstPostgres(t *testing.T) {
 		"WMS_UI_LIVE_ACTOR="+f.actor,
 		"WMS_UI_LIVE_OWNER="+f.owner,
 		"WMS_UI_LIVE_ITEM="+f.item,
-		"WMS_UI_LIVE_NUMBER="+number,
 		"WMS_UI_LIVE_ARTIFACTS="+filepath.Join(evidence, "browser"),
 	)
 	output, runErr := command.CombinedOutput()
@@ -106,14 +107,49 @@ func TestBrowserReceiptAndPutawayAgainstPostgres(t *testing.T) {
 	if runErr != nil {
 		t.Fatalf("real PostgreSQL browser workflow failed: %v", runErr)
 	}
+	var facts struct {
+		ReceiptID     string `json:"receipt_id"`
+		ReceiptNumber string `json:"receipt_number"`
+		PutawayID     string `json:"putaway_id"`
+		PutawayNumber string `json:"putaway_number"`
+	}
+	if err := filepath.WalkDir(filepath.Join(evidence, "browser"), func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if entry.IsDir() || entry.Name() != "api-replay.json" {
+			return nil
+		}
+		if facts.ReceiptID != "" {
+			return fmt.Errorf("multiple browser workflow receipts")
+		}
+		raw, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		return json.Unmarshal(raw, &facts)
+	}); err != nil {
+		t.Fatal(err)
+	}
+	for _, identifier := range []string{facts.ReceiptID, facts.PutawayID} {
+		if _, err := inventory.NormalizeID(identifier); err != nil {
+			t.Fatal("missing generated document identity", err)
+		}
+	}
+	if !regexp.MustCompile(`^PZ/[0-9]{4}/[0-9]{6,}$`).MatchString(facts.ReceiptNumber) || !regexp.MustCompile(`^MM/[0-9]{4}/[0-9]{6,}$`).MatchString(facts.PutawayNumber) {
+		t.Fatalf("database-assigned PZ/MM numbers are missing: %+v", facts)
+	}
 
 	// These assertions inspect committed kernel state independently of the UI.
 	checks := []struct{ name, got, want string }{
 		{"source returns to initial stock after receiving and putaway", f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, f.source), "10.000000"},
 		{"target contains exactly the received amount", f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, f.target), "4.000000"},
 		{"stock total increases once despite the lost committed response", f.scalar(`SELECT sum(on_hand)::text FROM inventory.stock_balances WHERE organization_id=$1 AND owner_id=$2`, f.org, f.owner), "14.000000"},
-		{"one closed receipt was created", f.scalar(`SELECT count(*) FROM warehouse.documents WHERE organization_id=$1 AND number=$2 AND kind='receipt' AND state='closed'`, f.org, number), "1"},
-		{"one receipt movement was committed", f.scalar(`SELECT count(*) FROM inventory.movements m JOIN warehouse.document_lines l ON l.id=m.document_line_id JOIN warehouse.documents d ON d.id=l.document_id WHERE d.organization_id=$1 AND d.number=$2 AND m.kind='receipt'`, f.org, number), "1"},
+		{"one closed receipt was created with its assigned number", f.scalar(`SELECT count(*) FROM warehouse.documents WHERE organization_id=$1 AND number=$2 AND id=$3 AND kind='receipt' AND state='closed'`, f.org, facts.ReceiptNumber, facts.ReceiptID), "1"},
+		{"one receipt movement was committed", f.scalar(`SELECT count(*) FROM inventory.movements m JOIN warehouse.document_lines l ON l.id=m.document_line_id JOIN warehouse.documents d ON d.id=l.document_id WHERE d.organization_id=$1 AND d.number=$2 AND m.kind='receipt'`, f.org, facts.ReceiptNumber), "1"},
+		{"receipt request reached the kernel without a browser-generated number", f.scalar(`SELECT count(*) FROM platform.operations WHERE organization_id=$1 AND operation_type='document_create' AND result->>'document_id'=$2 AND NOT (request->'input' ? 'number')`, f.org, facts.ReceiptID), "1"},
+		{"putaway request reached the kernel without a browser-generated number", f.scalar(`SELECT count(*) FROM platform.operations WHERE organization_id=$1 AND operation_type='document_create' AND result->>'document_id'=$2 AND NOT (request->'input' ? 'number')`, f.org, facts.PutawayID), "1"},
+		{"closed putaway retains its database-assigned MM number", f.scalar(`SELECT count(*) FROM warehouse.documents WHERE id=$1 AND number=$2 AND organization_id=$3 AND kind='transfer' AND state='closed'`, facts.PutawayID, facts.PutawayNumber, f.org), "1"},
 		{"one separate closed putaway document was created", f.scalar(`SELECT count(*) FROM warehouse.documents WHERE organization_id=$1 AND kind='transfer' AND state='closed'`, f.org), "1"},
 		{"one putaway movement was committed", f.scalar(`SELECT count(*) FROM inventory.movements WHERE organization_id=$1 AND kind='transfer'`, f.org), "1"},
 		{"putaway leaves no reservations", f.scalar(`SELECT count(*) FROM inventory.reservations WHERE organization_id=$1 AND active_qty>0`, f.org), "0"},
@@ -125,7 +161,7 @@ func TestBrowserReceiptAndPutawayAgainstPostgres(t *testing.T) {
 			t.Errorf("%s: got %s want %s", check.name, check.got, check.want)
 		}
 	}
-	raw, err := json.MarshalIndent(map[string]any{"organization_id": f.org, "receipt_number": number, "checks": results}, "", "  ")
+	raw, err := json.MarshalIndent(map[string]any{"organization_id": f.org, "receipt_id": facts.ReceiptID, "receipt_number": facts.ReceiptNumber, "putaway_id": facts.PutawayID, "putaway_number": facts.PutawayNumber, "checks": results}, "", "  ")
 	if err != nil {
 		t.Fatal(err)
 	}

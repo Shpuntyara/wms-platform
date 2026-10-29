@@ -1,0 +1,29 @@
+FFF
+======================================================================
+FAIL: test_an_unavailable_document_command_is_an_invalid_campaign (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_an_unavailable_document_command_is_an_invalid_campaign)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 36, in test_an_unavailable_document_command_is_an_invalid_campaign
+    self.assertTrue(callable(extract),'Missing SQL definition must fail closed')
+AssertionError: False is not true : Missing SQL definition must fail closed
+
+======================================================================
+FAIL: test_mutations_follow_the_latest_document_command_definition (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_mutations_follow_the_latest_document_command_definition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 23, in test_mutations_follow_the_latest_document_command_definition
+    self.assertTrue(callable(extract),'Mutation gate must select the current command rather than its superseded migration')
+AssertionError: False is not true : Mutation gate must select the current command rather than its superseded migration
+
+======================================================================
+FAIL: test_numbering_migration_cannot_be_omitted_from_an_update_package (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_numbering_migration_cannot_be_omitted_from_an_update_package)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 18, in test_numbering_migration_cannot_be_omitted_from_an_update_package
+    with self.assertRaisesRegex(ValueError,'Missing published migration.*0010_document_numbering'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.023s
+
+FAILED (failures=3)

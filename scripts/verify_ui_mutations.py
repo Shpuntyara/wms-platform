@@ -53,6 +53,18 @@ def catalog():
         ('journal_retry_rejection_forgets_commit', 'journal.js', 'if (!recovering && [400,', 'if ([400,'),
         ('journal_uncaptured_request_alias', 'journal.js', 'body: structuredClone(body)', 'body'),
         ('journal_server_failure_forgotten', 'journal.js', '[400, 403, 404, 409, 413, 415, 422]', '[400, 403, 404, 409, 413, 415, 422, 503]'),
+        ('demo_number_starts_at_zero', 'demo.js', "String(last + 1n).padStart(6, '0')", "String(last).padStart(6, '0')"),
+        ('demo_number_counter_reset', 'demo.js', "String(last + 1n).padStart(6, '0')", "String(1n).padStart(6, '0')"),
+        ('demo_number_float_rounding', 'demo.js', 'BigInt(serial)', 'BigInt(Number(serial))'),
+        ('demo_empty_number_not_automatic', 'demo.js', "body.number === '' || ", ''),
+        ('demo_mm_uses_pz_series', 'demo.js', "body.kind === 'receipt' ? 'PZ' : 'MM'", "'PZ'"),
+        ('demo_number_warehouse_shared', 'demo.js', 'doc.warehouse_id !== body.warehouse_id || ', ''),
+        ('demo_number_year_uses_utc', 'demo.js', "warehouse?.timezone || 'Europe/Warsaw'", "'UTC'"),
+        ('demo_number_year_frozen', 'demo.js', '.format(now)', ".format(new Date('2026-06-01T00:00:00Z'))"),
+        ('demo_number_uses_stale_tab_state', 'demo.js', "structuredClone(JSON.parse(this.storage.getItem('wms-training-v2') || 'null') || this.state)", 'structuredClone(this.state)'),
+        ('demo_unsaved_number_exposed', 'demo.js', "    this.storage.setItem('wms-training-v2', JSON.stringify(state));\n    this.state = state;", "    this.state = state;\n    this.storage.setItem('wms-training-v2', JSON.stringify(state));"),
+        ('demo_replay_allocates_another_number', 'demo.js', '      return structuredClone(prior.result);', '      // Incorrectly fall through and allocate another document.'),
+        ('demo_replay_accepts_changed_body', 'demo.js', 'prior.body !== JSON.stringify(body)', 'false'),
     ]
 
 
@@ -69,8 +81,8 @@ def main():
     parser.add_argument('--output', type=Path, default=Path('work/ui-mutations.json'))
     args = parser.parse_args()
     root = args.root.resolve()
-    tests = ['tests/critic-domain.test.mjs', 'tests/critic-journal.test.mjs', 'tests/journal.test.mjs']
-    sources = {name: (root / 'web/src' / name).read_text(encoding='utf-8') for name in ('domain.js', 'journal.js')}
+    tests = ['tests/critic-domain.test.mjs', 'tests/critic-journal.test.mjs', 'tests/journal.test.mjs', 'tests/demo-numbering.test.mjs']
+    sources = {name: (root / 'web/src' / name).read_text(encoding='utf-8') for name in ('domain.js', 'journal.js', 'demo.js')}
     hashes = {str(path.relative_to(root)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest()
               for path in [*(root / 'web/src' / name for name in sources), *(root / 'web' / name for name in tests)]}
     report = {'passed': False, 'sources_and_tests_sha256': hashes, 'tests': tests,

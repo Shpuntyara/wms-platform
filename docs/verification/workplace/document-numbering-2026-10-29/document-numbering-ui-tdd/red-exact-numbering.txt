@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: demo preserves exact successive serials beyond the JavaScript safe integer range
+not ok 1 - demo preserves exact successive serials beyond the JavaScript safe integer range
+  ---
+  duration_ms: 25.2658
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\demo-numbering.test.mjs:122:1'
+  failureType: 'testCodeFailure'
+  error: 'A valid document must save: Numer dokumentu już istnieje'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  operator: 'fail'
+  stack: |-
+    create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:29:25)
+    async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:127:17)
+    async Test.run (node:internal/test_runner/test:1125:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: demo treats the empty legacy number as automatic allocation, matching the backend
+not ok 2 - demo treats the empty legacy number as automatic allocation, matching the backend
+  ---
+  duration_ms: 1.9525
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\demo-numbering.test.mjs:131:1'
+  failureType: 'testCodeFailure'
+  error: 'the assigned number must be available through GET'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: ''
+  operator: 'match'
+  stack: |-
+    create (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:32:10)
+    async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/demo-numbering.test.mjs:133:17)
+    async Test.run (node:internal/test_runner/test:1125:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 114.857

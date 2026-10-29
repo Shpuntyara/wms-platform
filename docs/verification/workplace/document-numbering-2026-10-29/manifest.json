@@ -1,0 +1,223 @@
+{
+  "status": "local verification complete; final-head CI and VM receipts collected separately",
+  "feature": "Transactional automatic PZ/MM numbers and ordinary Polish employee forms",
+  "primary_preimplementation_RED": [
+    "API omitted/empty/null number assertions before HTTP validation change",
+    "Direct real-PostgreSQL SQL/Store assertions before migration0010",
+    "Independent initial critic failures and direct SQL whitespace cases",
+    "UI manual-number-field assertion and demo numbering assertions before implementation",
+    "Exact integer demo numbering beyond2^53 and empty-string allocation assertions before their correction"
+  ],
+  "provenance_limits": [
+    "The separate critic property-red run does not attest which SQL implementation was active. It is retained as diagnostic evidence, not proof of RED before migration0010.",
+    "The signed onprem-v1 smoke is GREEN characterization after implementation, not backdated RED.",
+    "Local mutation reports name their base Git HEAD and exact candidate source hashes; the final CI reruns the complete campaign on the eventual immutable commit."
+  ],
+  "local_checks": {
+    "python_tests": 151,
+    "node_tests": 46,
+    "browser_tests": 9,
+    "UI_mutants_killed": 37,
+    "numbering_SQL_mutants_killed": 10,
+    "HTTP_numbering_mutants_killed": 3,
+    "previous_SQL_document_mutants_killed": 11,
+    "survived": 0,
+    "invalid": 0
+  },
+  "historical_migrations_modified": false,
+  "real_employee_password_matches": 0,
+  "files": [
+    {
+      "path": "document-numbering-api-tdd/red.jsonl",
+      "sha256": "bbb9c9d3cc750f0b743362f6881f0049bf0eb877dbeae097985fc9eeeb1adfa3"
+    },
+    {
+      "path": "document-numbering-api-tdd/red-source-hashes.json",
+      "sha256": "373c971c40bd2aefbe1d0c301fadb6a8200f80a34a87040a4bca5b28e45224b2"
+    },
+    {
+      "path": "document-numbering-api-tdd/green-source-hashes.json",
+      "sha256": "8faaa271eeaefc465142782228bac659ffa14cb09672b0789e435ba5693ebcca"
+    },
+    {
+      "path": "document-numbering-api-tdd/api-race.txt",
+      "sha256": "39bfb41c71a556ce2b657e7f3b5916dc590cc3edc1e59e65f0076d59e97de866"
+    },
+    {
+      "path": "document-numbering-api-tdd/live-pg-green.jsonl",
+      "sha256": "91261669c14ad46fdd3c41032bdb8386f706c8c1afb077c8b6b71d0f536a8b92"
+    },
+    {
+      "path": "document-numbering-api-tdd/numbering-and-live-race.jsonl",
+      "sha256": "621037d92a6359ae314ba3cf94d8faab2471b6fd94ef286040afe3ef563efea6"
+    },
+    {
+      "path": "document-numbering-tdd/red.jsonl",
+      "sha256": "7ad53bea7b6582f60499fb6333bdf97966671808e6cd85331a5f775042c23b9f"
+    },
+    {
+      "path": "document-numbering-tdd/red-hashes.json",
+      "sha256": "950f5895f832b0b35e78b80b034b9ffa9fd1ddb32efc8631fb62ee33395b94ee"
+    },
+    {
+      "path": "document-numbering-tdd/green.jsonl",
+      "sha256": "e73dc0b7ffdd9374964c7df087a5e436363152a8ce40b048ba55521b2e74b632"
+    },
+    {
+      "path": "document-numbering-tdd/green-hashes.json",
+      "sha256": "6246b65f630544cabc48a87f78101c22f92f826a4e7a783b9374df274732e2d0"
+    },
+    {
+      "path": "document-numbering-tdd/race-green.jsonl",
+      "sha256": "61e471699d2641243eec6f9ae0f9f727936d0a0453718d83c603d6be6422c23a"
+    },
+    {
+      "path": "document-numbering-critic-tdd/red-events.jsonl",
+      "sha256": "5054bd4a4cab4e933541db0a0cde3bfb85e4508333a34e5de728d02d30dab947"
+    },
+    {
+      "path": "document-numbering-critic-tdd/red-hashes.json",
+      "sha256": "98151e535dbefb63fe73073dcb7780e53982c5f208ad0c4abd31c623b43b1898"
+    },
+    {
+      "path": "document-numbering-critic-tdd/red-summary.json",
+      "sha256": "ee24986bec7f6e59911c8598cc9f244be4f596bad75200c7284a9d966b2a64de"
+    },
+    {
+      "path": "document-numbering-critic-tdd/first-green-events.jsonl",
+      "sha256": "4fbfbb59180b9089225576e640e996c06a8eb2feb2812ebee16d22c2392cb7ed"
+    },
+    {
+      "path": "document-numbering-critic-tdd/green-hashes.json",
+      "sha256": "294fbd84559c20e1a705edd2c229c6ea006bf486bd93c8ac699c50876307cd14"
+    },
+    {
+      "path": "document-numbering-critic-tdd/final-critic-summary.json",
+      "sha256": "304a5496aea8ccbdd10d749818adf217a59238f8fa1fd9e67e02241609e17b91"
+    },
+    {
+      "path": "document-numbering-critic-tdd/numbering-mutations.json",
+      "sha256": "61c6c56fcfee5df3ff9383ed5146b1576ac7af64331e514ae4393bf43554ae83"
+    },
+    {
+      "path": "document-numbering-critic-tdd/numbering-api-mutations.json",
+      "sha256": "01f277cce10fef988270aa3ba8d651b9cacb68fb7b788c851dcc1879144b349c"
+    },
+    {
+      "path": "document-numbering-critic-tdd/numbering-mutation-assertions.json",
+      "sha256": "3f0d155a5bef0e583d750ede36ef9d995fa5a5848c1a3d1c13a321229c93ef34"
+    },
+    {
+      "path": "document-numbering-critic-tdd/hardened-characterization.go.txt",
+      "sha256": "0583ae2268aceda70e7ec00a9f7d9502cfcc0f7a5bd1dae86b948ef2da88188e"
+    },
+    {
+      "path": "document-numbering-critic-tdd/catalog-pattern-red.txt",
+      "sha256": "3b9acff15b060b30726d92d5c115f6719518a82e62ed656fbcc980226b606606"
+    },
+    {
+      "path": "document-numbering-critic-tdd/catalog-pattern-red-hashes.json",
+      "sha256": "169c6a34423ce4a880cea39edb83ac7a7f91510d8d76c3fae0bf981827df16e9"
+    },
+    {
+      "path": "document-numbering-critic-tdd/catalog-pattern-green.txt",
+      "sha256": "1a026806316eeae9c38781c7e7a80af15034e6706dc7a35288645ff61b081025"
+    },
+    {
+      "path": "document-numbering-critic-tdd/property-red-events.jsonl",
+      "sha256": "f4ce1a5b0c20cac59712b5ab35ca7f9e519bdb0bb986b2b521b0715c428f128f"
+    },
+    {
+      "path": "document-numbering-critic-tdd/property-red-hashes.json",
+      "sha256": "4fb1bb90dd4a6b28d8071afb00b97c69aca1f3629b61439199f959d0f6bbed87"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-demo.txt",
+      "sha256": "b3966e5cdf29ecb185f399a85589a449d325a3fba7b00fc748e360e06117cb40"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-browser.txt",
+      "sha256": "4b8f75f7ad21b1e903789e953569592f1ca4f2c1df63b7fb204d75d24a42e6cc"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-sha256.txt",
+      "sha256": "3ed7a0c7569b50721cec1bf7db1c7048a76915bfd61d6018e6eb8566420d0440"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-property.txt",
+      "sha256": "e03981fd3295620cf2bac762d3fd214b7a15110aa8b3ac867025dd90528d9a81"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-property-sha256.json",
+      "sha256": "b92232f891a9eccce5769f47527f7ccb6ef33955f61da3ec6d52d92e29753700"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-exact-numbering.txt",
+      "sha256": "fbdff200f30edbb431ebcc3945a4416286e5f8368a45c90a2111a7aa1ed2f6af"
+    },
+    {
+      "path": "document-numbering-ui-tdd/red-exact-numbering-sha256.txt",
+      "sha256": "07502cd0722d5d57137369ba54ae8174cae6edf3b7d825ea280066065fc017b9"
+    },
+    {
+      "path": "document-numbering-ui-tdd/green-node-exact.txt",
+      "sha256": "4e3ee438e15cd3a50a96523dde5f4e667172458b9775ae4d0c113a3ad60f49df"
+    },
+    {
+      "path": "document-numbering-ui-tdd/green-browser-exact.txt",
+      "sha256": "fba42782b8eed6291ba96206f43df2d70defa805f6997400965828b204f8e069"
+    },
+    {
+      "path": "document-numbering-ui-tdd/green-exact-sha256.txt",
+      "sha256": "c9a36cf7d520d442442feae851fd3b518bbb0228af2ca613794c3a272e0e53ed"
+    },
+    {
+      "path": "document-numbering-ui-tdd/mutations-exact.json",
+      "sha256": "94b9cc56bae781a38d389bcc1ecd250ed8fbdf9a892e395ca58472c4be8b89e7"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/red.txt",
+      "sha256": "79d4c54e81d5344d4771a9be5477e862dcbc90d1f7266ec471a97dfc057d8723"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/red-source-hashes.json",
+      "sha256": "651fae6f07d6be1e57a8b90b30ede88e0002419b5dc7e2ae9f192cc82ab45e99"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/green.txt",
+      "sha256": "171a16540a205aea5e6bc0173b83de1691f16b4a74fe0898d476996c6c636b42"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/green-source-hashes.json",
+      "sha256": "79295bf0a66022460c4a171705bb4162c77dfc07aaacdabaeefce60f7ebb3506"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/api-catalog-red.txt",
+      "sha256": "4222363813be7a6e5488ae7fa6797b04275b4df9e8ca4e4dacc52e48fc370e1d"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/api-catalog-red-hashes.json",
+      "sha256": "24be7958fa1dd1cc91f05d1283d1c6c7b14336516cced12652c80f7aa12df11d"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/sql-catalog-wiring-red.txt",
+      "sha256": "51565432e4bd9b9893c34e958e025eeb8deadbd290c7bad4b618e96c817c04d7"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/signed-numbering-gate-red.txt",
+      "sha256": "2b67d83eaf89b600fb074b516a55d4b30c967305ecde16620c56305987cc58da"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/signed-numbering-gate-red-hashes.json",
+      "sha256": "e9bc0a3926c73782f5b3855caaf366f837f2ed9824cd7661ea9ffd848e4e7d03"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/all-python-tests.txt",
+      "sha256": "de282e4ae2b6dc6cc305b34102fdd3969fbf1476d8a6fa102969a65c2f8e3afc"
+    },
+    {
+      "path": "document-numbering-pipeline-tdd/legacy-document-mutations.json",
+      "sha256": "0e8abb0fe3f329ec3233da3c9f299090ddda57fecd38e4ae2c1299af398bda6a"
+    }
+  ]
+}

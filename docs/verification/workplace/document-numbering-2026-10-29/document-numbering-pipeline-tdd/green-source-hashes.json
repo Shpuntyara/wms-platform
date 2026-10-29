@@ -1,0 +1,5 @@
+{
+  "scripts/migrate_core.py": "900eb9e159b6cab927be9a3a34b1e3512c447daf80268a2bcdc9dedded385723",
+  "scripts/mutation_runner.py": "8cd3df7d11dc8407a131e44db7dca6767cad050c31c898d41475c3f691ce2f64",
+  "scripts/test_document_numbering_migration_contract.py": "87925baf50f0f15f7dfee8cf15e8c47e201ce8bfe32cd8448cbe63ea9f406c3f"
+}

@@ -15,6 +15,7 @@ import sys
 import time
 from urllib.parse import urlsplit, unquote, parse_qsl
 import uuid
+from numbering_mutations import load_numbering_mutations
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCUMENT_TESTS = r'^Test(WarehouseReceiptPutawayPickAndShipViaAPI|DocumentCommandsRejectScopeAndInvalidLines|DocumentRetryIsAtomicAndSQLChecksPermissions|DocumentCommandProperties|DocumentInvalidGeneratedLineRollsBackWholeCreate|DocumentAdversarialCommandIdentityAndAuthorization|DocumentAdversarialConcurrentCommands)$'
@@ -24,6 +25,21 @@ def replace_once(source, before, after):
     if before == after or source.count(before) != 1:
         raise ValueError('Mutation must change exactly one known source site')
     return source.replace(before, after, 1)
+
+
+def document_function_source(root):
+    current = None
+    for path in sorted((root / 'db/migrations').glob('*.sql')):
+        text = path.read_text(encoding='utf8')
+        definitions = list(re.finditer(r'CREATE(?: OR REPLACE)? FUNCTION warehouse\.command_document\(', text))
+        if definitions:
+            start = definitions[-1].start()
+            end = text.index('END $$;', start) + len('END $$;')
+            sql = text[start:end].replace('CREATE FUNCTION ', 'CREATE OR REPLACE FUNCTION ', 1)
+            current = path.relative_to(root).as_posix(), sql
+    if current is None:
+        raise ValueError('No current document command definition is available')
+    return current
 
 
 def classify_go_run(code, events):
@@ -156,6 +172,10 @@ def load_core_mutations(root):
     return cases
 
 
+def load_campaign_mutations(root):
+    return load_core_mutations(root) + load_numbering_mutations()
+
+
 def python_mutants():
     return [
         ('migration_newline_normalization_removed', "raw = path.read_bytes().replace(b'\\r\\n', b'\\n')", 'raw = path.read_bytes()', False),
@@ -239,11 +259,9 @@ def run(args):
         raise RuntimeError('Unmutated document tests must pass with zero skips before mutation testing')
 
     report['source_sha256_lf'] = {path: hashlib.sha256((ROOT / path).read_bytes().replace(b'\r\n', b'\n')).hexdigest() for path in ('internal/postgres/documents.go', 'internal/postgres/store.go', 'scripts/migrate_core.py')}
-    document_sql = (ROOT / 'db/migrations/0009_warehouse_documents.sql').read_text(encoding='utf8')
-    start = document_sql.index('CREATE FUNCTION warehouse.command_document(')
-    end = document_sql.index('END $$;', start) + len('END $$;')
-    function_sql = document_sql[start:end].replace('CREATE FUNCTION ', 'CREATE OR REPLACE FUNCTION ', 1)
-    cases = [(name, 'sql', 'db/migrations/0009_warehouse_documents.sql', before, after, DOCUMENT_TESTS) for name, before, after in sql_mutants()]
+    document_source, function_sql = document_function_source(ROOT)
+    report['source_sha256_lf'][document_source] = hashlib.sha256((ROOT / document_source).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
+    cases = [(name, 'sql', document_source, before, after, DOCUMENT_TESTS) for name, before, after in sql_mutants()]
     cases += [
         ('go_commit_error_loses_retry_guidance', 'go', 'internal/postgres/documents.go', 'return nil, &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}', 'return nil, translate(err)', '^TestDocumentCommandsRecoverFromCommitTransportFailure$'),
         ('go_definitive_commit_rejection_becomes_retry', 'go', 'internal/postgres/documents.go', 'if _, ok := errors.AsType[*pgconn.PgError](err); ok {', 'if _, ok := errors.AsType[*pgconn.PgError](err); ok && false {', '^TestDocumentCommandsPreserveDefinitiveCommitRejection$'),
@@ -252,32 +270,34 @@ def run(args):
         ('go_global_document_candidate_limit_removed', 'go', 'internal/postgres/store.go', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id LIMIT $%d) ", len(args), len(args))', 'fmt.Sprintf(" ORDER BY id LIMIT $%d) AS candidates ORDER BY candidates.id) ", len(args))', '^TestDocumentAdversarialOwnerFanoutHydratesOnlyPage$'),
     ]
     try:
-        core = load_core_mutations(ROOT)
-        core_by_name = {case['name']: case for case in core}
-        known_names = {case[0] for case in cases} | set(core_by_name) | {case[0] for case in python_mutants()}
+        catalog = load_campaign_mutations(ROOT)
+        core = [case for case in catalog if case['domain'] != 'document_numbering']
+        catalog_by_name = {case['name']: case for case in catalog}
+        known_names = {case[0] for case in cases} | set(catalog_by_name) | {case[0] for case in python_mutants()}
         unknown = set(args.case or []) - known_names
         if unknown:
             raise ValueError('Unknown mutation case: ' + ', '.join(sorted(unknown)))
-        for path in sorted({case['source'] for case in core if case['kind'] == 'go'}):
+        for path in sorted({case['source'] for case in catalog if case['kind'] == 'go'} | {'scripts/numbering_mutations.py','internal/postgres/documents_numbering_critic_integration_test.go'}):
             report['source_sha256_lf'][path] = hashlib.sha256((ROOT / path).read_bytes().replace(b'\r\n', b'\n')).hexdigest()
         report['core_domains'] = {domain: sum(case['domain'] == domain for case in core) for domain in ('inventory', 'authorization', 'background', 'boundary')}
+        report['numbering_cases'] = [case['name'] for case in catalog if case['domain'] == 'document_numbering']
         report['core_baselines'] = {}
-        for package in sorted({case['package'] for case in core}):
+        for package in sorted({case['package'] for case in catalog}):
             baseline_directory = run_root / ('baseline-' + package.removeprefix('./').replace('/', '-'))
             baseline_directory.mkdir()
-            pattern = '|'.join(sorted({case['pattern'] for case in core if case['package'] == package}))
+            pattern = '|'.join(sorted({case['pattern'] for case in catalog if case['package'] == package}))
             result = run_go(args.go, pattern, baseline_directory, os.environ.copy(), package=package)
             report['core_baselines'][package] = result
             if result['status'] != 'survived':
                 raise RuntimeError('Unmutated core baseline failed: ' + package)
-        cases.extend((case['name'], case['kind'], case.get('source', case.get('signature')), case['before'], case['after'], case['pattern']) for case in core)
+        cases.extend((case['name'], case['kind'], case.get('source', case.get('signature')), case['before'], case['after'], case['pattern']) for case in catalog)
         for name, kind, path, before, after, pattern in cases:
             if args.case and name not in args.case:
                 continue
             directory = run_root / name
             directory.mkdir()
             if kind == 'sql_function':
-                original = psql("SELECT pg_get_functiondef('" + core_by_name[name]['signature'] + "'::regprocedure);", admin_name)
+                original = psql("SELECT pg_get_functiondef('" + catalog_by_name[name]['signature'] + "'::regprocedure);", admin_name)
             else:
                 original = function_sql if kind == 'sql' else (ROOT / path).read_text(encoding='utf8')
             changed = replace_once(original, before, after)
@@ -296,13 +316,13 @@ def run(args):
                 else:
                     overlay = directory / 'overlay.json'
                     overlay.write_text(json.dumps({'Replace': {str(ROOT / path): str(directory / 'mutant.txt')}}), encoding='utf8')
-                package = core_by_name[name]['package'] if name in core_by_name else './internal/postgres'
+                package = catalog_by_name[name]['package'] if name in catalog_by_name else './internal/postgres'
                 outcome = run_go(args.go, pattern, directory, environment, overlay, package=package)
             finally:
                 if database:
                     # Only the freshly generated disposable clone is ever dropped.
                     psql(f'DROP DATABASE {database};')
-            outcome.update(name=name, kind=kind, domain=core_by_name[name]['domain'] if name in core_by_name else 'documents', source=path, before=before, after=after, source_sha256_lf=hashlib.sha256(original.encode()).hexdigest(), mutant_sha256=hashlib.sha256(changed.encode()).hexdigest())
+            outcome.update(name=name, kind=kind, domain=catalog_by_name[name]['domain'] if name in catalog_by_name else 'documents', source=path, before=before, after=after, source_sha256_lf=hashlib.sha256(original.encode()).hexdigest(), mutant_sha256=hashlib.sha256(changed.encode()).hexdigest())
             report['mutants'].append(outcome)
             print(name + ': ' + outcome['status'], flush=True)
         python_cases = python_mutants()

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "core_boundary_document_auto_number_required_again",
+    "kind": "go", "domain": "boundary", "source": "internal/api/documents.go",
+    "before": "automaticNumber := input.Number == \"\" && (input.Kind == \"receipt\" || input.Kind == \"transfer\")",
+    "after": "automaticNumber := false",
+    "pattern": "^TestDocumentNumberingHTTPContract$", "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_document_auto_number_for_wrong_kind",
+    "kind": "go", "domain": "boundary", "source": "internal/api/documents.go",
+    "before": "input.Number == \"\" && (input.Kind == \"receipt\" || input.Kind == \"transfer\")",
+    "after": "input.Number == \"\"",
+    "pattern": "^TestDocumentNumberingHTTPContract$", "package": "./internal/api"
+  },
+  {
+    "name": "core_boundary_document_whitespace_number_accepted",
+    "kind": "go", "domain": "boundary", "source": "internal/api/documents.go",
+    "before": "strings.TrimSpace(input.Number) == \"\"",
+    "after": "strings.TrimSpace(input.Number) == \"__never_a_blank_number__\"",
+    "pattern": "^TestDocumentNumberingHTTPContract$", "package": "./internal/api"
+  }
+]

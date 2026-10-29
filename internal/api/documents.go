@@ -37,7 +37,8 @@ func (s *Server) documentCommand(w http.ResponseWriter, r *http.Request, transit
 		permission = "document.transition"
 	} else {
 		input.OwnerID, err = inventory.NormalizeID(input.OwnerID)
-		if err == nil && (input.ExpectedVersion != 0 || input.State != "" || len(input.Lines) < 1 || len(input.Lines) > 200 || strings.TrimSpace(input.Number) == "" || utf8.RuneCountInString(input.Number) > 100 || (input.Kind != "receipt" && input.Kind != "shipment" && input.Kind != "transfer" && input.Kind != "adjustment")) {
+		automaticNumber := input.Number == "" && (input.Kind == "receipt" || input.Kind == "transfer")
+		if err == nil && (input.ExpectedVersion != 0 || input.State != "" || len(input.Lines) < 1 || len(input.Lines) > 200 || (!automaticNumber && strings.TrimSpace(input.Number) == "") || utf8.RuneCountInString(input.Number) > 100 || (input.Kind != "receipt" && input.Kind != "shipment" && input.Kind != "transfer" && input.Kind != "adjustment")) {
 			err = inventory.Invalid("invalid_document_input")
 		}
 		if err == nil {

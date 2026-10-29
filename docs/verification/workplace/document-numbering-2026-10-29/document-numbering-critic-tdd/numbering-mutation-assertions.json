@@ -1,0 +1,105 @@
+[
+  {
+    "name": "numbering_counter_increments_twice",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000002\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000002\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000002\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000002\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000002\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000002\" want=\"MM/2026/000001\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_counter_does_not_increment",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000000\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000000\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000000\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000000\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000000\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000000\" want=\"MM/2026/000001\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_warehouse_timezone_ignored",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:433: warehouse year number=\"PZ/2026/000001\" want=\"PZ/2027/000001\"",
+      "documents_numbering_critic_integration_test.go:433: warehouse year number=\"PZ/2026/000002\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:433: warehouse year number=\"PZ/2026/000003\" want=\"PZ/2027/000002\"",
+      "documents_numbering_critic_integration_test.go:433: warehouse year number=\"PZ/2027/000001\" want=\"PZ/2026/000002\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_receipt_and_transfer_prefix_swapped",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000001\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000001\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"MM/2026/000001\" want=\"PZ/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000001\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000001\" want=\"MM/2026/000001\"",
+      "documents_numbering_critic_integration_test.go:64: number=\"PZ/2026/000001\" want=\"MM/2026/000001\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_large_number_truncated",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:449: large sequence truncated or wrapped: got=\"MM/2026/100000\" want=\"MM/2026/1000000\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_manual_reservation_removed",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:275: manual reservation collided with auto series: \"PZ/2026/000001\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_manual_rewinds_counter",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:282: manual number rewound an existing series: \"PZ/2026/000003\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_manual_transfer_uses_receipt_prefix",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:315: manual transfer did not reserve MM series: \"MM/2026/000002\""
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_administrative_collision_probe_removed",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:390: status=409 want=201 body={\"code\":\"inventory_constraint_conflict\",\"detail\":\"The operation conflicts with inventory constraints.\",\"status\":409,\"title\":\"Conflict\",\"trace_id\":\"TX7HQAPQGAT7BQZ6MBLQNFGIS3\",\"type\":\"urn:wms:problem:inventory_constraint_conflict\"}"
+    ],
+    "invalid_markers": []
+  },
+  {
+    "name": "numbering_replay_allocates_another_number",
+    "status": "killed",
+    "assertions": [
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"PZ/2026/000005\"",
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"PZ/2026/000005\"",
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"PZ/2026/000005\"",
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"MM/2026/000005\"",
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"MM/2026/000005\"",
+      "documents_numbering_critic_integration_test.go:75: replay consumed a number: next=\"MM/2026/000005\""
+    ],
+    "invalid_markers": []
+  }
+]

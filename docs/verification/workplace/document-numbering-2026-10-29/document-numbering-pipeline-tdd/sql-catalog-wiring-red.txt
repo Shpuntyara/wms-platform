@@ -1,0 +1,13 @@
+....F
+======================================================================
+FAIL: test_the_full_campaign_includes_the_independent_sql_numbering_catalog (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_the_full_campaign_includes_the_independent_sql_numbering_catalog)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 15, in test_the_full_campaign_includes_the_independent_sql_numbering_catalog
+    self.assertTrue(callable(load),'The CI campaign must execute numbering faults, not merely unit-test a disconnected catalog')
+AssertionError: False is not true : The CI campaign must execute numbering faults, not merely unit-test a disconnected catalog
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.023s
+
+FAILED (failures=1)

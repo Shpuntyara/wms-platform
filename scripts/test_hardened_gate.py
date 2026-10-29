@@ -45,9 +45,10 @@ class HardenedGateTests(unittest.TestCase):
             'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey',
             'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
             'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
+            'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
         validate_receipt('green', 0, good, output)
-        for name in ('TestHardenedOnPremiseMultiWarehouse', 'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey', 'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants', 'TestHardenedOnPremCriticWorkerRejectsInstallationDrift'):
+        for name in ('TestHardenedOnPremiseMultiWarehouse', 'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey', 'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants', 'TestHardenedOnPremCriticWorkerRejectsInstallationDrift', 'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions'):
             with self.subTest(missing=name), self.assertRaises(ValueError):
                 validate_receipt('green', 0, good, output.replace('--- PASS: ' + name, ''))
         with self.assertRaises(ValueError):
@@ -109,6 +110,7 @@ class HardenedGateTests(unittest.TestCase):
                           '--- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey\n'
                           '--- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants\n'
                           '--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift\n'
+                          '--- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions\n'
                           '--- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle') if kind == 'green' else {
                               'worker_fence': '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced',
                               'document_page': '--- FAIL: TestHardenedDocumentReadsAtScale/one-owner-first\nread page scanned history instead of bounded candidates',

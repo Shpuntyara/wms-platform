@@ -1,0 +1,13 @@
+...F
+======================================================================
+FAIL: test_required_api_numbering_faults_are_present_in_the_campaign (test_document_numbering_migration_contract.DocumentNumberingMigrationContractTests.test_required_api_numbering_faults_are_present_in_the_campaign)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_document_numbering_migration_contract.py", line 15, in test_required_api_numbering_faults_are_present_in_the_campaign
+    self.assertTrue({'core_boundary_document_auto_number_required_again','core_boundary_document_auto_number_for_wrong_kind',
+AssertionError: False is not true : Automatic numbering must retain HTTP validation mutants in the full campaign
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.068s
+
+FAILED (failures=1)

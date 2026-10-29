@@ -1,0 +1,4 @@
+9c8aed7bb3e7be7b0143b012fe4e64c8133aad1f6c3b7b0c6dee5650f0cc5616  web/src/app.js
+ac5bfcfa0c797f070ceac4524388fdf308b5b870b905dd5895f9cc8e35c31b59  web/src/demo.js
+c798bdfc1f5e0f1de8574c293ed4d65c2c0f4b2cffed51cfac7f9f866e01d2d5  web/tests/demo-numbering.test.mjs
+6bf7faf86a4cf9e0fe232f75c95c8f9f9c21e0932e706ed3348d0d454c17c624  web/tests/workplace.spec.mjs

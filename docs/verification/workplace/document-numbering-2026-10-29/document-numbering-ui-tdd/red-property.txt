@@ -1,0 +1,29 @@
+TAP version 13
+# Subtest: property: demo numbering agrees with independent per-warehouse, kind and year counters including replays
+not ok 1 - property: demo numbering agrees with independent per-warehouse, kind and year counters including replays
+  ---
+  duration_ms: 9.3276
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\demo-numbering-property.test.mjs:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Property failed after 1 tests
+    { seed: 20261029, path: "0:0:0:0", endOnFailure: true }
+    Counterexample: [[{"transfer":false,"secondWarehouse":false,"year":2026,"replay":0}]]
+    Shrunk 3 time(s)
+    
+    Hint: Enable verbose mode in order to have the list of all failing values encountered during the run
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    buildError (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/node_modules/fast-check/lib/fast-check.js:2469:16)
+    asyncThrowIfFailed (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/node_modules/fast-check/lib/fast-check.js:2481:8)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 108.4863

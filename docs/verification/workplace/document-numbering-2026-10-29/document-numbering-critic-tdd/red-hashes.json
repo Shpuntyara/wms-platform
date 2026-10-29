@@ -1,0 +1,9 @@
+{
+  "head": "a764ad93a88b96a3deabf372a1c03fdc6e133d83",
+  "sha256": {
+    "internal/postgres/documents_numbering_critic_integration_test.go": "b932f3061ce1e27f0765e3b4b99f329c1bf95fd9779d025f06161fe3c04f69f9",
+    "internal/api/documents.go": "480b42f19137c2b80e496a06cc5f1ddb04218561b7dc3475a7a175b4b222b954",
+    "internal/postgres/documents.go": "0612d73e30dce759d04379a04941c74b04ddd9d20fadba7442982425e54941e0",
+    "db/migrations/0009_warehouse_documents.sql": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+  }
+}
