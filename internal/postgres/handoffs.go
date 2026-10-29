@@ -1,0 +1,199 @@
+package postgres
+
+import (
+	"context"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
+	"time"
+
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
+	"github.com/Shpuntyara/wms-platform/internal/modules"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+)
+
+func handoffScope(p inventory.Principal, handoff string, raw json.RawMessage) (inventory.Scope, error) {
+	var input struct {
+		OrganizationID string `json:"organization_id"`
+		WarehouseID    string `json:"warehouse_id"`
+	}
+	if json.Unmarshal(raw, &input) != nil {
+		return inventory.Scope{}, inventory.Invalid("invalid_handoff")
+	}
+	permission := "handoff.send"
+	if handoff != "" {
+		permission = "handoff.accept"
+	}
+	return p.Scope(permission, input.OrganizationID, input.WarehouseID)
+}
+func (s *Store) CommandHandoff(ctx context.Context, p inventory.Principal, command, handoff string, raw json.RawMessage, registry *modules.Registry) (json.RawMessage, error) {
+	scope, err := handoffScope(p, handoff, raw)
+	if err != nil {
+		return nil, err
+	}
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return nil, translate(err)
+	}
+	defer func() {
+		cleanup, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		_ = tx.Rollback(cleanup)
+	}()
+	if _, err = tx.Exec(ctx, `SELECT set_config('lock_timeout','2s',true),set_config('statement_timeout','5s',true),platform.lock_module_configuration()`); err != nil {
+		return nil, translate(err)
+	}
+	if err = validateRegistry(ctx, tx, registry); err != nil {
+		return nil, err
+	}
+	var result []byte
+	if err = tx.QueryRow(ctx, `SELECT warehouse.command_handoff($1::uuid,$2::uuid,$3::uuid,$4::jsonb)`, command, scope.ActorID, optional(handoff), raw).Scan(&result); err != nil {
+		return nil, translate(err)
+	}
+	if err = tx.Commit(ctx); err != nil {
+		if _, ok := errors.AsType[*pgconn.PgError](err); ok {
+			return nil, translate(err)
+		}
+		return nil, &inventory.Problem{Status: 503, Code: "operation_interrupted", Detail: "The operation could not be confirmed. Retry with the same command identifier."}
+	}
+	return json.RawMessage(result), nil
+}
+func (s *HardenedStore) CommandHandoff(ctx context.Context, p inventory.Principal, command, handoff string, raw json.RawMessage, registry *modules.Registry) (json.RawMessage, error) {
+	scope, err := handoffScope(p, handoff, raw)
+	if err != nil {
+		return nil, err
+	}
+	if err = s.scope(scope); err != nil {
+		return nil, err
+	}
+	var result []byte
+	err = s.transaction(ctx, p.ActorID, scope.OrganizationID, scope.WarehouseID, "handoff_command|"+command+"|"+handoff+"|"+string(raw), func(tx pgx.Tx) error {
+		if err := validateHardenedModules(ctx, tx, registry); err != nil {
+			return err
+		}
+		return tx.QueryRow(ctx, `SELECT hardened_api.handoff_command($1::uuid,$2::uuid,$3)`, command, optional(handoff), string(raw)).Scan(&result)
+	})
+	return json.RawMessage(result), err
+}
+func handoffPage(ctx context.Context, scope inventory.Scope, f inventory.Filters, read func(context.Context, map[string]any) ([]json.RawMessage, error)) (inventory.Page, error) {
+	page := inventory.Page{Data: []json.RawMessage{}}
+	if f.Limit == 0 {
+		f.Limit = 50
+	}
+	if f.Limit < 1 || f.Limit > 200 {
+		return page, inventory.Invalid("invalid_limit")
+	}
+	if f.OwnerID != "" && !scope.AllowsOwner(f.OwnerID) {
+		return page, inventory.Forbidden()
+	}
+	if f.View == "" {
+		f.View = "all"
+	}
+	if f.View != "all" && f.View != "incoming" && f.View != "outgoing" {
+		return page, inventory.Invalid("invalid_handoff_view")
+	}
+	// Only the new handoff resource binds a queue view; released cursors for
+	// documents, inventory and work orders retain their existing representation.
+	binding := cursorBinding(inventory.Resource("handoffs:"+f.View), scope, f)
+	input := map[string]any{"limit": f.Limit + 1, "view": f.View}
+	if f.OwnerID != "" {
+		input["owner_id"] = f.OwnerID
+	}
+	if f.Cursor != "" {
+		var c cursor
+		raw, err := base64.RawURLEncoding.DecodeString(f.Cursor)
+		if err != nil || len(raw) > 2048 || json.Unmarshal(raw, &c) != nil || c.Binding != binding {
+			return page, inventory.Invalid("invalid_cursor")
+		}
+		if _, err = inventory.NormalizeID(c.ID); err != nil {
+			return page, inventory.Invalid("invalid_cursor")
+		}
+		input["after"] = c.ID
+	}
+	var err error
+	page.Data, err = read(ctx, input)
+	if err != nil {
+		return page, err
+	}
+	if len(page.Data) > f.Limit {
+		page.Data = page.Data[:f.Limit]
+		var last struct{ ID string }
+		if err = json.Unmarshal(page.Data[len(page.Data)-1], &last); err != nil {
+			return page, err
+		}
+		raw, _ := json.Marshal(cursor{ID: last.ID, Binding: binding})
+		page.NextCursor = base64.RawURLEncoding.EncodeToString(raw)
+	}
+	return page, nil
+}
+func (s *Store) ListHandoffs(ctx context.Context, scope inventory.Scope, f inventory.Filters) (inventory.Page, error) {
+	return handoffPage(ctx, scope, f, func(ctx context.Context, input map[string]any) ([]json.RawMessage, error) {
+		raw, _ := json.Marshal(input)
+		rows, err := s.pool.Query(ctx, `SELECT * FROM warehouse.read_handoffs($1::uuid,$2::uuid,$3::uuid,$4::jsonb)`, scope.ActorID, scope.OrganizationID, scope.WarehouseID, raw)
+		if err != nil {
+			return nil, translate(err)
+		}
+		defer rows.Close()
+		result := []json.RawMessage{}
+		for rows.Next() {
+			var data []byte
+			if err = rows.Scan(&data); err != nil {
+				return nil, translate(err)
+			}
+			result = append(result, json.RawMessage(data))
+		}
+		return result, translate(rows.Err())
+	})
+}
+func (s *HardenedStore) ListHandoffs(ctx context.Context, scope inventory.Scope, f inventory.Filters) (inventory.Page, error) {
+	if err := s.scope(scope); err != nil {
+		return inventory.Page{}, err
+	}
+	return handoffPage(ctx, scope, f, func(ctx context.Context, input map[string]any) ([]json.RawMessage, error) {
+		raw, _ := json.Marshal(input)
+		result := []json.RawMessage{}
+		err := s.transaction(ctx, scope.ActorID, scope.OrganizationID, scope.WarehouseID, "handoffs|"+string(raw), func(tx pgx.Tx) error {
+			rows, err := tx.Query(ctx, `SELECT * FROM hardened_api.handoffs($1)`, string(raw))
+			if err != nil {
+				return err
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var data []byte
+				if err = rows.Scan(&data); err != nil {
+					return err
+				}
+				result = append(result, json.RawMessage(data))
+			}
+			return rows.Err()
+		})
+		return result, err
+	})
+}
+func (s *Store) GetHandoff(ctx context.Context, scope inventory.Scope, id string) (json.RawMessage, error) {
+	var raw []byte
+	err := s.pool.QueryRow(ctx, `SELECT warehouse.read_handoff($1::uuid,$2::uuid,$3::uuid,$4::uuid)`, scope.ActorID, scope.OrganizationID, scope.WarehouseID, id).Scan(&raw)
+	return json.RawMessage(raw), translate(err)
+}
+func (s *HardenedStore) GetHandoff(ctx context.Context, scope inventory.Scope, id string) (json.RawMessage, error) {
+	if err := s.scope(scope); err != nil {
+		return nil, err
+	}
+	var raw []byte
+	err := s.transaction(ctx, scope.ActorID, scope.OrganizationID, scope.WarehouseID, "handoff|"+id, func(tx pgx.Tx) error { return tx.QueryRow(ctx, `SELECT hardened_api.handoff($1::uuid)`, id).Scan(&raw) })
+	return json.RawMessage(raw), err
+}
+func (s *Store) HandoffContext(ctx context.Context, scope inventory.Scope) (json.RawMessage, error) {
+	var raw []byte
+	err := s.pool.QueryRow(ctx, `SELECT warehouse.handoff_context($1::uuid,$2::uuid,$3::uuid)`, scope.ActorID, scope.OrganizationID, scope.WarehouseID).Scan(&raw)
+	return json.RawMessage(raw), translate(err)
+}
+func (s *HardenedStore) HandoffContext(ctx context.Context, scope inventory.Scope) (json.RawMessage, error) {
+	if err := s.scope(scope); err != nil {
+		return nil, err
+	}
+	var raw []byte
+	err := s.transaction(ctx, scope.ActorID, scope.OrganizationID, scope.WarehouseID, "handoff_context", func(tx pgx.Tx) error { return tx.QueryRow(ctx, `SELECT hardened_api.handoff_context()`).Scan(&raw) })
+	return json.RawMessage(raw), err
+}

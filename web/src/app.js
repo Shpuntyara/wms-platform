@@ -4,6 +4,7 @@ import {CommandJournal} from './journal.js';
 import {DemoWarehouse} from './demo.js';
 import {errorMessage} from './messages.js';
 import {lineChoices,balanceChoices,resolveSelection} from './selection.js';
+import {departmentForPosition,handoffDestinations,handoffSendIntent,canAcceptHandoff,handoffAcceptIntent} from './handoff.js';
 
 const root = document.getElementById('app');
 const e = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -11,7 +12,7 @@ const paths = {box:'m3 7 9-5 9 5v10l-9 5-9-5V7Zm0 0 9 5 9-5M12 12v10M7.5 4.5l9 5
 const icon = name => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[name] || paths.box}"/></svg>`;
 const states = {draft:'Do przygotowania', active:'Do realizacji', closed:'Zrealizowany', cancelled:'Anulowany'};
 const kinds = {receipt:'Przyjęcie towaru (PZ)', transfer:'Przesunięcie towaru (MM)', shipment:'Wydanie towaru (WZ)', adjustment:'Korekta'};
-const S = {demo:new URLSearchParams(location.search).get('demo') === '1', mode:'bureau', entryMode:'select', section:'stock', filter:'all', search:'', documents:[], balances:[], orders:[], selected:null, busy:false, message:'', error:'', work:null};
+const S = {demo:new URLSearchParams(location.search).get('demo') === '1', mode:'bureau', entryMode:'select', section:'stock', filter:'all', search:'', documents:[], balances:[], orders:[], handoffs:[], handoffFilter:'all', selected:null, busy:false, message:'', error:'', work:null};
 let request, identity, workspace, journal;
 const named = (group,id,fallback='Brak konfiguracji') => workspace?.catalog[group]?.find(row => row.id === id)?.name ?? fallback;
 const itemById = id => workspace.catalog.items.find(row => row.id === id);
@@ -34,16 +35,19 @@ function setScope(scope) {
   S.scope = {organization_id:scope.organization_id, warehouse_id:scope.warehouse_id};
   journal = new CommandJournal({storage:localStorage, namespace:`${S.demo?'training-v2':'live'}|${workspace.actor_id}|${scope.organization_id}|${scope.warehouse_id}`, request});
   S.selected = null; S.work = null; S.showArchived = false;
+  S.handoffContext=null;S.handoffs=[];S.handoff=null;S.handoffID=null;
 }
-async function list(resource,cursor) {
-  const params = new URLSearchParams({...S.scope,limit:'100'});
+async function list(resource,cursor,filters={}) {
+  const params = new URLSearchParams({...S.scope,limit:'100',...filters});
   if (cursor) params.set('cursor',cursor);
   return request(`/api/v1/${resource}?${params}`);
 }
 async function refresh(append=false) {
-  const page = await list('documents',append?S.cursor:null);
-  S.documents = append ? [...S.documents,...page.data.filter(row => !S.documents.some(old => old.id === row.id))] : page.data;
-  S.cursor = page.pagination?.next_cursor;
+  if (can('document.read')) {
+    const page = await list('documents',append?S.cursor:null);
+    S.documents = append ? [...S.documents,...page.data.filter(row => !S.documents.some(old => old.id === row.id))] : page.data;
+    S.cursor = page.pagination?.next_cursor;
+  } else {S.documents=[];S.cursor=null;S.selected=null;}
   if (can('stock.read')) {
     const balances = [], cursors = new Set(); let cursor;
     do {
@@ -55,12 +59,19 @@ async function refresh(append=false) {
     } while (cursor);
     S.balances = balances; S.stockCursor = null;
   }
-  const orders = await list('work-orders'); S.orders = orders.data; S.orderCursor = orders.pagination?.next_cursor;
+  if (can('document.read')) {const orders = await list('work-orders'); S.orders = orders.data; S.orderCursor = orders.pagination?.next_cursor;}
+  else {S.orders=[];S.orderCursor=null;}
+  if (can('handoff.read')) {
+    S.handoffContext=(await request(`/api/v1/handoffs/context?${query()}`)).data;
+    const handoffs=await list('handoffs',null,{view:S.handoffFilter});S.handoffs=handoffs.data;S.handoffCursor=handoffs.pagination?.next_cursor;
+    if (S.handoffID) S.handoff=(await request(`/api/v1/handoffs/${S.handoffID}?${query()}`)).data;
+  }
   if (S.selected) S.selected = (await request(`/api/v1/documents/${S.selected.id}?${query()}`)).data;
 }
 async function selectDocument(id) {
   S.selected = (await request(`/api/v1/documents/${id}?${query()}`)).data;
   S.work = null; S.error = ''; S.message = '';
+  sessionStorage.removeItem(`wms-handoff-view:${workspace.actor_id}`);
   sessionStorage.setItem(`wms-open:${workspace.actor_id}`,id);
   render();
 }
@@ -74,9 +85,9 @@ function render() {
   const blocked = pending();
   document.body.classList.toggle('worker-mode',S.mode === 'worker');
   root.innerHTML = `<a class="skip-link" href="#main">Przejdź do obszaru roboczego</a>${S.demo?'<div class="training-bar">Magazyn szkoleniowy <span>Dane przykładowe · tylko w tej przeglądarce</span><a href="/app/">Do instalacji roboczej</a></div>':''}
-  <header class="topbar"><a class="brand" href="/app/${S.demo?'?demo=1':''}">${icon('box')}<span>MAGAZYN<small>stanowisko pracy</small></span></a><div class="warehouse"><span class="eyebrow">MAGAZYN</span><label class="visually-hidden" for="warehouse">Magazyn roboczy</label><select id="warehouse" ${blocked||S.busy?'disabled':''}>${workspace.scopes.filter(row => row.grants.some(g => g.permission === 'document.read')).map(row => `<option value="${e(row.organization_id+'|'+row.warehouse_id)}" ${row.warehouse_id === S.scope?.warehouse_id && row.organization_id === S.scope?.organization_id?'selected':''}>${e(named('warehouses',row.warehouse_id,'Magazyn bez nazwy'))}</option>`).join('')}</select></div><nav class="mode-switch" aria-label="Stanowisko pracy"><button data-mode="bureau" aria-pressed="${S.mode === 'bureau'}">Biuro</button><button data-mode="worker" aria-pressed="${S.mode === 'worker'}">${icon('scan')} Magazyn</button></nav><div class="user"><span class="avatar">${S.demo?'S':'P'}</span><span>${S.demo?'Zmiana szkoleniowa':e(identity?.tokenParsed?.preferred_username || 'Pracownik')}<small>${S.demo?'Przykład lokalny':'Operator magazynu'}</small></span>${!S.demo?'<button class="text-button" data-action="logout">Wyloguj</button>':''}</div></header>
-  <div class="app-shell"><aside class="sidebar"><span class="eyebrow sidebar-label">OPERACJE</span><nav aria-label="Operacje magazynowe">${[['stock','grid','Stany'],['orders','box','Zamówienia'],['shipment','arrow','Wydania (WZ)'],['receipt','receive','Przyjęcia (PZ)'],['transfer','move','Przesunięcia (MM)'],['history','history','Historia']].map(([section,graphic,label]) => `<button class="nav-item ${S.section === section?'selected':''}" data-section="${section}" ${section === 'stock'&&!can('stock.read')?'disabled':''}>${icon(graphic)}<span>${label}</span>${['receipt','transfer','shipment'].includes(section)?`<span class="nav-count" aria-hidden="true">${S.documents.filter(doc => doc.kind === section && doc.state === 'active').length}</span>`:''}</button>`).join('')}</nav><div class="sidebar-bottom"><span class="connection-dot"></span>${S.demo?'Tryb szkoleniowy':'Instalacja robocza'}<small>${e(named('warehouses',S.scope?.warehouse_id))}</small></div></aside>
-  <main id="main" tabindex="-1">${blocked?`<div class="pending"><div><strong>Operacja oczekuje na potwierdzenie</strong><p>Nie otrzymano odpowiedzi. Sprawdź wynik przed następną operacją.</p></div><button class="button warning" data-action="retry" ${S.busy||blocked.broken?'disabled':''}>${icon('refresh')} Sprawdź wynik</button></div>`:''}${S.error?`<div class="notice error" role="alert">${e(S.error)}</div>`:''}<div class="notice success ${S.message?'':'empty'}" role="status">${e(S.message)}</div>${S.needsRefresh && S.mode === 'worker' && ['receipt','transfer','shipment'].includes(S.section)?'<button class="button" data-action="refresh">Odśwież</button>':''}${!S.scope?'<div class="empty-state"><h1>Brak dostępnych magazynów</h1><p>Kierownik musi nadać Ci dostęp do dokumentów magazynu.</p></div>':S.section === 'stock'?stockView():S.section === 'orders'?ordersView():S.section === 'history'?bureau():S.mode === 'worker'?worker():bureau()}</main></div><dialog id="create-dialog" aria-labelledby="create-title"></dialog>`;
+  <header class="topbar"><a class="brand" href="/app/${S.demo?'?demo=1':''}">${icon('box')}<span>MAGAZYN<small>stanowisko pracy</small></span></a><div class="warehouse"><span class="eyebrow">MAGAZYN</span><label class="visually-hidden" for="warehouse">Magazyn roboczy</label><select id="warehouse" ${blocked||S.busy?'disabled':''}>${workspace.scopes.filter(row => row.grants.some(g => ['document.read','stock.read','handoff.read'].includes(g.permission))).map(row => `<option value="${e(row.organization_id+'|'+row.warehouse_id)}" ${row.warehouse_id === S.scope?.warehouse_id && row.organization_id === S.scope?.organization_id?'selected':''}>${e(named('warehouses',row.warehouse_id,'Magazyn bez nazwy'))}</option>`).join('')}</select></div><nav class="mode-switch" aria-label="Stanowisko pracy"><button data-mode="bureau" aria-pressed="${S.mode === 'bureau'}">Biuro</button><button data-mode="worker" aria-pressed="${S.mode === 'worker'}">${icon('scan')} Magazyn</button></nav><div class="user"><span class="avatar">${S.demo?'S':'P'}</span><span>${S.demo?'Zmiana szkoleniowa':e(identity?.tokenParsed?.preferred_username || 'Pracownik')}<small>${S.demo?'Przykład lokalny':'Operator magazynu'}</small></span>${!S.demo?'<button class="text-button" data-action="logout">Wyloguj</button>':''}</div></header>
+  <div class="app-shell"><aside class="sidebar"><span class="eyebrow sidebar-label">OPERACJE</span><nav aria-label="Operacje magazynowe">${[['stock','grid','Stany'],['orders','box','Zamówienia'],['shipment','arrow','Wydania (WZ)'],['receipt','receive','Przyjęcia (PZ)'],['transfer','move','Przesunięcia (MM)'],['history','history','Historia'],...(can('handoff.read')?[['handoffs','move','Przekazania między działami']]:[])].filter(([section])=>section === 'stock'?can('stock.read'):section === 'handoffs'?can('handoff.read'):can('document.read')).map(([section,graphic,label]) => `<button class="nav-item ${S.section === section?'selected':''}" data-section="${section}" ${section === 'stock'&&!can('stock.read')?'disabled':''}>${icon(graphic)}<span>${label}</span>${['receipt','transfer','shipment'].includes(section)?`<span class="nav-count" aria-hidden="true">${S.documents.filter(doc => doc.kind === section && doc.state === 'active').length}</span>`:''}</button>`).join('')}</nav><div class="sidebar-bottom"><span class="connection-dot"></span>${S.demo?'Tryb szkoleniowy':'Instalacja robocza'}<small>${e(named('warehouses',S.scope?.warehouse_id))}</small></div></aside>
+  <main id="main" tabindex="-1">${blocked?`<div class="pending"><div><strong>Operacja oczekuje na potwierdzenie</strong><p>Nie otrzymano odpowiedzi. Sprawdź wynik przed następną operacją.</p></div><button class="button warning" data-action="retry" ${S.busy||blocked.broken?'disabled':''}>${icon('refresh')} Sprawdź wynik</button></div>`:''}${S.error?`<div class="notice error" role="alert">${e(S.error)}</div>`:''}<div class="notice success ${S.message?'':'empty'}" role="status">${e(S.message)}</div>${S.needsRefresh && S.mode === 'worker' && ['receipt','transfer','shipment'].includes(S.section)?'<button class="button" data-action="refresh">Odśwież</button>':''}${!S.scope?'<div class="empty-state"><h1>Brak dostępnych magazynów</h1><p>Kierownik musi nadać Ci dostęp do dokumentów magazynu.</p></div>':S.section === 'stock'?stockView():S.section === 'orders'?ordersView():S.section === 'handoffs'?handoffsView():S.section === 'history'?bureau():S.mode === 'worker'?worker():bureau()}</main></div><dialog id="create-dialog" aria-labelledby="create-title"></dialog>`;
   bind();
 }
 function bureau() {
@@ -103,11 +114,102 @@ function stockView() {
   const earlier = S.balances.filter(row => itemById(row.item_id)?.archived === true && (S.emptyStock || qty(row.on_hand) !== '0'));
   const balances = findStock(S.balances,workspace.catalog.items,workspace.catalog.positions,S.search).filter(row => (S.emptyStock || qty(row.on_hand) !== '0') && (S.showArchived || itemById(row.item_id)?.archived !== true));
   return `<div class="page-heading"><div><div class="breadcrumb">Magazyn <span>/</span> Towary i miejsca</div><h1>Stany według adresów</h1><p>Sprawdź, gdzie leży towar i ile możesz wydać. A1 oznacza regał A, poziom 1.</p></div><button class="button" data-action="refresh" ${S.busy?'disabled':''}>${icon('refresh')} Odśwież</button></div>${workspace.catalog.items.some(item => item.archived === true)?`<section class="archive-note" aria-label="Wcześniejsze dane testowe"><div><strong>Wcześniejsze dane testowe</strong><p>Historia i rzeczywiste ilości z wcześniejszych prób są zachowane. Pozycje stanów: ${earlier.length} · Ukryte pozycje: ${S.showArchived?0:earlier.length}</p></div><label class="check-label"><input id="show-archived" type="checkbox" ${S.showArchived?'checked':''}> Pokaż wcześniejsze dane testowe</label></section>`:''}<section class="document-panel"><div class="stock-toolbar"><div class="search">${icon('search')}<label class="visually-hidden" for="search">Szukaj towaru lub miejsca</label><input id="search" type="search" placeholder="Nazwa, kod, kolor, rozmiar lub miejsce, np. A1" value="${e(S.search)}"></div><label class="check-label"><input id="empty-stock" type="checkbox" ${S.emptyStock?'checked':''}> Pokaż puste miejsca</label></div><div class="table-scroll"><table><thead><tr><th>Towar</th><th>Miejsce</th><th class="numeric">Stan fizyczny</th><th class="numeric">Zarezerwowane</th><th class="numeric">Dostępne</th><th>Operacje</th></tr></thead><tbody>${balances.map(balance => {
-    const item = itemById(balance.item_id), position = positionById(balance.position_id), blocked = S.busy || pending() || S.needsRefresh || qty(balance.available_qty) === '0' || balance.stock_state !== 'available';
-    return `<tr><td><strong>${e(item?.name||'Brak konfiguracji towaru')}</strong><small class="mono">${e(item?.sku)}</small>${archivedBadge(item)}<small>${e(named('owners',balance.owner_id))}</small></td><td><strong class="location-code">${e(position?.code||'Brak adresu')}</strong><small>${e(position?.name||'Adres składowania')}</small></td><td class="numeric mono">${e(qty(balance.on_hand))} <span class="unit">${e(item?.unit)}</span></td><td class="numeric mono">${e(qty(balance.reserved_qty))}</td><td class="numeric mono"><strong>${e(qty(balance.available_qty))}</strong> <span class="unit">${e(item?.unit)}</span></td><td><div class="stock-actions">${canCreate('shipment',balance.owner_id)?`<button class="button compact" data-stock-issue="${e(balance.id)}" ${blocked?'disabled':''}>Wydaj towar</button>`:''}${canCreate('transfer',balance.owner_id)?`<button class="button compact" data-stock-move="${e(balance.id)}" ${blocked?'disabled':''}>Przenieś towar</button>`:''}</div></td></tr>`;
+    const item = itemById(balance.item_id), position = positionById(balance.position_id)||stockDepartment(balance.position_id), handoff=transitHandoff(balance), blocked = S.busy || S.handoffSubmitting || pending() || S.needsRefresh || qty(balance.available_qty) === '0' || balance.stock_state !== 'available';
+    return `<tr><td><strong>${e(item?.name||'Brak konfiguracji towaru')}</strong><small class="mono">${e(item?.sku)}</small>${archivedBadge(item)}${balance.stock_state === 'in_transit'?'<span class="badge handoff-sent">W przekazaniu</span>':''}<small>${e(named('owners',balance.owner_id))}</small></td><td><strong class="location-code">${e(balance.stock_state === 'in_transit'?'W przekazaniu'+(handoff?': '+handoff.source_department_name+' → '+handoff.destination_department_name:''):position?.code||'Miejsce magazynowe')}</strong><small>${e(balance.stock_state === 'in_transit'?'Oczekuje na potwierdzenie przyjęcia':position?.name||'Adres składowania')}</small></td><td class="numeric mono">${e(qty(balance.on_hand))} <span class="unit">${e(item?.unit)}</span></td><td class="numeric mono">${e(qty(balance.reserved_qty))}</td><td class="numeric mono"><strong>${e(qty(balance.available_qty))}</strong> <span class="unit">${e(item?.unit)}</span></td><td><div class="stock-actions">${genericStockAllowed(balance)&&canCreate('shipment',balance.owner_id)?`<button class="button compact" data-stock-issue="${e(balance.id)}" ${blocked?'disabled':''}>Wydaj towar</button>`:''}${genericStockAllowed(balance)&&canCreate('transfer',balance.owner_id)?`<button class="button compact" data-stock-move="${e(balance.id)}" ${blocked?'disabled':''}>Przenieś towar</button>`:''}${handoff&&can('handoff.read',balance.owner_id)?`<button class="button compact" data-handoff="${e(handoff.id)}" ${S.busy||pending()?'disabled':''}>Pokaż przekazanie</button>`:''}${can('handoff.send',balance.owner_id)&&handoffDestinations({context:S.handoffContext,balance,item,scope:S.scope}).length?`<button class="button compact" data-stock-handoff="${e(balance.id)}" ${blocked?'disabled':''}>Przekaż do działu</button>`:''}</div></td></tr>`;
   }).join('')||'<tr><td colspan="6" class="table-empty">Nie znaleziono towaru. Zmień wyszukiwanie lub pokaż puste miejsca.</td></tr>'}</tbody></table></div><div class="list-footer"><span>Widoczne pozycje: ${balances.length} · wszystkie miejsca wczytane</span><span>Plan zamówienia nie zmniejsza stanu fizycznego.</span></div></section>`;
 }
+function stockDepartment(positionID) {
+  return departmentForPosition(S.handoffContext,positionID);
+}
+function genericStockAllowed(balance) {
+  return balance.stock_state !== 'in_transit' && stockDepartment(balance.position_id)?.kind !== 'production' && !['production','transit'].includes(positionById(balance.position_id)?.kind);
+}
+function transitHandoff(balance) {
+  const rows=[...S.handoffs.filter(row=>row.id !== S.handoff?.id),...(S.handoff?[S.handoff]:[])];
+  const matches=rows.filter(row=>row.transit_balance_id === balance.id && row.organization_id === S.scope.organization_id && row.warehouse_id === S.scope.warehouse_id && row.owner_id === balance.owner_id && row.item_id === balance.item_id);
+  return matches.length === 1?matches[0]:null;
+}
+function focusHandoff() {if(S.section === 'handoffs'&&!pending())root.querySelector('.handoff-detail h2')?.focus();}
 
+function handoffTime(value) {
+  if (!value || !Number.isFinite(Date.parse(value))) return 'Brak potwierdzenia';
+  const timeZone=workspace.catalog.warehouses.find(row=>row.id === S.scope.warehouse_id)?.timezone || 'Europe/Warsaw';
+  return `<time datetime="${e(value)}">${e(new Intl.DateTimeFormat('pl-PL',{dateStyle:'short',timeStyle:'short',timeZone}).format(new Date(value)))}</time>`;
+}
+function handoffStatus(row) {
+  return `<span class="badge ${row.state === 'sent'?'handoff-sent':'closed'}">${row.state === 'sent'?'Oczekuje na przyjęcie':row.state === 'accepted'?'Przyjęto':'Stan wymaga sprawdzenia'}</span>`;
+}
+function handoffsView() {
+  const rows=S.handoffs;
+  const record=S.handoff,item=itemById(record?.item_id);
+  const place=id=>{const position=positionById(id);return position?`${position.code}${position.name?' · '+position.name:''}`:'Miejsce wskazane przez dział';};
+  return `<div class="page-heading"><div><div class="breadcrumb">Magazyn <span>/</span> Współpraca działów</div><h1>Przekazania między działami</h1><p>Wysyłający przekazuje materiał. Inny pracownik działu docelowego osobno potwierdza przyjęcie. Kod towaru, partia i etykieta pozostają bez zmian.</p></div><button class="button" data-action="refresh" ${S.busy||S.handoffSubmitting?'disabled':''}>${icon('refresh')} Odśwież</button></div><div class="handoffs-layout"><section class="document-panel" aria-label="Lista przekazań"><div class="filters" aria-label="Widok przekazań">${[['incoming','Do przyjęcia'],['outgoing','Wysłane'],['all','Wszystkie']].map(([key,label])=>`<button data-handoff-filter="${key}" aria-pressed="${S.handoffFilter === key}" ${selectionBlocked()?'disabled':''}>${label}</button>`).join('')}</div>${S.handoffListLoading?'<p class="hint" role="status">Wczytywanie przekazań…</p>':rows.map(row=>`<button class="handoff-card ${record?.id === row.id?'selected':''}" data-handoff="${e(row.id)}" aria-label="Otwórz przekazanie ${e(itemById(row.item_id)?.name||'towaru')} ${e(row.source_department_name)} do ${e(row.destination_department_name)}"><strong>${e(itemById(row.item_id)?.name||'Brak nazwy towaru')}</strong><span>${e(qty(row.quantity))} ${e(itemById(row.item_id)?.unit)} · ${e(row.source_department_name)} → ${e(row.destination_department_name)}</span>${handoffStatus(row)}<small>Wysyłający: ${e(row.sender_name)} · ${handoffTime(row.sent_at)}</small></button>`).join('')||'<div class="empty-state"><h2>Brak przekazań w tym widoku</h2><p>Nową partię przekaż przyciskiem „Przekaż do działu” przy właściwym towarze w stanach.</p></div>'}<div class="list-footer"><span>Widoczne: ${rows.length} z ${S.handoffs.length} załadowanych</span>${S.handoffCursor?'<button class="text-button" data-action="more-handoffs">Załaduj więcej przekazań</button>':''}</div></section>${record?`<section class="document-panel handoff-detail" aria-label="Wybrane przekazanie"><span class="eyebrow">PRZEKAZANIE MATERIAŁU</span><h2 tabindex="-1">${e(item?.name||'Brak nazwy towaru')}</h2><p class="handoff-amount">${e(qty(record.quantity))} ${e(item?.unit)}</p>${handoffStatus(record)}<dl class="handoff-meta"><div><dt>Z działu</dt><dd>${e(record.source_department_name)}<small>${e(place(record.source_position_id))}</small></dd></div><div><dt>${record.state === 'accepted'?'Przyjęto w':'Do działu'}</dt><dd>${e(record.destination_department_name)}<small>${e(place(record.destination_position_id))}</small></dd></div><div><dt>Wysyłający</dt><dd>${e(record.sender_name)}</dd></div><div><dt>Wysłano</dt><dd>${handoffTime(record.sent_at)}</dd></div><div><dt>Przyjmujący</dt><dd>${e(record.receiver_name||'Oczekuje na potwierdzenie')}</dd></div><div><dt>Przyjęto</dt><dd>${handoffTime(record.accepted_at)}</dd></div></dl>${record.state === 'sent'?'<p class="hint">Materiał ma status „W przekazaniu”. Nie jest dostępny do kolejnej operacji, dopóki dział docelowy nie potwierdzi przyjęcia.</p>':''}${can('handoff.accept',record.owner_id)&&canAcceptHandoff({context:S.handoffContext,handoff:record,scope:S.scope})?`<button class="button primary full" data-action="accept-handoff" ${selectionBlocked()?'disabled':''}>Potwierdź przyjęcie</button><p class="hint">Potwierdzasz całą partię: ${e(qty(record.quantity))} ${e(item?.unit)}. Przyjęcie zostanie zapisane na Twoim koncie.</p>`:record.state === 'sent'?'<p class="hint">Przyjęcie potwierdza inny pracownik uprawniony w dziale docelowym.</p>':''}</section>`:'<aside class="detail-placeholder"><h2>Wybierz przekazanie</h2><p>Sprawdź materiał, ilość, miejsce i pracowników uczestniczących w przekazaniu.</p></aside>'}</div>`;
+}
+async function selectHandoff(id) {
+  if (selectionBlocked()) return;
+  S.handoffLoading=true;S.handoffID=id;render();
+  try {
+    const record=(await request(`/api/v1/handoffs/${id}?${query()}`)).data;
+    if (S.handoffID !== id) return;
+    S.handoff=record;S.section='handoffs';S.selected=null;
+    sessionStorage.setItem(`wms-handoff:${workspace.actor_id}`,id);
+    sessionStorage.setItem(`wms-handoff-view:${workspace.actor_id}`,'1');
+  } finally {S.handoffLoading=false;render();focusHandoff();}
+}
+async function loadHandoffPage(view,append=false) {
+  if(selectionBlocked())return;
+  S.handoffListLoading=true;
+  const cursor=append?S.handoffCursor:null;
+  if(!append){S.handoffFilter=view;S.handoffCursor=null;S.handoffs=[];}
+  render();
+  try {
+    const page=await list('handoffs',cursor,{view});
+    S.handoffs=append?[...S.handoffs,...page.data.filter(row=>!S.handoffs.some(old=>old.id===row.id))]:page.data;
+    S.handoffCursor=page.pagination?.next_cursor;
+  } finally {S.handoffListLoading=false;render();}
+}
+function openHandoff(balanceID) {
+  if (selectionBlocked()) return;
+  const balance=S.balances.find(row=>row.id === balanceID),item=itemById(balance?.item_id);
+  const destinations=handoffDestinations({context:S.handoffContext,balance,item,scope:S.scope});
+  if (!can('handoff.send',balance?.owner_id) || !destinations.length) return;
+  const dialog=root.querySelector('#create-dialog');dialog.setAttribute('aria-labelledby','handoff-title');
+  const position=positionById(balance.position_id);
+  dialog.innerHTML=`<form id="handoff-form"><div class="dialog-heading"><div><span class="eyebrow">PRZEKAZANIE MATERIAŁU</span><h2 id="handoff-title">Przekaż do działu</h2></div><button type="button" class="icon-button" data-close-handoff aria-label="Zamknij formularz">${icon('close')}</button></div><p><strong>${e(item.name)}</strong></p><p>Miejsce wysyłki: ${e(position?.code)} · ${e(position?.name||'')}</p><p>Wysyłający: <strong>${e(S.handoffContext.employee.display_name)}</strong></p><p>Dostępne: ${e(qty(balance.available_qty))} ${e(item.unit)}</p><fieldset class="handoff-fields"><legend class="visually-hidden">Dział i ilość materiału</legend><label for="handoff-destination">Dział docelowy</label><select id="handoff-destination" required><option value="">Wybierz dział</option>${destinations.map(row=>`<option value="${e(row.id)}">${e(row.name)}</option>`).join('')}</select><label for="handoff-quantity">Ilość do przekazania</label><input id="handoff-quantity" inputmode="decimal" autocomplete="off" required aria-describedby="handoff-form-error"><p class="hint">Wysyłasz tę ilość do osobnego potwierdzenia przyjęcia. Nowa etykieta nie jest potrzebna.</p><p id="handoff-form-error" role="alert"></p><button class="button primary full">Wyślij do działu</button></fieldset></form>`;
+  dialog.querySelector('[data-close-handoff]').onclick=()=>dialog.close();
+  dialog.querySelector('#handoff-form').onsubmit=async event=>{
+    event.preventDefault();if(selectionBlocked()) return;
+    const destinationID=dialog.querySelector('#handoff-destination').value,quantity=dialog.querySelector('#handoff-quantity').value;
+    const fieldset=dialog.querySelector('fieldset');S.handoffSubmitting=true;fieldset.disabled=true;
+    try {
+      const context=(await request(`/api/v1/handoffs/context?${query()}`)).data;
+      const params=new URLSearchParams({...S.scope,owner_id:balance.owner_id,item_id:balance.item_id,position_id:balance.position_id,limit:'200'});
+      const page=await request(`/api/v1/stock-balances?${params}`);
+      const current=page.data.filter(row=>row.id === balanceID);
+      if(current.length !== 1 || page.pagination?.next_cursor) throw new Error('Stan towaru zmienił się. Odśwież stany i ponownie wybierz pozycję.');
+      const body=handoffSendIntent({context,balance:current[0],item,scope:S.scope,destinationID,quantity});
+      if (!dialog.open) return;
+      S.handoffContext=context;dialog.close();
+      await write('/api/v1/handoffs/send',body,'Materiał wysłany. Dział docelowy musi potwierdzić przyjęcie.');
+    } catch(error) {
+      if(dialog.open) {dialog.querySelector('#handoff-form-error').textContent=problem(error);dialog.querySelector('#handoff-quantity').setAttribute('aria-invalid','true');}
+      else {S.error=problem(error);render();}
+    } finally {S.handoffSubmitting=false;if(dialog.open){fieldset.disabled=false;dialog.querySelector('#handoff-quantity').focus();}else {render();focusHandoff();}}
+  };
+  dialog.showModal();dialog.querySelector('#handoff-destination').focus();
+}
+async function acceptHandoff() {
+  if(selectionBlocked() || !S.handoff || !can('handoff.accept',S.handoff.owner_id)) return;
+  const captured=S.handoff;S.handoffSubmitting=true;render();
+  try {
+    const context=(await request(`/api/v1/handoffs/context?${query()}`)).data;
+    const current=(await request(`/api/v1/handoffs/${captured.id}?${query()}`)).data;
+    S.handoffContext=context;S.handoff=current;
+    if(current.version !== captured.version || current.state !== captured.state) throw new Error('Przekazanie zmieniło się. Sprawdź aktualny stan i potwierdzenie przyjęcia.');
+    const body=handoffAcceptIntent({context,handoff:current,scope:S.scope});
+    await write(`/api/v1/handoffs/${current.id}/accept`,body,'Przyjęcie materiału potwierdzone na Twoim koncie.');
+  } finally {S.handoffSubmitting=false;render();focusHandoff();}
+}
 function materialsTable(requirements,owner) {
   const rows = materialAvailability(requirements,S.balances,{...S.scope,owner_id:owner});
   return `<div class="table-scroll"><table class="materials-table"><thead><tr><th>Materiał</th><th class="numeric">Potrzeba</th><th class="numeric">Dostępne</th><th class="numeric">Brakuje</th></tr></thead><tbody>${rows.map(row => `<tr><td>${e(itemById(row.item_id)?.name||'Brak towaru')}<small>${e(itemById(row.item_id)?.sku)}</small></td><td class="numeric">${e(qty(row.quantity))} ${e(itemById(row.item_id)?.unit)}</td><td class="numeric">${e(qty(row.available_qty))}</td><td class="numeric ${row.shortage_qty !== '0'?'shortage':''}">${e(qty(row.shortage_qty))}</td></tr>`).join('')}</tbody></table></div>`;
@@ -132,7 +234,7 @@ function worker() {
   const heading = work.stage === 'item'?'Zeskanuj towar':work.stage === 'source'?'Zeskanuj adres źródłowy':work.stage === 'target'?(receive?'Zeskanuj adres przyjęcia':'Zeskanuj adres składowania'):'Potwierdź ilość';
   return `<div class="terminal-container"><div class="terminal-document"><button class="text-button" data-action="back-tasks">← Dokumenty</button><span class="mono">${e(doc.number)}</span>${badge(doc)}</div>${entryModeButtons()}<div class="terminal-heading"><span class="eyebrow">${receive?'PRZYJĘCIE TOWARU (PZ)':shipment?'WYDANIE TOWARU (WZ)':'PRZESUNIĘCIE TOWARU (MM)'}</span><h1>${heading}</h1>${shipment?`<p>Odbiorca: <strong>${e(doc.recipient)}</strong>${doc.order_reference?` · ${e(doc.order_reference)}`:''}</p>`:''}${doc.kind === 'transfer'?'<p>Kod towaru i partia pozostają bez zmian. Przesunięcie nie wymaga nowej etykiety.</p>':''}</div><ol class="steps">${stages.map((stage,n) => `<li class="${n === index?'current':n < index?'done':''}" ${n === index?'aria-current="step"':''}><span>${n < index?'✓':n+1}</span>${stage}</li>`).join('')}</ol><section class="scan-card"><div class="terminal-item"><span class="item-icon">${icon('box')}</span><div><span class="eyebrow">POZYCJA ${doc.lines.findIndex(line => line.id === work.line.id)+1} Z ${doc.lines.length}</span><h2>${e(work.item.name)}</h2><p class="mono">${e(work.item.sku)}</p></div></div><div class="terminal-quantity"><span>Pozostało ${receive?'do przyjęcia':shipment?'do wydania':'do przesunięcia'}</span><strong>${e(qty(remaining(work.line.requested_qty,work.line.fulfilled_qty)))} <small>${e(work.item.unit)}</small></strong></div>${work.sourceBalance?`<div class="scan-confirmed">✓ Źródło: <b class="mono">${e(positionById(work.sourceBalance.position_id)?.code)}</b></div>`:''}${work.targetBalance?`<div class="scan-confirmed">✓ ${receive?'Przyjęcia':'Cel'}: <b class="mono">${e(positionById(work.targetBalance.position_id)?.code)}</b></div>`:''}${shipment&&work.reservationQuantity?`<div class="reservation-note" id="reservation-hint"><strong>Zarezerwowane pod tym adresem: ${e(qty(work.reservationQuantity))} ${e(work.item.unit)}</strong><p>Wydaj najpierw tę rezerwację. Potem możesz zarezerwować i wydać pozostałą ilość dokumentu.</p></div>`:''}<form id="scan-form"><label for="scan-input">${label}</label><div class="scan-input-wrap">${icon(work.stage === 'quantity'?'box':'scan')}<input id="scan-input" name="scan" autocomplete="off" ${work.stage === 'quantity'?'inputmode="decimal"':''} ${work.stage === 'quantity'&&work.reservationQuantity?`value="${e(qty(work.reservationQuantity))}" max="${e(work.reservationQuantity)}"`:''} aria-describedby="scan-hint${shipment&&work.reservationQuantity?' reservation-hint':''}" ${S.busy||S.needsRefresh||pending()?'disabled':''}></div><p id="scan-hint" class="hint">${work.stage === 'quantity'?'Wpisz przeliczoną ilość. Część dziesiętną możesz oddzielić przecinkiem.':'Skaner z klawiszem Enter lub ręczne wpisanie dokładnego kodu.'}</p><button class="button primary full" ${S.busy||S.needsRefresh||pending()?'disabled':''}>${work.stage === 'quantity'?(receive?'Przyjmij towar':shipment?'Wydaj towar':'Przesuń towar'):'Dalej'} ${icon(work.stage === 'quantity'?'check':'arrow')}</button></form>${index > 0?'<button class="text-button" data-action="restart-scan">Skanuj ponownie</button>':''}</section><div class="terminal-footer"><span>Wykonane pozycje: <b>${done(doc)} / ${doc.lines.length}</b></span><button class="text-button" data-mode="bureau">Do dokumentu w biurze</button></div></div>`;
 }
-const selectionBlocked = () => Boolean(S.busy || S.selectSubmitting || S.selection?.loading || S.needsRefresh || pending());
+const selectionBlocked = () => Boolean(S.busy || S.selectSubmitting || S.handoffSubmitting || S.handoffLoading || S.handoffListLoading || S.selection?.loading || S.needsRefresh || pending());
 function entryModeButtons() {
   return `<div class="entry-mode" role="group" aria-label="Sposób wprowadzania"><button class="button" data-entry-mode="select" aria-pressed="${S.entryMode !== 'scan'}" ${selectionBlocked()?'disabled':''}>Wybierz z listy</button><button class="button" data-entry-mode="scan" aria-pressed="${S.entryMode === 'scan'}" ${selectionBlocked()?'disabled':''}>${icon('scan')} Skaner / wpisz kod</button></div>`;
 }
@@ -142,7 +244,7 @@ function ownReservations(line,balance,reservations=S.selection?.reservations||[]
 function selectionWorker(doc) {
   const selection=S.selection, rows=lineChoices(doc,workspace.catalog.items,S.scope);
   const chosen=rows.find(row => row.line.id === selection.lineID), line=chosen?.line,item=chosen?.item;
-  const args={document:doc,line,item,balances:S.balances,positions:workspace.catalog.positions,scope:S.scope,reservations:selection.reservations};
+  const args={document:doc,line,item,balances:S.balances.filter(genericStockAllowed),positions:workspace.catalog.positions,scope:S.scope,reservations:selection.reservations};
   const sources=line?balanceChoices({...args,role:'source'}):[];
   const source=sources.find(row => row.id === selection.sourceID);
   const targets=line?balanceChoices({...args,role:'target',sourceBalance:source}):[];
@@ -196,7 +298,7 @@ async function confirmSelection() {
       if (page.pagination?.next_cursor) throw new Error('Pozycja ma wiele rezerwacji. Poproś kierownika o ich sprawdzenie.');
       reservations=page.data;
     }
-    const work=resolveSelection({document:current,lineID:selected.lineID,items:workspace.catalog.items,balances:stock,positions:workspace.catalog.positions,scope:S.scope,sourceID:selected.sourceID,targetID:selected.targetID,reservations});
+    const work=resolveSelection({document:current,lineID:selected.lineID,items:workspace.catalog.items,balances:stock.filter(genericStockAllowed),positions:workspace.catalog.positions,scope:S.scope,sourceID:selected.sourceID,targetID:selected.targetID,reservations});
     S.selected=current;
     S.balances=[...S.balances.filter(row=>row.owner_id !== current.owner_id),...stock];
     if (current.kind === 'shipment') await issueShipment(work,selected.quantity);
@@ -208,13 +310,16 @@ async function confirmSelection() {
 }
 function bind() {
   root.querySelectorAll('[data-mode]').forEach(button => button.onclick = () => {S.mode = button.dataset.mode; sessionStorage.setItem(`wms-mode:${workspace.actor_id}`,S.mode); S.error = ''; render(); focusScan();});
-  root.querySelectorAll('[data-section]').forEach(button => button.onclick = () => {S.section = button.dataset.section; S.filter = 'all'; S.search = ''; S.selected = null; render();});
+  root.querySelectorAll('[data-section]').forEach(button => button.onclick = () => {S.section = button.dataset.section; S.filter = 'all'; S.search = ''; S.selected = null; if(S.section !== 'handoffs') sessionStorage.removeItem(`wms-handoff-view:${workspace.actor_id}`); render();});
   root.querySelectorAll('[data-filter]').forEach(button => button.onclick = () => {S.filter = button.dataset.filter; render();});
   root.querySelectorAll('[data-document]').forEach(button => button.onclick = () => run(() => selectDocument(button.dataset.document)));
   root.querySelectorAll('[data-worker-document]').forEach(button => button.onclick = () => run(async () => {await selectDocument(button.dataset.workerDocument); resetWork(); render(); focusScan();}));
   root.querySelectorAll('[data-action]').forEach(button => button.onclick = () => action(button.dataset.action));
   root.querySelectorAll('[data-stock-issue]').forEach(button => button.onclick = () => openStockDocument('shipment',button.dataset.stockIssue));
   root.querySelectorAll('[data-stock-move]').forEach(button => button.onclick = () => openStockDocument('transfer',button.dataset.stockMove));
+  root.querySelectorAll('[data-stock-handoff]').forEach(button=>button.onclick=()=>openHandoff(button.dataset.stockHandoff));
+  root.querySelectorAll('[data-handoff]').forEach(button=>button.onclick=()=>run(()=>selectHandoff(button.dataset.handoff)));
+  root.querySelectorAll('[data-handoff-filter]').forEach(button=>button.onclick=()=>run(()=>loadHandoffPage(button.dataset.handoffFilter)));
   root.querySelectorAll('[data-order]').forEach(button => button.onclick = () => {S.order = button.dataset.order; render();});
   const emptyStock = root.querySelector('#empty-stock');
   if (emptyStock) emptyStock.onchange = () => {S.emptyStock = emptyStock.checked; render();};
@@ -272,6 +377,11 @@ async function write(path,body,message) {
 }
 async function afterConfirmation(result,message) {
   S.message = message;
+  if (result.data.handoff_id) {
+    S.handoffID=result.data.handoff_id;S.section='handoffs';S.selected=null;
+    sessionStorage.setItem(`wms-handoff:${workspace.actor_id}`,S.handoffID);
+    sessionStorage.setItem(`wms-handoff-view:${workspace.actor_id}`,'1');
+  }
   try {
     await refresh();
     if (result.data.document_id && S.selected?.id !== result.data.document_id) S.selected = (await request(`/api/v1/documents/${result.data.document_id}?${query()}`)).data;
@@ -296,6 +406,8 @@ function action(name) {
   if (name === 'restart-scan') {resetWork(); S.error = ''; render(); focusScan(); return;}
   if (name === 'logout') {identity.logout({redirectUri:location.origin+'/app/'}); return;}
   run(async () => {
+    if (name === 'accept-handoff') await acceptHandoff();
+    if (name === 'more-handoffs') await loadHandoffPage(S.handoffFilter,true);
     if (name === 'refresh'||name === 'more') {await refresh(name === 'more'); S.needsRefresh = false; resetWork(); S.message = 'Dane odświeżone'; render();}
     if (name === 'more-stock') {const page = await list('stock-balances',S.stockCursor); S.balances.push(...page.data); S.stockCursor = page.pagination?.next_cursor; render();}
     if (name === 'more-orders') {const page = await list('work-orders',S.orderCursor); S.orders.push(...page.data.filter(row => !S.orders.some(old => old.id === row.id))); S.orderCursor = page.pagination?.next_cursor; render();}
@@ -324,6 +436,7 @@ async function advanceScan(value) {
     const page = await request(`/api/v1/stock-balances?${params}`);
     const balances = page.data.filter(row => row.item_id === work.item.id&&row.position_id === position.id&&row.owner_id === S.selected.owner_id);
     if (balances.length !== 1||page.pagination?.next_cursor) throw new Error(balances.length?'Pod adresem jest kilka partii lub stanów towaru. Poproś kierownika o wskazanie właściwej pozycji.':'Towar nie jest przypisany do tego adresu. Sprawdź adres lub skontaktuj się z kierownikiem.');
+    if (!genericStockAllowed(balances[0])) throw new Error('To miejsce należy do przekazań między działami. Użyj widoku „Przekazania między działami”.');
     work[work.stage === 'source'?'sourceBalance':'targetBalance'] = balances[0];
     if (work.stage === 'source' && S.selected.kind === 'shipment') {
       const reservations = await shipmentReservations(work.line,work.sourceBalance);
@@ -490,12 +603,23 @@ async function start() {
       };
     }
     workspace = (await request('/api/v1/workspace')).data;
-    const first = workspace.scopes.find(scope => scope.grants.some(grant => grant.permission === 'document.read'));
+    const first = workspace.scopes.find(scope => scope.grants.some(grant => ['document.read','stock.read','handoff.read'].includes(grant.permission)));
     if (first) {setScope(first); await refresh();}
     const saved = sessionStorage.getItem(`wms-open:${workspace.actor_id}`);
-    if (saved&&S.scope) {try {S.selected = (await request(`/api/v1/documents/${saved}?${query()}`)).data; S.section = S.selected.kind;} catch {}}
+    if (saved&&S.scope&&can('document.read')) {try {S.selected = (await request(`/api/v1/documents/${saved}?${query()}`)).data; S.section = S.selected.kind;} catch {}}
     if (sessionStorage.getItem(`wms-mode:${workspace.actor_id}`) === 'worker') S.mode = 'worker';
     if (sessionStorage.getItem(`wms-entry:${workspace.actor_id}`) === 'scan') S.entryMode = 'scan';
+    const savedHandoff=sessionStorage.getItem(`wms-handoff:${workspace.actor_id}`);
+    if(can('handoff.read')&&savedHandoff&&sessionStorage.getItem(`wms-handoff-view:${workspace.actor_id}`)==='1') {
+      try {
+        S.handoff=(await request(`/api/v1/handoffs/${savedHandoff}?${query()}`)).data;S.handoffID=savedHandoff;S.section='handoffs';S.selected=null;
+      } catch(error) {
+        if(![403,404].includes(error.status))throw error;
+        sessionStorage.removeItem(`wms-handoff:${workspace.actor_id}`);sessionStorage.removeItem(`wms-handoff-view:${workspace.actor_id}`);
+        S.handoff=null;S.handoffID=null;S.selected=null;S.work=null;S.selection=null;S.section='stock';
+        S.error='Nie można otworzyć ostatniego przekazania w tym magazynie. Wybierz je ponownie z listy przekazań.';
+      }
+    }
     render();
   } catch (err) {root.innerHTML = `<main class="login-screen"><h1>Nie udało się otworzyć magazynu</h1><div class="notice error" role="alert">${e(problem(err))}</div><a class="button primary" href="/app/">Zaloguj się ponownie</a><a href="/app/?demo=1">Otwórz magazyn szkoleniowy</a></main>`;}
 }

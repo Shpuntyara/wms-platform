@@ -1,0 +1,14 @@
+[
+  {
+    "path": "db/profiles/handoffs-v1.sql",
+    "sha256": "39fe046b3f112dbae7d6570ab224081c432ae88e9f6e2357d0040278705a6b53"
+  },
+  {
+    "path": "internal/postgres/hardened_handoffs_integration_test.go",
+    "sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9"
+  },
+  {
+    "path": "tests/hardened_profile.py",
+    "sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "actual_behavior_RED": "10000-row generic final hydration scans10001 history records for at most21 page IDs, though owner candidate seeks are fixed. All12 actualobservations captured.",
+  "source_unchanged_during_run": true,
+  "source_sha256": {
+    "db/migrations/0014_department_handoffs.sql": "6acf0f59ea181cf05628aa4943a1c2883879c573ca2a57af3bc266c885788a9d",
+    "internal/postgres/department_handoffs_read_critic_integration_test.go": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79"
+  },
+  "original_manifest_sha256_before_snapshot_rename": "f91699a27dc89c045f729d437d275a07c5a462d4c7a6ed214343d71542c856ee",
+  "historical_go_snapshots": [
+    {
+      "original_source_path": "internal/postgres/department_handoffs_read_critic_integration_test.go",
+      "stored_path": "internal/postgres/department_handoffs_read_critic_integration_test.go.txt"
+    }
+  ]
+}

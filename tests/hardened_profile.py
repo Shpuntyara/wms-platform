@@ -73,7 +73,7 @@ def main():
     if args.profile == 'hardened':
         historical = (ROOT / 'db/profiles/hardened-v1.sql').read_text()
         forward = '' if args.legacy_profile else (ROOT / 'db/profiles/onprem-v1.sql').read_text()
-        industry = '' if args.legacy_profile else (ROOT / 'db/profiles/industry-v1.sql').read_text()
+        industry = '' if args.legacy_profile else (ROOT / 'db/profiles/industry-v1.sql').read_text() + '\n' + (ROOT / 'db/profiles/handoffs-v1.sql').read_text()
         original = historical + forward + industry
         if args.mutant == 'signature':
             forward = forward.replace('IF difference<>0 OR parts[10]', 'IF false OR parts[10]')
@@ -93,6 +93,7 @@ def main():
         sql(f'\\set api_role {api}\n\\set worker_role {worker}\n\\set organization_id {ORG}\n\\set warehouse_id {WH}\nSET ROLE {owner};\n' + (ROOT / 'db/bootstrap' / bootstrap).read_text())
         if not args.legacy_profile:
             sql(f'\\set api_role {api}\nSET ROLE {owner};\n' + (ROOT/'db/bootstrap/industry-onprem-grants.psql').read_text())
+            sql(f'\\set api_role {api}\nSET ROLE {owner};\n' + (ROOT/'db/bootstrap/handoffs-onprem-grants.psql').read_text())
         # Synthetic key exists only in process memory and this disposable DB.
         sql(f"INSERT INTO hardened_private.signing_keys(login,key) VALUES('{api}',decode('{key.hex()}','hex'));")
         if not args.legacy_profile:
@@ -224,6 +225,8 @@ def main():
               'internal/postgres/hardened_business_documents_integration_test.go',
               'internal/postgres/hardened_work_orders_integration_test.go']
     files += [str(p.relative_to(ROOT)).replace('\\','/') for p in sorted((ROOT / 'db/migrations').glob('*.sql'))]
+    files += ['db/profiles/handoffs-v1.sql','db/bootstrap/handoffs-onprem-grants.psql','db/bootstrap/handoffs-backend-grants.psql',
+              'internal/api/handoffs.go','internal/postgres/handoffs.go','internal/postgres/hardened_handoffs_integration_test.go']
     report = {'profile': args.profile, 'deployment_profile': 'hardened-v1' if args.legacy_profile else 'onprem-v1', 'installation_id': installation, 'mutant': args.mutant, 'postgres': sql('SHOW server_version;').stdout.strip(),
               'test_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               'sources_sha256': {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in files if (ROOT / p).exists()},

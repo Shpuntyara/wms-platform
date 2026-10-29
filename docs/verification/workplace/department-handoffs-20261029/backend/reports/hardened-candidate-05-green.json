@@ -1,0 +1,308 @@
+{
+  "profile": "hardened",
+  "deployment_profile": "onprem-v1",
+  "installation_id": "ef94405b-5290-4c45-bb26-44f0a9480f16",
+  "mutant": null,
+  "postgres": "17.11",
+  "test_sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6",
+  "sources_sha256": [
+    {
+      "path": "tests/hardened_profile.py",
+      "sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6"
+    },
+    {
+      "path": "scripts/hardened_gate.py",
+      "sha256": "b894bf6daa5ca5066116547f86b1cd1da7019ce01d038d13647409499d77f247"
+    },
+    {
+      "path": "db/profiles/hardened-v1.sql",
+      "sha256": "d60623f40fa76c36fc29a014f41bd5117b78ede68fa2d37a2d4f08e9cdabb798"
+    },
+    {
+      "path": "db/bootstrap/hardened-grants.psql",
+      "sha256": "486fa2a159c2c1e031d9b5d958bbaa00f4f794796ec5d48fbcb9fb1edb922e05"
+    },
+    {
+      "path": "db/profiles/onprem-v1.sql",
+      "sha256": "009f057b5f1991d4ee52ba336729f81741907144bd136232edf04342c07552b7"
+    },
+    {
+      "path": "db/bootstrap/onprem-grants.psql",
+      "sha256": "cf0db40c4f7982d2d7cc1378a2182ebeac20a24caf2473b32e6e9007baa715e2"
+    },
+    {
+      "path": "internal/postgres/hardened.go",
+      "sha256": "51fe453356141e8e6aeb251fff0013721a3520a58b09c9a2b39fda649b24d42f"
+    },
+    {
+      "path": "internal/postgres/hardened_jobs.go",
+      "sha256": "61f9e41bddadb8b2a6666421fc233453fe427f3f6cc596455bf7029b2b95d4bf"
+    },
+    {
+      "path": "internal/postgres/hardened_integration_test.go",
+      "sha256": "a6d4173a7a015c27ae67e8b026c9201a40c812e57cd3b5e0984cbb765a5d1790"
+    },
+    {
+      "path": "internal/postgres/hardened_onprem_integration_test.go",
+      "sha256": "f8c7e065ef5b686261358450f6235d76c7f40b66f602737ecb6f01bd72712075"
+    },
+    {
+      "path": "internal/postgres/hardened_load_integration_test.go",
+      "sha256": "e89a0a22fede20aaf7f6546230a9f6502ccd45fdffe50a25f45ba88b90b49944"
+    },
+    {
+      "path": "cmd/wms-api/main.go",
+      "sha256": "4d2f896145b4ce32a29ffccc2ee4437fe32d3082af5832e50698785f8b57cf09"
+    },
+    {
+      "path": "cmd/wms-api/runtime_profile.go",
+      "sha256": "14b257ab10d8dbfe94561b19a96de9194824b28fb8c0b5cb9c04490aad0cdcbd"
+    },
+    {
+      "path": "cmd/wms-api/runtime_profile_test.go",
+      "sha256": "c6bf65bf5065abccaa6a585aa563e8b5a8b726faa6207ed5cd804dee4981baf3"
+    },
+    {
+      "path": "internal/postgres/hardened_durability.go",
+      "sha256": "8f89781870212183ce3faca65ca8a0e37be70d90049eaed75cf08b01dc71f6c1"
+    },
+    {
+      "path": "internal/postgres/hardened_durability_test.go",
+      "sha256": "0d6fcd371b82508072c795888cec9aebb50d462da2851cf820c18e59632d3c94"
+    },
+    {
+      "path": "internal/postgres/hardened_onprem_critic_integration_test.go",
+      "sha256": "56f7a163e56e4d4aedef19f0009a3116085fe76461ea729d3b5cf3f11459286f"
+    },
+    {
+      "path": "db/migrations/0010_document_numbering.sql",
+      "sha256": "e2bdbcd3b26c0a2b9da0daaa447fb6953aefde776f66036c39a9e35bc56b089b"
+    },
+    {
+      "path": "db/migrations/0011_document_owner_seek.sql",
+      "sha256": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+    },
+    {
+      "path": "internal/postgres/hardened_numbering_integration_test.go",
+      "sha256": "0aa6b18c06a463af929b141b7baaa9e03f5c49823091d35a952cba1115e30dc5"
+    },
+    {
+      "path": "db/migrations/0012_document_business_context.sql",
+      "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+    },
+    {
+      "path": "db/migrations/0013_work_orders.sql",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    },
+    {
+      "path": "db/profiles/industry-v1.sql",
+      "sha256": "3d7cd6ea1abc3c45cade203c66579ea04a06569290fdf134813ddfb3c45c63b6"
+    },
+    {
+      "path": "db/bootstrap/industry-onprem-grants.psql",
+      "sha256": "4b0f46da344d0cfb4268022d84d4d0b51b37775acf1620f4707ea100bce58d64"
+    },
+    {
+      "path": "db/bootstrap/industry-backend-grants.psql",
+      "sha256": "d68ab4fbf8d4dfda431d9de6bd6399652df8c90dc24e50bdcaf96f42f28cacf4"
+    },
+    {
+      "path": "internal/postgres/work_orders.go",
+      "sha256": "b1bec94da10152c884a090abe0c73931157090478d4945894ee2f1374fe5cdf3"
+    },
+    {
+      "path": "internal/postgres/hardened_business_documents_integration_test.go",
+      "sha256": "5657e74f9295b3635be14dc9ffc24e7c5283c186bc416262563551f2a5be2ad7"
+    },
+    {
+      "path": "internal/postgres/hardened_work_orders_integration_test.go",
+      "sha256": "c7f02b6160656b2b8851fa31669dd7280857f3ab55233d66e223abf973b9ed19"
+    },
+    {
+      "path": "db/migrations/0001_inventory_schema.sql",
+      "sha256": "480e4dadf339036b40db9c15351d6c369e77a2080d6d7412dd5264ee1140c479"
+    },
+    {
+      "path": "db/migrations/0002_inventory_commands.sql",
+      "sha256": "045f8922f2539e72ce8c5db6bb9abdf93ad59941dc8722003107bf692f6f9929"
+    },
+    {
+      "path": "db/migrations/0003_backend_api.sql",
+      "sha256": "d38bdb2e38f2bdab0e3ae4df586f348c8047450db079e687c088663ba55edf7f"
+    },
+    {
+      "path": "db/migrations/0004_module_integrity.sql",
+      "sha256": "a371505e5faa985b67daf08161e1ef063242ba27683adf71e5d9c183b09cc882"
+    },
+    {
+      "path": "db/migrations/0005_inventory_pagination.sql",
+      "sha256": "3693ac805fa60eac065499764442ce13763f882a2e257c9082871ef18cc80045"
+    },
+    {
+      "path": "db/migrations/0006_security_boundary.sql",
+      "sha256": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+    },
+    {
+      "path": "db/migrations/0007_background_jobs.sql",
+      "sha256": "1a99df2600ff86199210098dd28cc7a1431d2b0423d6bdc4bf815776ae269261"
+    },
+    {
+      "path": "db/migrations/0008_background_health_and_policy_v2.sql",
+      "sha256": "95a77fe3d691ee040c63792892b55b9e1eeb20a661b5547da02acee50c28e213"
+    },
+    {
+      "path": "db/migrations/0009_warehouse_documents.sql",
+      "sha256": "078a259de16ae83c3368affb4f21887d6290bc0b8b4b6af06024f890b2a34431"
+    },
+    {
+      "path": "db/migrations/0014_department_handoffs.sql",
+      "sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5"
+    },
+    {
+      "path": "db/profiles/handoffs-v1.sql",
+      "sha256": "63b335122fdfe8b344f1cdbf55e6c84cb46e34a6b83933c5cb4e1f11510d6cb7"
+    },
+    {
+      "path": "db/bootstrap/handoffs-onprem-grants.psql",
+      "sha256": "739c89449b52e64629ed8104023efb9357b22dc67552de9f91947ac6c86ceebb"
+    },
+    {
+      "path": "db/bootstrap/handoffs-backend-grants.psql",
+      "sha256": "6dccc54cd176ddb04f4263dcc25e049572715dee3e3240a4e5e8e34a5a572912"
+    },
+    {
+      "path": "internal/api/handoffs.go",
+      "sha256": "e566fd29b41194a98e493c5a08022c7088ee8f383f267bfee9811ad5059cd0a0"
+    },
+    {
+      "path": "internal/postgres/handoffs.go",
+      "sha256": "6c1671125df2fc1e0ff14dfda6b857e04b8ee2ba7d81a2057afb3abca0fd5921"
+    },
+    {
+      "path": "internal/postgres/hardened_handoffs_integration_test.go",
+      "sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9"
+    }
+  ],
+  "executed_profile_sha256": "6f4349d5b69f3e68768bfb53495138fb3a574ae9585d553175f0c5ee79cb2b36",
+  "results": [
+    {
+      "name": "stolen API cannot enumerate foreign documents",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot forge actor via legacy command",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot claim outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot acknowledge outbox",
+      "status": "pass"
+    },
+    {
+      "name": "stolen API cannot run expiry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read signing secret",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read binding registry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot read installation registry",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot call hardened worker",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot call HMAC signer",
+      "status": "pass"
+    },
+    {
+      "name": "API cannot change owner role",
+      "status": "pass"
+    },
+    {
+      "name": "unsigned identity lookup rejected",
+      "status": "pass"
+    },
+    {
+      "name": "worker cannot read API",
+      "status": "pass"
+    },
+    {
+      "name": "missing request context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "freely set actor GUC rejected",
+      "status": "pass"
+    },
+    {
+      "name": "fabricated signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "tampered actor signature rejected",
+      "status": "pass"
+    },
+    {
+      "name": "expired signed context rejected",
+      "status": "pass"
+    },
+    {
+      "name": "excessive context lifetime rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context for another scope rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context for another installation rejected",
+      "status": "pass"
+    },
+    {
+      "name": "system actor cannot use API despite explicit grants",
+      "status": "pass"
+    },
+    {
+      "name": "signed context replay in another transaction rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signed context replay on another connection rejected",
+      "status": "pass"
+    },
+    {
+      "name": "signature binds exact raw argument bytes",
+      "status": "pass"
+    },
+    {
+      "name": "signature for read cannot authorize a command",
+      "status": "pass"
+    },
+    {
+      "name": "valid signed scoped read returns only local document",
+      "status": "pass"
+    },
+    {
+      "name": "valid signed command retries identically and rollback persists nothing",
+      "status": "pass"
+    },
+    {
+      "name": "separate scoped worker surface works",
+      "status": "pass"
+    }
+  ],
+  "passed": true,
+  "go_exit_code": 0,
+  "go_passed": true
+}

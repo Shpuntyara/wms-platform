@@ -1,0 +1,14 @@
+............F...
+======================================================================
+FAIL: test_operators_have_no_generic_posting_or_document_creation_grants (test_department_workflow.DepartmentWorkflowTests.test_operators_have_no_generic_posting_or_document_creation_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 99, in test_operators_have_no_generic_posting_or_document_creation_grants
+    self.assertEqual({g['permission'] for g in grants},{'stock.read','handoff.read','handoff.send','handoff.accept'})
+AssertionError: Items in the first set but not the second:
+'document.read'
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.458s
+
+FAILED (failures=1)

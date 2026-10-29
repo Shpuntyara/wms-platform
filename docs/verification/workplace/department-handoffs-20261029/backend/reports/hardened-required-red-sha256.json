@@ -1,0 +1,10 @@
+[
+  {
+    "path": "scripts/hardened_gate.py",
+    "sha256": "9645ce1979699fdaab6b776539a1dbc43acee21789b60140f96981c362724dc8"
+  },
+  {
+    "path": "scripts/test_hardened_gate.py",
+    "sha256": "ca87df481baa6f60c835d32c3656d0f3803ec5d9ff9976d3eaeade34ee783623"
+  }
+]

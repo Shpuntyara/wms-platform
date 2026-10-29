@@ -1,0 +1,6 @@
+test_actual_missing_handoff_helper_assertion_is_invalid (__main__.HandoffMutationAccountingTests.test_actual_missing_handoff_helper_assertion_is_invalid) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.273s
+
+OK

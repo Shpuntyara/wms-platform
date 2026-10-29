@@ -1,0 +1,6 @@
+test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update (test_handoff_installer.HandoffInstaller.test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.025s
+
+OK

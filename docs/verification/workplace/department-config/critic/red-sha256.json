@@ -1,0 +1,22 @@
+[
+  {
+    "path": "deploy/linux/department_workflow.py",
+    "sha256": "976a46812a52c41a179d39ef613bba5b5df52fac4f159eeb502966a3ee465985"
+  },
+  {
+    "path": "tests/test_department_workflow_critic.py",
+    "sha256": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf"
+  },
+  {
+    "path": "tests/test_department_workflow.py",
+    "sha256": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99"
+  },
+  {
+    "path": "tests/test_department_workflow_postgres.py",
+    "sha256": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c"
+  },
+  {
+    "path": "deploy/linux/workplace.py",
+    "sha256": "1d9155c2f53a545597f03a7cad4746403d3212def6c4091e784611782b1acbd2"
+  }
+]

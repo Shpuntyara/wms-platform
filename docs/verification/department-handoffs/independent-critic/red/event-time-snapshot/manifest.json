@@ -1,0 +1,24 @@
+{
+  "actual_behavior_RED": "Acceptance in a transaction opened before send records accepted_at earlier than sent_at",
+  "source_sha256": {
+    "internal/postgres/department_handoffs_critic_integration_test.go": "dc905eb42311497c2a5da82fc06046207459effb755425f9a42b10822a8fbc77",
+    "db/migrations/0014_department_handoffs.sql": "7494c719661b866656ea139dd1e7c69477a8437b0e3e5f40a64d0ccb0cd23115",
+    "internal/api/handoffs.go": "832816759a8d409c00d484ec37d1c15e486b8af6df5690cd092ba640f1ff7e04",
+    "internal/postgres/handoffs.go": "d59c50e978c7c06db95adc88765a5d2fb39cb332c22d0d3b51f449b65c053f47"
+  },
+  "original_manifest_sha256_before_snapshot_rename": "195ba5bfa2dbbf2f15a8b64215e3fbbdf27d7705d7f6e3878c5d23979fb7d1ad",
+  "historical_go_snapshots": [
+    {
+      "original_source_path": "internal/api/handoffs.go",
+      "stored_path": "internal/api/handoffs.go.txt"
+    },
+    {
+      "original_source_path": "internal/postgres/department_handoffs_critic_integration_test.go",
+      "stored_path": "internal/postgres/department_handoffs_critic_integration_test.go.txt"
+    },
+    {
+      "original_source_path": "internal/postgres/handoffs.go",
+      "stored_path": "internal/postgres/handoffs.go.txt"
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+test_real_seed_refuses_extra_document_read_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_extra_document_read_grant_on_new_employee) ... FAIL
+test_real_seed_refuses_generic_movement_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_generic_movement_grant_on_new_employee) ... FAIL
+test_real_seed_refuses_wildcard_owner_handoff_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_wildcard_owner_handoff_grant_on_new_employee) ... FAIL
+test_confirmation_read_failure_resumes_owned_account_without_second_post (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_confirmation_read_failure_resumes_owned_account_without_second_post) ... ok
+test_conflicting_existing_role_actor_ids_cannot_turn_bureau_into_warehouse_sender (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_conflicting_existing_role_actor_ids_cannot_turn_bureau_into_warehouse_sender) ... FAIL
+test_database_failure_preserves_previous_workplace_and_saved_new_account_credentials (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_database_failure_preserves_previous_workplace_and_saved_new_account_credentials) ... ok
+test_duplicate_keycloak_lookup_is_refused_before_creation (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_duplicate_keycloak_lookup_is_refused_before_creation) ... ok
+test_duplicate_private_credentials_are_refused_without_remote_or_database_writes (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_duplicate_private_credentials_are_refused_without_remote_or_database_writes) ... FAIL
+test_post_create_confirmation_rechecks_enabled_identity (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_enabled_identity) ... FAIL
+test_post_create_confirmation_rechecks_exact_username (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_exact_username) ... FAIL
+test_post_create_confirmation_rechecks_installation_ownership (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_installation_ownership) ... FAIL
+test_post_create_confirmation_rechecks_named_employee (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_named_employee) ... FAIL
+test_preflight_last_employee_conflict_prevents_first_account_creation (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_preflight_last_employee_conflict_prevents_first_account_creation) ... ok
+test_private_credentials_symlink_is_refused_before_any_identity_mutation (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_private_credentials_symlink_is_refused_before_any_identity_mutation) ... ok
+test_private_provisioning_marker_with_user_edit_permission_is_refused (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_private_provisioning_marker_with_user_edit_permission_is_refused) ... ok
+test_unknown_committed_keycloak_post_resumes_without_recreating_or_resetting_accounts (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_unknown_committed_keycloak_post_resumes_without_recreating_or_resetting_accounts) ... ok
+test_workspace_symlink_is_refused_before_creating_accounts_or_sql_grants (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_workspace_symlink_is_refused_before_creating_accounts_or_sql_grants) ... FAIL
+
+======================================================================
+FAIL: test_real_seed_refuses_extra_document_read_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_extra_document_read_grant_on_new_employee)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 193, in test_real_seed_refuses_extra_document_read_grant_on_new_employee
+    self.assert_unexpected_employee_grant_is_rejected('document.read')
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 186, in assert_unexpected_employee_grant_is_rejected
+    self.sql(workflow.seed_sql(self.plan,self.subjects),success=False)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 30, in sql
+    self.assertNotEqual(result.returncode,0,'Conflicting metadata was silently accepted')
+AssertionError: 0 == 0 : Conflicting metadata was silently accepted
+
+======================================================================
+FAIL: test_real_seed_refuses_generic_movement_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_generic_movement_grant_on_new_employee)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 190, in test_real_seed_refuses_generic_movement_grant_on_new_employee
+    self.assert_unexpected_employee_grant_is_rejected('movement.create')
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 186, in assert_unexpected_employee_grant_is_rejected
+    self.sql(workflow.seed_sql(self.plan,self.subjects),success=False)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 30, in sql
+    self.assertNotEqual(result.returncode,0,'Conflicting metadata was silently accepted')
+AssertionError: 0 == 0 : Conflicting metadata was silently accepted
+
+======================================================================
+FAIL: test_real_seed_refuses_wildcard_owner_handoff_grant_on_new_employee (test_department_workflow_critic.DepartmentWorkflowNativePrivilegeCritic.test_real_seed_refuses_wildcard_owner_handoff_grant_on_new_employee)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 196, in test_real_seed_refuses_wildcard_owner_handoff_grant_on_new_employee
+    self.assert_unexpected_employee_grant_is_rejected('handoff.send',all_owners=True)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 186, in assert_unexpected_employee_grant_is_rejected
+    self.sql(workflow.seed_sql(self.plan,self.subjects),success=False)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 30, in sql
+    self.assertNotEqual(result.returncode,0,'Conflicting metadata was silently accepted')
+AssertionError: 0 == 0 : Conflicting metadata was silently accepted
+
+======================================================================
+FAIL: test_conflicting_existing_role_actor_ids_cannot_turn_bureau_into_warehouse_sender (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_conflicting_existing_role_actor_ids_cannot_turn_bureau_into_warehouse_sender)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 169, in test_conflicting_existing_role_actor_ids_cannot_turn_bureau_into_warehouse_sender
+    with self.assertRaises(ValueError,msg='Corrupted old-role identity would grant bureau warehouse custody rights'):
+AssertionError: ValueError not raised : Corrupted old-role identity would grant bureau warehouse custody rights
+
+======================================================================
+FAIL: test_duplicate_private_credentials_are_refused_without_remote_or_database_writes (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_duplicate_private_credentials_are_refused_without_remote_or_database_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 117, in test_duplicate_private_credentials_are_refused_without_remote_or_database_writes
+    with self.assertRaises(ValueError,msg='Corrupted duplicate credentials were silently trusted'):self.apply()
+AssertionError: ValueError not raised : Corrupted duplicate credentials were silently trusted
+
+======================================================================
+FAIL: test_post_create_confirmation_rechecks_enabled_identity (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_enabled_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 106, in test_post_create_confirmation_rechecks_enabled_identity
+    self.assert_create_confirmation_refuses_drift(lambda account:account.__setitem__('enabled',False))
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 95, in assert_create_confirmation_refuses_drift
+    with self.assertRaises(ValueError,msg='A successful POST is not proof of the subsequently observed employee identity'):self.apply()
+AssertionError: ValueError not raised : A successful POST is not proof of the subsequently observed employee identity
+
+======================================================================
+FAIL: test_post_create_confirmation_rechecks_exact_username (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_exact_username)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 103, in test_post_create_confirmation_rechecks_exact_username
+    self.assert_create_confirmation_refuses_drift(lambda account:account.__setitem__('username','unrelated.employee'))
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 95, in assert_create_confirmation_refuses_drift
+    with self.assertRaises(ValueError,msg='A successful POST is not proof of the subsequently observed employee identity'):self.apply()
+AssertionError: ValueError not raised : A successful POST is not proof of the subsequently observed employee identity
+
+======================================================================
+FAIL: test_post_create_confirmation_rechecks_installation_ownership (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_installation_ownership)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 100, in test_post_create_confirmation_rechecks_installation_ownership
+    self.assert_create_confirmation_refuses_drift(lambda account:account['attributes'].__setitem__('wms.workplace.installation',[primary.ident(999)]))
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 95, in assert_create_confirmation_refuses_drift
+    with self.assertRaises(ValueError,msg='A successful POST is not proof of the subsequently observed employee identity'):self.apply()
+AssertionError: ValueError not raised : A successful POST is not proof of the subsequently observed employee identity
+
+======================================================================
+FAIL: test_post_create_confirmation_rechecks_named_employee (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_post_create_confirmation_rechecks_named_employee)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 109, in test_post_create_confirmation_rechecks_named_employee
+    self.assert_create_confirmation_refuses_drift(lambda account:account.__setitem__('lastName','Inna osoba'))
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 95, in assert_create_confirmation_refuses_drift
+    with self.assertRaises(ValueError,msg='A successful POST is not proof of the subsequently observed employee identity'):self.apply()
+AssertionError: ValueError not raised : A successful POST is not proof of the subsequently observed employee identity
+
+======================================================================
+FAIL: test_workspace_symlink_is_refused_before_creating_accounts_or_sql_grants (test_department_workflow_critic.DepartmentWorkflowProvisioningCritic.test_workspace_symlink_is_refused_before_creating_accounts_or_sql_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 36, in owned_symlink
+    path.symlink_to(target)
+  File "C:\Users\sashk\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\pathlib.py", line 1198, in symlink_to
+    os.symlink(target, self, target_is_directory)
+OSError: [WinError 1314] A required privilege is not held by the client: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\departments-config-tdd\\owned-config-cnb2klrp\\workspace-target.json' -> 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\work\\departments-config-tdd\\owned-config-cnb2klrp\\workspace.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_critic.py", line 164, in test_workspace_symlink_is_refused_before_creating_accounts_or_sql_grants
+    with self.owned_symlink(self.catalog,target),self.assertRaises(ValueError,msg='Workspace symlink validation happened after external mutations'):self.apply()
+AssertionError: ValueError not raised : Workspace symlink validation happened after external mutations
+
+----------------------------------------------------------------------
+Ran 17 tests in 6.297s
+
+FAILED (failures=10)

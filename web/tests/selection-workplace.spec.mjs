@@ -110,6 +110,7 @@ test('MM moves an existing item between named workplaces without creating a SKU 
   await selectMove(page,ids);
   await page.getByRole('button',{name:'Przesuń towar',exact:true}).click();
   await page.getByRole('button',{name:'Zakończ przesunięcie (MM)',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Dokument zrealizowany',exact:true})).toBeVisible();
   const state=await snapshot(page);
   expect(state.documents.find(row=>row.id===ids.doc).state).toBe('closed');
   expect(state.balances.find(row=>row.id===ids.source).on_hand).toBe('21');
@@ -145,6 +146,7 @@ test('WZ issues to its saved recipient from a labeled source without entering an
   await page.getByLabel('Ilość rzeczywista',{exact:true}).fill('3');
   await page.getByRole('button',{name:'Wydaj towar',exact:true}).click();
   await page.getByRole('button',{name:'Zakończ wydanie (WZ)',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Dokument zrealizowany',exact:true})).toBeVisible();
   const state=await snapshot(page),doc=state.documents.find(row=>row.id===ids.doc);
   expect(doc).toMatchObject({state:'closed',recipient:'Firma Żółć Sp. z o.o.',order_reference:'ZAM/KLIENT/7'});
   expect(doc.lines[0]).toMatchObject({fulfilled_qty:'3',reserved_qty:'0'});

@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fc from 'fast-check';
+let helpers={};
+try {helpers=await import('../src/handoff.js');} catch(error) {if(error.code!=='ERR_MODULE_NOT_FOUND') throw error;}
+const helper=name=>{assert.equal(typeof helpers[name],'function',`Handoff helper ${name} must exist before department transfers are safe`);return helpers[name];};
+const scope={organization_id:'org',warehouse_id:'wh'};
+function fixture() {
+  const item={id:'item',organization_id:'org',quantity_scale:0};
+  const balance={id:'source',...scope,owner_id:'owner',item_id:'item',position_id:'A1',stock_state:'available',available_qty:'24.000000',on_hand:'24.000000',lot_id:null,serial_id:null};
+  const context={employee:{actor_id:'sender',display_name:'Marek Wójcik'},can_send:true,can_accept:true,
+    memberships:[{department_id:'warehouse'}],departments:[{id:'warehouse',name:'Magazyn',position_id:'A1',enabled:true},{id:'welding',name:'Spawanie',position_id:'S1',enabled:true},{id:'polishing',name:'Szlifowanie',position_id:'P1',enabled:true}],
+    routes:[{source_department_id:'warehouse',destination_department_id:'welding'}]};
+  const handoff={id:'handoff',...scope,owner_id:'owner',item_id:'item',quantity:'2.000000',version:1,state:'sent',source_department_id:'warehouse',destination_department_id:'welding',sender_actor_id:'sender'};
+  return {scope,item,balance,context,handoff};
+}
+test('handoff destinations are configured enabled routes for the authenticated source member only',()=>{
+  const destinations=helper('handoffDestinations'),f=fixture();
+  assert.deepEqual(destinations(f).map(row=>row.id),['welding']);
+  assert.deepEqual(destinations({...f,context:{...f.context,memberships:[]}}),[]);
+  assert.deepEqual(destinations({...f,balance:{...f.balance,stock_state:'in_transit'}}),[]);
+  assert.deepEqual(destinations({...f,balance:{...f.balance,warehouse_id:'other'}}),[]);
+  assert.deepEqual(destinations({...f,context:{...f.context,can_send:false}}),[]);
+  f.context.departments[1].enabled=false;
+  assert.deepEqual(destinations(f),[]);
+});
+test('handoff send intent keeps exact decimal quantity and excludes owner or typed identities',()=>{
+  const send=helper('handoffSendIntent'),f=fixture();f.item.quantity_scale=3;
+  assert.deepEqual(send({...f,destinationID:'welding',quantity:'2,125'}),{...scope,source_balance_id:'source',destination_department_id:'welding',quantity:'2.125'});
+});
+test('handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination',()=>{
+  const send=helper('handoffSendIntent'),f=fixture();
+  for(const change of [{quantity:'25'},{quantity:'0.5'},{destinationID:'polishing'},{balance:{...f.balance,stock_state:'in_transit'}},{balance:{...f.balance,organization_id:'other'}}]) {
+    assert.throws(()=>send({...f,destinationID:'welding',quantity:'1',...change}));
+  }
+});
+test('only a different authenticated receiving member can accept a sent handoff',()=>{
+  const accept=helper('canAcceptHandoff'),f=fixture();
+  const receiver={...f.context,employee:{actor_id:'receiver',display_name:'Anna Nowak'},memberships:[{department_id:'welding'}]};
+  assert.equal(accept({...f,context:receiver}),true);
+  assert.equal(accept({...f,context:{...receiver,employee:f.context.employee}}),false);
+  assert.equal(accept({...f,context:{...receiver,memberships:[]}}),false);
+  assert.equal(accept({...f,context:{...receiver,employee:null}}),false);
+  assert.equal(accept({...f,context:{...receiver,can_accept:false}}),false);
+  assert.equal(accept({...f,context:receiver,handoff:{...f.handoff,state:'accepted'}}),false);
+  assert.equal(accept({...f,context:receiver,scope:{...scope,warehouse_id:'other'}}),false);
+});
+test('acceptance confirms the full existing handoff version without quantity or identity inputs',()=>{
+  const accept=helper('handoffAcceptIntent'),f=fixture();
+  f.context.employee={actor_id:'receiver',display_name:'Anna Nowak'};f.context.memberships=[{department_id:'welding'}];
+  assert.deepEqual(accept(f),{...scope,expected_version:1});
+});
+test('handoff property: one micro-unit above availability never passes through floating point rounding',()=>{
+  const send=helper('handoffSendIntent');
+  const decimal=micros=>`${micros/1000000n}.${String(micros%1000000n).padStart(6,'0')}`;
+  fc.assert(fc.property(fc.bigInt({min:1n,max:99999999999999999999999n}),available=>{
+    const f=fixture();f.item.quantity_scale=6;f.balance.available_qty=decimal(available);
+    assert.equal(send({...f,destinationID:'welding',quantity:decimal(available)}).quantity.replace(/0+$/,'').length>0,true);
+    assert.throws(()=>send({...f,destinationID:'welding',quantity:decimal(available+1n)}));
+  }),{seed:2026103001,numRuns:180});
+});

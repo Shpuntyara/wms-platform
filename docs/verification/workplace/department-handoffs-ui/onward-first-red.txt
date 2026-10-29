@@ -1,0 +1,121 @@
+[WebServer] (node:43332) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 2 workers
+
+
+(node:41584) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:37308) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/4] tests\handoff-workplace.spec.mjs:311:54 › legacy receipt selection excludes known production and transit balances after department acceptance
+[2/4] tests\handoff-workplace.spec.mjs:288:1 › receive in the incoming queue then send onward keeps the known pending transit route and link
+[3/4] tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance
+  1) tests\handoff-workplace.spec.mjs:288:1 › receive in the incoming queue then send onward keeps the known pending transit route and link 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' })
+    Expected substring: "Spawanie → Szlifowanie"
+    Received string:    "Śruba M8 × 40, ocynkowanaBOLT-M8W przekazaniuPółnoc · ZaopatrzenieW przekazaniuOczekuje na potwierdzenie przyjęcia1 szt.00 szt."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' }) with timeout 5000ms
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' })
+        14 × locator resolved to <tr>…</tr>
+           - unexpected value "Śruba M8 × 40, ocynkowanaBOLT-M8W przekazaniuPółnoc · ZaopatrzenieW przekazaniuOczekuje na potwierdzenie przyjęcia1 szt.00 szt."
+
+
+      304 |   await page.getByRole('button',{name:'Stany',exact:true}).click();
+      305 |   const pending=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'W przekazaniu'});
+    > 306 |   await expect(pending).toContainText('Spawanie → Szlifowanie');
+          |                         ^
+      307 |   await pending.getByRole('button',{name:'Pokaż przekazanie',exact:true}).click();
+      308 |   await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Szlifowanie');
+      309 | });
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:306:25
+
+    Error Context: ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-receive--06ecf-ding-transit-route-and-link\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-receive--06ecf-ding-transit-route-and-link\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-receive--06ecf-ding-transit-route-and-link\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+(node:26368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[4/4] tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance
+  2) tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Towar do realizacji', { exact: true })
+
+
+      318 |     localStorage.setItem('wms-training-v2',JSON.stringify(s));return{line:doc.lines[0].id,transit:s.handoffs[0].transit_balance_id,production:ids.destination,source:ids.source};
+      319 |   },{kind,ids});
+    > 320 |   await page.reload();await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(fixture.line);
+          |                                                                                 ^
+      321 |   if(kind==='receipt') {
+      322 |     for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+      323 |     await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator('option')).toHaveCount(2);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:320:81
+
+    Error Context: ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  3) tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByLabel('Towar do realizacji', { exact: true })
+
+
+      318 |     localStorage.setItem('wms-training-v2',JSON.stringify(s));return{line:doc.lines[0].id,transit:s.handoffs[0].transit_balance_id,production:ids.destination,source:ids.source};
+      319 |   },{kind,ids});
+    > 320 |   await page.reload();await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(fixture.line);
+          |                                                                                 ^
+      321 |   if(kind==='receipt') {
+      322 |     for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+      323 |     await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator('option')).toHaveCount(2);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:320:81
+
+    Error Context: ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\forward-legacy-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  3 failed
+    tests\handoff-workplace.spec.mjs:288:1 › receive in the incoming queue then send onward keeps the known pending transit route and link 
+    tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance 
+    tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance 
+  1 passed (38.5s)

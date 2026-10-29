@@ -1,0 +1,728 @@
+//go:build integration
+
+package postgres_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"math/big"
+	"math/rand/v2"
+	"net/http"
+	"sync"
+	"testing"
+
+	"github.com/Shpuntyara/wms-platform/internal/api"
+	"github.com/Shpuntyara/wms-platform/internal/modules"
+)
+
+// This fixture is intentionally independent of the primary handoff test helper.
+// The old warehouse employee receives broad legacy grants in the bypass cases:
+// a denial must prove the custody boundary, rather than a missing API permission.
+type criticHandoffFixture struct {
+	*fixture
+	departments, actors, positions [5]string
+}
+
+func newCriticHandoffFixture(t *testing.T) *criticHandoffFixture {
+	t.Helper()
+	f := newFixture(t)
+	if f.scalar(`SELECT (to_regprocedure('warehouse.command_handoff(uuid,uuid,uuid,jsonb)') IS NOT NULL)::text`) != "true" {
+		t.Fatal("HANDOFF_FEATURE_UNAVAILABLE: durable two-sided handoff command must exist before behavior checks")
+	}
+	h := &criticHandoffFixture{fixture: f}
+	h.actors[0] = f.actor
+	h.positions[0] = f.scalar(`SELECT position_id::text FROM inventory.stock_balances WHERE id=$1`, f.source)
+	for n, name := range []string{"Magazyn", "Spawanie", "Szlifowanie", "Lakiernia", "Montaż"} {
+		h.departments[n] = id()
+		if n > 0 {
+			h.actors[n], h.positions[n] = id(), id()
+			location := id()
+			f.exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'https://tests.invalid',$1::uuid::text)`, h.actors[n])
+			f.exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) VALUES($1,$2,$3,$1::uuid::text,'storage')`, location, f.org, f.wh)
+			f.exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,location_id) VALUES($1,$2,$3,$4)`, h.positions[n], f.org, f.wh, location)
+		}
+		kind := "production"
+		if n == 0 {
+			kind = "warehouse"
+		}
+		f.exec(`INSERT INTO warehouse.departments(id,organization_id,warehouse_id,code,name,kind,position_id,enabled) VALUES($1,$2,$3,$1::uuid::text,$4,$5,$6,true)`, h.departments[n], f.org, f.wh, name, kind, h.positions[n])
+		f.exec(`INSERT INTO warehouse.department_positions(organization_id,warehouse_id,department_id,position_id) VALUES($1,$2,$3,$4)`, f.org, f.wh, h.departments[n], h.positions[n])
+		f.exec(`INSERT INTO warehouse.department_employees(actor_id,organization_id,display_name,enabled) VALUES($1,$2,$3,true)`, h.actors[n], f.org, "Pracownik "+name)
+		f.exec(`INSERT INTO warehouse.department_members(organization_id,warehouse_id,department_id,actor_id,enabled) VALUES($1,$2,$3,$4,true)`, f.org, f.wh, h.departments[n], h.actors[n])
+		for _, permission := range []string{"handoff.send", "handoff.accept", "handoff.read"} {
+			f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,$5)`, h.actors[n], f.org, f.wh, f.owner, permission)
+		}
+		if n > 0 {
+			f.exec(`INSERT INTO warehouse.department_routes(organization_id,warehouse_id,source_department_id,destination_department_id,enabled) VALUES($1,$2,$3,$4,true)`, f.org, f.wh, h.departments[n-1], h.departments[n])
+		}
+	}
+	return h
+}
+
+func (h *criticHandoffFixture) handlerFor(actor string) http.Handler {
+	h.t.Helper()
+	registry, err := modules.NewRegistry(nil, nil, nil)
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	handler, err := api.New(api.Config{Backend: h.store, Auth: tokenAuth{subject: actor}, Modules: registry})
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	return handler
+}
+
+func (h *criticHandoffFixture) sendBody(source string, next int, quantity string) map[string]any {
+	return map[string]any{"organization_id": h.org, "warehouse_id": h.wh, "source_balance_id": source, "destination_department_id": h.departments[next], "quantity": quantity}
+}
+
+func (h *criticHandoffFixture) acceptBody(version int) map[string]any {
+	return map[string]any{"organization_id": h.org, "warehouse_id": h.wh, "expected_version": version}
+}
+
+func (h *criticHandoffFixture) command(ctx context.Context, command, actor, handoff string, input map[string]any) (json.RawMessage, error) {
+	raw, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+	var result json.RawMessage
+	err = h.runtime.QueryRow(ctx, `SELECT warehouse.command_handoff($1::uuid,$2::uuid,$3::uuid,$4::jsonb)`, command, actor, optionalCriticHandoffID(handoff), raw).Scan(&result)
+	return result, err
+}
+
+func optionalCriticHandoffID(value string) any {
+	if value == "" {
+		return nil
+	}
+	return value
+}
+
+func criticHandoffObject(t testing.TB, raw json.RawMessage) map[string]any {
+	t.Helper()
+	var row map[string]any
+	if err := json.Unmarshal(raw, &row); err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: command did not return an object: %v", err)
+	}
+	return row
+}
+
+func (h *criticHandoffFixture) send(t *testing.T, source string, next int, quantity string) (string, map[string]any) {
+	t.Helper()
+	raw, err := h.command(t.Context(), id(), h.actors[next-1], "", h.sendBody(source, next, quantity))
+	if err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: authorized send rejected: %v", err)
+	}
+	row := criticHandoffObject(t, raw)
+	handoff, ok := row["handoff_id"].(string)
+	if !ok || handoff == "" {
+		t.Fatalf("HANDOFF_ASSERTION: response lacks immutable handoff id: %s", raw)
+	}
+	return handoff, row
+}
+
+func (h *criticHandoffFixture) accept(t *testing.T, handoff string, next int) map[string]any {
+	t.Helper()
+	raw, err := h.command(t.Context(), id(), h.actors[next], handoff, h.acceptBody(1))
+	if err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: authenticated recipient rejected: %v", err)
+	}
+	return criticHandoffObject(t, raw)
+}
+
+func (h *criticHandoffFixture) balanceAt(position string) string {
+	h.t.Helper()
+	return h.scalar(`SELECT id::text FROM inventory.stock_balances WHERE organization_id=$1 AND warehouse_id=$2 AND owner_id=$3 AND item_id=$4 AND position_id=$5 AND stock_state='available' AND lot_id IS NULL AND serial_id IS NULL`, h.org, h.wh, h.owner, h.item, position)
+}
+
+func criticHandoffQuantity(t testing.TB, value string) *big.Rat {
+	t.Helper()
+	result, ok := new(big.Rat).SetString(value)
+	if !ok {
+		t.Fatalf("HANDOFF_ASSERTION: invalid serialized exact quantity %q", value)
+	}
+	return result
+}
+
+func (h *criticHandoffFixture) assertConservation(t *testing.T, expectedPending *big.Rat) {
+	t.Helper()
+	physical := h.scalar(`SELECT coalesce(sum(on_hand),0)::text FROM inventory.stock_balances WHERE organization_id=$1 AND warehouse_id=$2 AND owner_id=$3 AND item_id=$4`, h.org, h.wh, h.owner, h.item)
+	if criticHandoffQuantity(t, physical).Cmp(big.NewRat(10, 1)) != 0 {
+		t.Fatalf("HANDOFF_ASSERTION: transfer changed physical inventory: %s", physical)
+	}
+	pending := h.scalar(`SELECT coalesce(sum(b.on_hand),0)::text FROM inventory.stock_balances b JOIN warehouse.handoff_transit_positions p ON p.position_id=b.position_id WHERE b.organization_id=$1 AND b.warehouse_id=$2 AND b.owner_id=$3 AND b.item_id=$4`, h.org, h.wh, h.owner, h.item)
+	if criticHandoffQuantity(t, pending).Cmp(expectedPending) != 0 {
+		t.Fatalf("HANDOFF_ASSERTION: pending custody=%s independent model=%s", pending, expectedPending.RatString())
+	}
+	if got := h.scalar(`SELECT count(*)::text FROM contracts_v1.stock_balances b JOIN warehouse.handoff_transit_positions p ON p.position_id=b.position_id WHERE b.organization_id=$1 AND (b.available_qty<>0 OR b.reserved_qty<>0 OR b.stock_state<>'in_transit')`, h.org); got != "0" {
+		t.Fatalf("HANDOFF_ASSERTION: pending stock is usable, reserved or in the wrong state: %s balances", got)
+	}
+}
+
+func TestDepartmentHandoffsCriticIndependentConservationHistories(t *testing.T) {
+	for seed := uint64(1); seed <= 12; seed++ {
+		t.Run(fmt.Sprintf("history_%d", seed), func(t *testing.T) {
+			h := newCriticHandoffFixture(t)
+			rng := rand.New(rand.NewPCG(0x48414e444f4646, seed))
+			// Each parcel has its own identity in the independent oracle. Sending
+			// identical stock before accepting in reverse order must not merge custody.
+			pending := new(big.Rat)
+			parcels := []struct{ handoff, quantity string }{}
+			for range 4 {
+				quantity := fmt.Sprintf("0.%03d", 1+rng.IntN(999))
+				handoff, _ := h.send(t, h.source, 1, quantity)
+				pending.Add(pending, criticHandoffQuantity(t, quantity))
+				parcels = append(parcels, struct{ handoff, quantity string }{handoff, quantity})
+				h.assertConservation(t, pending)
+			}
+			if got := h.scalar(`SELECT count(DISTINCT transit_position_id)::text FROM warehouse.handoffs WHERE organization_id=$1`, h.org); got != "4" {
+				t.Fatalf("HANDOFF_ASSERTION: same-SKU pending parcels share transit identity: %s", got)
+			}
+			for i := len(parcels) - 1; i >= 0; i-- {
+				h.accept(t, parcels[i].handoff, 1)
+				pending.Sub(pending, criticHandoffQuantity(t, parcels[i].quantity))
+				h.assertConservation(t, pending)
+			}
+			for next := 2; next < len(h.departments); next++ {
+				source := h.balanceAt(h.positions[next-1])
+				total := new(big.Rat)
+				for _, parcel := range parcels {
+					total.Add(total, criticHandoffQuantity(t, parcel.quantity))
+				}
+				quantity := total.FloatString(3)
+				handoff, _ := h.send(t, source, next, quantity)
+				h.assertConservation(t, total)
+				h.accept(t, handoff, next)
+				h.assertConservation(t, new(big.Rat))
+			}
+		})
+	}
+}
+
+func TestDepartmentHandoffsCriticConcurrentAcceptIsSingleCustodyChange(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	handoff, _ := h.send(t, h.source, 1, "2.125")
+	start := make(chan struct{})
+	errors := make(chan error, 2)
+	var workers sync.WaitGroup
+	for range 2 {
+		workers.Go(func() {
+			<-start
+			_, err := h.command(t.Context(), id(), h.actors[1], handoff, h.acceptBody(1))
+			errors <- err
+		})
+	}
+	close(start)
+	workers.Wait()
+	close(errors)
+	succeeded := 0
+	for err := range errors {
+		if err == nil {
+			succeeded++
+		}
+	}
+	if succeeded != 1 {
+		t.Fatalf("HANDOFF_ASSERTION: concurrent unique-key accepts succeeded %d times, want exactly one", succeeded)
+	}
+	h.assertConservation(t, new(big.Rat))
+	if got := h.scalar(`SELECT version::text||':'||state FROM warehouse.handoffs WHERE id=$1`, handoff); got != "2:accepted" {
+		t.Fatalf("HANDOFF_ASSERTION: acceptance did not make one terminal transition: %s", got)
+	}
+}
+
+// Include versions, number counters and all durable effects: the movement guard
+// runs late in the old posting function, after attempted debits and credits.
+func (h *criticHandoffFixture) custodySnapshot() string {
+	h.t.Helper()
+	return h.scalar(`SELECT jsonb_build_object(
+ 'stock',(SELECT coalesce(jsonb_agg(to_jsonb(s) ORDER BY s.id),'[]') FROM inventory.stock_balances s WHERE organization_id=$1),
+ 'documents',(SELECT coalesce(jsonb_agg(to_jsonb(d) ORDER BY d.id),'[]') FROM warehouse.documents d WHERE organization_id=$1),
+ 'lines',(SELECT coalesce(jsonb_agg(to_jsonb(l) ORDER BY l.id),'[]') FROM warehouse.document_lines l WHERE organization_id=$1),
+ 'reservations',(SELECT coalesce(jsonb_agg(to_jsonb(r) ORDER BY r.id),'[]') FROM inventory.reservations r WHERE organization_id=$1),
+ 'operations',(SELECT coalesce(jsonb_agg(to_jsonb(o) ORDER BY o.id),'[]') FROM platform.operations o WHERE organization_id=$1),
+ 'audit',(SELECT coalesce(jsonb_agg(to_jsonb(a) ORDER BY a.id),'[]') FROM platform.audit_entries a JOIN platform.operations o ON o.id=a.operation_id WHERE o.organization_id=$1),
+ 'outbox',(SELECT coalesce(jsonb_agg(to_jsonb(b) ORDER BY b.id),'[]') FROM platform.outbox b JOIN platform.operations o ON o.id=b.operation_id WHERE o.organization_id=$1),
+ 'handoffs',(SELECT coalesce(jsonb_agg(to_jsonb(h) ORDER BY h.id),'[]') FROM warehouse.handoffs h WHERE organization_id=$1),
+ 'counters',(SELECT coalesce(jsonb_agg(to_jsonb(c) ORDER BY c.kind,c.number_year),'[]') FROM warehouse.document_number_counters c WHERE organization_id=$1))::text`, h.org)
+}
+
+func (h *criticHandoffFixture) assertDeniedUnchanged(t *testing.T, label string, attempt func() error) {
+	t.Helper()
+	before := h.custodySnapshot()
+	if err := attempt(); err == nil {
+		t.Fatalf("HANDOFF_ASSERTION: %s bypassed managed custody", label)
+	}
+	if after := h.custodySnapshot(); after != before {
+		t.Fatalf("HANDOFF_ASSERTION: rejected %s changed stock, version, counter or durable history", label)
+	}
+}
+
+func (h *criticHandoffFixture) ensureBalance(position, state string) string {
+	h.t.Helper()
+	return h.scalar(`SELECT inventory.ensure_balance($1,$2,$3,$4,$5,$6)::text`, h.org, h.wh, h.owner, h.item, position, state)
+}
+
+func (h *criticHandoffFixture) extraDepartmentPosition(department string) string {
+	h.t.Helper()
+	location, position := id(), id()
+	h.exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) VALUES($1,$2,$3,$1::uuid::text,'storage')`, location, h.org, h.wh)
+	h.exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,location_id) VALUES($1,$2,$3,$4)`, position, h.org, h.wh, location)
+	h.exec(`INSERT INTO warehouse.department_positions(organization_id,warehouse_id,department_id,position_id) VALUES($1,$2,$3,$4)`, h.org, h.wh, department, position)
+	return position
+}
+
+func TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints(t *testing.T) {
+	for _, testCase := range []struct{ name, kind, from, to string }{
+		{"MM production to ordinary", "transfer", "production", "ordinary"},
+		{"MM ordinary to production", "transfer", "ordinary", "production"},
+		{"MM warehouse to production", "transfer", "warehouse", "production"},
+		{"MM production to warehouse", "transfer", "production", "warehouse"},
+		{"MM production to next department", "transfer", "production", "next"},
+		{"MM pending to ordinary", "transfer", "pending", "ordinary"},
+		{"MM warehouse to pending", "transfer", "warehouse", "pending"},
+		{"adjustment out of production", "adjustment_out", "production", ""},
+		{"adjustment into production", "adjustment_in", "", "production"},
+		{"adjustment out of pending", "adjustment_out", "pending", ""},
+		{"adjustment into pending", "adjustment_in", "", "pending"},
+		{"PZ into production", "receipt", "", "production"},
+		{"PZ into pending", "receipt", "", "pending"},
+		{"MM same department by outsider", "transfer", "production", "same"},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			h := newCriticHandoffFixture(t)
+			accepted, _ := h.send(t, h.source, 1, "3")
+			h.accept(t, accepted, 1)
+			pending, _ := h.send(t, h.source, 1, "2")
+			pendingBalance := h.scalar(`SELECT transit_balance_id::text FROM warehouse.handoffs WHERE id=$1`, pending)
+			places := map[string]string{"warehouse": h.source, "ordinary": h.target, "production": h.balanceAt(h.positions[1]), "next": h.ensureBalance(h.positions[2], "available"), "pending": pendingBalance, "same": h.ensureBalance(h.extraDepartmentPosition(h.departments[1]), "available"), "": ""}
+			// Give the unmapped source real stock, without ever rewriting on_hand.
+			_, receivingLine := h.doc("receipt", "2", h.owner)
+			h.exec(`SELECT inventory.post_movement($1,$2,$3,1,'receipt',NULL,$4,2)`, id(), h.actor, receivingLine, h.target)
+			documentKind := "transfer"
+			if testCase.kind == "receipt" {
+				documentKind = "receipt"
+			} else if testCase.kind == "adjustment_in" || testCase.kind == "adjustment_out" {
+				documentKind = "adjustment"
+			}
+			_, line := h.doc(documentKind, "1", h.owner)
+			source, target := places[testCase.from], places[testCase.to]
+			h.assertDeniedUnchanged(t, testCase.name, func() error {
+				_, err := h.runtime.Exec(t.Context(), `SELECT inventory.post_movement($1,$2,$3,1,$4,$5::uuid,$6::uuid,1,NULL,'Próba obejścia',NULL)`, id(), h.actor, line, testCase.kind, optionalCriticHandoffID(source), optionalCriticHandoffID(target))
+				return err
+			})
+		})
+	}
+}
+
+func TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	handoff, _ := h.send(t, h.source, 1, "2")
+	transitPosition := h.scalar(`SELECT transit_position_id::text FROM warehouse.handoffs WHERE id=$1`, handoff)
+	transitBalance := h.scalar(`SELECT transit_balance_id::text FROM warehouse.handoffs WHERE id=$1`, handoff)
+	productionHandoff, _ := h.send(t, h.source, 1, "2")
+	h.accept(t, productionHandoff, 1)
+	for _, state := range []string{"available", "quarantine", "damaged"} {
+		t.Run("transit identity "+state, func(t *testing.T) {
+			h.assertDeniedUnchanged(t, state+" identity at managed transit", func() error {
+				_, err := h.runtime.Exec(t.Context(), `SELECT inventory.ensure_balance($1,$2,$3,$4,$5,$6)`, h.org, h.wh, h.owner, h.item, transitPosition, state)
+				return err
+			})
+		})
+	}
+	for name, balance := range map[string]string{"pending": transitBalance, "accepted production": h.balanceAt(h.positions[1])} {
+		t.Run("reserve "+name, func(t *testing.T) {
+			h.assertDeniedUnchanged(t, "reserve "+name, func() error {
+				_, err := h.runtime.Exec(t.Context(), `SELECT inventory.reserve_stock($1,$2,$3,1,$4,1,NULL)`, id(), h.actor, h.line, balance)
+				return err
+			})
+		})
+	}
+	// A caller-set context flag is never a custody capability.
+	tx, err := h.runtime.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(t.Context())
+	_, err = tx.Exec(t.Context(), `SELECT set_config('wms.handoff_internal','true',true),set_config('wms.handoff_id',$1,true)`, handoff)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, line := h.doc("transfer", "1", h.owner)
+	before := h.custodySnapshot()
+	_, err = tx.Exec(t.Context(), `SELECT inventory.post_movement($1,$2,$3,1,'transfer',$4,$5,1)`, id(), h.actor, line, transitBalance, h.target)
+	if err == nil {
+		t.Fatal("HANDOFF_ASSERTION: caller-controlled GUC replaced internal movement capability")
+	}
+	_ = tx.Rollback(t.Context())
+	if before != h.custodySnapshot() {
+		t.Fatal("HANDOFF_ASSERTION: forged context attempt left durable effects")
+	}
+}
+
+func TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	// Membership alone cannot make the sender a second authenticated witness.
+	h.exec(`INSERT INTO warehouse.department_members(organization_id,warehouse_id,department_id,actor_id,enabled) VALUES($1,$2,$3,$4,true)`, h.org, h.wh, h.departments[1], h.actors[0])
+	sendKey := id()
+	body := h.sendBody(h.source, 1, "2")
+	raw, err := h.command(t.Context(), sendKey, h.actors[0], "", body)
+	if err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: valid send rejected: %v", err)
+	}
+	handoff := criticHandoffObject(t, raw)["handoff_id"].(string)
+	h.assertDeniedUnchanged(t, "sender accepts their own handoff despite destination membership", func() error {
+		_, err := h.command(t.Context(), id(), h.actors[0], handoff, h.acceptBody(1))
+		return err
+	})
+	for _, forged := range []map[string]any{
+		h.sendBody(h.source, 1, "3"),
+		h.sendBody(h.source, 2, "2"),
+		h.sendBody(h.target, 1, "2"),
+	} {
+		h.assertDeniedUnchanged(t, "same send key with changed body", func() error {
+			_, err := h.command(t.Context(), sendKey, h.actors[0], "", forged)
+			return err
+		})
+	}
+	for _, layer := range []string{"membership", "permission", "employee"} {
+		t.Run("send replay revoked "+layer, func(t *testing.T) {
+			switch layer {
+			case "membership":
+				h.exec(`UPDATE warehouse.department_members SET enabled=false WHERE actor_id=$1 AND department_id=$2`, h.actors[0], h.departments[0])
+				defer h.exec(`UPDATE warehouse.department_members SET enabled=true WHERE actor_id=$1 AND department_id=$2`, h.actors[0], h.departments[0])
+			case "employee":
+				h.exec(`UPDATE warehouse.department_employees SET enabled=false WHERE actor_id=$1`, h.actors[0])
+				defer h.exec(`UPDATE warehouse.department_employees SET enabled=true WHERE actor_id=$1`, h.actors[0])
+			case "permission":
+				h.exec(`DELETE FROM platform.actor_grants WHERE actor_id=$1 AND permission='handoff.send'`, h.actors[0])
+				defer h.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'handoff.send')`, h.actors[0], h.org, h.wh, h.owner)
+			}
+			h.assertDeniedUnchanged(t, "send replay after "+layer+" revocation", func() error {
+				_, err := h.command(t.Context(), sendKey, h.actors[0], "", body)
+				return err
+			})
+		})
+	}
+	acceptKey := id()
+	accepted, err := h.command(t.Context(), acceptKey, h.actors[1], handoff, h.acceptBody(1))
+	if err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: recipient could not accept: %v", err)
+	}
+	if replay, err := h.command(t.Context(), acceptKey, h.actors[1], handoff, h.acceptBody(1)); err != nil || string(replay) != string(accepted) {
+		t.Fatalf("HANDOFF_ASSERTION: identical accepted command did not replay its original result: %v", err)
+	}
+	if got := h.scalar(`SELECT (sender_actor_id<>receiver_actor_id AND sender_actor_id=$2 AND receiver_actor_id=$3 AND sent_at IS NOT NULL AND accepted_at>=sent_at)::text FROM warehouse.handoffs WHERE id=$1`, handoff, h.actors[0], h.actors[1]); got != "true" {
+		t.Fatal("HANDOFF_ASSERTION: sender, recipient or server-side chronology was lost")
+	}
+	h.exec(`UPDATE warehouse.department_members SET enabled=false WHERE actor_id=$1 AND department_id=$2`, h.actors[1], h.departments[1])
+	h.assertDeniedUnchanged(t, "accept replay after recipient membership revocation", func() error {
+		_, err := h.command(t.Context(), acceptKey, h.actors[1], handoff, h.acceptBody(1))
+		return err
+	})
+}
+
+func TestDepartmentHandoffsCriticOnlyServerChoosesWitnessAndCustodyFields(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	handoff, _ := h.send(t, h.source, 1, "2")
+	for _, field := range []string{"receiver_actor_id", "sender_actor_id", "owner_id", "quantity", "accepted_at", "state", "transit_balance_id"} {
+		t.Run("accept forged "+field, func(t *testing.T) {
+			body := h.acceptBody(1)
+			body[field] = h.actor
+			h.assertDeniedUnchanged(t, "caller supplied "+field, func() error {
+				_, err := h.command(t.Context(), id(), h.actors[1], handoff, body)
+				return err
+			})
+		})
+	}
+	for _, field := range []string{"sender_actor_id", "receiver_actor_id", "owner_id", "item_id", "lot_id", "serial_id", "transit_position_id", "sent_at", "state"} {
+		t.Run("send forged "+field, func(t *testing.T) {
+			body := h.sendBody(h.source, 1, "1")
+			body[field] = h.actor
+			h.assertDeniedUnchanged(t, "caller supplied "+field, func() error {
+				_, err := h.command(t.Context(), id(), h.actors[0], "", body)
+				return err
+			})
+		})
+	}
+	for _, quantity := range []any{0, 1, "0", "-1", "0.0001", "1e0", "NaN", "1000000000000000000", "1.0000001", "9.000"} {
+		t.Run(fmt.Sprintf("quantity_%v", quantity), func(t *testing.T) {
+			body := h.sendBody(h.source, 1, "1")
+			body["quantity"] = quantity
+			h.assertDeniedUnchanged(t, "invalid, wrong-scale or unavailable quantity", func() error {
+				_, err := h.command(t.Context(), id(), h.actors[0], "", body)
+				return err
+			})
+		})
+	}
+	h.accept(t, handoff, 1)
+	h.assertConservation(t, new(big.Rat))
+}
+
+func TestDepartmentHandoffsCriticConcurrentSendsCannotOverdrawSource(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	start := make(chan struct{})
+	errors := make(chan error, 2)
+	var workers sync.WaitGroup
+	for _, quantity := range []string{"6.125", "6.875"} {
+		workers.Go(func() {
+			<-start
+			_, err := h.command(t.Context(), id(), h.actors[0], "", h.sendBody(h.source, 1, quantity))
+			errors <- err
+		})
+	}
+	close(start)
+	workers.Wait()
+	close(errors)
+	succeeded := 0
+	for err := range errors {
+		if err == nil {
+			succeeded++
+		}
+	}
+	if succeeded != 1 {
+		t.Fatalf("HANDOFF_ASSERTION: concurrent sends of total13 from10 succeeded %d times, want one", succeeded)
+	}
+	pending := h.scalar(`SELECT sum(quantity)::text FROM warehouse.handoffs WHERE organization_id=$1 AND state='sent'`, h.org)
+	h.assertConservation(t, criticHandoffQuantity(t, pending))
+	if count := h.scalar(`SELECT count(*)::text FROM warehouse.handoffs WHERE organization_id=$1`, h.org); count != "1" {
+		t.Fatalf("HANDOFF_ASSERTION: failed concurrent send left orphan transfer: %s", count)
+	}
+}
+
+func TestDepartmentHandoffsCriticSameDepartmentMovementRequiresCurrentMember(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	handoff, _ := h.send(t, h.source, 1, "2")
+	h.accept(t, handoff, 1)
+	source := h.balanceAt(h.positions[1])
+	target := h.ensureBalance(h.extraDepartmentPosition(h.departments[1]), "available")
+	_, line := h.doc("transfer", "1", h.owner)
+	if _, err := h.runtime.Exec(t.Context(), `SELECT inventory.post_movement($1,$2,$3,1,'transfer',$4,$5,1)`, id(), h.actors[1], line, source, target); err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: authorized same-department positive control failed: %v", err)
+	}
+	h.exec(`UPDATE warehouse.department_members SET enabled=false WHERE actor_id=$1 AND department_id=$2`, h.actors[1], h.departments[1])
+	_, reverseLine := h.doc("transfer", "1", h.owner)
+	h.assertDeniedUnchanged(t, "same-department MM after membership revocation", func() error {
+		_, err := h.runtime.Exec(t.Context(), `SELECT inventory.post_movement($1,$2,$3,1,'transfer',$4,$5,1)`, id(), h.actors[1], reverseLine, target, source)
+		return err
+	})
+}
+
+func TestDepartmentHandoffsCriticAuthenticatedActorsAreActualWitnesses(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	sent := h.request(h.handlerFor(h.actors[0]), "POST", "/api/v1/handoffs/send", h.sendBody(h.source, 1, "1.125"), id())
+	if sent.Code != http.StatusCreated {
+		t.Fatalf("HANDOFF_ASSERTION: authenticated sender HTTP status=%d body=%s", sent.Code, sent.Body)
+	}
+	result := data(t, sent)
+	handoff, ok := result["handoff_id"].(string)
+	if !ok || len(result) != 4 || result["state"] != "sent" || result["version"] != float64(1) || result["operation_id"] == nil {
+		t.Fatalf("HANDOFF_ASSERTION: send response must retain the compact four-field recovery contract: %s", sent.Body)
+	}
+	for _, outsider := range []string{h.actors[0], h.actors[2]} {
+		h.assertDeniedUnchanged(t, "authenticated actor outside receiving department", func() error {
+			response := h.request(h.handlerFor(outsider), "POST", "/api/v1/handoffs/"+handoff+"/accept", h.acceptBody(1), id())
+			if response.Code >= 200 && response.Code < 300 {
+				return nil
+			}
+			return fmt.Errorf("HTTP %d", response.Code)
+		})
+	}
+	accepted := h.request(h.handlerFor(h.actors[1]), "POST", "/api/v1/handoffs/"+handoff+"/accept", h.acceptBody(1), id())
+	if accepted.Code != http.StatusOK {
+		t.Fatalf("HANDOFF_ASSERTION: authenticated receiving worker HTTP status=%d body=%s", accepted.Code, accepted.Body)
+	}
+	if got := h.scalar(`SELECT (sender_actor_id=$2 AND receiver_actor_id=$3 AND accepted_at>=sent_at AND version=2)::text FROM warehouse.handoffs WHERE id=$1`, handoff, h.actors[0], h.actors[1]); got != "true" {
+		t.Fatal("HANDOFF_ASSERTION: authenticated identity or server timestamp did not reach the durable transfer")
+	}
+	h.assertConservation(t, new(big.Rat))
+}
+
+func TestDepartmentHandoffsCriticServerChronologyUsesEventTime(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	// A legal PostgreSQL transaction may exist before the handoff is sent. The
+	// acceptance event occurs when command_handoff runs, not when BEGIN ran.
+	tx, err := h.runtime.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(t.Context())
+	if _, err := tx.Exec(t.Context(), `SELECT pg_sleep(0.02)`); err != nil {
+		t.Fatal(err)
+	}
+	handoff, _ := h.send(t, h.source, 1, "1")
+	input, _ := json.Marshal(h.acceptBody(1))
+	if _, err := tx.Exec(t.Context(), `SELECT warehouse.command_handoff($1,$2,$3,$4::jsonb)`, id(), h.actors[1], handoff, input); err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: legal recipient command in an existing transaction failed: %v", err)
+	}
+	if err := tx.Commit(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	if got := h.scalar(`SELECT (accepted_at>=sent_at)::text FROM warehouse.handoffs WHERE id=$1`, handoff); got != "true" {
+		t.Fatal("HANDOFF_ASSERTION: recorded acceptance precedes sending because transaction-start time replaced event time")
+	}
+}
+
+func TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted(t *testing.T) {
+	h := newCriticHandoffFixture(t)
+	_, foreignReceiptLine := h.doc("receipt", "6", h.otherOwner)
+	h.exec(`SELECT inventory.post_movement($1,$2,$3,1,'receipt',NULL,$4,6)`, id(), h.actor, foreignReceiptLine, h.foreign)
+	for _, testCase := range []struct {
+		name, actor string
+		body        map[string]any
+	}{
+		{"ungranted owner with real stock", h.actors[0], h.sendBody(h.foreign, 1, "1")},
+		{"nonmember of source department", h.actors[1], h.sendBody(h.source, 1, "1")},
+		{"skip Spawanie", h.actors[0], h.sendBody(h.source, 2, "1")},
+		{"skip to Montaż", h.actors[0], h.sendBody(h.source, 4, "1")},
+		{"loop to source department", h.actors[0], h.sendBody(h.source, 0, "1")},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			h.assertDeniedUnchanged(t, testCase.name, func() error {
+				_, err := h.command(t.Context(), id(), testCase.actor, "", testCase.body)
+				return err
+			})
+		})
+	}
+	for _, layer := range []string{"department", "route"} {
+		t.Run("disabled "+layer, func(t *testing.T) {
+			if layer == "department" {
+				h.exec(`UPDATE warehouse.departments SET enabled=false WHERE id=$1`, h.departments[1])
+				defer h.exec(`UPDATE warehouse.departments SET enabled=true WHERE id=$1`, h.departments[1])
+			} else {
+				h.exec(`UPDATE warehouse.department_routes SET enabled=false WHERE source_department_id=$1 AND destination_department_id=$2`, h.departments[0], h.departments[1])
+				defer h.exec(`UPDATE warehouse.department_routes SET enabled=true WHERE source_department_id=$1 AND destination_department_id=$2`, h.departments[0], h.departments[1])
+			}
+			h.assertDeniedUnchanged(t, "send into disabled "+layer, func() error {
+				_, err := h.command(t.Context(), id(), h.actors[0], "", h.sendBody(h.source, 1, "1"))
+				return err
+			})
+		})
+	}
+	key := id()
+	body := h.sendBody(h.source, 1, "1")
+	first, err := h.command(t.Context(), key, h.actors[0], "", body)
+	if err != nil {
+		t.Fatalf("HANDOFF_ASSERTION: valid positive control rejected: %v", err)
+	}
+	// Give another actor the same source membership and the same legitimate
+	// permission. Only the original command's actor binding should reject replay.
+	h.exec(`INSERT INTO warehouse.department_members(organization_id,warehouse_id,department_id,actor_id,enabled) VALUES($1,$2,$3,$4,true)`, h.org, h.wh, h.departments[0], h.actors[2])
+	h.assertDeniedUnchanged(t, "replay by a different fully authorized actor", func() error {
+		_, err := h.command(t.Context(), key, h.actors[2], "", body)
+		return err
+	})
+	// Exhaust source stock through a second legal send: a retry resolves the old
+	// outcome and must not recheck free quantity as though it were a new debit.
+	h.send(t, h.source, 1, "9")
+	if replay, err := h.command(t.Context(), key, h.actors[0], "", body); err != nil || string(replay) != string(first) {
+		t.Fatalf("HANDOFF_ASSERTION: valid retry after source exhaustion failed or changed its result: %v", err)
+	}
+}
+
+func TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact(t *testing.T) {
+	for _, tracking := range []string{"none", "lot", "serial", "lot_serial"} {
+		t.Run(tracking, func(t *testing.T) {
+			h := newCriticHandoffFixture(t)
+			item, lot, serial := id(), "", ""
+			scale := 6
+			initial, sent := "900719925474099313.999999", "500719925474099311.000001"
+			if tracking == "lot" {
+				initial, sent = "5.375000", "2.125001"
+			}
+			if tracking == "serial" || tracking == "lot_serial" {
+				scale, initial, sent = 0, "1", "1"
+			}
+			h.exec(`INSERT INTO catalog.items(id,organization_id,sku,base_unit,quantity_scale,tracking) VALUES($1,$2,$1::uuid::text,'ea',$3,$4)`, item, h.org, scale, tracking)
+			if tracking == "lot" || tracking == "lot_serial" {
+				lot = id()
+				h.exec(`INSERT INTO catalog.lots(id,organization_id,item_id,code) VALUES($1,$2,$3,$1::uuid::text)`, lot, h.org, item)
+			}
+			if tracking == "serial" || tracking == "lot_serial" {
+				serial = id()
+				h.exec(`INSERT INTO catalog.serials(id,organization_id,item_id,lot_id,code) VALUES($1,$2,$3,$4,$1::uuid::text)`, serial, h.org, item, optionalCriticHandoffID(lot))
+			}
+			source := h.scalar(`SELECT inventory.ensure_balance($1,$2,$3,$4,$5,'available',$6,$7)::text`, h.org, h.wh, h.owner, item, h.positions[0], optionalCriticHandoffID(lot), optionalCriticHandoffID(serial))
+			document, line := id(), id()
+			h.exec(`INSERT INTO warehouse.documents(id,organization_id,warehouse_id,owner_id,kind,number,state) VALUES($1,$2,$3,$4,'receipt',$1::uuid::text,'active')`, document, h.org, h.wh, h.owner)
+			h.exec(`INSERT INTO warehouse.document_lines(id,document_id,organization_id,warehouse_id,owner_id,item_id,line_no,requested_qty) VALUES($1,$2,$3,$4,$5,$6,1,$7::numeric)`, line, document, h.org, h.wh, h.owner, item, initial)
+			h.exec(`SELECT inventory.post_movement($1,$2,$3,1,'receipt',NULL,$4,$5::numeric)`, id(), h.actor, line, source, initial)
+			handoff, _ := h.send(t, source, 1, sent)
+			for _, state := range []string{"sent", "accepted"} {
+				if state == "accepted" {
+					h.accept(t, handoff, 1)
+				}
+				if got := h.scalar(`SELECT (ROW(owner_id,item_id,lot_id,serial_id) IS NOT DISTINCT FROM ROW($2::uuid,$3::uuid,$4::uuid,$5::uuid))::text FROM warehouse.handoffs WHERE id=$1`, handoff, h.owner, item, optionalCriticHandoffID(lot), optionalCriticHandoffID(serial)); got != "true" {
+					t.Fatalf("HANDOFF_ASSERTION: %s record changed original full tracking identity", state)
+				}
+				livePosition := h.scalar(`SELECT CASE WHEN state='sent' THEN transit_position_id ELSE destination_position_id END::text FROM warehouse.handoffs WHERE id=$1`, handoff)
+				quantity := h.scalar(`SELECT coalesce(sum(on_hand),0)::text FROM inventory.stock_balances WHERE organization_id=$1 AND warehouse_id=$2 AND owner_id=$3 AND item_id=$4 AND position_id=$5 AND lot_id IS NOT DISTINCT FROM $6::uuid AND serial_id IS NOT DISTINCT FROM $7::uuid`, h.org, h.wh, h.owner, item, livePosition, optionalCriticHandoffID(lot), optionalCriticHandoffID(serial))
+				if criticHandoffQuantity(t, quantity).Cmp(criticHandoffQuantity(t, sent)) != 0 {
+					t.Fatalf("HANDOFF_ASSERTION: %s %s tracking/decimal quantity changed: got %s want %s", tracking, state, quantity, sent)
+				}
+				total := h.scalar(`SELECT sum(on_hand)::text FROM inventory.stock_balances WHERE organization_id=$1 AND owner_id=$2 AND item_id=$3`, h.org, h.owner, item)
+				if criticHandoffQuantity(t, total).Cmp(criticHandoffQuantity(t, initial)) != 0 {
+					t.Fatalf("HANDOFF_ASSERTION: %s changed the independently counted physical total: %s", tracking, total)
+				}
+				if serial != "" && h.scalar(`SELECT count(*)::text FROM inventory.stock_balances WHERE serial_id=$1 AND on_hand>0`, serial) != "1" {
+					t.Fatal("HANDOFF_ASSERTION: one serial simultaneously occupies multiple places")
+				}
+			}
+		})
+	}
+}
+
+func TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations(t *testing.T) {
+	for _, managed := range []string{"production", "transit"} {
+		t.Run(managed, func(t *testing.T) {
+			h := newCriticHandoffFixture(t)
+			handoff, _ := h.send(t, h.source, 1, "1")
+			managedPosition := h.positions[1]
+			if managed == "transit" {
+				managedPosition = h.scalar(`SELECT transit_position_id::text FROM warehouse.handoffs WHERE id=$1`, handoff)
+			}
+			managedLocation := h.scalar(`SELECT location_id::text FROM warehouse.positions WHERE id=$1`, managedPosition)
+			ordinaryLocation := h.scalar(`SELECT p.location_id::text FROM warehouse.positions p JOIN inventory.stock_balances b ON b.position_id=p.id WHERE b.id=$1`, h.target)
+			unit, position := id(), id()
+			h.exec(`INSERT INTO warehouse.handling_units(id,organization_id,warehouse_id,location_id,code) VALUES($1,$2,$3,$4,$1::uuid::text)`, unit, h.org, h.wh, ordinaryLocation)
+			h.exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,handling_unit_id) VALUES($1,$2,$3,$4)`, position, h.org, h.wh, unit)
+			balance := h.ensureBalance(position, "available")
+			_, receiptLine := h.doc("receipt", "2", h.owner)
+			h.exec(`SELECT inventory.post_movement($1,$2,$3,1,'receipt',NULL,$4,2)`, id(), h.actor, receiptLine, balance)
+			// There is no public HU relocation RPC in the current core. Exercise
+			// the promised native constraint directly with the schema-owner fixture;
+			// runtime credentials' separate raw-DML denial is not this assertion.
+			tx, err := h.admin.Begin(t.Context())
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = tx.Exec(t.Context(), `UPDATE warehouse.handling_units SET location_id=$2,version=version+1 WHERE id=$1`, unit, managedLocation)
+			_ = tx.Rollback(t.Context())
+			if err == nil {
+				t.Fatalf("HANDOFF_ASSERTION: native HU relocation put ordinary available stock inside %s without a handoff", managed)
+			}
+		})
+	}
+}
+
+func TestDepartmentHandoffsCriticHandlingUnitCannotBeCreatedInsideManagedLocation(t *testing.T) {
+	for _, managed := range []string{"production", "transit"} {
+		t.Run(managed, func(t *testing.T) {
+			h := newCriticHandoffFixture(t)
+			handoff, _ := h.send(t, h.source, 1, "1")
+			position := h.positions[1]
+			if managed == "transit" {
+				position = h.scalar(`SELECT transit_position_id::text FROM warehouse.handoffs WHERE id=$1`, handoff)
+			}
+			location := h.scalar(`SELECT location_id::text FROM warehouse.positions WHERE id=$1`, position)
+			tx, err := h.admin.Begin(t.Context())
+			if err != nil {
+				t.Fatal(err)
+			}
+			_, err = tx.Exec(t.Context(), `INSERT INTO warehouse.handling_units(id,organization_id,warehouse_id,location_id,code) VALUES($1,$2,$3,$4,$1::uuid::text)`, id(), h.org, h.wh, location)
+			_ = tx.Rollback(t.Context())
+			if err == nil {
+				t.Fatalf("HANDOFF_ASSERTION: creating a fresh HU inside %s bypassed fixed managed placement", managed)
+			}
+		})
+	}
+}

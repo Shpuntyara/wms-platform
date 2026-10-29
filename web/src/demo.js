@@ -61,7 +61,18 @@ export class DemoWarehouse {
       return structuredClone(prior.result);
     }
     if (!body) {
-      if (clean.endsWith('/workspace')) data = state.workspace;
+      if (clean.endsWith('/handoffs/context')) data = state.handoff_context;
+      else if (clean.endsWith('/handoffs')) {
+        const params=new URLSearchParams(path.split('?')[1]),view=params.get('view')||'all',cursor=params.get('cursor');
+        if(!['all','incoming','outgoing'].includes(view))throw Object.assign(new Error('Nieprawidłowy widok przekazań'),{status:400,code:'invalid_handoff_view'});
+        if(cursor&&!cursor.startsWith(view+':'))throw Object.assign(new Error('Kursor należy do innego widoku'),{status:400});
+        const start=cursor?Number(cursor.split(':')[1]):0,limit=Number(params.get('limit')||100);
+        if(!Number.isSafeInteger(start)||start<0||!Number.isInteger(limit)||limit<1||limit>200)throw Object.assign(new Error('Nieprawidłowa strona przekazań'),{status:400});
+        const rows=(state.handoffs||[]).filter(row=>view==='incoming'?row.state==='sent'&&row.sender_actor_id!==state.workspace.actor_id&&state.handoff_context.memberships.some(member=>member.department_id===row.destination_department_id):view==='outgoing'?row.sender_actor_id===state.workspace.actor_id:true);
+        return {data:rows.slice(start,start+limit),pagination:{next_cursor:start+limit<rows.length?view+':'+(start+limit):null}};
+      }
+      else if (clean.includes('/handoffs/')) data = (state.handoffs || []).find(row => row.id === clean.split('/').at(-1));
+      else if (clean.endsWith('/workspace')) data = state.workspace;
       else if (clean.endsWith('/stock-balances')) data = state.balances;
       else if (clean.endsWith('/work-orders')) data = state.orders || [];
       else if (clean.endsWith('/reservations')) data = (state.reservations || []).filter(row => !new URLSearchParams(path.split('?')[1]).get('document_line_id') || row.document_line_id === new URLSearchParams(path.split('?')[1]).get('document_line_id'));
@@ -69,7 +80,36 @@ export class DemoWarehouse {
       else data = state.documents.find(doc => doc.id === clean.split('/').at(-1));
       return {data, pagination: {next_cursor: null}};
     }
-    if (clean === '/api/v1/documents') {
+    if (clean === '/api/v1/handoffs/send') {
+      const {handoffSendIntent,departmentForPosition}=await import('./handoff.js');
+      const source=state.balances.find(row=>row.id === body.source_balance_id),context=state.handoff_context;
+      const item=state.workspace.catalog.items.find(row=>row.id === source?.item_id);
+      const intent=handoffSendIntent({context,balance:source,item,scope:body,destinationID:body.destination_department_id,quantity:body.quantity});
+      const sourceDepartment=departmentForPosition(context,source.position_id);
+      const destination=context.departments.find(row=>row.id === body.destination_department_id);
+      const targets=state.balances.filter(row=>row.owner_id === source.owner_id && row.item_id === source.item_id && row.position_id === destination.position_id && row.stock_state === 'available' && row.lot_id === source.lot_id && row.serial_id === source.serial_id);
+      if (targets.length > 1) throw Object.assign(new Error('Nie można jednoznacznie wybrać miejsca docelowego'),{status:409});
+      const target=targets[0] || {...source,id:crypto.randomUUID(),position_id:destination.position_id,on_hand:'0',reserved_qty:'0',available_qty:'0',version:1};
+      if (!targets.length) state.balances.push(target);
+      const transitPosition={id:crypto.randomUUID(),organization_id:body.organization_id,warehouse_id:body.warehouse_id,code:'W przekazaniu',kind:'transit'};
+      const transit={...source,id:crypto.randomUUID(),position_id:transitPosition.id,stock_state:'in_transit',on_hand:intent.quantity,reserved_qty:'0',available_qty:'0',version:1};
+      state.workspace.catalog.positions.push(transitPosition);state.balances.push(transit);
+      source.on_hand=remaining(source.on_hand,intent.quantity);source.available_qty=remaining(source.available_qty,intent.quantity);source.version++;
+      const record={id:crypto.randomUUID(),organization_id:body.organization_id,warehouse_id:body.warehouse_id,owner_id:source.owner_id,item_id:source.item_id,lot_id:source.lot_id,serial_id:source.serial_id,source_department_id:sourceDepartment.id,source_department_name:sourceDepartment.name,destination_department_id:destination.id,destination_department_name:destination.name,source_balance_id:source.id,transit_balance_id:transit.id,destination_balance_id:target.id,source_position_id:source.position_id,transit_position_id:transit.position_id,destination_position_id:target.position_id,quantity:intent.quantity,state:'sent',version:1,sender_actor_id:context.employee.actor_id,sender_name:context.employee.display_name,receiver_actor_id:null,receiver_name:null,sent_at:this.now().toISOString(),accepted_at:null,send_document_id:crypto.randomUUID(),accept_document_id:null};
+      state.handoffs ||= [];state.handoffs.unshift(record);
+      data={operation_id:command,handoff_id:record.id,version:record.version,state:record.state};
+    } else if (clean.startsWith('/api/v1/handoffs/') && clean.endsWith('/accept')) {
+      const {handoffAcceptIntent}=await import('./handoff.js');
+      const record=(state.handoffs || []).find(row=>row.id === clean.split('/').at(-2));
+      if (!record || record.version !== body.expected_version) throw Object.assign(new Error('Przekazanie zmieniło się. Odśwież dane'),{status:409});
+      handoffAcceptIntent({context:state.handoff_context,handoff:record,scope:body});
+      const transit=state.balances.find(row=>row.id === record.transit_balance_id),target=state.balances.find(row=>row.id === record.destination_balance_id);
+      if (target.serial_id && count(target.on_hand) !== 0n) throw Object.assign(new Error('Numer seryjny jest już w miejscu docelowym'),{status:409});
+      transit.on_hand=remaining(transit.on_hand,record.quantity);transit.version++;
+      target.on_hand=sum(target.on_hand,record.quantity);target.available_qty=sum(target.available_qty,record.quantity);target.version++;
+      Object.assign(record,{state:'accepted',version:record.version+1,receiver_actor_id:state.handoff_context.employee.actor_id,receiver_name:state.handoff_context.employee.display_name,accepted_at:this.now().toISOString(),accept_document_id:crypto.randomUUID()});
+      data={operation_id:command,handoff_id:record.id,version:record.version,state:record.state};
+    } else if (clean === '/api/v1/documents') {
       if (body.kind === 'shipment' && !body.recipient?.trim()) throw Object.assign(new Error('Wpisz odbiorcę wydania'),{status:400});
       const number = body.number === '' || body.number == null ? nextNumber(state, body, this.now()) : body.number;
       const document = {id: crypto.randomUUID(), organization_id:body.organization_id, warehouse_id:body.warehouse_id, owner_id: body.owner_id, kind: body.kind, number, state: 'draft', version: 1, lines: body.lines.map(line => ({id: crypto.randomUUID(), item_id: line.item_id, requested_qty: line.quantity, fulfilled_qty: '0', reserved_qty: '0'}))};

@@ -1,0 +1,26 @@
+[
+  {
+    "path": "internal/api/handoffs_test.go",
+    "sha256": "17bdc2524bb8d95d648d84ba368145f5873d5895cae6b032700482851d4c98a9"
+  },
+  {
+    "path": "internal/postgres/handoffs_integration_test.go",
+    "sha256": "b53cef2efcb7bed0d219cb3913e6943dfc382a6b558e5be07a6568ad560f9057"
+  },
+  {
+    "path": "internal/api/server.go",
+    "sha256": "d2c9aa7fdf1f98fc3da5e946c98d96d6708d6aeebea7f054c09642a670243240"
+  },
+  {
+    "path": "internal/postgres/store.go",
+    "sha256": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356"
+  },
+  {
+    "path": "db/migrations/0006_security_boundary.sql",
+    "sha256": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+  },
+  {
+    "path": "db/migrations/0013_work_orders.sql",
+    "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+  }
+]

@@ -9,6 +9,20 @@ from hardened_gate import main, validate_receipt, validate_plan_evidence, BASELI
 
 
 class HardenedGateTests(unittest.TestCase):
+    def test_green_requires_actual_signed_handoff_custody_and_recovery(self):
+        report={'passed':True,'results':[{'name':str(i),'status':'pass'} for i in range(29)],'go_passed':True,'go_exit_code':0}
+        old=('TestHardenedHTTPAndContainment','TestHardenedDocumentReadsAtScale','TestHardenedOnPremiseMultiWarehouse',
+             'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey','TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
+             'TestHardenedOnPremCriticWorkerRejectsInstallationDrift','TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
+             'TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions','TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions',
+             'TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions','TestHardenedWorkOrdersUnknownCommitSignedReplay',
+             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle')
+        required=('TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment','TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions',
+                  'TestHardenedHandoffsUnknownCommitSignedReplay','TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL')
+        for missing in required:
+            output='\n'.join('--- PASS: '+name for name in old+required if name!=missing)
+            with self.subTest(missing=missing),self.assertRaises(ValueError):validate_receipt('green',0,report,output)
+
     def test_green_requires_actual_signed_business_and_order_security_tests(self):
         report = {'passed': True, 'results': [{'name': str(i), 'status': 'pass'} for i in range(26)], 'go_passed': True, 'go_exit_code': 0}
         old = '\n'.join('--- PASS: ' + name for name in (
@@ -18,6 +32,10 @@ class HardenedGateTests(unittest.TestCase):
             'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants',
             'TestHardenedOnPremCriticWorkerRejectsInstallationDrift',
             'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions',
+            'TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment',
+            'TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions',
+            'TestHardenedHandoffsUnknownCommitSignedReplay',
+            'TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL',
             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
         required = (
             'TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions',
@@ -70,6 +88,10 @@ class HardenedGateTests(unittest.TestCase):
             'TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions',
             'TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions',
             'TestHardenedWorkOrdersUnknownCommitSignedReplay',
+            'TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment',
+            'TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions',
+            'TestHardenedHandoffsUnknownCommitSignedReplay',
+            'TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL',
             'TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle'))
         validate_receipt('green', 0, good, output)
         for name in ('TestHardenedOnPremiseMultiWarehouse', 'TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey', 'TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants', 'TestHardenedOnPremCriticWorkerRejectsInstallationDrift', 'TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions'):
@@ -139,6 +161,10 @@ class HardenedGateTests(unittest.TestCase):
                           '--- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions\n'
                           '--- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions\n'
                           '--- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay\n'
+                          '--- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment\n'
+                          '--- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions\n'
+                          '--- PASS: TestHardenedHandoffsUnknownCommitSignedReplay\n'
+                          '--- PASS: TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL\n'
                           '--- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle') if kind == 'green' else {
                               'worker_fence': '--- FAIL: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced',
                               'document_page': '--- FAIL: TestHardenedDocumentReadsAtScale/one-owner-first\nread page scanned history instead of bounded candidates',

@@ -38,6 +38,7 @@ jobs:
           python3 scripts/verify_ui_mutations.py --node node --output work/ui-mutations.json
           python3 scripts/verify_industry_ui_mutations.py --output work/industry-ui-mutations.json
           python3 scripts/verify_selection_mutations.py --output work/selection-mutations.json
+          python3 scripts/verify_handoff_ui_mutations.py --output work/handoff-ui-mutations.json
           python3 tests/ui_backend_mutations.py --go go
           python3 scripts/verify_workplace_setup.py --output work/workplace-setup-mutations.json
           python3 scripts/verify_address_recovery.py --output work/address-recovery-mutations.json
@@ -52,6 +53,7 @@ jobs:
             work/ui-mutations*
             work/industry-ui-mutations*
             work/selection-mutations*
+            work/handoff-ui-mutations*
             work/ui-backend-mutations/
             work/workplace-setup-mutations*
             work/address-recovery-mutations*
@@ -80,6 +82,7 @@ jobs:
       WMS_DOCUMENT_PLAN_DIR: ${{ github.workspace }}/work/document-plans
       WMS_DOCUMENT_CRITIC_PLAN_DIR: ${{ github.workspace }}/work/document-critic-plans
       WMS_WORK_ORDER_PLAN_DIR: ${{ github.workspace }}/work/work-order-plans
+      WMS_HANDOFF_PLAN_DIR: ${{ github.workspace }}/work/handoff-read-plans
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -111,6 +114,7 @@ jobs:
           python3 -m unittest discover -s tests -p 'test_hyperv_bootstrap.py' 2>&1 | tee work/hyperv-tests.txt
           python3 tests/test_industry_catalog.py
           python3 tests/industry_catalog_mutations.py --output work/industry-catalog-mutations.json
+          python3 -m unittest discover -s tests -p 'test_department_workflow*.py' 2>&1 | tee work/department-workflow-tests.txt
           python3 deploy/linux/verify_installer.py
       - name: Monitoring semantics with real Prometheus query evaluation
         run: |
@@ -141,7 +145,9 @@ jobs:
           python3 tests/postgres_kernel.py --psql psql --port 5432 --database wms_kernel_test_backend --admin wms_test_admin --report work/postgres-kernel.json
           python3 scripts/summarize-tests.py --events work/go-tests.jsonl --legacy work/postgres-kernel.json --output work/verification.json --go "$(go version)" --postgres "$(psql -h 127.0.0.1 -U wms_test_admin -d wms_kernel_test_backend -Atc 'SHOW server_version')"
       - name: WMS kernel mutation gate
-        run: python3 scripts/mutation_runner.py --go go --psql psql --report work/kernel-mutations.json
+        run: |
+          python3 scripts/mutation_runner.py --go go --psql psql --report work/kernel-mutations.json
+          python3 scripts/verify_handoff_mutations.py --go go --psql psql --output work/handoff-mutations.json
       - name: Known vulnerability scan
         run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
       - name: Test evidence
@@ -156,6 +162,9 @@ jobs:
             work/migration-verification.json
             work/document-owner-index-upgrade.json
             work/industry-catalog-mutations.json
+            work/department-workflow-tests.txt
+            work/handoff-mutations.json
+            work/handoff-read-plans/
             work/python-tests.txt
             work/installer-tests.txt
             work/hyperv-tests.txt

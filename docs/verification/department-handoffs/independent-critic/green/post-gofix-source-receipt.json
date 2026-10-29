@@ -1,0 +1,20 @@
+{
+  "kind": "Additional actual native mutation campaign after mandatory Go test modernization",
+  "change": "Only the critic test reverse parcel loop uses slices.Backward and its import; production SQL is unchanged. Earlier raw receipts and original source hashes are retained.",
+  "previous_manifest_sha256": "3ec50604cdd550a31d60e8b03efe40776d0ded2e9349c9518d4c7ff092f6ea06",
+  "current_source_sha256": {
+    "db/migrations/0014_department_handoffs.sql": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+    "internal/postgres/department_handoffs_critic_integration_test.go": "a9d1f7748e964609e0347b110894a3967d964221fa2afa6f2923d6ba2f929e72",
+    "internal/postgres/department_handoffs_read_critic_integration_test.go": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79",
+    "scripts/verify_handoff_mutations.py": "e68cab709331675f713012df1aa916f346d079a0be98829d749d0a434534b18e",
+    "scripts/test_handoff_mutations.py": "be12c4cd0cdad9ff67190184fd65923339345dd2a66bd3fb4fb108df759c9553"
+  },
+  "mutation_report": "green/post-gofix-native-mutations.json",
+  "mutation_report_sha256": "2692ddbade00a303251bd10cd3e3a4468e9b73523fa6d6006a9dbd11b63f064a",
+  "baseline_events": 62,
+  "killed": 22,
+  "survived": 0,
+  "invalid": 0,
+  "skipped": 0,
+  "source_unchanged_during_run": true
+}

@@ -1,0 +1,399 @@
+import {test,expect} from '@playwright/test';
+
+async function seed(page) {
+  await page.goto('/app/?demo=1');
+  const ids=await page.evaluate(async()=>{
+    const {DemoWarehouse}=await import('/app/src/demo.js'),state=new DemoWarehouse(localStorage).state;
+    const scope=state.workspace.scopes[0],actor=state.workspace.actor_id;
+    scope.grants.push(...['handoff.read','handoff.send','handoff.accept'].map(permission=>({permission,owner_id:null})));
+    const positions=state.workspace.catalog.positions;
+    positions[1].code='A1';positions[1].name='Magazyn materiałów';positions[2].code='SPAW-01';positions[2].name='Spawanie';
+    const source=state.balances.find(row=>row.item_id===state.workspace.catalog.items[0].id&&row.position_id===positions[1].id);
+    const destination=state.balances.find(row=>row.item_id===source.item_id&&row.position_id===positions[2].id);
+    for(const row of state.balances) for(const key of ['on_hand','reserved_qty','available_qty']) row[key]+='.000000';
+    state.handoff_context={departments:[{id:'warehouse',code:'MAG',name:'Magazyn',kind:'warehouse',position_id:positions[1].id,enabled:true},{id:'welding',code:'SPAW',name:'Spawanie',kind:'production',position_id:positions[2].id,enabled:true},{id:'polishing',code:'SZLIF',name:'Szlifowanie',kind:'production',position_id:crypto.randomUUID(),enabled:true}],routes:[{source_department_id:'warehouse',destination_department_id:'welding'}],memberships:[{department_id:'warehouse'}],employee:{actor_id:actor,display_name:'Marek Wójcik'},can_send:true,can_accept:true};
+    state.handoffs=[];
+    localStorage.setItem('wms-training-v2',JSON.stringify(state));
+    return {source:source.id,destination:destination.id,item:source.item_id,sender:actor,receiver:crypto.randomUUID()};
+  });
+  await page.reload();return ids;
+}
+async function send(page,quantity='2') {
+  await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'Przekaż do działu',exact:true});
+  await expect(dialog).toContainText('Marek Wójcik');
+  await expect(dialog.getByRole('textbox',{name:/Pracownik|Nadawca|Odbiorca/})).toHaveCount(0);
+  await expect(dialog.getByLabel('Dział docelowy',{exact:true}).locator('option[value="polishing"]')).toHaveCount(0);
+  await dialog.getByLabel('Dział docelowy',{exact:true}).selectOption('welding');
+  await dialog.getByLabel('Ilość do przekazania',{exact:true}).fill(quantity);
+  await dialog.getByRole('button',{name:'Wyślij do działu',exact:true}).click();
+  const unresolved=page.getByRole('button',{name:'Sprawdź wynik',exact:true});
+  const confirmed=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+  const readFailed=page.getByRole('alert').filter({hasText:'Operacja potwierdzona'});
+  await expect(unresolved.or(confirmed).or(readFailed)).toBeVisible();
+  if(!await unresolved.isVisible()&&!await readFailed.isVisible())await expect(page.getByRole('button',{name:'Stany',exact:true})).toBeEnabled();
+}
+async function asReceiver(page,ids) {
+  await page.evaluate(receiver=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.workspace.actor_id=receiver;s.handoff_context.employee={actor_id:receiver,display_name:'Anna Nowak'};s.handoff_context.memberships=[{department_id:'welding'}];localStorage.setItem('wms-training-v2',JSON.stringify(s));},ids.receiver);
+  await page.reload();
+  await page.getByRole('button',{name:'Przekazania między działami',exact:true}).click();
+  await page.getByRole('button',{name:/^Otwórz przekazanie /}).first().click();
+}
+const state=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('wms-training-v2')));
+
+test('department send shows authenticated sender, exact quantity and nonallocatable transit without labels',async({page})=>{
+  const ids=await seed(page);
+  await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toBeVisible();
+  await send(page);
+  const detail=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+  await expect(detail).toContainText('Oczekuje na przyjęcie');
+  await expect(detail).toContainText('Marek Wójcik');await expect(detail).toContainText('Spawanie');
+  await expect(detail.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toHaveCount(0);
+  const s=await state(page),record=s.handoffs[0];
+  expect(record).toMatchObject({quantity:'2',state:'sent',sender_actor_id:ids.sender,receiver_actor_id:null});
+  expect(record.sent_at).toBeTruthy();expect(s.balances.find(row=>row.id===ids.source).on_hand).toBe('22');
+  expect(s.balances.find(row=>row.id===record.transit_balance_id)).toMatchObject({on_hand:'2',stock_state:'in_transit',available_qty:'0'});
+  expect(s.workspace.catalog.items).toHaveLength(4);
+});
+
+test('a different receiving employee accepts the full handoff with account audit and unchanged item identity',async({page})=>{
+  const ids=await seed(page);await send(page);await asReceiver(page,ids);
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  const detail=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+  await expect(detail).toContainText('Przyjęto');await expect(detail).toContainText('Anna Nowak');
+  const s=await state(page),record=s.handoffs[0];
+  expect(record).toMatchObject({state:'accepted',sender_actor_id:ids.sender,receiver_actor_id:ids.receiver,item_id:ids.item,version:2});
+  expect(record.accepted_at).toBeTruthy();expect(s.balances.find(row=>row.id===ids.destination).on_hand).toBe('2');
+  expect(s.balances.find(row=>row.id===record.transit_balance_id).on_hand).toBe('0');
+  const accepted=Object.values(s.commands).find(entry=>entry.path.endsWith('/accept'));
+  expect(JSON.parse(accepted.body)).toEqual({organization_id:record.organization_id,warehouse_id:record.warehouse_id,expected_version:1});
+});
+
+for(const fault of ['send','accept']) test(`lost ${fault} reply replays the same handoff command after reload`,async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const handoffOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {
+        const fault=body && ${fault==='send'?"path.endsWith('/handoffs/send')":"path.endsWith('/accept')"};
+        if(fault) {const attempts=JSON.parse(localStorage.getItem('handoff-attempts')||'[]');attempts.push({path,body,key});localStorage.setItem('handoff-attempts',JSON.stringify(attempts));}
+        const result=await handoffOriginal.call(this,path,body,key);
+        if(fault&&!localStorage.getItem('handoff-dropped')) {localStorage.setItem('handoff-dropped','1');throw new TypeError('Synthetic committed reply loss');}
+        return result;
+      };
+    `});
+  });
+  const ids=await seed(page);await send(page);
+  if(fault==='accept') {await asReceiver(page,ids);await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();}
+  await expect(page.getByRole('button',{name:'Sprawdź wynik',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toBeDisabled();
+  if(fault==='accept') await expect(page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toBeDisabled();
+  await page.reload();await page.getByRole('button',{name:'Sprawdź wynik',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText(fault==='send'?'Oczekuje na przyjęcie':'Przyjęto');
+  const attempts=await page.evaluate(()=>JSON.parse(localStorage.getItem('handoff-attempts')));
+  expect(attempts).toHaveLength(2);expect(attempts[1]).toEqual(attempts[0]);
+  const s=await state(page);expect(s.handoffs).toHaveLength(1);
+  expect(s.balances.find(row=>row.id===ids.source).on_hand).toBe('22');
+  expect(s.balances.find(row=>row.id===ids.destination).on_hand).toBe(fault==='send'?'0.000000':'2');
+});
+
+for(const fault of ['availability','membership']) test(`send rechecks ${fault} before writing the handoff`,async({page})=>{
+  const ids=await seed(page);
+  await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+  await page.getByLabel('Dział docelowy',{exact:true}).selectOption('welding');
+  await page.getByLabel('Ilość do przekazania',{exact:true}).fill('2');
+  await page.evaluate(({id,fault})=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));if(fault==='availability')s.balances.find(row=>row.id===id).available_qty='1.000000';else s.handoff_context.memberships=[];localStorage.setItem('wms-training-v2',JSON.stringify(s));},{id:ids.source,fault});
+  await page.getByRole('button',{name:'Wyślij do działu',exact:true}).click();
+  await expect(page.getByRole('dialog').getByRole('alert')).toContainText(/dostępny|uprawnienia|miejsce/);
+  expect((await state(page)).handoffs).toHaveLength(0);expect(Object.values((await state(page)).commands)).toHaveLength(0);
+});
+
+test('sender with membership in both departments and an unrelated employee cannot accept',async({page})=>{
+  const ids=await seed(page);await send(page);
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.handoff_context.memberships.push({department_id:'welding'});localStorage.setItem('wms-training-v2',JSON.stringify(s));});
+  await page.reload();await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toHaveCount(0);
+  await asReceiver(page,ids);
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.handoff_context.memberships=[{department_id:'polishing'}];localStorage.setItem('wms-training-v2',JSON.stringify(s));});
+  await page.reload();await expect(page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toHaveCount(0);
+  expect((await state(page)).handoffs[0].state).toBe('sent');
+});
+
+test('replayed original send reads the current accepted record rather than restoring the old sent state',async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const replayOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {const result=await replayOriginal.call(this,path,body,key);if(body&&path.endsWith('/handoffs/send')&&!localStorage.getItem('replay-dropped')){localStorage.setItem('replay-dropped','1');throw new TypeError('Synthetic committed reply loss');}return result;};
+    `});
+  });
+  const ids=await seed(page);await send(page);
+  await expect(page.getByRole('button',{name:'Sprawdź wynik',exact:true})).toBeVisible();
+  await page.evaluate(async ids=>{
+    const {DemoWarehouse}=await import('/app/src/demo.js');
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),sender=s.handoff_context.employee,members=s.handoff_context.memberships;
+    s.workspace.actor_id=ids.receiver;s.handoff_context.employee={actor_id:ids.receiver,display_name:'Anna Nowak'};s.handoff_context.memberships=[{department_id:'welding'}];localStorage.setItem('wms-training-v2',JSON.stringify(s));
+    const record=s.handoffs[0],demo=new DemoWarehouse(localStorage);
+    await demo.request(`/api/v1/handoffs/${record.id}/accept`,{organization_id:record.organization_id,warehouse_id:record.warehouse_id,expected_version:1},crypto.randomUUID());
+    const accepted=JSON.parse(localStorage.getItem('wms-training-v2'));accepted.workspace.actor_id=ids.sender;accepted.handoff_context.employee=sender;accepted.handoff_context.memberships=members;localStorage.setItem('wms-training-v2',JSON.stringify(accepted));
+  },ids);
+  await page.reload();await page.getByRole('button',{name:'Sprawdź wynik',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Przyjęto');
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Anna Nowak');
+  expect((await state(page)).handoffs).toHaveLength(1);
+});
+
+test('confirmed send with a failed read offers refresh and never replays the confirmed command',async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const confirmedHandoffOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {if(!body&&path.startsWith('/api/v1/documents?')&&localStorage.getItem('handoff-read-fault')==='armed'){localStorage.setItem('handoff-read-fault','spent');throw new TypeError('Synthetic read failure');}const result=await confirmedHandoffOriginal.call(this,path,body,key);if(body&&path.endsWith('/handoffs/send'))localStorage.setItem('handoff-read-fault','armed');return result;};
+    `});
+  });
+  await seed(page);await send(page);
+  await expect(page.getByRole('alert')).toContainText('Operacja potwierdzona');
+  await expect(page.getByRole('button',{name:'Sprawdź wynik',exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'Odśwież',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Oczekuje na przyjęcie');
+  expect(Object.values((await state(page)).commands).filter(row=>row.path.endsWith('/handoffs/send'))).toHaveLength(1);
+});
+
+test('handoff dialog works with the keyboard and moves focus to the saved detail',async({page})=>{
+  await seed(page);
+  await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+  const destination=page.getByLabel('Dział docelowy',{exact:true});await expect(destination).toBeFocused();
+  await page.keyboard.press('ArrowDown');await expect(destination).toHaveValue('welding');
+  await page.keyboard.press('Tab');await expect(page.getByLabel('Ilość do przekazania',{exact:true})).toBeFocused();
+  await page.keyboard.type('1');await page.keyboard.press('Enter');
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true}).getByRole('heading',{level:2})).toBeFocused();
+});
+
+test('an operator with only stock and handoff grants opens the warehouse without document reads',async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const limitedOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {const s=JSON.parse(localStorage.getItem('wms-training-v2')||'null');if(!body&&s?.limited_operator&&(path.startsWith('/api/v1/documents')||path.startsWith('/api/v1/work-orders'))){localStorage.setItem('denied-document-read',path);throw Object.assign(new Error('Forbidden document read'),{status:403});}return limitedOriginal.call(this,path,body,key);};
+    `});
+  });
+  await seed(page);
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.workspace.scopes[0].grants=s.workspace.scopes[0].grants.filter(row=>row.permission==='stock.read'||row.permission.startsWith('handoff.'));s.limited_operator=true;localStorage.setItem('wms-training-v2',JSON.stringify(s));});
+  await page.reload();
+  await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+  await expect(page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>localStorage.getItem('denied-document-read'))).toBeNull();
+});
+
+test('transit and production stock show the handoff route without generic warehouse actions',async({page})=>{
+  const ids=await seed(page);await send(page);
+  await page.getByRole('button',{name:'Stany',exact:true}).click();
+  const transit=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'W przekazaniu'});
+  await expect(transit).toContainText('Magazyn → Spawanie');
+  await expect(transit.getByRole('button',{name:'Wydaj towar',exact:true})).toHaveCount(0);
+  await expect(transit.getByRole('button',{name:'Przenieś towar',exact:true})).toHaveCount(0);
+  await transit.getByRole('button',{name:'Pokaż przekazanie',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toBeVisible();
+  await asReceiver(page,ids);await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  await page.getByRole('button',{name:'Stany',exact:true}).click();
+  const production=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'SPAW-01'});
+  await expect(production).toContainText('2');
+  await expect(production.getByRole('button',{name:'Wydaj towar',exact:true})).toHaveCount(0);
+  await expect(production.getByRole('button',{name:'Przenieś towar',exact:true})).toHaveCount(0);
+});
+
+test('a mapped B1 source sends from the warehouse department without being its primary A1 position',async({page})=>{
+  const ids=await seed(page);
+  await page.evaluate(sourceID=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),source=s.balances.find(row=>row.id===sourceID),position={...s.workspace.catalog.positions[1],id:crypto.randomUUID(),code:'B1',name:'Regał B, poziom 1'};
+    s.workspace.catalog.positions.push(position);source.position_id=position.id;
+    s.handoff_context.departments[0].position_ids=[s.handoff_context.departments[0].position_id,position.id];
+    localStorage.setItem('wms-training-v2',JSON.stringify(s));
+  },ids.source);
+  await page.reload();
+  const row=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'B1'});
+  await expect(row.getByRole('button',{name:'Przekaż do działu',exact:true})).toBeVisible();
+  await row.getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+  await page.getByLabel('Dział docelowy',{exact:true}).selectOption('welding');
+  await page.getByLabel('Ilość do przekazania',{exact:true}).fill('1');
+  await page.getByRole('button',{name:'Wyślij do działu',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('B1');
+  expect((await state(page)).handoffs[0]).toMatchObject({source_department_id:'warehouse',source_balance_id:ids.source});
+});
+
+test('revoked receiving membership is rechecked before any acceptance command',async({page})=>{
+  const ids=await seed(page);await send(page);await asReceiver(page,ids);
+  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.handoff_context.memberships=[];s.handoff_context.can_accept=false;localStorage.setItem('wms-training-v2',JSON.stringify(s));});
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  await expect(page.getByRole('alert')).toContainText(/uprawnienia|pracownik/);
+  await expect(page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toHaveCount(0);
+  const s=await state(page);expect(s.handoffs[0].state).toBe('sent');
+  expect(Object.values(s.commands).filter(row=>row.path.endsWith('/accept'))).toHaveLength(0);
+});
+
+test('a source with another stock owner does not inherit an owner-bound send grant',async({page})=>{
+  await seed(page);
+  await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),owner=s.workspace.catalog.owners[0].id;
+    s.workspace.scopes[0].grants=s.workspace.scopes[0].grants.map(row=>row.permission==='handoff.send'?{...row,owner_id:owner}:row);
+    const other={...s.workspace.catalog.owners[0],id:crypto.randomUUID(),name:'Właściciel obcy'};s.workspace.catalog.owners.push(other);
+    const source=s.balances.find(row=>row.item_id===s.workspace.catalog.items[0].id&&row.position_id===s.workspace.catalog.positions[1].id);
+    s.balances.push({...source,id:crypto.randomUUID(),owner_id:other.id});localStorage.setItem('wms-training-v2',JSON.stringify(s));
+  });
+  await page.reload();
+  const rows=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'});
+  await expect(rows.filter({hasText:'Właściciel obcy'}).getByRole('button',{name:'Przekaż do działu',exact:true})).toHaveCount(0);
+  await expect(rows.filter({hasNotText:'Właściciel obcy'}).getByRole('button',{name:'Przekaż do działu',exact:true})).toHaveCount(1);
+});
+
+test('incoming queue is filtered by the server before pagination across more than one hundred history rows',async({page})=>{
+  // This synthetic adapter models the API's bounded view/cursor contract. Real
+  // SQL pagination and cursor binding are tested by the backend critics.
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const pagedOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {
+        const state=JSON.parse(localStorage.getItem('wms-training-v2')||'null');
+        if(!body&&state?.paged_handoff_fixture&&path.split('?')[0]==='/api/v1/handoffs') {
+          const query=new URLSearchParams(path.split('?')[1]),view=query.get('view')||'all',cursor=query.get('cursor'),start=Number(cursor||0),limit=Number(query.get('limit')||100);
+          const requests=JSON.parse(localStorage.getItem('handoff-list-requests')||'[]');requests.push({view,cursor});localStorage.setItem('handoff-list-requests',JSON.stringify(requests));
+          const rows=state.handoffs.filter(row=>view==='incoming'?row.state==='sent'&&row.sender_actor_id!==state.workspace.actor_id&&state.handoff_context.memberships.some(member=>member.department_id===row.destination_department_id):view==='outgoing'?row.sender_actor_id===state.workspace.actor_id:true);
+          return {data:rows.slice(start,start+limit),pagination:{next_cursor:start+limit<rows.length?String(start+limit):null}};
+        }
+        return pagedOriginal.call(this,path,body,key);
+      };
+    `});
+  });
+  const ids=await seed(page);
+  const pendingID=await page.evaluate(ids=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),scope=s.workspace.scopes[0],source=s.balances.find(row=>row.id===ids.source),destination=s.balances.find(row=>row.id===ids.destination);
+    const base={organization_id:scope.organization_id,warehouse_id:scope.warehouse_id,owner_id:source.owner_id,item_id:ids.item,quantity:'1.000000',version:2,state:'accepted',source_department_id:'warehouse',source_department_name:'Magazyn',destination_department_id:'welding',destination_department_name:'Spawanie',source_balance_id:ids.source,destination_balance_id:ids.destination,source_position_id:source.position_id,destination_position_id:destination.position_id,sender_actor_id:ids.sender,sender_name:'Marek Wójcik',receiver_actor_id:ids.receiver,receiver_name:'Anna Nowak',sent_at:'2026-10-29T10:00:00Z',accepted_at:'2026-10-29T10:01:00Z'};
+    s.handoffs=Array.from({length:120},()=>({...base,id:crypto.randomUUID()}));
+    const pending={...base,id:crypto.randomUUID(),state:'sent',version:1,receiver_actor_id:null,receiver_name:null,accepted_at:null};s.handoffs.push(pending);
+    s.workspace.actor_id=ids.receiver;s.handoff_context.employee={actor_id:ids.receiver,display_name:'Anna Nowak'};s.handoff_context.memberships=[{department_id:'welding'}];s.paged_handoff_fixture=true;
+    localStorage.setItem('wms-training-v2',JSON.stringify(s));return pending.id;
+  },ids);
+  await page.reload();await page.getByRole('button',{name:'Przekazania między działami',exact:true}).click();
+  await expect(page.getByRole('button',{name:/^Otwórz przekazanie /})).toHaveCount(100);
+  await page.getByRole('button',{name:'Do przyjęcia',exact:true}).click();
+  await expect(page.locator(`[data-handoff="${pendingID}"]`)).toBeVisible();
+  await expect(page.getByRole('button',{name:/^Otwórz przekazanie /})).toHaveCount(1);
+  const reads=await page.evaluate(()=>JSON.parse(localStorage.getItem('handoff-list-requests')));
+  expect(reads.at(-1)).toEqual({view:'incoming',cursor:null});
+  expect(reads.some(row=>row.view==='all'&&row.cursor!==null)).toBe(false);
+});
+
+test('an accepted handoff labels its receiving place as historical receipt',async({page})=>{
+  const ids=await seed(page);await send(page);await asReceiver(page,ids);
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true}).getByText('Przyjęto w',{exact:true})).toBeVisible();
+});
+
+test('receive in the incoming queue then send onward keeps the known pending transit route and link',async({page})=>{
+  const ids=await seed(page);
+  await page.evaluate(()=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),target=s.handoff_context.departments.find(row=>row.id==='polishing');
+    s.workspace.catalog.positions.push({id:target.position_id,organization_id:s.workspace.scopes[0].organization_id,warehouse_id:s.workspace.scopes[0].warehouse_id,code:'SZLIF-01',name:'Szlifowanie',kind:'storage'});
+    s.handoff_context.routes.push({source_department_id:'welding',destination_department_id:'polishing'});localStorage.setItem('wms-training-v2',JSON.stringify(s));
+  });
+  await page.reload();await send(page);await asReceiver(page,ids);
+  await page.getByRole('button',{name:'Do przyjęcia',exact:true}).click();
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  await page.getByRole('button',{name:'Stany',exact:true}).click();
+  await page.locator(`[data-stock-handoff="${ids.destination}"]`).click();
+  await page.getByLabel('Dział docelowy',{exact:true}).selectOption('polishing');
+  await page.getByLabel('Ilość do przekazania',{exact:true}).fill('1');
+  await page.getByRole('button',{name:'Wyślij do działu',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Oczekuje na przyjęcie');
+  await page.getByRole('button',{name:'Stany',exact:true}).click();
+  const pending=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'W przekazaniu'});
+  await expect(pending).toContainText('Spawanie → Szlifowanie');
+  await pending.getByRole('button',{name:'Pokaż przekazanie',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Szlifowanie');
+});
+
+for(const kind of ['receipt','transfer','shipment']) test(`legacy ${kind} selection excludes known production and transit balances after department acceptance`,async({page})=>{
+  const ids=await seed(page);await send(page);await asReceiver(page,ids);
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText('Przyjęto');
+  await expect(page.getByRole('button',{name:'Stany',exact:true})).toBeEnabled();
+  const fixture=await page.evaluate(({kind,ids})=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),doc=s.documents.find(row=>row.number==='PZ-2026-0142');
+    doc.kind=kind;doc.number='LEGACY-'+kind;doc.lines=doc.lines.slice(0,1);doc.recipient='Odbiorca testowy';
+    sessionStorage.setItem(`wms-open:${s.workspace.actor_id}`,doc.id);sessionStorage.setItem(`wms-mode:${s.workspace.actor_id}`,'worker');sessionStorage.removeItem(`wms-handoff-view:${s.workspace.actor_id}`);
+    localStorage.setItem('wms-training-v2',JSON.stringify(s));return{line:doc.lines[0].id,transit:s.handoffs[0].transit_balance_id,production:ids.destination,source:ids.source};
+  },{kind,ids});
+  await page.reload();await page.getByLabel('Towar do realizacji',{exact:true}).selectOption(fixture.line);
+  if(kind==='receipt') {
+    for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+    await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator('option')).toHaveCount(2);
+  } else {
+    for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce źródłowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+    await page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(fixture.source);
+    if(kind==='transfer')for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce docelowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+    if(kind==='shipment') {
+      await page.getByRole('button',{name:'Skaner / wpisz kod',exact:true}).click();
+      await page.getByLabel('Kod towaru',{exact:true}).fill('BOLT-M8');await page.getByLabel('Kod towaru',{exact:true}).press('Enter');
+      await page.getByLabel('Adres źródłowy',{exact:true}).fill('SPAW-01');await page.getByLabel('Adres źródłowy',{exact:true}).press('Enter');
+      await expect(page.getByRole('alert')).toContainText(/przekaza/i);await expect(page.getByLabel('Ilość rzeczywista',{exact:true})).toHaveCount(0);
+    }
+  }
+  const s=await state(page);expect(Object.values(s.commands).filter(row=>row.path==='/api/v1/movements'||row.path==='/api/v1/reservations')).toHaveLength(0);
+});
+
+for(const [reason,status] of [['foreign-warehouse',403],['revoked-owner',403],['not-found',404],['unavailable',503]]) test(`restoring a saved ${reason} handoff preserves the valid stock workspace only for an access or not-found response`,async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const restoreOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {
+        const fixture=JSON.parse(localStorage.getItem('handoff-restore-fixture')||'null');
+        if(fixture&&body)localStorage.setItem('handoff-restore-write','1');
+        if(fixture&&!body&&path.split('?')[0]==='/api/v1/handoffs/'+fixture.id) {
+          localStorage.setItem('handoff-restore-read',path);
+          throw Object.assign(new Error('Internal handoff read detail'),{status:fixture.status,code:fixture.status===503?'handoff_unavailable':fixture.status===403?'forbidden':'not_found'});
+        }
+        return restoreOriginal.call(this,path,body,key);
+      };
+    `});
+  });
+  await seed(page);
+  const saved=await page.evaluate(status=>{
+    const s=JSON.parse(localStorage.getItem('wms-training-v2')),actor=s.workspace.actor_id,id=crypto.randomUUID();
+    localStorage.setItem('handoff-restore-fixture',JSON.stringify({id,status}));
+    sessionStorage.setItem(`wms-handoff:${actor}`,id);sessionStorage.setItem(`wms-handoff-view:${actor}`,'1');
+    sessionStorage.setItem(`wms-open:${actor}`,s.documents[0].id);
+    return{actor,id,scope:{organization_id:s.workspace.scopes[0].organization_id,warehouse_id:s.workspace.scopes[0].warehouse_id}};
+  },status);
+  await page.reload();
+  if(status===503) {
+    await expect(page.getByRole('heading',{name:'Nie udało się otworzyć magazynu',exact:true})).toBeVisible();
+    await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toHaveCount(0);
+    expect(await page.evaluate(actor=>sessionStorage.getItem(`wms-handoff-view:${actor}`),saved.actor)).toBe('1');
+  } else {
+    await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+    await expect(page.getByRole('alert')).toContainText('Nie można otworzyć ostatniego przekazania w tym magazynie');
+    await expect(page.getByRole('heading',{name:'Nie udało się otworzyć magazynu',exact:true})).toHaveCount(0);
+    await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toHaveCount(0);
+    for(const key of ['wms-handoff:','wms-handoff-view:'])expect(await page.evaluate(({key,actor})=>sessionStorage.getItem(key+actor),{key,actor:saved.actor})).toBeNull();
+  }
+  const read=new URL(await page.evaluate(()=>localStorage.getItem('handoff-restore-read')),page.url());
+  expect(read.searchParams.get('organization_id')).toBe(saved.scope.organization_id);expect(read.searchParams.get('warehouse_id')).toBe(saved.scope.warehouse_id);
+  expect(await page.evaluate(()=>localStorage.getItem('handoff-restore-write'))).toBeNull();
+  expect(Object.values((await state(page)).commands)).toHaveLength(0);
+});
+
+test('an installation without department grants keeps its existing workplace and makes no handoff reads',async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const paperOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {if(path.includes('/handoffs'))localStorage.setItem('unexpected-handoff-read',path);return paperOriginal.call(this,path,body,key);};
+    `});
+  });
+  await page.goto('/app/?demo=1');await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Przekaż do działu',exact:true})).toHaveCount(0);
+  expect(await page.evaluate(()=>localStorage.getItem('unexpected-handoff-read'))).toBeNull();
+});

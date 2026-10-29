@@ -88,6 +88,7 @@ func (s Scope) AllowsOwner(owner string) bool {
 type Filters struct {
 	Limit                                               int
 	Cursor, OwnerID, ItemID, PositionID, DocumentLineID string
+	View                                                string
 }
 type Page struct {
 	Data       []json.RawMessage

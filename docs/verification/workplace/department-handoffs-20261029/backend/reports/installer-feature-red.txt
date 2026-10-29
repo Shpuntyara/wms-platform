@@ -1,0 +1,16 @@
+test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update (test_handoff_installer.HandoffInstaller.test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update) ... FAIL
+
+======================================================================
+FAIL: test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update (test_handoff_installer.HandoffInstaller.test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_handoff_installer.py", line 29, in test_existing_installation_installs_signed_custody_rpc_before_grants_on_each_update
+    execute_bootstrap()
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_handoff_installer.py", line 23, in execute_bootstrap
+    self.assertEqual(len(profiles),1,'existing installation lacks signed handoff commands')
+AssertionError: 0 != 1 : existing installation lacks signed handoff commands
+
+----------------------------------------------------------------------
+Ran 1 test in 0.015s
+
+FAILED (failures=1)

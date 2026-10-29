@@ -1,0 +1,393 @@
+//go:build integration
+
+package postgres_test
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"slices"
+	"strings"
+	"testing"
+
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+)
+
+// This workload creates relationally valid, owner-created read fixture rows.
+// It is deliberately not evidence that 100,000 operational transfers ran.
+type criticHandoffReadFixture struct {
+	h                             *criticHandoffFixture
+	template, noise, prefix       string
+	locationPrefix, balancePrefix string
+	positionPrefix, commandPrefix string
+	owners, sources, targets      []string
+	documents, lines              []string
+}
+
+func newCriticHandoffReadFixture(t *testing.T) *criticHandoffReadFixture {
+	t.Helper()
+	h := newCriticHandoffFixture(t)
+	template, _ := h.send(t, h.source, 1, "1")
+	noise := id()
+	h.exec(`INSERT INTO catalog.stock_owners(id,organization_id,code) VALUES($1,$2,$1::uuid::text)`, noise, h.org)
+	h.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'handoff.read')`, h.actor, h.org, h.wh, h.otherOwner)
+	h.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,'handoff.read')`, h.actors[1], h.org, h.wh, h.otherOwner)
+	r := &criticHandoffReadFixture{h: h, template: template, noise: noise, prefix: id()[:24], locationPrefix: id()[:24], positionPrefix: id()[:24], balancePrefix: id()[:24], commandPrefix: id()[:24], owners: []string{h.owner, h.otherOwner, noise}}
+	for _, owner := range r.owners {
+		r.sources = append(r.sources, h.scalar(`SELECT inventory.ensure_balance($1,$2,$3,$4,$5,'available')::text`, h.org, h.wh, owner, h.item, h.positions[0]))
+		r.targets = append(r.targets, h.scalar(`SELECT inventory.ensure_balance($1,$2,$3,$4,$5,'available')::text`, h.org, h.wh, owner, h.item, h.positions[1]))
+		document, line := h.doc("transfer", "1", owner)
+		r.documents, r.lines = append(r.documents, document), append(r.lines, line)
+	}
+	return r
+}
+
+func (r *criticHandoffReadFixture) seed(t *testing.T, from, through int) {
+	t.Helper()
+	h := r.h
+	tx, err := h.admin.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tx.Rollback(t.Context())
+	exec := func(sql string, args ...any) {
+		t.Helper()
+		if _, err := tx.Exec(t.Context(), sql, args...); err != nil {
+			t.Fatalf("handoff read workload setup: %v", err)
+		}
+	}
+	exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) SELECT ($1||lpad(g::text,12,'0'))::uuid,$2,$3,'PLAN-'||$1||g,'staging' FROM generate_series($4::int,$5::int)g`, r.locationPrefix, h.org, h.wh, from, through)
+	exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,location_id) SELECT ($1||lpad(g::text,12,'0'))::uuid,$2,$3,($4||lpad(g::text,12,'0'))::uuid FROM generate_series($5::int,$6::int)g`, r.positionPrefix, h.org, h.wh, r.locationPrefix, from, through)
+	exec(`INSERT INTO warehouse.handoff_transit_positions(position_id,organization_id,warehouse_id,handoff_id) SELECT ($1||lpad(g::text,12,'0'))::uuid,$2,$3,($4||lpad(g::text,12,'0'))::uuid FROM generate_series($5::int,$6::int)g`, r.positionPrefix, h.org, h.wh, r.prefix, from, through)
+	exec(`INSERT INTO inventory.stock_balances(id,organization_id,warehouse_id,owner_id,item_id,position_id,stock_state)
+ SELECT ($1||lpad(g::text,12,'0'))::uuid,$2,$3,($4::uuid[])[CASE g%1000 WHEN 0 THEN 1 WHEN 1 THEN 2 ELSE 3 END],$5,($6||lpad(g::text,12,'0'))::uuid,'in_transit' FROM generate_series($7::int,$8::int)g`, r.balancePrefix, h.org, h.wh, r.owners, h.item, r.positionPrefix, from, through)
+	exec(`INSERT INTO warehouse.handoffs SELECT populated.*
+ FROM warehouse.handoffs template CROSS JOIN generate_series($10::int,$11::int)g
+ CROSS JOIN LATERAL(SELECT CASE g%1000 WHEN 0 THEN 1 WHEN 1 THEN 2 ELSE 3 END owner_index)o
+ CROSS JOIN LATERAL jsonb_populate_record(NULL::warehouse.handoffs,to_jsonb(template)||jsonb_build_object(
+ 'id',($1||lpad(g::text,12,'0'))::uuid,'owner_id',($2::uuid[])[owner_index],
+ 'source_balance_id',($3::uuid[])[owner_index],'destination_balance_id',($4::uuid[])[owner_index],
+ 'transit_balance_id',($5||lpad(g::text,12,'0'))::uuid,'transit_position_id',($6||lpad(g::text,12,'0'))::uuid,
+ 'send_document_id',($7::uuid[])[owner_index],'send_line_id',($8::uuid[])[owner_index],
+ 'send_movement_command_id',($9||lpad(g::text,12,'0'))::uuid)) populated
+ WHERE template.id=$12`, r.prefix, r.owners, r.sources, r.targets, r.balancePrefix, r.positionPrefix, r.documents, r.lines, r.commandPrefix, from, through, r.template)
+	if err := tx.Commit(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func (r *criticHandoffReadFixture) expected(size int, after string) []string {
+	result := []string{}
+	for n := 1; n <= size; n++ {
+		identifier := fmt.Sprintf("%s%012d", r.prefix, n)
+		if n%1000 <= 1 && identifier > after {
+			result = append(result, identifier)
+		}
+	}
+	if r.template > after {
+		result = append(result, r.template)
+	}
+	slices.Sort(result)
+	return result
+}
+
+func TestDepartmentHandoffsCriticOwnerPaginationAndCursorBinding(t *testing.T) {
+	r := newCriticHandoffReadFixture(t)
+	r.seed(t, 1, 4200)
+	h := r.h
+	scope := inventory.Scope{ActorID: h.actor, OrganizationID: h.org, WarehouseID: h.wh, OwnerIDs: []string{h.owner, h.otherOwner}}
+	first, err := h.store.ListHandoffs(t.Context(), scope, inventory.Filters{Limit: 2})
+	if err != nil || first.NextCursor == "" {
+		t.Fatalf("HANDOFF_ASSERTION: real handoff page failed: %v", err)
+	}
+	for _, attack := range []struct {
+		name   string
+		scope  inventory.Scope
+		filter inventory.Filters
+	}{
+		{"actor", inventory.Scope{ActorID: h.actors[1], OrganizationID: h.org, WarehouseID: h.wh, OwnerIDs: scope.OwnerIDs}, inventory.Filters{Limit: 2}},
+		{"warehouse", inventory.Scope{ActorID: h.actor, OrganizationID: h.org, WarehouseID: id(), OwnerIDs: scope.OwnerIDs}, inventory.Filters{Limit: 2}},
+		{"owner filter", scope, inventory.Filters{Limit: 2, OwnerID: h.owner}},
+	} {
+		t.Run(attack.name, func(t *testing.T) {
+			attack.filter.Cursor = first.NextCursor
+			_, err := h.store.ListHandoffs(t.Context(), attack.scope, attack.filter)
+			problem, ok := err.(*inventory.Problem)
+			if !ok || problem.Code != "invalid_cursor" || problem.Status != 400 {
+				t.Fatalf("HANDOFF_ASSERTION: cursor crossed %s scope: %v", attack.name, err)
+			}
+		})
+	}
+	got := []string{}
+	cursor := ""
+	for range 20 {
+		page, err := h.store.ListHandoffs(t.Context(), scope, inventory.Filters{Limit: 3, Cursor: cursor})
+		if err != nil {
+			t.Fatalf("HANDOFF_ASSERTION: scoped pagination failed: %v", err)
+		}
+		for _, raw := range page.Data {
+			row := criticHandoffObject(t, raw)
+			got = append(got, row["id"].(string))
+		}
+		if page.NextCursor == "" {
+			break
+		}
+		cursor = page.NextCursor
+	}
+	if want := r.expected(4200, "00000000-0000-0000-0000-000000000000"); !slices.Equal(got, want) {
+		t.Fatalf("HANDOFF_ASSERTION: real pages differ from independent owner oracle: got=%v want=%v", got, want)
+	}
+	// Cached or forged in-memory grants do not widen the native SQL grant truth.
+	h.exec(`DELETE FROM platform.actor_grants WHERE actor_id=$1 AND permission='handoff.read'`, h.actor)
+	if _, err := h.store.ListHandoffs(t.Context(), scope, inventory.Filters{Limit: 3}); err == nil {
+		t.Fatal("HANDOFF_ASSERTION: revoked SQL permission was bypassed by cached scope")
+	}
+}
+
+func TestDepartmentHandoffsCriticActualNestedReadPlans(t *testing.T) {
+	r := newCriticHandoffReadFixture(t)
+	h := r.h
+	config, err := pgx.ParseConfig(os.Getenv("WMS_TEST_ADMIN_DSN"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var notices []json.RawMessage
+	config.OnNotice = func(_ *pgconn.PgConn, n *pgconn.Notice) {
+		if strings.HasPrefix(n.Message, "duration:") && strings.Contains(n.Message, "plan:") {
+			notices = append(notices, json.RawMessage(n.Message[strings.Index(n.Message, "plan:")+5:]))
+		}
+	}
+	conn, err := pgx.ConnectConfig(t.Context(), config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = conn.Close(context.Background()) })
+	if _, err := conn.Exec(t.Context(), `LOAD 'auto_explain'; SET auto_explain.log_level='notice'; SET auto_explain.log_format='json'; SET auto_explain.log_analyze=on; SET auto_explain.log_buffers=on; SET auto_explain.log_timing=off; SET auto_explain.log_nested_statements=on; SET auto_explain.log_min_duration=0; SET ROLE wms_go_runtime;`); err != nil {
+		t.Fatal(err)
+	}
+	plans := []map[string]any{}
+	for _, size := range []int{10000, 100000} {
+		from := 1
+		if size > 10000 {
+			from = 10001
+		}
+		r.seed(t, from, size)
+		h.exec(`ANALYZE warehouse.handoffs`)
+		for _, deep := range []bool{false, true} {
+			after := fmt.Sprintf("%s%012d", r.prefix, 0)
+			if deep {
+				after = fmt.Sprintf("%s%012d", r.prefix, size*4/5)
+			}
+			want := r.expected(size, after)
+			if len(want) > 21 {
+				want = want[:21]
+			}
+			views := []string{"all"}
+			if size == 100000 && deep {
+				views = append(views, "incoming", "outgoing")
+			}
+			for _, view := range views {
+				for _, mode := range []string{"force_custom_plan", "force_generic_plan"} {
+					if _, err := conn.Exec(t.Context(), "SET plan_cache_mode="+mode); err != nil {
+						t.Fatal(err)
+					}
+					notices = nil
+					input, _ := json.Marshal(map[string]any{"limit": 21, "after": after, "view": view})
+					actor := h.actor
+					if view == "incoming" {
+						actor = h.actors[1]
+					}
+					rows, err := conn.Query(t.Context(), `SELECT * FROM warehouse.read_handoffs($1,$2,$3,$4::jsonb)`, actor, h.org, h.wh, input)
+					if err != nil {
+						t.Fatal(err)
+					}
+					got := []string{}
+					for rows.Next() {
+						var raw json.RawMessage
+						if err := rows.Scan(&raw); err != nil {
+							t.Fatal(err)
+						}
+						got = append(got, criticHandoffObject(t, raw)["id"].(string))
+					}
+					rows.Close()
+					if rows.Err() != nil {
+						t.Fatal(rows.Err())
+					}
+					if !slices.Equal(got, want) {
+						t.Fatalf("HANDOFF_ASSERTION: actual nested RPC page differs from independent oracle: got=%v want=%v", got, want)
+					}
+					found := false
+					candidates, merges := []json.RawMessage{}, []json.RawMessage{}
+					var hydration json.RawMessage
+					var work float64
+					blocks := 0
+					for _, notice := range notices {
+						var plan struct {
+							Query string `json:"Query Text"`
+							Plan  documentReadPlan
+						}
+						if err := json.Unmarshal(notice, &plan); err != nil {
+							t.Fatal(err)
+						}
+						switch {
+						case strings.Contains(plan.Query, "FROM (SELECT h.id FROM warehouse.handoffs h WHERE"):
+							candidates = append(candidates, notice)
+							work += documentReadPlanRows(plan.Plan)
+							blocks += plan.Plan.Hits + plan.Plan.Reads
+							criticAssertHandoffCandidatePlan(t, notice, view)
+						case strings.Contains(plan.Query, "unnest(page_ids||part)"):
+							merges = append(merges, notice)
+							criticAssertHandoffMergePlan(t, notice)
+						case strings.Contains(plan.Query, "WITH page AS MATERIALIZED"):
+							found, hydration = true, notice
+							work += documentReadPlanRows(plan.Plan)
+							blocks += plan.Plan.Hits + plan.Plan.Reads
+							criticAssertHandoffHydrationPlan(t, notice)
+						}
+					}
+					if !found || len(candidates) != 2 || len(merges) != 2 {
+						t.Fatalf("HANDOFF_ASSERTION: missing actual RPC phases: candidates=%d merges=%d hydration=%t", len(candidates), len(merges), found)
+					}
+					plans = append(plans, map[string]any{"handoffs": size, "deep": deep, "view": view, "mode": mode, "row_work": work, "blocks": blocks, "candidate_explain": candidates, "merge_explain": merges, "hydration_explain": hydration})
+					t.Logf("actual native handoff RPC rows=%d deep=%t view=%s mode=%s work=%.0f blocks=%d", size, deep, view, mode, work, blocks)
+					if work <= 0 || work > 1000 || blocks <= 0 || blocks > 1000 {
+						t.Errorf("HANDOFF_ASSERTION: actual RPC scanned history instead of bounded candidate seeks and hydration: work=%.0f blocks=%d", work, blocks)
+					}
+				}
+			}
+		}
+	}
+	directory := os.Getenv("WMS_HANDOFF_PLAN_DIR")
+	if directory == "" {
+		directory = filepath.Join("..", "..", "work", "handoff-read-plans")
+	}
+	if err := os.MkdirAll(directory, 0700); err != nil {
+		t.Fatal(err)
+	}
+	source, err := os.ReadFile(filepath.Join("..", "..", "db", "migrations", "0014_department_handoffs.sql"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var definition string
+	if err := h.admin.QueryRow(t.Context(), `SELECT pg_get_functiondef('warehouse.read_handoffs(uuid,uuid,uuid,jsonb)'::regprocedure)`).Scan(&definition); err != nil {
+		t.Fatal(err)
+	}
+	report, _ := json.MarshalIndent(map[string]any{"scope": "Actual native runtime-role RPC nested plans; owner-created relational read workload, not 100k operational sends. Connection-local settings only.", "passed": !t.Failed(), "complete": len(plans) == 12, "migration_sha256": fmt.Sprintf("%x", sha256.Sum256(source)), "actual_read_function_sha256_lf": fmt.Sprintf("%x", sha256.Sum256([]byte(strings.ReplaceAll(definition, "\r\n", "\n")))), "plans": plans}, "", "  ")
+	if err := os.WriteFile(filepath.Join(directory, "handoff-read-plans.json"), append(report, '\n'), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if len(plans) != 12 {
+		t.Fatalf("HANDOFF_ASSERTION: incomplete actual nested plans: %d/12", len(plans))
+	}
+}
+
+func criticAssertHandoffCandidatePlan(t *testing.T, raw json.RawMessage, view string) {
+	t.Helper()
+	var evidence struct{ Plan map[string]any }
+	if err := json.Unmarshal(raw, &evidence); err != nil {
+		t.Fatal(err)
+	}
+	seeks := 0
+	var walk func(map[string]any)
+	walk = func(node map[string]any) {
+		for _, field := range []string{"Rows Removed by Filter", "Rows Removed by Index Recheck"} {
+			if value, ok := node[field].(float64); ok && value > 0 {
+				t.Errorf("HANDOFF_ASSERTION: candidate discarded unrelated rows: %s=%v", field, value)
+			}
+		}
+		if node["Relation Name"] == "handoffs" {
+			condition, ok := node["Index Cond"].(string)
+			if !ok {
+				t.Error("HANDOFF_ASSERTION: handoff candidate did not use an index condition")
+			} else {
+				seeks++
+				fields := []string{"organization_id", "owner_id", "warehouse_id"}
+				if view == "incoming" {
+					fields = append(fields, "destination_department_id")
+				}
+				if view == "outgoing" {
+					fields = append(fields, "sender_actor_id")
+				}
+				for _, field := range fields {
+					if !strings.Contains(condition, field) {
+						t.Errorf("HANDOFF_ASSERTION: candidate seek omits %s: %s", field, condition)
+					}
+				}
+				if !regexp.MustCompile(`\bid\s*>\s*`).MatchString(condition) {
+					t.Errorf("HANDOFF_ASSERTION: candidate cursor applied outside index seek: %s", condition)
+				}
+			}
+		}
+		for _, child := range optionalCriticPlans(node["Plans"]) {
+			walk(child)
+		}
+	}
+	walk(evidence.Plan)
+	if seeks == 0 {
+		t.Error("HANDOFF_ASSERTION: no actual candidate index seek executed")
+	}
+}
+
+func criticAssertHandoffMergePlan(t *testing.T, raw json.RawMessage) {
+	t.Helper()
+	var evidence struct{ Plan map[string]any }
+	if err := json.Unmarshal(raw, &evidence); err != nil {
+		t.Fatal(err)
+	}
+	var walk func(map[string]any)
+	walk = func(node map[string]any) {
+		if node["Node Type"] == "Function Scan" {
+			rows, _ := node["Actual Rows"].(float64)
+			loops, _ := node["Actual Loops"].(float64)
+			if rows*loops > 42 {
+				t.Errorf("HANDOFF_ASSERTION: merging owner candidates retained %.0f rows, greater than two 21-row pages", rows*loops)
+			}
+		}
+		for _, child := range optionalCriticPlans(node["Plans"]) {
+			walk(child)
+		}
+	}
+	walk(evidence.Plan)
+}
+
+func criticAssertHandoffHydrationPlan(t *testing.T, raw json.RawMessage) {
+	t.Helper()
+	var evidence struct{ Plan map[string]any }
+	if err := json.Unmarshal(raw, &evidence); err != nil {
+		t.Fatal(err)
+	}
+	hydrated := float64(0)
+	var walk func(map[string]any, bool)
+	walk = func(node map[string]any, candidate bool) {
+		candidate = candidate || node["Subplan Name"] == "CTE page"
+		if !candidate && node["Relation Name"] == "handoffs" {
+			rows, _ := node["Actual Rows"].(float64)
+			loops, _ := node["Actual Loops"].(float64)
+			hydrated += rows * loops
+		}
+		for _, child := range optionalCriticPlans(node["Plans"]) {
+			walk(child, candidate)
+		}
+	}
+	walk(evidence.Plan, false)
+	if hydrated > 21 {
+		t.Errorf("HANDOFF_ASSERTION: hydrated %.0f handoffs for a 21-row page", hydrated)
+	}
+}
+
+func optionalCriticPlans(value any) []map[string]any {
+	children, _ := value.([]any)
+	result := []map[string]any{}
+	for _, child := range children {
+		if row, ok := child.(map[string]any); ok {
+			result = append(result, row)
+		}
+	}
+	return result
+}

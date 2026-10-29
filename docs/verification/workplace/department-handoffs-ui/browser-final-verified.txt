@@ -1,0 +1,86 @@
+
+[WebServer] (node:43552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 71 tests using 2 workers
+
+(node:21996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:31268) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/71] tests\api-quantity-browser-critic.spec.mjs:22:1 › API-shaped WZ reservation remains usable on the explicit optional scanner path
+[2/71] tests\api-quantity-browser-critic.spec.mjs:38:1 › API-shaped piece quantities populate the default no-code source selector
+[3/71] tests\critic-workplace.spec.mjs:3:1 › critic: the Polish workplace declares its document language
+[4/71] tests\critic-workplace.spec.mjs:9:1 › critic: bureau search keeps ordinary sequential typing in the right order
+[5/71] tests\critic-workplace.spec.mjs:18:1 › critic: editing the middle of a search preserves the caret after rerender
+[6/71] tests\critic-workplace.spec.mjs:29:1 › critic: an unmapped API error still gives the employee a Polish message
+[7/71] tests\critic-workplace.spec.mjs:50:1 › critic: missing source SKU cannot silently become another item in putaway
+[8/71] tests\handoff-workplace.spec.mjs:44:1 › department send shows authenticated sender, exact quantity and nonallocatable transit without labels
+[9/71] tests\handoff-workplace.spec.mjs:59:1 › a different receiving employee accepts the full handoff with account audit and unchanged item identity
+[10/71] tests\handoff-workplace.spec.mjs:72:39 › lost send reply replays the same handoff command after reload
+[11/71] tests\handoff-workplace.spec.mjs:72:39 › lost accept reply replays the same handoff command after reload
+[12/71] tests\handoff-workplace.spec.mjs:100:51 › send rechecks availability before writing the handoff
+[13/71] tests\handoff-workplace.spec.mjs:100:51 › send rechecks membership before writing the handoff
+[14/71] tests\handoff-workplace.spec.mjs:111:1 › sender with membership in both departments and an unrelated employee cannot accept
+[15/71] tests\handoff-workplace.spec.mjs:122:1 › replayed original send reads the current accepted record rather than restoring the old sent state
+[16/71] tests\handoff-workplace.spec.mjs:146:1 › confirmed send with a failed read offers refresh and never replays the confirmed command
+[17/71] tests\handoff-workplace.spec.mjs:162:1 › handoff dialog works with the keyboard and moves focus to the saved detail
+[18/71] tests\handoff-workplace.spec.mjs:172:1 › an operator with only stock and handoff grants opens the warehouse without document reads
+[19/71] tests\handoff-workplace.spec.mjs:188:1 › transit and production stock show the handoff route without generic warehouse actions
+[20/71] tests\handoff-workplace.spec.mjs:205:1 › a mapped B1 source sends from the warehouse department without being its primary A1 position
+[21/71] tests\handoff-workplace.spec.mjs:224:1 › revoked receiving membership is rechecked before any acceptance command
+[22/71] tests\handoff-workplace.spec.mjs:234:1 › a source with another stock owner does not inherit an owner-bound send grant
+[23/71] tests\handoff-workplace.spec.mjs:249:1 › incoming queue is filtered by the server before pagination across more than one hundred history rows
+[24/71] tests\handoff-workplace.spec.mjs:287:1 › an accepted handoff labels its receiving place as historical receipt
+[25/71] tests\handoff-workplace.spec.mjs:293:1 › receive in the incoming queue then send onward keeps the known pending transit route and link
+[26/71] tests\handoff-workplace.spec.mjs:316:54 › legacy receipt selection excludes known production and transit balances after department acceptance
+[27/71] tests\handoff-workplace.spec.mjs:316:54 › legacy transfer selection excludes known production and transit balances after department acceptance
+[28/71] tests\handoff-workplace.spec.mjs:316:54 › legacy shipment selection excludes known production and transit balances after department acceptance
+[29/71] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved foreign-warehouse handoff preserves the valid stock workspace only for an access or not-found response
+[30/71] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved revoked-owner handoff preserves the valid stock workspace only for an access or not-found response
+[31/71] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved not-found handoff preserves the valid stock workspace only for an access or not-found response
+[32/71] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved unavailable handoff preserves the valid stock workspace only for an access or not-found response
+[33/71] tests\handoff-workplace.spec.mjs:387:1 › an installation without department grants keeps its existing workplace and makes no handoff reads
+[34/71] tests\industry-workplace.spec.mjs:27:1 › stock opens first and remains visible for the warehouse employee with shelf and units
+[35/71] tests\industry-workplace.spec.mjs:42:1 › warehouse employee issues WZ to a named recipient from stock, reserving then posting exactly once
+[36/71] tests\industry-workplace.spec.mjs:82:1 › stock WZ rejects unavailable quantity before creating a document
+[37/71] tests\industry-workplace.spec.mjs:92:1 › bureau plans material demand and work stages without changing physical stock
+[38/71] tests\industry-workplace.spec.mjs:117:46 › critic: lost reservation reply survives reload and does not post twice
+[39/71] tests\industry-workplace.spec.mjs:117:46 › critic: lost issue reply survives reload and does not post twice
+[40/71] tests\industry-workplace.spec.mjs:170:1 › critic: all stock pages participate in name search
+[41/71] tests\industry-workplace.spec.mjs:191:1 › worker moves stock on an MM while PZ creation remains unavailable
+[42/71] tests\industry-workplace.spec.mjs:225:1 › critic: material and finished-goods WZ inherit the actual order owner
+[43/71] tests\industry-workplace.spec.mjs:255:1 › critic: recipient accepts 200 Polish characters and blocks 201 before sending
+[44/71] tests\industry-workplace.spec.mjs:275:1 › critic: customer accepts 200 Polish characters and blocks 201 before sending
+[45/71] tests\industry-workplace.spec.mjs:305:1 › critic: partial reservation is visible and issued before reserving the remaining plan
+[46/71] tests\industry-workplace.spec.mjs:349:41 › critic: a missing order item cannot fall back to the first catalog entry
+[47/71] tests\industry-workplace.spec.mjs:349:41 › critic: a missing order owner cannot fall back to the first catalog entry
+[48/71] tests\industry-workplace.spec.mjs:396:1 › paper workplace keeps earlier metal trials explicitly archived without changing stock
+[49/71] tests\industry-workplace.spec.mjs:414:1 › new paper documents use working items while explicit historical placement preserves the archived SKU
+[50/71] tests\industry-workplace.spec.mjs:442:1 › a stationery dispatch order prepares goods for its customer without a production-material path
+[51/71] tests\non-scanner-critic.spec.mjs:78:1 › critic non-scanner: repeated product lines remain independently selectable in PZ
+[52/71] tests\non-scanner-critic.spec.mjs:97:1 › critic non-scanner: same-address lots preserve the explicitly selected MM balance identities
+[53/71] tests\non-scanner-critic.spec.mjs:119:1 › critic non-scanner: WZ resumes its own reservation even when no free quantity remains
+[54/71] tests\non-scanner-critic.spec.mjs:134:1 › critic non-scanner: changing a document line clears source target and quantity
+[55/71] tests\non-scanner-critic.spec.mjs:144:63 › critic non-scanner: fresh document-version invalidates selection before a write attempt
+[56/71] tests\non-scanner-critic.spec.mjs:144:63 › critic non-scanner: fresh available-quantity invalidates selection before a write attempt
+[57/71] tests\non-scanner-critic.spec.mjs:161:1 › critic non-scanner: lost MM reply locks selectors and replays the exact selected lot after reload
+[58/71] tests\non-scanner-critic.spec.mjs:181:1 › critic non-scanner: write-attempt observer records a valid MM as a positive control
+[59/71] tests\selection-workplace.spec.mjs:40:1 › PZ receives the chosen second line using names and a receiving list without exact codes
+[60/71] tests\selection-workplace.spec.mjs:55:1 › native lists retain keyboard focus through selection and submit with Tab and Enter
+[61/71] tests\selection-workplace.spec.mjs:72:1 › no-code WZ freezes choices after a committed lost issue reply and replays the exact command after reload
+[62/71] tests\selection-workplace.spec.mjs:106:1 › MM moves an existing item between named workplaces without creating a SKU or label
+[63/71] tests\selection-workplace.spec.mjs:122:1 › MM source lists accept PostgreSQL fixed-six numeric quantities for whole pieces
+[64/71] tests\selection-workplace.spec.mjs:140:1 › WZ issues to its saved recipient from a labeled source without entering any codes
+[65/71] tests\selection-workplace.spec.mjs:157:1 › changing a line or a source clears dependent choices and counted quantity
+[66/71] tests\selection-workplace.spec.mjs:173:1 › confirmation rechecks current availability before any MM write
+[67/71] tests\selection-workplace.spec.mjs:183:1 › a confirmed PZ with a failed refresh freezes choices and offers a read-only refresh without replaying the movement
+[68/71] tests\workplace.spec.mjs:8:1 › bureau saves a PZ without choosing a number, then explicitly hands it to the warehouse
+[69/71] tests\workplace.spec.mjs:36:1 › a completed PZ prepares an automatically numbered MM without changing the source plan
+[70/71] tests\workplace.spec.mjs:60:1 › terminal blocks wrong scan and receives one item with keyboard
+[71/71] tests\workplace.spec.mjs:79:1 › worker screen reflows at TSD width and scanning controls remain touch-sized
+  71 passed (25.6s)

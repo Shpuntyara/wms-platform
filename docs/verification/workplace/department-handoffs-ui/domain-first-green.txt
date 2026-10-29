@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: handoff destinations are configured enabled routes for the authenticated source member only
+ok 1 - handoff destinations are configured enabled routes for the authenticated source member only
+  ---
+  duration_ms: 1.4881
+  type: 'test'
+  ...
+# Subtest: handoff send intent keeps exact decimal quantity and excludes owner or typed identities
+ok 2 - handoff send intent keeps exact decimal quantity and excludes owner or typed identities
+  ---
+  duration_ms: 0.4108
+  type: 'test'
+  ...
+# Subtest: handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination
+ok 3 - handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination
+  ---
+  duration_ms: 0.5504
+  type: 'test'
+  ...
+# Subtest: only a different authenticated receiving member can accept a sent handoff
+ok 4 - only a different authenticated receiving member can accept a sent handoff
+  ---
+  duration_ms: 0.2635
+  type: 'test'
+  ...
+# Subtest: acceptance confirms the full existing handoff version without quantity or identity inputs
+ok 5 - acceptance confirms the full existing handoff version without quantity or identity inputs
+  ---
+  duration_ms: 0.2317
+  type: 'test'
+  ...
+# Subtest: handoff property: one micro-unit above availability never passes through floating point rounding
+ok 6 - handoff property: one micro-unit above availability never passes through floating point rounding
+  ---
+  duration_ms: 9.8787
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 114.8024

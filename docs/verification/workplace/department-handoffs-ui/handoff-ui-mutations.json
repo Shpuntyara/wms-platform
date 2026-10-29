@@ -1,0 +1,3218 @@
+{
+  "passed": true,
+  "scope": "Reviewed handoff UI selection, exact quantity and request-shape faults; not a whole-application mutation score.",
+  "sources": [
+    {
+      "path": "web/src/handoff.js",
+      "sha256": "4f9e3b5d0e84aafe9b4a176ec11aad621b6cb9c1feb887e4c5baa8fe130e38fb",
+      "sha256_lf": "4f9e3b5d0e84aafe9b4a176ec11aad621b6cb9c1feb887e4c5baa8fe130e38fb"
+    },
+    {
+      "path": "web/src/domain.js",
+      "sha256": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5",
+      "sha256_lf": "7ec7d649e0786622833b8c0942f3d6b229754e733c2bbde15e5988a18537f6c5"
+    },
+    {
+      "path": "web/tests/handoff-domain.test.mjs",
+      "sha256": "6ca42f7917cfd656d8acaaa726b3a550f49331df25801cdc65cbd0aefd980e96",
+      "sha256_lf": "6ca42f7917cfd656d8acaaa726b3a550f49331df25801cdc65cbd0aefd980e96"
+    },
+    {
+      "path": "scripts/verify_handoff_ui_mutations.py",
+      "sha256": "e72f3a2ed61724102cc7f42d41fd1fc537b22cb9bea07174994ca96b91074c2b",
+      "sha256_lf": "e72f3a2ed61724102cc7f42d41fd1fc537b22cb9bea07174994ca96b91074c2b"
+    },
+    {
+      "path": "scripts/verify_selection_mutations.py",
+      "sha256": "23968bed1a3c2a1fd5f867a7cdf8a5963ba43fdc35b726a5af04c666693ec7c1",
+      "sha256_lf": "23968bed1a3c2a1fd5f867a7cdf8a5963ba43fdc35b726a5af04c666693ec7c1"
+    }
+  ],
+  "tests": [
+    "tests/handoff-domain.test.mjs"
+  ],
+  "mutations": [
+    {
+      "name": "send_capability_ignored",
+      "status": "killed",
+      "mutant_sha256": "9629d7cbb8ce7939d0346232805b33b87d8fa9d2dffe597a34cea2c0844bcf16",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 16 tests\n{ seed: 2026103002, path: \"15:1:1\", endOnFailure: true }\nCounterexample: [\"send\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 16 tests\n{ seed: 2026103002, path: \"15:1:1\", endOnFailure: true }\nCounterexample: [\"send\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "send_employee_missing_allowed",
+      "status": "killed",
+      "mutant_sha256": "1b7909ff073af35e162981e7c97447a3558661df467f432302af4980f7d08980",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 7 tests\n{ seed: 2026103002, path: \"6:1:1\", endOnFailure: true }\nCounterexample: [\"employee\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 7 tests\n{ seed: 2026103002, path: \"6:1:1\", endOnFailure: true }\nCounterexample: [\"employee\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "organization_scope_ignored",
+      "status": "killed",
+      "mutant_sha256": "ac51bb33bdd4e93638629f8105167f3c98ab85717c3f3fee7be01c7441ee625b",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Missing expected exception.",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 6 tests\n{ seed: 2026103002, path: \"5:1:1\", endOnFailure: true }\nCounterexample: [\"org\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 6 tests\n{ seed: 2026103002, path: \"5:1:1\", endOnFailure: true }\nCounterexample: [\"org\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "warehouse_scope_ignored",
+      "status": "killed",
+      "mutant_sha256": "c4f86e14cec528b1dc0a6795cc44b098829a2e1bb6e742b609d260ce6d7ce6d7",
+      "tests": 8,
+      "passed": 5,
+      "failed": 3,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 10 tests\n{ seed: 2026103002, path: \"9:1:1\", endOnFailure: true }\nCounterexample: [\"warehouse\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 10 tests\n{ seed: 2026103002, path: \"9:1:1\", endOnFailure: true }\nCounterexample: [\"warehouse\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "item_organization_ignored",
+      "status": "killed",
+      "mutant_sha256": "f0ce9c6b537a95c988da4c4414722a88e4c2daf0e84147d55fae0e1493f79293",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 3 tests\n{ seed: 2026103002, path: \"2:1:1\", endOnFailure: true }\nCounterexample: [\"itemOrg\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 3 tests\n{ seed: 2026103002, path: \"2:1:1\", endOnFailure: true }\nCounterexample: [\"itemOrg\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "item_identity_ignored",
+      "status": "killed",
+      "mutant_sha256": "90727cb55b70a7f959fdd966331f81b59641e3a12050024cec4fb5cb91314b91",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "source_transit_stock_allowed",
+      "status": "killed",
+      "mutant_sha256": "4448b5ab41e9730105b88de5080ef7a3cd833af1431537bfc77e597b269d832c",
+      "tests": 8,
+      "passed": 5,
+      "failed": 3,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Missing expected exception.",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 1 tests\n{ seed: 2026103002, path: \"0:1\", endOnFailure: true }\nCounterexample: [\"available\",1n,[]]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 1 tests\n{ seed: 2026103002, path: \"0:1\", endOnFailure: true }\nCounterexample: [\"available\",1n,[]]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "source_zero_available_offered",
+      "status": "killed",
+      "mutant_sha256": "a6b9e8d9f9e42c4a8b79cd876d6b20cdcc83256ac6e0d771f706a703188865a4",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "api_fixed_six_normalization_removed",
+      "status": "killed",
+      "mutant_sha256": "f1082cada5f684b5b3375006056bff628b73f0ca972f0532a35c636610d540c2",
+      "tests": 8,
+      "passed": 4,
+      "failed": 4,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Got unwanted exception.\nActual message: \"Wybierz dział z dostępnej trasy przekazania. Sprawdź swoje uprawnienia i miejsce towaru.\"",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Got unwanted exception.\nActual message: \"Wybierz dział z dostępnej trasy przekazania. Sprawdź swoje uprawnienia i miejsce towaru.\"",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:0\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:0\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'department-0'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mapped_secondary_source_hidden",
+      "status": "killed",
+      "mutant_sha256": "4f55788299ddd9f598dcbb067e4f0122b9906553edeaf37e0d0a20de67beb028",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "ambiguous_source_mapping_chooses_first",
+      "status": "killed",
+      "mutant_sha256": "99e4ab0b1df731e929e00e87f8f55fec3692919b0cdf7f2914bb0d65277be90c",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "configured_route_direction_reversed",
+      "status": "killed",
+      "mutant_sha256": "e11e004da46e66746a4085f71a1d090eec27f49ddfe5871f1ffce52d9437ccd5",
+      "tests": 8,
+      "passed": 3,
+      "failed": 5,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Got unwanted exception.\nActual message: \"Wybierz dział z dostępnej trasy przekazania. Sprawdź swoje uprawnienia i miejsce towaru.\"",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Got unwanted exception.\nActual message: \"Wybierz dział z dostępnej trasy przekazania. Sprawdź swoje uprawnienia i miejsce towaru.\"",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'welding'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 1 tests\n{ seed: 2026103001, path: \"0:0\", endOnFailure: true }\nCounterexample: [1n]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 1 tests\n{ seed: 2026103001, path: \"0:0\", endOnFailure: true }\nCounterexample: [1n]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Got unwanted exception.\nActual message: \"Wybierz dział z dostępnej trasy przekazania. Sprawdź swoje uprawnienia i miejsce towaru.\"",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:0\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:0\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   'department-0'\n- ]\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "source_membership_ignored",
+      "status": "killed",
+      "mutant_sha256": "45dca98b4854cbe3c4516ff5d39372f044bb808edf2099fdebfc10bf2b202b4d",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: true,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 11 tests\n{ seed: 2026103002, path: \"10:1:1\", endOnFailure: true }\nCounterexample: [\"member\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 11 tests\n{ seed: 2026103002, path: \"10:1:1\", endOnFailure: true }\nCounterexample: [\"member\",1n,[]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   'department-0'\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unconfigured_route_allowed",
+      "status": "killed",
+      "mutant_sha256": "9b42c986e0956ed1fb67a29a16d45820ea5c971384c66afab1a78cd3e8bf6f6e",
+      "tests": 8,
+      "passed": 4,
+      "failed": 4,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'welding',\n+   'polishing'\n  ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'welding',\n+   'polishing'\n  ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'welding',\n+   'polishing'\n  ]\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'welding',\n+   'polishing'\n  ]\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Missing expected exception.",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:1:0:2\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[{\"enabled\":true,\"route\":false}]]\nShrunk 4 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:1:0:2\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[{\"enabled\":true,\"route\":false}]]\nShrunk 4 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'department-0',\n+   'department-1'\n  ]\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "disabled_destination_allowed",
+      "status": "killed",
+      "mutant_sha256": "4ec370c967fee7d530b64bbf4be31fa57be55e69eb992d29998b9c5cf5463c03",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: false,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   {\n+     enabled: false,\n+     id: 'welding',\n+     name: 'Spawanie',\n+     position_id: 'S1'\n+   }\n+ ]\n- []\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:4\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[{\"enabled\":false,\"route\":true}]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 8 tests\n{ seed: 2026103002, path: \"7:0:4\", endOnFailure: true }\nCounterexample: [\"ok\",1n,[{\"enabled\":false,\"route\":true}]]\nShrunk 2 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'department-0',\n+   'department-1'\n  ]\n",
+              "failureType": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "quantity_availability_cap_removed",
+      "status": "killed",
+      "mutant_sha256": "2830ee3c24e8a9f227b1092b5e4a855a9ef9005b5ac00d67f1c2a019ca0527e7",
+      "tests": 8,
+      "passed": 6,
+      "failed": 2,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Missing expected exception.",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 1 tests\n{ seed: 2026103001, path: \"0:0\", endOnFailure: true }\nCounterexample: [1n]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 1 tests\n{ seed: 2026103001, path: \"0:0\", endOnFailure: true }\nCounterexample: [1n]\nShrunk 1 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "quantity_availability_float_rounding",
+      "status": "killed",
+      "mutant_sha256": "572aacfb50a3a8aaaf6f1993f88d7314fa25612045331cbc23988524c36e92d4",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Property failed after 3 tests\n{ seed: 2026103001, path: \"2:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:2:0:0:0:0:1:0:0:0:0:0:0:0:2:0:0:0:0:1:0:0:0:1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0\", endOnFailure: true }\nCounterexample: [44608828999538189n]\nShrunk 68 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "Error",
+              "code": "",
+              "message": "Property failed after 3 tests\n{ seed: 2026103001, path: \"2:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:2:0:0:0:0:1:0:0:0:0:0:0:0:2:0:0:0:0:1:0:0:0:1:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0\", endOnFailure: true }\nCounterexample: [44608828999538189n]\nShrunk 68 time(s)\n\nHint: Enable verbose mode in order to have the list of all failing values encountered during the run",
+              "failureType": ""
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "fractional_pieces_allowed",
+      "status": "killed",
+      "mutant_sha256": "8bf759c1f3cc034a375f5babb8a2e89d29fe54558608895f40727aaf39e592c5",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Missing expected exception.",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Missing expected exception.",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "accept_capability_ignored",
+      "status": "killed",
+      "mutant_sha256": "51bcb724b9e619489019444277be97dd1cc0ad039238a18a9adce1869481936e",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "sender_can_accept_own_handoff",
+      "status": "killed",
+      "mutant_sha256": "cc32c07bdf34354c96a45fc13acadec7632194568ed37de17f648cb1ba15f1ca",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "receiving_membership_ignored",
+      "status": "killed",
+      "mutant_sha256": "f74005bf7f0857790a04e4c5b704ad9cbc922f8e9f6a259e08bc1a9d690a2be3",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "already_accepted_handoff_accepted_again",
+      "status": "killed",
+      "mutant_sha256": "9fc275db975d93155b7b427f5715b32fe1779a9601f6f06fd647fd260124cdfe",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "accept_scope_ignored",
+      "status": "killed",
+      "mutant_sha256": "0276c81bbbbda2c3b783ca99ddf59d6e72de229de1caebe9ab75a7a03643d11d",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly equal:\n\ntrue !== false\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "wrong_expected_version",
+      "status": "killed",
+      "mutant_sha256": "76a011ce82b72d998665204980955cb00851ac3926f7d468b5ef5dc2311d48fb",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   expected_version: 2,\n-   expected_version: 1,\n    organization_id: 'org',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   expected_version: 2,\n-   expected_version: 1,\n    organization_id: 'org',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "send_posts_client_identity",
+      "status": "killed",
+      "mutant_sha256": "58e7ef8f29cca0bacd8d5582a3d138666f786273355a1ab6e0527b0ff2284d75",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    destination_department_id: 'welding',\n    organization_id: 'org',\n    quantity: '2.125',\n+   sender_actor_id: 'sender',\n    source_balance_id: 'source',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    destination_department_id: 'welding',\n    organization_id: 'org',\n    quantity: '2.125',\n+   sender_actor_id: 'sender',\n    source_balance_id: 'source',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "accept_posts_quantity",
+      "status": "killed",
+      "mutant_sha256": "767d7f0ef9342212946be41bd5194e513e6ad3ea3b41732c3aa4732b59519b76",
+      "tests": 8,
+      "passed": 7,
+      "failed": 1,
+      "skipped": 0,
+      "todo": 0,
+      "results": [
+        {
+          "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "all explicitly mapped warehouse positions can send along the department route",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "only a different authenticated receiving member can accept a sent handoff",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+          "status": "fail",
+          "skip": false,
+          "todo": false,
+          "assertion": true,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": [
+            {
+              "name": "Error",
+              "code": "ERR_TEST_FAILURE",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    expected_version: 1,\n    organization_id: 'org',\n+   quantity: '2.000000',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": "testCodeFailure"
+            },
+            {
+              "name": "AssertionError",
+              "code": "ERR_ASSERTION",
+              "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    expected_version: 1,\n    organization_id: 'org',\n+   quantity: '2.000000',\n    warehouse_id: 'wh'\n  }\n",
+              "failureType": ""
+            }
+          ]
+        },
+        {
+          "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        },
+        {
+          "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+          "status": "pass",
+          "skip": false,
+          "todo": false,
+          "assertion": false,
+          "infrastructure_error": false,
+          "unavailable_helper": false,
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "killed": 26,
+  "survived": 0,
+  "invalid": 0,
+  "skipped": 0,
+  "baseline": {
+    "status": "survived",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "todo": 0,
+    "results": [
+      {
+        "name": "handoff destinations are configured enabled routes for the authenticated source member only",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "handoff send intent keeps exact decimal quantity and excludes owner or typed identities",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "all explicitly mapped warehouse positions can send along the department route",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "only a different authenticated receiving member can accept a sent handoff",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "acceptance confirms the full existing handoff version without quantity or identity inputs",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "handoff property: one micro-unit above availability never passes through floating point rounding",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      },
+      {
+        "name": "handoff property: routes equal an independent scope membership and enabled-department oracle",
+        "status": "pass",
+        "skip": false,
+        "todo": false,
+        "assertion": false,
+        "infrastructure_error": false,
+        "unavailable_helper": false,
+        "errors": []
+      }
+    ]
+  },
+  "source_unchanged": true
+}

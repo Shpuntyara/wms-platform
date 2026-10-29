@@ -1,0 +1,2 @@
+\set ON_ERROR_STOP on
+GRANT EXECUTE ON FUNCTION hardened_api.handoff_context(),hardened_api.handoffs(text),hardened_api.handoff(uuid),hardened_api.handoff_command(uuid,uuid,text) TO :"api_role";

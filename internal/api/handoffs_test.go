@@ -1,0 +1,147 @@
+package api
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+	"testing"
+
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
+	"github.com/Shpuntyara/wms-platform/internal/modules"
+)
+
+type handoffsBackend struct {
+	fakeBackend
+	input            json.RawMessage
+	command, handoff string
+	scope            inventory.Scope
+}
+
+func (b *handoffsBackend) CommandHandoff(_ context.Context, p inventory.Principal, command, handoff string, input json.RawMessage, _ *modules.Registry) (json.RawMessage, error) {
+	b.calls++
+	b.actor = p.ActorID
+	b.command = command
+	b.handoff = handoff
+	b.input = append(json.RawMessage{}, input...)
+	return json.RawMessage(`{"operation_id":"` + command + `","handoff_id":"` + testCommand + `","version":1,"state":"sent"}`), b.err
+}
+func (b *handoffsBackend) ListHandoffs(_ context.Context, scope inventory.Scope, _ inventory.Filters) (inventory.Page, error) {
+	b.calls++
+	b.scope = scope
+	return inventory.Page{Data: []json.RawMessage{}}, b.err
+}
+func (b *handoffsBackend) GetHandoff(_ context.Context, scope inventory.Scope, id string) (json.RawMessage, error) {
+	b.calls++
+	b.scope = scope
+	b.handoff = id
+	return json.RawMessage(`{"id":"` + id + `"}`), b.err
+}
+func (b *handoffsBackend) HandoffContext(_ context.Context, scope inventory.Scope) (json.RawMessage, error) {
+	b.calls++
+	b.scope = scope
+	return json.RawMessage(`{"departments":[],"routes":[],"memberships":[]}`), b.err
+}
+func handoffsHandler(t *testing.T, permissions ...string) (http.Handler, *handoffsBackend) {
+	t.Helper()
+	b := &handoffsBackend{principal: inventory.Principal{ActorID: testActor}}
+	for _, permission := range permissions {
+		b.principal.Grants = append(b.principal.Grants, inventory.Grant{OrganizationID: testOrg, WarehouseID: testWarehouse, OwnerID: planOwner, Permission: permission})
+	}
+	registry, err := modules.NewRegistry(nil, nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h, err := New(Config{Backend: b, Auth: fakeAuth{}, Modules: registry})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return h, b
+}
+func sendHandoffBody() string {
+	return fmt.Sprintf(`{"organization_id":%q,"warehouse_id":%q,"source_balance_id":%q,"destination_department_id":%q,"quantity":"1.125"}`, testOrg, testWarehouse, testBalance, testLine)
+}
+func acceptHandoffBody() string {
+	return fmt.Sprintf(`{"organization_id":%q,"warehouse_id":%q,"expected_version":1}`, testOrg, testWarehouse)
+}
+
+func TestHandoffsSendAndAcceptUseAuthenticatedActorAndExactInput(t *testing.T) {
+	for _, tc := range []struct {
+		name, path, body, permission, handoff string
+		status                                int
+	}{
+		{"send", "/api/v1/handoffs/send", sendHandoffBody(), "handoff.send", "", 201},
+		{"accept", "/api/v1/handoffs/" + testCommand + "/accept", acceptHandoffBody(), "handoff.accept", testCommand, 200},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			h, b := handoffsHandler(t, tc.permission)
+			w := request(h, "POST", tc.path, tc.body, "valid", testCommand, "application/json")
+			if w.Code != tc.status || b.calls != 1 || b.actor != testActor || b.command != testCommand || b.handoff != tc.handoff {
+				t.Fatalf("status=%d writes=%d actor=%s command=%s handoff=%s body=%s", w.Code, b.calls, b.actor, b.command, b.handoff, w.Body)
+			}
+			var want, got any
+			_ = json.Unmarshal([]byte(tc.body), &want)
+			_ = json.Unmarshal(b.input, &got)
+			wantJSON, _ := json.Marshal(want)
+			gotJSON, _ := json.Marshal(got)
+			if string(wantJSON) != string(gotJSON) {
+				t.Fatalf("request changed: %s", b.input)
+			}
+		})
+	}
+}
+func TestHandoffsRejectForgedActorsOwnersAndMalformedCommandsBeforeStorage(t *testing.T) {
+	for _, tc := range []struct {
+		name, path, body, key, permission string
+		status                            int
+	}{
+		{"missing send permission", "/api/v1/handoffs/send", sendHandoffBody(), testCommand, "document.move", 403},
+		{"missing accept permission", "/api/v1/handoffs/" + testCommand + "/accept", acceptHandoffBody(), testCommand, "handoff.send", 403},
+		{"missing key", "/api/v1/handoffs/send", sendHandoffBody(), "", "handoff.send", 400},
+		{"zero quantity", "/api/v1/handoffs/send", strings.Replace(sendHandoffBody(), "1.125", "0", 1), testCommand, "handoff.send", 400},
+		{"numeric quantity", "/api/v1/handoffs/send", strings.Replace(sendHandoffBody(), `"1.125"`, `1.125`, 1), testCommand, "handoff.send", 400},
+		{"foreign warehouse", "/api/v1/handoffs/send", strings.Replace(sendHandoffBody(), testWarehouse, testActor, 1), testCommand, "handoff.send", 403},
+		{"forged sender", "/api/v1/handoffs/send", strings.TrimSuffix(sendHandoffBody(), "}") + `,"sender_actor_id":"` + testActor + `"}`, testCommand, "handoff.send", 400},
+		{"forged owner", "/api/v1/handoffs/send", strings.TrimSuffix(sendHandoffBody(), "}") + `,"owner_id":"` + planOwner + `"}`, testCommand, "handoff.send", 400},
+		{"forged receiver", "/api/v1/handoffs/" + testCommand + "/accept", strings.TrimSuffix(acceptHandoffBody(), "}") + `,"receiver_actor_id":"` + testActor + `"}`, testCommand, "handoff.accept", 400},
+		{"partial accept", "/api/v1/handoffs/" + testCommand + "/accept", strings.TrimSuffix(acceptHandoffBody(), "}") + `,"quantity":"0.5"}`, testCommand, "handoff.accept", 400},
+		{"missing version", "/api/v1/handoffs/" + testCommand + "/accept", strings.Replace(acceptHandoffBody(), `,"expected_version":1`, "", 1), testCommand, "handoff.accept", 400},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			h, b := handoffsHandler(t, tc.permission)
+			w := request(h, "POST", tc.path, tc.body, "valid", tc.key, "application/json")
+			if w.Code != tc.status || b.calls != 0 {
+				t.Fatalf("status=%d want=%d calls=%d body=%s", w.Code, tc.status, b.calls, w.Body)
+			}
+		})
+	}
+}
+func TestHandoffsReadEndpointsRetainOwnerScope(t *testing.T) {
+	for _, path := range []string{"/api/v1/handoffs", "/api/v1/handoffs/context", "/api/v1/handoffs/" + testCommand} {
+		t.Run(path, func(t *testing.T) {
+			h, b := handoffsHandler(t, "handoff.read")
+			w := request(h, "GET", path+"?organization_id="+testOrg+"&warehouse_id="+testWarehouse, "", "valid", "", "")
+			if w.Code != 200 || b.calls != 1 || b.scope.ActorID != testActor || b.scope.AllOwners || len(b.scope.OwnerIDs) != 1 || b.scope.OwnerIDs[0] != planOwner {
+				t.Fatalf("status=%d scope=%+v body=%s", w.Code, b.scope, w.Body)
+			}
+		})
+	}
+	h, b := handoffsHandler(t, "document.read")
+	w := request(h, "GET", "/api/v1/handoffs/context?organization_id="+testOrg+"&warehouse_id="+testWarehouse, "", "valid", "", "")
+	if w.Code != 403 || b.calls != 0 {
+		t.Fatalf("feature permission missing: %d %s", w.Code, w.Body)
+	}
+}
+
+func TestHandoffsRejectUnknownQueueViewsBeforeStorage(t *testing.T) {
+	for _, view := range []string{"other-department", "incoming,outgoing"} {
+		t.Run(view, func(t *testing.T) {
+			h, b := handoffsHandler(t, "handoff.read")
+			w := request(h, "GET", "/api/v1/handoffs?organization_id="+testOrg+"&warehouse_id="+testWarehouse+"&view="+view, "", "valid", "", "")
+			if w.Code != 400 || b.calls != 0 {
+				t.Fatalf("unknown queue view accepted: %d calls=%d %s", w.Code, b.calls, w.Body)
+			}
+		})
+	}
+}

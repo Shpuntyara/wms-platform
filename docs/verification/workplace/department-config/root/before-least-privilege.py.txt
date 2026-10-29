@@ -1,0 +1,203 @@
+"""Explicit owned-lab configuration for authenticated production handoffs.
+
+This configures places, routes and employees; it never posts stock or documents.
+Existing workplace users and their passwords remain independent and unchanged.
+"""
+import copy
+import importlib.util
+import json
+import os
+from pathlib import Path
+import secrets
+import urllib.parse
+import uuid
+
+STAGES=[('magazyn','Magazyn'),('spawanie','Spawanie'),('szlifowanie','Szlifowanie'),('lakiernia','Lakiernia'),('montaz','Montaż')]
+EMPLOYEES=[('jan.kowalski','Jan','Kowalski','spawanie'),('anna.zielinska','Anna','Zielińska','szlifowanie'),('piotr.nowak','Piotr','Nowak','lakiernia'),('marek.wisniewski','Marek','Wiśniewski','montaz')]
+
+def identifier(value):
+    try:
+        normalized=str(uuid.UUID(value))
+    except (ValueError,TypeError,AttributeError) as error:
+        raise ValueError('Nieprawidłowy identyfikator konfiguracji działów') from error
+    if normalized!=value:raise ValueError('Identyfikator musi mieć postać kanoniczną')
+    return normalized
+
+def build_plan(identity,users,workspace,expected_instance):
+    instance=identifier(identity['instance_id'])
+    if instance!=identifier(expected_instance) or users.get('instance_id')!=instance:
+        raise ValueError('Konfiguracja należy do innej instalacji')
+    origin='https://'+identity['address']
+    issuer=urllib.parse.urlsplit(identity['issuer'])
+    if users.get('origin')!=origin or issuer.scheme!='https' or issuer.netloc!=identity['address'] or issuer.query or issuer.fragment or not issuer.path.startswith('/auth/realms/') or not issuer.path.removeprefix('/auth/realms/') or len(issuer.path.removeprefix('/auth/realms/').split('/'))!=1:
+        raise ValueError('Niezgodny dostawca tożsamości instalacji')
+    ids=users['ids'];org=identifier(ids['organization']);wh=identifier(ids['warehouse']);owner=identifier(ids['owner'])
+    scope={'organization_id':org,'warehouse_id':wh}
+    for group,key,value in [('organizations','id',org),('warehouses','id',wh),('owners','id',owner)]:
+        matches=[row for row in workspace[group] if row[key]==value]
+        if len(matches)!=1 or group!='organizations' and matches[0].get('organization_id')!=org:
+            raise ValueError('Niezgodny zakres konfiguracji działów')
+    namespace=uuid.UUID(instance)
+    uid=lambda name:str(uuid.uuid5(namespace,'wms-departments-v1/'+name))
+    racks=[]
+    for code in ['A1','A2','A3','A4','B1','B2','B3','B4']:
+        matches=[p for p in workspace['positions'] if p.get('code')==code and p.get('organization_id')==org and p.get('warehouse_id')==wh and p.get('kind')=='storage']
+        if len(matches)!=1:raise ValueError('Brak lub niejednoznaczny adres regału '+code)
+        identifier(matches[0]['id']);racks.append(matches[0])
+    positions=[{'id':uid('position/'+code),**scope,'code':code.upper(),'name':name,'kind':'storage'} for code,name in STAGES[1:]]
+    departments=[{'id':uid('department/'+code),**scope,'code':code,'name':name,'kind':'warehouse' if code=='magazyn' else 'production',
+                  'position_id':racks[0]['id'] if code=='magazyn' else next(p['id'] for p in positions if p['code']==code.upper()),'enabled':True} for code,name in STAGES]
+    by_code={d['code']:d for d in departments}
+    mappings=[{**scope,'department_id':by_code['magazyn']['id'],'position_id':p['id']} for p in racks]
+    mappings.extend({**scope,'department_id':by_code[code]['id'],'position_id':by_code[code]['position_id']} for code,_ in STAGES[1:])
+    employees=[{'username':username,'firstName':first,'lastName':last,'display_name':first+' '+last,'department_code':code,'actor_id':uid('actor/'+username)} for username,first,last,code in EMPLOYEES]
+    grants=[]
+    for person in employees:
+        grants.extend({**scope,'actor_id':person['actor_id'],'owner_id':owner,'permission':permission} for permission in ['document.read','stock.read','handoff.read','handoff.send','handoff.accept'])
+    grants.extend({**scope,'actor_id':identifier(ids['actor_magazynier']),'owner_id':owner,'permission':permission} for permission in ['handoff.read','handoff.send','handoff.accept'])
+    grants.append({**scope,'actor_id':identifier(ids['actor_biuro']),'owner_id':owner,'permission':'handoff.read'})
+    routes=[{**scope,'source_department_id':departments[i]['id'],'destination_department_id':departments[(i+1)%len(departments)]['id'],'enabled':True} for i in range(len(departments))]
+    return {'schema':1,'instance_id':instance,'issuer':identity['issuer'],'origin':origin,**scope,'owner_id':owner,'departments':departments,'positions':positions,
+            'locations':[{'id':uid('location/'+code),**scope,'code':code.upper(),'kind':'storage','enabled':True,'position_id':by_code[code]['position_id']} for code,_ in STAGES[1:]],
+            'position_departments':mappings,'employees':employees,'grants':grants,'routes':routes,'warehouse_actor_id':ids['actor_magazynier']}
+
+def merge_workspace(workspace,plan):
+    merged=copy.deepcopy(workspace)
+    for row in plan['positions']:
+        matches=[p for p in merged['positions'] if p['id']==row['id'] or p.get('organization_id')==row['organization_id'] and p.get('warehouse_id')==row['warehouse_id'] and p.get('code')==row['code']]
+        if matches and (len(matches)!=1 or matches[0]!=row):raise ValueError('Istniejące miejsce działu różni się od zatwierdzonego planu')
+        if not matches:merged['positions'].append(copy.deepcopy(row))
+    return merged
+
+def literal(value):
+    if isinstance(value,bool):return 'true' if value else 'false'
+    if not isinstance(value,str) or '\x00' in value:raise ValueError('Nieprawidłowa wartość konfiguracji')
+    return "'"+value.replace("'","''")+"'"
+
+def seed_sql(plan,subjects):
+    if set(subjects)!={p['username'] for p in plan['employees']}:raise ValueError('Brak potwierdzonych tożsamości pracowników')
+    subjects={name:identifier(value) for name,value in subjects.items()}
+    statements=['BEGIN;']
+    def row(table,data):
+        columns=','.join(data)
+        values=','.join(literal(value) for value in data.values())
+        expected=literal(json.dumps(data,ensure_ascii=False,separators=(',',':')))
+        statements.append('INSERT INTO '+table+'('+columns+') VALUES('+values+') ON CONFLICT DO NOTHING;')
+        statements.append("DO $check$ BEGIN IF NOT EXISTS(SELECT 1 FROM "+table+" r WHERE to_jsonb(r) @> "+expected+"::jsonb) THEN RAISE EXCEPTION 'department_configuration_drift'; END IF; END $check$;")
+    scope={key:plan[key] for key in ['organization_id','warehouse_id']}
+    for person in plan['employees']:
+        row('platform.actors',{'id':person['actor_id'],'issuer':plan['issuer'],'subject':subjects[person['username']]})
+    for place in plan['locations']:
+        row('warehouse.locations',{k:v for k,v in place.items() if k!='position_id'})
+        row('warehouse.positions',{'id':place['position_id'],**scope,'location_id':place['id']})
+    for department in plan['departments']:row('warehouse.departments',department)
+    for mapping in plan['position_departments']:row('warehouse.department_positions',mapping)
+    employees=[{'actor_id':p['actor_id'],'organization_id':plan['organization_id'],'display_name':p['display_name'],'enabled':True} for p in plan['employees']]
+    employees.append({'actor_id':plan['warehouse_actor_id'],'organization_id':plan['organization_id'],'display_name':'Magazynier','enabled':True})
+    for person in employees:row('warehouse.department_employees',person)
+    by_code={d['code']:d for d in plan['departments']}
+    for person in plan['employees']:
+        row('warehouse.department_members',{**scope,'department_id':by_code[person['department_code']]['id'],'actor_id':person['actor_id'],'enabled':True})
+    row('warehouse.department_members',{**scope,'department_id':by_code['magazyn']['id'],'actor_id':plan['warehouse_actor_id'],'enabled':True})
+    for route in plan['routes']:row('warehouse.department_routes',route)
+    for grant in plan['grants']:row('platform.actor_grants',grant)
+    statements.append('COMMIT;')
+    return '\n'.join(statements)+'\n'
+
+def apply(runtime,expected_instance,*,lab=False,credentials_file=None,workplace_file=None,workspace_file=None):
+    if not lab:raise ValueError('Wymagane jawne --lab dla przykładowych kont pracowników')
+    spec=importlib.util.spec_from_file_location('department_workplace_sdk',Path(__file__).with_name('workplace.py'))
+    sdk=importlib.util.module_from_spec(spec);spec.loader.exec_module(sdk)
+    credentials_file=Path(credentials_file or '/etc/wms/department-users.json')
+    workplace_file=Path(workplace_file or '/etc/wms/workplace-users.json')
+    workspace_file=Path(workspace_file or '/etc/wms-workplace/workspace.json')
+    users=sdk.read_protected(workplace_file)
+    workspace=json.loads(workspace_file.read_text(encoding='utf8'))
+    plan=build_plan(runtime.identity,users,workspace,expected_instance)
+    merged=merge_workspace(workspace,plan)
+    if runtime.sql('SELECT id::text FROM hardened_private.installation WHERE singleton;')!=expected_instance:
+        raise ValueError('Baza danych należy do innej instalacji')
+    state=sdk.read_protected(credentials_file) if credentials_file.exists() or credentials_file.is_symlink() else None
+    if state is None:
+        state={'schema':1,'instance_id':plan['instance_id'],'origin':plan['origin'],'issuer':plan['issuer'],'provisioning_id':str(uuid.uuid4()),
+               'users':{p['username']:{'username':p['username'],'actor_id':p['actor_id'],'display_name':p['display_name'],'department_code':p['department_code'],
+                                      'password':secrets.token_urlsafe(32),'subject':None,'creation_attempted':False} for p in plan['employees']}}
+        sdk.write_protected(credentials_file,state)
+    if state.get('schema')!=1 or any(state.get(k)!=plan[k] for k in ['instance_id','origin','issuer']) or set(state.get('users',{}))!={p['username'] for p in plan['employees']}:
+        raise ValueError('Prywatny zapis pracowników należy do innej konfiguracji')
+    identifier(state['provisioning_id'])
+    for person in plan['employees']:
+        saved=state['users'][person['username']]
+        if any(saved.get(k)!=person[k] for k in ['username','actor_id','display_name','department_code']) or not isinstance(saved.get('password'),str) or len(saved['password'])<24 or not isinstance(saved.get('creation_attempted'),bool):
+            raise ValueError('Niezgodny prywatny zapis pracownika')
+        if saved.get('subject') is not None:identifier(saved['subject'])
+    def request(method,path,data=None,expected=200):
+        status,body=runtime.admin(method,path,data)
+        if status!=expected:raise ValueError('Dostawca tożsamości odrzucił konfigurację działów')
+        return body
+    # Preflight every existing account before creating any employee or granting SQL rights.
+    found={}
+    for person in plan['employees']:
+        username=person['username'];saved=state['users'][username]
+        rows=request('GET','/users?username='+urllib.parse.quote(username,safe='')+'&exact=true')
+        if not isinstance(rows,list) or len(rows)>1:raise ValueError('Niejednoznaczny użytkownik działu')
+        if rows:
+            current=rows[0];attrs=current.get('attributes',{})
+            if attrs.get('wms.workplace.installation')!=[plan['instance_id']] or attrs.get('wms.department.provision')!=[state['provisioning_id']] or not saved['creation_attempted'] or current.get('username')!=username or not current.get('enabled') or current.get('firstName')!=person['firstName'] or current.get('lastName')!=person['lastName']:
+                raise ValueError('Istniejący użytkownik nie należy do tej konfiguracji działów')
+            subject=identifier(current['id'])
+            if saved.get('subject') not in (None,subject):raise ValueError('Tożsamość pracownika uległa zmianie')
+            found[username]=subject
+        elif saved.get('subject') is not None:raise ValueError('Wcześniej skonfigurowany pracownik został usunięty')
+    profile=request('GET','/users/profile')
+    marker={'name':'wms.department.provision','displayName':'Identyfikator konfiguracji działów','multivalued':False,
+            'permissions':{'view':['admin'],'edit':['admin']},'validations':{'length':{'min':36,'max':36}}}
+    if not isinstance(profile,dict) or not isinstance(profile.get('attributes'),list):raise ValueError('Nieprawidłowy profil użytkowników')
+    existing=[entry for entry in profile['attributes'] if entry.get('name')==marker['name']]
+    if len(existing)>1 or existing and any(existing[0].get(k)!=value for k,value in marker.items()):raise ValueError('Niezgodny atrybut własności kont działów')
+    if not existing:request('PUT','/users/profile',dict(profile,attributes=profile['attributes']+[marker]))
+    for person in plan['employees']:
+        username=person['username'];saved=state['users'][username]
+        if username not in found:
+            saved['creation_attempted']=True;sdk.write_protected(credentials_file,state)
+            body={key:person[key] for key in ['username','firstName','lastName']}
+            body.update(enabled=True,email=username+'@wms.invalid',emailVerified=True,requiredActions=[],
+                        attributes={'wms.workplace.installation':[plan['instance_id']],'wms.department.provision':[state['provisioning_id']]},
+                        credentials=[{'type':'password','temporary':False,'value':saved['password']}])
+            request('POST','/users',body,201)
+            rows=request('GET','/users?username='+urllib.parse.quote(username,safe='')+'&exact=true')
+            if not isinstance(rows,list) or len(rows)!=1 or rows[0].get('attributes',{}).get('wms.department.provision')!=[state['provisioning_id']]:raise ValueError('Nie udało się potwierdzić utworzonego pracownika')
+            found[username]=identifier(rows[0]['id'])
+        saved['subject']=found[username];sdk.write_protected(credentials_file,state)
+    runtime.sql(seed_sql(plan,found))
+    runtime.publish_workspace(workspace_file,merged)
+    return {'status':'configured','instance_id':plan['instance_id'],'employees':len(plan['employees']),'departments':len(plan['departments']),'routes':len(plan['routes']),'stock_changed':False,'previous_workplace_users_changed':False}
+
+def main():
+    import argparse
+    import fcntl
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action',choices=['plan','apply'])
+    parser.add_argument('--expected-instance-id',required=True)
+    parser.add_argument('--config',type=Path,default=Path('/etc/wms'))
+    parser.add_argument('--admin-token-file',type=Path)
+    parser.add_argument('--lab',action='store_true')
+    args=parser.parse_args()
+    if os.name!='posix' or os.geteuid()!=0 or not args.lab:raise ValueError('Wymagane root i jawne --lab')
+    spec=importlib.util.spec_from_file_location('department_cli_sdk',Path(__file__).with_name('workplace.py'))
+    sdk=importlib.util.module_from_spec(spec);spec.loader.exec_module(sdk)
+    if args.action=='plan':
+        result=build_plan(json.loads((args.config/'identity.json').read_text()),sdk.read_protected(args.config/'workplace-users.json'),json.loads(Path('/etc/wms-workplace/workspace.json').read_text()),args.expected_instance_id)
+    else:
+        if not args.admin_token_file:raise ValueError('Wymagany chroniony plik tokena administracyjnego')
+        with Path('/run/wms-departments.lock').open('w') as lock:
+            fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            result=apply(sdk.Runtime(args.config,args.admin_token_file),args.expected_instance_id,lab=True,credentials_file=args.config/'department-users.json',workplace_file=args.config/'workplace-users.json')
+    print(json.dumps(result,ensure_ascii=False))
+
+if __name__=='__main__':
+    try:main()
+    except Exception:
+        import sys
+        print('Nie ukończono konfiguracji działów. Sprawdź chroniony stan instalacji.',file=sys.stderr)
+        raise SystemExit(1)

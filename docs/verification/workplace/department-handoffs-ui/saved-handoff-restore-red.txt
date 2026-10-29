@@ -1,0 +1,133 @@
+
+[WebServer] (node:28996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 2 workers
+
+(node:30028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+(node:41628) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved foreign-warehouse handoff preserves the valid stock workspace only for an access or not-found response
+[2/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved revoked-owner handoff preserves the valid stock workspace only for an access or not-found response
+  1) tests\handoff-workplace.spec.mjs:345:119 › restoring a saved revoked-owner handoff preserves the valid stock workspace only for an access or not-found response 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Stany według adresów', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Stany według adresów', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Stany według adresów', exact: true })
+
+
+      373 |     expect(await page.evaluate(actor=>sessionStorage.getItem(`wms-handoff-view:${actor}`),saved.actor)).toBe('1');
+      374 |   } else {
+    > 375 |     await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+          |                                                                                      ^
+      376 |     await expect(page.getByRole('alert')).toContainText('Nie można otworzyć ostatniego przekazania w tym magazynie');
+      377 |     await expect(page.getByRole('heading',{name:'Nie udało się otworzyć magazynu',exact:true})).toHaveCount(0);
+      378 |     await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toHaveCount(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:375:86
+
+    Error Context: ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-9ffae-ccess-or-not-found-response\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-9ffae-ccess-or-not-found-response\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-9ffae-ccess-or-not-found-response\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\handoff-workplace.spec.mjs:345:119 › restoring a saved foreign-warehouse handoff preserves the valid stock workspace only for an access or not-found response 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Stany według adresów', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Stany według adresów', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Stany według adresów', exact: true })
+
+
+      373 |     expect(await page.evaluate(actor=>sessionStorage.getItem(`wms-handoff-view:${actor}`),saved.actor)).toBe('1');
+      374 |   } else {
+    > 375 |     await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+          |                                                                                      ^
+      376 |     await expect(page.getByRole('alert')).toContainText('Nie można otworzyć ostatniego przekazania w tym magazynie');
+      377 |     await expect(page.getByRole('heading',{name:'Nie udało się otworzyć magazynu',exact:true})).toHaveCount(0);
+      378 |     await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toHaveCount(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:375:86
+
+    Error Context: ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-63f66-ccess-or-not-found-response\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-63f66-ccess-or-not-found-response\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-63f66-ccess-or-not-found-response\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:38776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:38624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[3/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved not-found handoff preserves the valid stock workspace only for an access or not-found response
+[4/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved unavailable handoff preserves the valid stock workspace only for an access or not-found response
+  3) tests\handoff-workplace.spec.mjs:345:119 › restoring a saved not-found handoff preserves the valid stock workspace only for an access or not-found response 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Stany według adresów', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Stany według adresów', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Stany według adresów', exact: true })
+
+
+      373 |     expect(await page.evaluate(actor=>sessionStorage.getItem(`wms-handoff-view:${actor}`),saved.actor)).toBe('1');
+      374 |   } else {
+    > 375 |     await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+          |                                                                                      ^
+      376 |     await expect(page.getByRole('alert')).toContainText('Nie można otworzyć ostatniego przekazania w tym magazynie');
+      377 |     await expect(page.getByRole('heading',{name:'Nie udało się otworzyć magazynu',exact:true})).toHaveCount(0);
+      378 |     await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toHaveCount(0);
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:375:86
+
+    Error Context: ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-a1955-ccess-or-not-found-response\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-a1955-ccess-or-not-found-response\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\start-restore-red-artifacts\handoff-workplace-restorin-a1955-ccess-or-not-found-response\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  3 failed
+    tests\handoff-workplace.spec.mjs:345:119 › restoring a saved foreign-warehouse handoff preserves the valid stock workspace only for an access or not-found response 
+    tests\handoff-workplace.spec.mjs:345:119 › restoring a saved revoked-owner handoff preserves the valid stock workspace only for an access or not-found response 
+    tests\handoff-workplace.spec.mjs:345:119 › restoring a saved not-found handoff preserves the valid stock workspace only for an access or not-found response 
+  1 passed (13.1s)

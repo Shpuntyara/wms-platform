@@ -1,0 +1,53 @@
+FFFFF..........F
+======================================================================
+FAIL: test_changed_subject_is_rejected_without_password_reset (test_department_workflow.DepartmentProvisioningTests.test_changed_subject_is_rejected_without_password_reset)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 145, in setUp
+    self.assertTrue(workflow is not None and callable(getattr(workflow,'apply',None)),'Authenticated department account provisioning must exist')
+AssertionError: False is not true : Authenticated department account provisioning must exist
+
+======================================================================
+FAIL: test_explicit_lab_required_before_identity_or_database_calls (test_department_workflow.DepartmentProvisioningTests.test_explicit_lab_required_before_identity_or_database_calls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 145, in setUp
+    self.assertTrue(workflow is not None and callable(getattr(workflow,'apply',None)),'Authenticated department account provisioning must exist')
+AssertionError: False is not true : Authenticated department account provisioning must exist
+
+======================================================================
+FAIL: test_failed_database_provisioning_can_resume_owned_accounts_without_recreation (test_department_workflow.DepartmentProvisioningTests.test_failed_database_provisioning_can_resume_owned_accounts_without_recreation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 145, in setUp
+    self.assertTrue(workflow is not None and callable(getattr(workflow,'apply',None)),'Authenticated department account provisioning must exist')
+AssertionError: False is not true : Authenticated department account provisioning must exist
+
+======================================================================
+FAIL: test_foreign_existing_username_is_rejected_before_any_account_or_sql_write (test_department_workflow.DepartmentProvisioningTests.test_foreign_existing_username_is_rejected_before_any_account_or_sql_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 145, in setUp
+    self.assertTrue(workflow is not None and callable(getattr(workflow,'apply',None)),'Authenticated department account provisioning must exist')
+AssertionError: False is not true : Authenticated department account provisioning must exist
+
+======================================================================
+FAIL: test_named_accounts_are_independent_and_replay_never_resets_credentials (test_department_workflow.DepartmentProvisioningTests.test_named_accounts_are_independent_and_replay_never_resets_credentials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 145, in setUp
+    self.assertTrue(workflow is not None and callable(getattr(workflow,'apply',None)),'Authenticated department account provisioning must exist')
+AssertionError: False is not true : Authenticated department account provisioning must exist
+
+======================================================================
+FAIL: test_untrusted_or_empty_issuer_is_refused (test_department_workflow.DepartmentWorkflowTests.test_untrusted_or_empty_issuer_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 74, in test_untrusted_or_empty_issuer_is_refused
+    with self.assertRaises(ValueError):workflow.build_plan(identity,self.users,self.workspace,self.identity['instance_id'])
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.018s
+
+FAILED (failures=6)

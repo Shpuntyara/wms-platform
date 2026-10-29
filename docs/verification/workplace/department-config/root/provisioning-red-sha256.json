@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "62F3C98816457DD05B6DE8227054AC8D40F1317A22301C32C9331DAED86936D6",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\deploy\\linux\\department_workflow.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "417DA9307919966AAEEDF69E942E1BE30B67D9614057C07D76F07474719BAB7D",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\tests\\test_department_workflow.py"
+  }
+]

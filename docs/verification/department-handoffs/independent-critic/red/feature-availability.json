@@ -1,0 +1,12 @@
+{
+  "stage": "Actual feature-availability RED, not a custody-behavior failure or mutation kill",
+  "leaf_failed": 13,
+  "skipped": 0,
+  "new_migration_existed": false,
+  "source_sha256": {
+    "internal/postgres/department_handoffs_critic_integration_test.go": "cf8a5b7c3c87d5917f45ecaa6939db53a53a6e2f32cc1b85ec2e45f63ca8940c",
+    "internal/postgres/store.go": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+    "internal/api/server.go": "d2c9aa7fdf1f98fc3da5e946c98d96d6708d6aeebea7f054c09642a670243240",
+    "db/migrations/0006_security_boundary.sql": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+  }
+}

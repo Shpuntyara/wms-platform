@@ -1,0 +1,26 @@
+[
+  {
+    "path": "db/migrations/0014_department_handoffs.sql",
+    "sha256": "905e7042969996549495ccc075b0276e2e0f6e7deacbbcd96e387b05f0f6498e"
+  },
+  {
+    "path": "internal/api/handoffs.go",
+    "sha256": "832816759a8d409c00d484ec37d1c15e486b8af6df5690cd092ba640f1ff7e04"
+  },
+  {
+    "path": "internal/api/handoffs_test.go",
+    "sha256": "b94f34c1cfd43c498b037457afe5d3f2fc7cd94e66b82cd90bc2f3f9d8f527d5"
+  },
+  {
+    "path": "internal/postgres/handoffs.go",
+    "sha256": "d59c50e978c7c06db95adc88765a5d2fb39cb332c22d0d3b51f449b65c053f47"
+  },
+  {
+    "path": "internal/postgres/handoffs_integration_test.go",
+    "sha256": "b367ebc14513158d5dcace484dfa053ec1c1c351eac3ccdf9c42385abd8145c4"
+  },
+  {
+    "path": "internal/inventory/model.go",
+    "sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67"
+  }
+]

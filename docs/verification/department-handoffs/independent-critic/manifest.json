@@ -1,0 +1,144 @@
+{
+  "scope": "Independent native PostgreSQL custody, exact-quantity properties, authenticated synthetic HTTP identities, mutation classification and actual RPC execution plans. Signed OIDC/runtime security, UI, installer and final immutable CI are separate parent-owned proofs.",
+  "first_RED": {
+    "kind": "Feature availability, not a custody-behavior failure or mutation kill",
+    "leaf_failures": 13,
+    "skipped": 0,
+    "migration_0014_existed": false
+  },
+  "actual_defects_proven_before_fixes": [
+    {
+      "case": "Acceptance used transaction-start time and could precede sending",
+      "RED": "red/event-time.jsonl",
+      "fix": "Database event time and chronology constraint"
+    },
+    {
+      "case": "Native HU insertion/relocation entered fixed production/transit locations without handoff",
+      "RED": "red/handling-unit-placement.jsonl",
+      "leaf_failures": 4,
+      "scope": "Owner fixture tests native placement constraints; current core has no public HU relocation RPC. This is not a demonstrated SQL-credential exploit.",
+      "fix": "Guard physical old/new locations and INSERT as well as UPDATE"
+    },
+    {
+      "case": "Sparse permitted owners caused primary-key history scans",
+      "RED": "red/sparse-owner-native-plans.json",
+      "actual_RPC_observations": 8,
+      "maximum_row_work": 41193,
+      "fix": "Bounded planner-visible owner/department candidate seeks"
+    },
+    {
+      "case": "Generic 10k final hydration scanned 10001 rows for at most 21 selected IDs",
+      "RED": "red/generic-hydration-native-plans.json",
+      "actual_RPC_observations": 12,
+      "fix": "One unique-key hydration lookup per selected ID"
+    }
+  ],
+  "honest_harness_corrections": [
+    "The first synthetic HTTP acceptance assertion expected 201; the agreed contract returns 200. This expectation mismatch was not counted as a product defect.",
+    "The first mutation campaign was 20 killed/1 survived/1 invalid, not green. A foreign-owner source outside a mapped department masked the owner-check fault; the stronger fixture uses real stock in a valid mapped warehouse position.",
+    "The payload mutant hit an assertion in the parent before later subtests were declared, so the exact-test-set classifier correctly marked that run invalid. Payload attempts were isolated in named subtests; the classifier was not weakened.",
+    "The first sparse-owner plan binary ran while a fixture-only JSON record expansion was optimized for future runs. Its plan snapshot explicitly records that no unchanged-test-file hash is claimed. The later hydration RED and final GREEN have frozen source/test hashes verified unchanged."
+  ],
+  "local_GREEN": {
+    "functional_race_top_level": 16,
+    "functional_race_leaf_cases": 85,
+    "functional_race_test_events": 94,
+    "mutation_baseline_events": 62,
+    "selected_native_faults_killed": 22,
+    "survived": 0,
+    "invalid": 0,
+    "skipped": 0,
+    "classifier_characterization_tests": 16,
+    "actual_RPC_read_observations": 12,
+    "maximum_row_work": 191,
+    "maximum_blocks": 141,
+    "max_final_hydrated_rows": 21,
+    "max_merged_candidate_rows": 42
+  },
+  "property_model": {
+    "independent_reproducible_PCG_histories": 12,
+    "generated_decimal_parcel_quantities": 48,
+    "successful_native_commands_per_property_baseline": 168,
+    "oracle": "Independent big.Rat sums of physical stock and pending custody across reverse parcel acceptance and the full warehouse/production chain; exact lot/serial and large decimal cases are separate."
+  },
+  "load_scope": "Owner-created relational read fixtures at 10k/100k with sparse allowed owners; these do not claim 100k operational sends. Actual native RPC runs under the runtime role, with connection-local plan-cache settings and auto_explain candidate/merge/hydration plans. Dynamic candidate SQL is replanned by PostgreSQL; generic connection mode still exercises the static final hydration path.",
+  "mutation_scope": "22 selected non-equivalent native custody faults, not a whole-kernel score. Fresh clean official-migrator template and one current isolated clone; original migration/source bytes unchanged and owned scratch DBs removed.",
+  "final_CI": "Required on the final immutable commit; not claimed by these local receipts.",
+  "source_sha256": {
+    "db/migrations/0014_department_handoffs.sql": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+    "internal/postgres/department_handoffs_critic_integration_test.go": "cba32c92f757bd26d9640e602ded1541ed19300640d0a2606b627153a7ad612b",
+    "internal/postgres/department_handoffs_read_critic_integration_test.go": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79",
+    "scripts/verify_handoff_mutations.py": "e68cab709331675f713012df1aa916f346d079a0be98829d749d0a434534b18e",
+    "scripts/test_handoff_mutations.py": "be12c4cd0cdad9ff67190184fd65923339345dd2a66bd3fb4fb108df759c9553"
+  },
+  "source_sha256_lf": {
+    "db/migrations/0014_department_handoffs.sql": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+    "internal/postgres/department_handoffs_critic_integration_test.go": "cba32c92f757bd26d9640e602ded1541ed19300640d0a2606b627153a7ad612b",
+    "internal/postgres/department_handoffs_read_critic_integration_test.go": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79",
+    "scripts/verify_handoff_mutations.py": "e68cab709331675f713012df1aa916f346d079a0be98829d749d0a434534b18e",
+    "scripts/test_handoff_mutations.py": "be12c4cd0cdad9ff67190184fd65923339345dd2a66bd3fb4fb108df759c9553"
+  },
+  "files_sha256": {
+    "green/actual-native-read-plans.json": "813b298c5bec9a2417877c0bbe3ea5e91a330c280ff705baadacaf5f9c0b73b1",
+    "green/actual-native-read-plans.jsonl": "1628414aa02e53bfb294e8b99e580b5fce0554d92b036afa2d97e548fb601385",
+    "green/functional-race.jsonl": "9ff6c06ab7b2cec2199e96982b28ce7a4203a1efdd808887df83bc0a078cd46e",
+    "green/mutation-classifier-tests.txt": "c74a24021dc27ceebc5b646715b99c73abbc749619fddfdf87baea428e283e8a",
+    "green/native-mutations.json": "4896bf20d0540f400e8ae2a26bb762848903e496b43802d35ede8ff21733e4e9",
+    "green/post-gofix-native-mutations.json": "2692ddbade00a303251bd10cd3e3a4468e9b73523fa6d6006a9dbd11b63f064a",
+    "green/post-gofix-source-receipt.json": "76dba80c7ea5771b3b282ee8013c1d1e810b8990863077ea25a22d82513fe760",
+    "incomplete-first-mutation-campaign.json": "4f494bc345ee17a4a5c716915bb54f7fe0f336e43694eb6958f93988414cb99f",
+    "red/event-time-snapshot/db/migrations/0014_department_handoffs.sql": "7494c719661b866656ea139dd1e7c69477a8437b0e3e5f40a64d0ccb0cd23115",
+    "red/event-time-snapshot/internal/api/handoffs.go.txt": "832816759a8d409c00d484ec37d1c15e486b8af6df5690cd092ba640f1ff7e04",
+    "red/event-time-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt": "dc905eb42311497c2a5da82fc06046207459effb755425f9a42b10822a8fbc77",
+    "red/event-time-snapshot/internal/postgres/handoffs.go.txt": "d59c50e978c7c06db95adc88765a5d2fb39cb332c22d0d3b51f449b65c053f47",
+    "red/event-time-snapshot/manifest.json": "e1039d477a0676459e644247707c5b876f9cac4350af0274a1363bc14e0e70cd",
+    "red/event-time.jsonl": "151d408cbe69873f2b117489f3ad5a7e6458d548d43bcd17323e082a15581193",
+    "red/feature-availability-snapshot/db/migrations/0006_security_boundary.sql": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574",
+    "red/feature-availability-snapshot/internal/api/server.go.txt": "d2c9aa7fdf1f98fc3da5e946c98d96d6708d6aeebea7f054c09642a670243240",
+    "red/feature-availability-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt": "cf8a5b7c3c87d5917f45ecaa6939db53a53a6e2f32cc1b85ec2e45f63ca8940c",
+    "red/feature-availability-snapshot/internal/postgres/store.go.txt": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356",
+    "red/feature-availability.json": "3d80ddafce8efc6c1702769f7e550156c5f3162bc65f3f3fe4fa65c02dea03e1",
+    "red/feature-availability.jsonl": "4d6ed949b6148efa218133a01fa7f699c5fa1bd63e9595f796995ccedc5d5bfe",
+    "red/generic-hydration-native-plans.json": "4061093888974b0a21e9207c88dcef9ab01010266af5be8bc7f50cae1fdbc7e0",
+    "red/generic-hydration-native-plans.jsonl": "d1af3e97918a32f38a86f199348c55d7999e3aafde9728812a05be2169b33cf9",
+    "red/handling-unit-placement.jsonl": "13f954dbbbb0f7c01cc29ac7c7f1a436d8724130c39242d1a475ea09e15fae72",
+    "red/handling-unit-snapshot/db/migrations/0014_department_handoffs.sql": "a51ffaa0216d3b1f8deeca51fb84e1bbd3041abcfb84df83d37f685e1bee9128",
+    "red/handling-unit-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt": "8a13dfbb450263f9ae81c9e444763363f37f225c7c563fb90ac1521d2aa74c67",
+    "red/handling-unit-snapshot/manifest.json": "a357ce4c356ac88ae7cbf128a209f306234538a4c6f6974cc2907ded3be4eb5d",
+    "red/hydration-plan-snapshot/db/migrations/0014_department_handoffs.sql": "6acf0f59ea181cf05628aa4943a1c2883879c573ca2a57af3bc266c885788a9d",
+    "red/hydration-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go.txt": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79",
+    "red/hydration-plan-snapshot/manifest.json": "b0cce08564588aed64060b840b4999677f3df9edb1ce3510d0d6f73835d87b0b",
+    "red/sparse-owner-native-plans.json": "fe479fdc4fccc0d7d82f04543ed853a9592e74d1b7998e789eff8b0474f11f25",
+    "red/sparse-owner-native-plans.jsonl": "64b82d094c6b0518249fe91fb62c167e8ef173a6e82e192e76b1c371943ef979",
+    "red/sparse-owner-plan-snapshot/db/migrations/0014_department_handoffs.sql": "905e7042969996549495ccc075b0276e2e0f6e7deacbbcd96e387b05f0f6498e",
+    "red/sparse-owner-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go.txt": "ff10fa24cfb4ae8c5cc474a01abee20475c6eabeb4c042c40970c863e7f5dac6",
+    "red/sparse-owner-plan-snapshot/manifest.json": "4cfc11ab47055470005c5998a77f6e482ad3fe8dbf8f2a6e278b13514012e144"
+  },
+  "historical_go_snapshot_storage": {
+    "reason": "Historical Go snapshots are stored as .go.txt so go test ./... does not compile obsolete packages from docs. Source SHA fields retain the original logical source identities.",
+    "renamed_files": {
+      "red/event-time-snapshot/internal/api/handoffs.go": "red/event-time-snapshot/internal/api/handoffs.go.txt",
+      "red/event-time-snapshot/internal/postgres/department_handoffs_critic_integration_test.go": "red/event-time-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt",
+      "red/event-time-snapshot/internal/postgres/handoffs.go": "red/event-time-snapshot/internal/postgres/handoffs.go.txt",
+      "red/feature-availability-snapshot/internal/api/server.go": "red/feature-availability-snapshot/internal/api/server.go.txt",
+      "red/feature-availability-snapshot/internal/postgres/department_handoffs_critic_integration_test.go": "red/feature-availability-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt",
+      "red/feature-availability-snapshot/internal/postgres/store.go": "red/feature-availability-snapshot/internal/postgres/store.go.txt",
+      "red/handling-unit-snapshot/internal/postgres/department_handoffs_critic_integration_test.go": "red/handling-unit-snapshot/internal/postgres/department_handoffs_critic_integration_test.go.txt",
+      "red/hydration-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go": "red/hydration-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go.txt",
+      "red/sparse-owner-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go": "red/sparse-owner-plan-snapshot/internal/postgres/department_handoffs_read_critic_integration_test.go.txt"
+    }
+  },
+  "test_only_gofix_followup": {
+    "source_receipt": "green/post-gofix-source-receipt.json",
+    "actual_mutation_report": "green/post-gofix-native-mutations.json",
+    "earlier_raw_receipts_unchanged": true,
+    "final_native_mutations_killed": 22,
+    "current_source_sha256": {
+      "db/migrations/0014_department_handoffs.sql": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+      "internal/postgres/department_handoffs_critic_integration_test.go": "a9d1f7748e964609e0347b110894a3967d964221fa2afa6f2923d6ba2f929e72",
+      "internal/postgres/department_handoffs_read_critic_integration_test.go": "7590b169fd76ca4b65d2f87d4ed5c10e4cd6dcb7f17c63c8546fef48c5c12d79",
+      "scripts/verify_handoff_mutations.py": "e68cab709331675f713012df1aa916f346d079a0be98829d749d0a434534b18e",
+      "scripts/test_handoff_mutations.py": "be12c4cd0cdad9ff67190184fd65923339345dd2a66bd3fb4fb108df759c9553"
+    }
+  }
+}

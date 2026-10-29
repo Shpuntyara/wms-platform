@@ -1,0 +1,87 @@
+[WebServer] (node:38428) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+
+(node:37360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:43212) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/2] tests\handoff-workplace.spec.mjs:244:1 › incoming queue is filtered by the server before pagination across more than one hundred history rows
+[2/2] tests\handoff-workplace.spec.mjs:282:1 › an accepted handoff labels its receiving place as historical receipt
+  1) tests\handoff-workplace.spec.mjs:244:1 › incoming queue is filtered by the server before pagination across more than one hundred history rows 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-handoff="dde454c3-4358-41d3-91da-86830d804a42"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-handoff="dde454c3-4358-41d3-91da-86830d804a42"]') with timeout 5000ms
+      - waiting for locator('[data-handoff="dde454c3-4358-41d3-91da-86830d804a42"]')
+
+
+      273 |   await expect(page.getByRole('button',{name:/^Otwórz przekazanie /})).toHaveCount(100);
+      274 |   await page.getByRole('button',{name:'Do przyjęcia',exact:true}).click();
+    > 275 |   await expect(page.locator(`[data-handoff="${pendingID}"]`)).toBeVisible();
+          |                                                               ^
+      276 |   await expect(page.getByRole('button',{name:/^Otwórz przekazanie /})).toHaveCount(1);
+      277 |   const reads=await page.evaluate(()=>JSON.parse(localStorage.getItem('handoff-list-requests')));
+      278 |   expect(reads.at(-1)).toEqual({view:'incoming',cursor:null});
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:275:63
+
+    Error Context: ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-incoming-95dfc-an-one-hundred-history-rows\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-incoming-95dfc-an-one-hundred-history-rows\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-incoming-95dfc-an-one-hundred-history-rows\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\handoff-workplace.spec.mjs:282:1 › an accepted handoff labels its receiving place as historical receipt 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('region', { name: 'Wybrane przekazanie', exact: true }).getByText('Przyjęto w', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('region', { name: 'Wybrane przekazanie', exact: true }).getByText('Przyjęto w', { exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Wybrane przekazanie', exact: true }).getByText('Przyjęto w', { exact: true })
+
+
+      283 |   const ids=await seed(page);await send(page);await asReceiver(page,ids);
+      284 |   await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+    > 285 |   await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true}).getByText('Przyjęto w',{exact:true})).toBeVisible();
+          |                                                                                                                       ^
+      286 | });
+      287 |
+      288 | test('an installation without department grants keeps its existing workplace and makes no handoff reads',async({page})=>{
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:285:119
+
+    Error Context: ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-an-accep-79115-place-as-historical-receipt\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-an-accep-79115-place-as-historical-receipt\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\queue-red-artifacts\handoff-workplace-an-accep-79115-place-as-historical-receipt\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    tests\handoff-workplace.spec.mjs:244:1 › incoming queue is filtered by the server before pagination across more than one hundred history rows 
+    tests\handoff-workplace.spec.mjs:282:1 › an accepted handoff labels its receiving place as historical receipt 

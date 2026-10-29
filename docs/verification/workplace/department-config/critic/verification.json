@@ -1,0 +1,129 @@
+{
+  "status": "passed bounded independent local verification",
+  "red": {
+    "tests": 17,
+    "failed": 10,
+    "passed": 7,
+    "errors": 0,
+    "skipped": 0,
+    "source_snapshots_verified": 5
+  },
+  "independent_green": {
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "combined_green": {
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "real_postgres_tests": 5,
+    "source_unchanged_during_run": true
+  },
+  "scope": {
+    "real_postgres": true,
+    "keycloak": "Controlled in-memory provider; no external API mutations.",
+    "vm_mutations": false,
+    "historical_migrations_changed": false,
+    "symlink_boundary": "Native links on Linux; explicit lstat/read model on Windows when Win1314 prevents local link creation."
+  },
+  "initial_invalid_setup_run": "Two Windows Win1314 link-creation errors were not counted as behavior failures; corrected portable harness reran all 17 cases before implementation edits.",
+  "red_source_sha256": [
+    {
+      "path": "deploy/linux/department_workflow.py",
+      "sha256": "976a46812a52c41a179d39ef613bba5b5df52fac4f159eeb502966a3ee465985"
+    },
+    {
+      "path": "tests/test_department_workflow_critic.py",
+      "sha256": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf"
+    },
+    {
+      "path": "tests/test_department_workflow.py",
+      "sha256": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99"
+    },
+    {
+      "path": "tests/test_department_workflow_postgres.py",
+      "sha256": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c"
+    },
+    {
+      "path": "deploy/linux/workplace.py",
+      "sha256": "1d9155c2f53a545597f03a7cad4746403d3212def6c4091e784611782b1acbd2"
+    }
+  ],
+  "green_source_sha256": [
+    {
+      "path": "deploy/linux/department_workflow.py",
+      "sha256": "56a2066a325a2d4fa9ce2aeb4d607582446054e55525751d60dcc64cbd260eb8"
+    },
+    {
+      "path": "tests/test_department_workflow_critic.py",
+      "sha256": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf"
+    },
+    {
+      "path": "tests/test_department_workflow.py",
+      "sha256": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99"
+    },
+    {
+      "path": "tests/test_department_workflow_postgres.py",
+      "sha256": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c"
+    },
+    {
+      "path": "deploy/linux/workplace.py",
+      "sha256": "1d9155c2f53a545597f03a7cad4746403d3212def6c4091e784611782b1acbd2"
+    },
+    {
+      "path": "db/migrations/0014_department_handoffs.sql",
+      "sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5"
+    }
+  ],
+  "files_sha256": [
+    {
+      "path": "actual-red-v2.txt",
+      "sha256": "da560ac664d6fdeb35a2d5f019e0cb79c15aef19760a10f26b625312fde02c20"
+    },
+    {
+      "path": "all-35-green.txt",
+      "sha256": "dc5aa54d0b9975c631c05283ffc66557f8c0cd39a11cecf9442dc1c1deaf338d"
+    },
+    {
+      "path": "green-sha256.json",
+      "sha256": "5b90b5848e715b667430e06c415c0deceb14077eb18fe02dd23fc6e635b05aa5"
+    },
+    {
+      "path": "independent-green.txt",
+      "sha256": "fd75a513a4427bda56c1fb0e3e846f9d1f1c9f3fd3d38b88b18cc54f2cf36681"
+    },
+    {
+      "path": "README.md",
+      "sha256": "95559a109dc222c317395b91145c44f7f4b87f095421bcb830937759b1be5bbd"
+    },
+    {
+      "path": "red-sha256.json",
+      "sha256": "6c9f65acb0d5617dccd350b8c6b8c3002b83b3e8c09364cca48a4d2d50f1d591"
+    },
+    {
+      "path": "red-source/deploy/linux/department_workflow.py.txt",
+      "sha256": "976a46812a52c41a179d39ef613bba5b5df52fac4f159eeb502966a3ee465985"
+    },
+    {
+      "path": "red-source/deploy/linux/workplace.py.txt",
+      "sha256": "1d9155c2f53a545597f03a7cad4746403d3212def6c4091e784611782b1acbd2"
+    },
+    {
+      "path": "red-source/tests/test_department_workflow.py.txt",
+      "sha256": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99"
+    },
+    {
+      "path": "red-source/tests/test_department_workflow_critic.py.txt",
+      "sha256": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf"
+    },
+    {
+      "path": "red-source/tests/test_department_workflow_postgres.py.txt",
+      "sha256": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c"
+    }
+  ]
+}

@@ -1,0 +1,523 @@
+{
+  "status": "passed focused frozen-candidate checks",
+  "base_head": "2244725dbda84b62ce6fe9ceefa12d6d4bfa5692",
+  "migration": "0014_department_handoffs.sql",
+  "migration_sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+  "primary": {
+    "github.com/Shpuntyara/wms-platform/internal/api": {
+      "top_level": 4,
+      "passing_test_events": 22,
+      "failed": 0,
+      "skipped": 0,
+      "race": true
+    },
+    "github.com/Shpuntyara/wms-platform/internal/postgres": {
+      "top_level": 8,
+      "passing_test_events": 25,
+      "failed": 0,
+      "skipped": 0,
+      "race": true
+    }
+  },
+  "signed": {
+    "sql_checks": 29,
+    "top_level": [
+      "TestHardenedHandoffsUnknownCommitSignedReplay",
+      "TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL",
+      "TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions",
+      "TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment"
+    ],
+    "passing_test_events": 33,
+    "race": true,
+    "failed": 0,
+    "skipped": 0
+  },
+  "commit_faults": {
+    "regular_adapter_cases": 6,
+    "signed_adapter_cases": 6,
+    "modes": [
+      "before_send",
+      "after_ack_eof",
+      "after_ack_generic"
+    ],
+    "commands": [
+      "send",
+      "accept"
+    ],
+    "recovery": "Same command identifier and exact input; committed receipt count independently verified before retry."
+  },
+  "initial_red_kind": "API feature behavior absence; SQL explicit availability failure. Later robustness checks already passing on implementation are characterization, not invented RED.",
+  "migration_source_and_execution_receipts_verified": 14,
+  "limits": [
+    "Local disposable PostgreSQL; no VM mutation by this agent.",
+    "External browser identity provider is a controlled test adapter; grants, API and persistence are real.",
+    "Whole final-head CI and two installed VMs are separate release requirements."
+  ],
+  "source_sha256": [
+    {
+      "path": "db/migrations/0014_department_handoffs.sql",
+      "sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+      "canonical_lf_sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5"
+    },
+    {
+      "path": "db/profiles/handoffs-v1.sql",
+      "sha256": "63b335122fdfe8b344f1cdbf55e6c84cb46e34a6b83933c5cb4e1f11510d6cb7",
+      "canonical_lf_sha256": "63b335122fdfe8b344f1cdbf55e6c84cb46e34a6b83933c5cb4e1f11510d6cb7"
+    },
+    {
+      "path": "db/bootstrap/handoffs-backend-grants.psql",
+      "sha256": "6dccc54cd176ddb04f4263dcc25e049572715dee3e3240a4e5e8e34a5a572912",
+      "canonical_lf_sha256": "6dccc54cd176ddb04f4263dcc25e049572715dee3e3240a4e5e8e34a5a572912"
+    },
+    {
+      "path": "db/bootstrap/handoffs-onprem-grants.psql",
+      "sha256": "739c89449b52e64629ed8104023efb9357b22dc67552de9f91947ac6c86ceebb",
+      "canonical_lf_sha256": "739c89449b52e64629ed8104023efb9357b22dc67552de9f91947ac6c86ceebb"
+    },
+    {
+      "path": "internal/api/handoffs.go",
+      "sha256": "e566fd29b41194a98e493c5a08022c7088ee8f383f267bfee9811ad5059cd0a0",
+      "canonical_lf_sha256": "e566fd29b41194a98e493c5a08022c7088ee8f383f267bfee9811ad5059cd0a0"
+    },
+    {
+      "path": "internal/api/handoffs_test.go",
+      "sha256": "b94f34c1cfd43c498b037457afe5d3f2fc7cd94e66b82cd90bc2f3f9d8f527d5",
+      "canonical_lf_sha256": "b94f34c1cfd43c498b037457afe5d3f2fc7cd94e66b82cd90bc2f3f9d8f527d5"
+    },
+    {
+      "path": "internal/api/server.go",
+      "sha256": "f1364678f4ff5091d66edcf88ce3e039530cd91cec0a5dced2bf2b85b1ab2685",
+      "canonical_lf_sha256": "f1364678f4ff5091d66edcf88ce3e039530cd91cec0a5dced2bf2b85b1ab2685"
+    },
+    {
+      "path": "internal/inventory/model.go",
+      "sha256": "857ed60cf80ee7e8dd3829635e110e98f664f3533a7d6af1d8380543125c925a",
+      "canonical_lf_sha256": "857ed60cf80ee7e8dd3829635e110e98f664f3533a7d6af1d8380543125c925a"
+    },
+    {
+      "path": "internal/postgres/handoffs.go",
+      "sha256": "6c1671125df2fc1e0ff14dfda6b857e04b8ee2ba7d81a2057afb3abca0fd5921",
+      "canonical_lf_sha256": "6c1671125df2fc1e0ff14dfda6b857e04b8ee2ba7d81a2057afb3abca0fd5921"
+    },
+    {
+      "path": "internal/postgres/handoffs_integration_test.go",
+      "sha256": "61018609755c66c4c733a0692f97b5b3c634b7f87eda5c47cdee2425c8542196",
+      "canonical_lf_sha256": "61018609755c66c4c733a0692f97b5b3c634b7f87eda5c47cdee2425c8542196"
+    },
+    {
+      "path": "internal/postgres/handoffs_browser_integration_test.go",
+      "sha256": "4dba1e3685183ef309c1a6dbb48df1c218e1da1b43cc8b78ca3ccd2e057b1e6a",
+      "canonical_lf_sha256": "4dba1e3685183ef309c1a6dbb48df1c218e1da1b43cc8b78ca3ccd2e057b1e6a"
+    },
+    {
+      "path": "internal/postgres/hardened_handoffs_integration_test.go",
+      "sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9",
+      "canonical_lf_sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9"
+    },
+    {
+      "path": "internal/postgres/store.go",
+      "sha256": "d17f24308ee319fdf95d48664d9b985de22633cf1d7b7ac7ab4d9e0073345921",
+      "canonical_lf_sha256": "d17f24308ee319fdf95d48664d9b985de22633cf1d7b7ac7ab4d9e0073345921"
+    },
+    {
+      "path": "scripts/migrate_core.py",
+      "sha256": "35406d4616636710ab7acb9eaefaa00eebe853df154bfc9d4bb7d98798c2f2e8",
+      "canonical_lf_sha256": "35406d4616636710ab7acb9eaefaa00eebe853df154bfc9d4bb7d98798c2f2e8"
+    },
+    {
+      "path": "scripts/prepare-test-db.py",
+      "sha256": "d108c04f94a8efe427113e0e916a857ef8927c2ba816f59082a92a1ff2cd5425",
+      "canonical_lf_sha256": "d108c04f94a8efe427113e0e916a857ef8927c2ba816f59082a92a1ff2cd5425"
+    },
+    {
+      "path": "scripts/hardened_gate.py",
+      "sha256": "b894bf6daa5ca5066116547f86b1cd1da7019ce01d038d13647409499d77f247",
+      "canonical_lf_sha256": "b894bf6daa5ca5066116547f86b1cd1da7019ce01d038d13647409499d77f247"
+    },
+    {
+      "path": "scripts/test_hardened_gate.py",
+      "sha256": "a3497b02008e81013ffd3198f894912324004b7850612102b10f73e211b78da9",
+      "canonical_lf_sha256": "a3497b02008e81013ffd3198f894912324004b7850612102b10f73e211b78da9"
+    },
+    {
+      "path": "scripts/test_handoff_test_bootstrap.py",
+      "sha256": "18dd8c22d126b0ab8a65a5c43e0153a347efbbd90efabf4199e6af17d2d7c933",
+      "canonical_lf_sha256": "18dd8c22d126b0ab8a65a5c43e0153a347efbbd90efabf4199e6af17d2d7c933"
+    },
+    {
+      "path": "tests/hardened_profile.py",
+      "sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6",
+      "canonical_lf_sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6"
+    },
+    {
+      "path": "tests/test_handoff_installer.py",
+      "sha256": "ada0a07d35c7416865d340f26338a18bd56a47357abaf7cb08ae69c117026cf8",
+      "canonical_lf_sha256": "ada0a07d35c7416865d340f26338a18bd56a47357abaf7cb08ae69c117026cf8"
+    },
+    {
+      "path": "deploy/linux/wmsctl.py",
+      "sha256": "fa61eb65e5db2295e146cb33278e7d9f0a8b3c79710dd6d2217082f441c815d2",
+      "canonical_lf_sha256": "fa61eb65e5db2295e146cb33278e7d9f0a8b3c79710dd6d2217082f441c815d2"
+    }
+  ],
+  "historical_source_snapshots": [
+    {
+      "original_path": "db/migrations/0006_security_boundary.sql",
+      "path": "snapshots/red-snapshots/db/migrations/0006_security_boundary.sql.txt",
+      "sha256": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+    },
+    {
+      "original_path": "db/migrations/0013_work_orders.sql",
+      "path": "snapshots/red-snapshots/db/migrations/0013_work_orders.sql.txt",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    },
+    {
+      "original_path": "internal/api/handoffs_test.go",
+      "path": "snapshots/red-snapshots/internal/api/handoffs_test.go.txt",
+      "sha256": "17bdc2524bb8d95d648d84ba368145f5873d5895cae6b032700482851d4c98a9"
+    },
+    {
+      "original_path": "internal/api/server.go",
+      "path": "snapshots/red-snapshots/internal/api/server.go.txt",
+      "sha256": "d2c9aa7fdf1f98fc3da5e946c98d96d6708d6aeebea7f054c09642a670243240"
+    },
+    {
+      "original_path": "internal/postgres/handoffs_integration_test.go",
+      "path": "snapshots/red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "b53cef2efcb7bed0d219cb3913e6943dfc382a6b558e5be07a6568ad560f9057"
+    },
+    {
+      "original_path": "internal/postgres/store.go",
+      "path": "snapshots/red-snapshots/internal/postgres/store.go.txt",
+      "sha256": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356"
+    },
+    {
+      "original_path": "db/migrations/0014_department_handoffs.sql",
+      "path": "snapshots/context-installer-red-snapshots/db/migrations/0014_department_handoffs.sql.txt",
+      "sha256": "a51ffaa0216d3b1f8deeca51fb84e1bbd3041abcfb84df83d37f685e1bee9128"
+    },
+    {
+      "original_path": "deploy/linux/wmsctl.py",
+      "path": "snapshots/context-installer-red-snapshots/deploy/linux/wmsctl.py.txt",
+      "sha256": "c2e6574eefb6c66b0bbd2b278785a4551904dbf2c79d9c7dd29cc4022ddec8f7"
+    },
+    {
+      "original_path": "internal/postgres/handoffs_integration_test.go",
+      "path": "snapshots/context-installer-red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "32e8a533150add5d0093182174dd259d0dd825642c3ce6dd577b5da266bd93b7"
+    },
+    {
+      "original_path": "tests/test_handoff_installer.py",
+      "path": "snapshots/context-installer-red-snapshots/tests/test_handoff_installer.py.txt",
+      "sha256": "ada0a07d35c7416865d340f26338a18bd56a47357abaf7cb08ae69c117026cf8"
+    },
+    {
+      "original_path": "db/profiles/handoffs-v1.sql",
+      "path": "snapshots/profile-reapply-red-snapshots/db/profiles/handoffs-v1.sql.txt",
+      "sha256": "39fe046b3f112dbae7d6570ab224081c432ae88e9f6e2357d0040278705a6b53"
+    },
+    {
+      "original_path": "internal/postgres/hardened_handoffs_integration_test.go",
+      "path": "snapshots/profile-reapply-red-snapshots/internal/postgres/hardened_handoffs_integration_test.go.txt",
+      "sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9"
+    },
+    {
+      "original_path": "tests/hardened_profile.py",
+      "path": "snapshots/profile-reapply-red-snapshots/tests/hardened_profile.py.txt",
+      "sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6"
+    },
+    {
+      "original_path": "scripts/hardened_gate.py",
+      "path": "snapshots/hardened-required-red-snapshots/scripts/hardened_gate.py.txt",
+      "sha256": "9645ce1979699fdaab6b776539a1dbc43acee21789b60140f96981c362724dc8"
+    },
+    {
+      "original_path": "scripts/test_hardened_gate.py",
+      "path": "snapshots/hardened-required-red-snapshots/scripts/test_hardened_gate.py.txt",
+      "sha256": "ca87df481baa6f60c835d32c3656d0f3803ec5d9ff9976d3eaeade34ee783623"
+    },
+    {
+      "original_path": "scripts/prepare-test-db.py",
+      "path": "snapshots/test-bootstrap-red-snapshots/scripts/prepare-test-db.py.txt",
+      "sha256": "5b2d36efc892577ac41eb2ec8277becd1595bcb5fbdf344e8c643238b6259db1"
+    },
+    {
+      "original_path": "scripts/test_handoff_test_bootstrap.py",
+      "path": "snapshots/test-bootstrap-red-snapshots/scripts/test_handoff_test_bootstrap.py.txt",
+      "sha256": "18dd8c22d126b0ab8a65a5c43e0153a347efbbd90efabf4199e6af17d2d7c933"
+    },
+    {
+      "original_path": "db/migrations/0014_department_handoffs.sql",
+      "path": "snapshots/queue-red-snapshots/db/migrations/0014_department_handoffs.sql.txt",
+      "sha256": "905e7042969996549495ccc075b0276e2e0f6e7deacbbcd96e387b05f0f6498e"
+    },
+    {
+      "original_path": "internal/api/handoffs.go",
+      "path": "snapshots/queue-red-snapshots/internal/api/handoffs.go.txt",
+      "sha256": "832816759a8d409c00d484ec37d1c15e486b8af6df5690cd092ba640f1ff7e04"
+    },
+    {
+      "original_path": "internal/api/handoffs_test.go",
+      "path": "snapshots/queue-red-snapshots/internal/api/handoffs_test.go.txt",
+      "sha256": "b94f34c1cfd43c498b037457afe5d3f2fc7cd94e66b82cd90bc2f3f9d8f527d5"
+    },
+    {
+      "original_path": "internal/inventory/model.go",
+      "path": "snapshots/queue-red-snapshots/internal/inventory/model.go.txt",
+      "sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67"
+    },
+    {
+      "original_path": "internal/postgres/handoffs.go",
+      "path": "snapshots/queue-red-snapshots/internal/postgres/handoffs.go.txt",
+      "sha256": "d59c50e978c7c06db95adc88765a5d2fb39cb332c22d0d3b51f449b65c053f47"
+    },
+    {
+      "original_path": "internal/postgres/handoffs_integration_test.go",
+      "path": "snapshots/queue-red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "b367ebc14513158d5dcace484dfa053ec1c1c351eac3ccdf9c42385abd8145c4"
+    }
+  ],
+  "report_encoding": [
+    {
+      "path": "reports/hardened-reapply-red.json",
+      "original_report_sha256": "54074446f1d86246b1f34fb5ab32cca7daec66cc1fe93109a3116d9f20d6c369",
+      "encoding": "Lossless conversion of sources_sha256 map to path/sha256 array; all test results and checksum values unchanged. Original bytes retained in work."
+    },
+    {
+      "path": "reports/hardened-candidate-05-green.json",
+      "original_report_sha256": "c0356c2a341763e77228309ef3a75ead5c133d19bb470f6163420692d7e82d8c",
+      "encoding": "Lossless conversion of sources_sha256 map to path/sha256 array; all test results and checksum values unchanged. Original bytes retained in work."
+    }
+  ],
+  "files_sha256": [
+    {
+      "path": "amendments/after-API.txt",
+      "sha256": "36d58137a3edf3a8cfa18b6cf09e5c1dde268ed0c717a22994838971f43a8aa9"
+    },
+    {
+      "path": "amendments/go-fix-before.txt",
+      "sha256": "2caef127c81a8762d28ee9e84b693f08671f1813c4ee5c8249db6d4f4a0f098e"
+    },
+    {
+      "path": "migration-receipts.json",
+      "sha256": "c3db4f0222b1bfbb527628613c4884df9d0f3947ab75831ab29b2f1782826c1f"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3ffe74591d3c801ba9ebd2a9f5004446fc950790311c2c88866aed5aa1fdffc3"
+    },
+    {
+      "path": "reports/api-first-red.jsonl",
+      "sha256": "0a89d15216a88e6bcb538c060e808574264a38af2de7e8d056e63de3eec08afc"
+    },
+    {
+      "path": "reports/candidate-05-primary-browser-green.jsonl",
+      "sha256": "c2f56d74c51b3fa905484eb303d502288124d27f936914a23ad6f8362f66d6f5"
+    },
+    {
+      "path": "reports/context-installer-red-sha256.json",
+      "sha256": "30c85c02a09cca54167bde98b560f1c9a152e0f5e515023d8a4d26d89ff70718"
+    },
+    {
+      "path": "reports/context-mapping-red.jsonl",
+      "sha256": "a22d0f616d528d7c26a1dc884ba22a44c081696c752b4b285d9418193177b9e2"
+    },
+    {
+      "path": "reports/hardened-candidate-05-green.go.txt",
+      "sha256": "9242f500e24436f7ed10897c7306653437dc751bc1625ac1bccd15f0f39d5f5f"
+    },
+    {
+      "path": "reports/hardened-candidate-05-green.json",
+      "sha256": "9689d4e86836581d9a67e2625df0df3e0ebdd6e4066bd247e23b29b0c1d89b8b"
+    },
+    {
+      "path": "reports/hardened-reapply-red.go.txt",
+      "sha256": "ef96fc2411c92a466dad96dcbe39e5aaf147887690288b20d59462fd0290cf28"
+    },
+    {
+      "path": "reports/hardened-reapply-red.json",
+      "sha256": "a709746e8a0574362dcfe9058ecffad21762b881bcfc03b65b5d3c74263f45d4"
+    },
+    {
+      "path": "reports/hardened-required-red-sha256.json",
+      "sha256": "c3af8f6c8e97dee0d6b6f4c6e01f9f8273c26f22e77e41dc77c1f6e439489c01"
+    },
+    {
+      "path": "reports/hardened-required-tests-green.txt",
+      "sha256": "73e4ca11f040d341def032ad0a8fb2ecdaadccb07f3451f2f49b6fea406adc95"
+    },
+    {
+      "path": "reports/hardened-required-tests-red.txt",
+      "sha256": "d05f6d303028b8fb6969a9f4879d15f8c4bb89dda481de07607d29dd559e7e8a"
+    },
+    {
+      "path": "reports/initial-red-sha256.json",
+      "sha256": "260fc602ac1e8d6521a72ee0726b8ab8ac35bd56571b2731074b95f78e5043f3"
+    },
+    {
+      "path": "reports/installer-all-green.txt",
+      "sha256": "a917b38bb65fe00eed5c1c57c3a88ac122fcc11be4ca2e47807d9aa5f51ca63e"
+    },
+    {
+      "path": "reports/installer-feature-green.txt",
+      "sha256": "cac09f6568078f5a49a4eb691fc82881b40242634e2c623dd2918417afd9c73a"
+    },
+    {
+      "path": "reports/installer-feature-red.txt",
+      "sha256": "5593eb7d8d55dbe3b4eb9c46798eeb13402c9203fcc289cf89d3fb278e65edea"
+    },
+    {
+      "path": "reports/migration-runner-tests.txt",
+      "sha256": "69844c93956a107b55c205d3627db05274f0028fac800e7640ebf3a86ac71ec3"
+    },
+    {
+      "path": "reports/postgres-feature-red.jsonl",
+      "sha256": "2596d46237217d4897aa85a247bd06e3730f718743acc55cdbce0c60c8bbdfeb"
+    },
+    {
+      "path": "reports/profile-reapply-red-sha256.json",
+      "sha256": "c12e2f7339f9ca0edfdcdc6ae74df8d21af39a824608eb1a336c8c1b4422f1df"
+    },
+    {
+      "path": "reports/queue-cursor-red.jsonl",
+      "sha256": "7ced0989134f789f969b3130323de10b0c3b352a8dd7772d70f2f5d7690b6f6e"
+    },
+    {
+      "path": "reports/queue-first-red.jsonl",
+      "sha256": "bc74233b17d26cd4918c68b0fe6c05ad4330b02e2a3db60eb5c11985ae6a741d"
+    },
+    {
+      "path": "reports/queue-red-sha256.json",
+      "sha256": "234b55011dfe9f200566f139d7a5da6d8bc7d61f447cfe6bd565cf9444251423"
+    },
+    {
+      "path": "reports/test-bootstrap-green.txt",
+      "sha256": "9d72d862083f26034a3df0da7f494e62ad3701f1f40452f7147cd472b9a58ab6"
+    },
+    {
+      "path": "reports/test-bootstrap-red-sha256.json",
+      "sha256": "d6c4ac4fbb77548820766058a5ab8251fc28f5e34377572ed7c1f6e1dabd44c0"
+    },
+    {
+      "path": "reports/test-bootstrap-red.txt",
+      "sha256": "0cc51ad058aa1083222b8e483b68c2905ec28b86ddc8f8a49a1f63982bfd9b90"
+    },
+    {
+      "path": "snapshots/context-installer-red-snapshots/db/migrations/0014_department_handoffs.sql.txt",
+      "sha256": "a51ffaa0216d3b1f8deeca51fb84e1bbd3041abcfb84df83d37f685e1bee9128"
+    },
+    {
+      "path": "snapshots/context-installer-red-snapshots/deploy/linux/wmsctl.py.txt",
+      "sha256": "c2e6574eefb6c66b0bbd2b278785a4551904dbf2c79d9c7dd29cc4022ddec8f7"
+    },
+    {
+      "path": "snapshots/context-installer-red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "32e8a533150add5d0093182174dd259d0dd825642c3ce6dd577b5da266bd93b7"
+    },
+    {
+      "path": "snapshots/context-installer-red-snapshots/tests/test_handoff_installer.py.txt",
+      "sha256": "ada0a07d35c7416865d340f26338a18bd56a47357abaf7cb08ae69c117026cf8"
+    },
+    {
+      "path": "snapshots/hardened-required-red-snapshots/scripts/hardened_gate.py.txt",
+      "sha256": "9645ce1979699fdaab6b776539a1dbc43acee21789b60140f96981c362724dc8"
+    },
+    {
+      "path": "snapshots/hardened-required-red-snapshots/scripts/test_hardened_gate.py.txt",
+      "sha256": "ca87df481baa6f60c835d32c3656d0f3803ec5d9ff9976d3eaeade34ee783623"
+    },
+    {
+      "path": "snapshots/profile-reapply-red-snapshots/db/profiles/handoffs-v1.sql.txt",
+      "sha256": "39fe046b3f112dbae7d6570ab224081c432ae88e9f6e2357d0040278705a6b53"
+    },
+    {
+      "path": "snapshots/profile-reapply-red-snapshots/internal/postgres/hardened_handoffs_integration_test.go.txt",
+      "sha256": "f884b5f00c1c8314e0e3084d4953fcee127b24f79a5c7be9d65acfa2958980f9"
+    },
+    {
+      "path": "snapshots/profile-reapply-red-snapshots/tests/hardened_profile.py.txt",
+      "sha256": "d11f8fdf0bd42cc15be7a8a33f09af19b00e1ddce9aa3914de18c56b7f07cba6"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/db/migrations/0014_department_handoffs.sql.txt",
+      "sha256": "905e7042969996549495ccc075b0276e2e0f6e7deacbbcd96e387b05f0f6498e"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/internal/api/handoffs.go.txt",
+      "sha256": "832816759a8d409c00d484ec37d1c15e486b8af6df5690cd092ba640f1ff7e04"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/internal/api/handoffs_test.go.txt",
+      "sha256": "b94f34c1cfd43c498b037457afe5d3f2fc7cd94e66b82cd90bc2f3f9d8f527d5"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/internal/inventory/model.go.txt",
+      "sha256": "1ba9944a9da16fe4dc0a3ab3bb8a72b7fe7cbb3226ccc219205234a57fb82a67"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/internal/postgres/handoffs.go.txt",
+      "sha256": "d59c50e978c7c06db95adc88765a5d2fb39cb332c22d0d3b51f449b65c053f47"
+    },
+    {
+      "path": "snapshots/queue-red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "b367ebc14513158d5dcace484dfa053ec1c1c351eac3ccdf9c42385abd8145c4"
+    },
+    {
+      "path": "snapshots/red-snapshots/db/migrations/0006_security_boundary.sql.txt",
+      "sha256": "d905ffbcf713ba19de3e96523c803a74c436963332d008068cdddef03d135574"
+    },
+    {
+      "path": "snapshots/red-snapshots/db/migrations/0013_work_orders.sql.txt",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    },
+    {
+      "path": "snapshots/red-snapshots/internal/api/handoffs_test.go.txt",
+      "sha256": "17bdc2524bb8d95d648d84ba368145f5873d5895cae6b032700482851d4c98a9"
+    },
+    {
+      "path": "snapshots/red-snapshots/internal/api/server.go.txt",
+      "sha256": "d2c9aa7fdf1f98fc3da5e946c98d96d6708d6aeebea7f054c09642a670243240"
+    },
+    {
+      "path": "snapshots/red-snapshots/internal/postgres/handoffs_integration_test.go.txt",
+      "sha256": "b53cef2efcb7bed0d219cb3913e6943dfc382a6b558e5be07a6568ad560f9057"
+    },
+    {
+      "path": "snapshots/red-snapshots/internal/postgres/store.go.txt",
+      "sha256": "5f11deb041bb04db9e0099ae8a4dfc5ce751aae4017e716364709c869cc25356"
+    },
+    {
+      "path": "snapshots/test-bootstrap-red-snapshots/scripts/prepare-test-db.py.txt",
+      "sha256": "5b2d36efc892577ac41eb2ec8277becd1595bcb5fbdf344e8c643238b6259db1"
+    },
+    {
+      "path": "snapshots/test-bootstrap-red-snapshots/scripts/test_handoff_test_bootstrap.py.txt",
+      "sha256": "18dd8c22d126b0ab8a65a5c43e0153a347efbbd90efabf4199e6af17d2d7c933"
+    }
+  ],
+  "post_verification_amendments": [
+    {
+      "kind": "Go test syntax modernization after the original recorded run",
+      "original_source_hashes_retained": true,
+      "production_api_change": false,
+      "migration_change": false,
+      "current_source_sha256": [
+        {
+          "path": "internal/api/handoffs_test.go",
+          "sha256": "e12c172a877c8b63aa7dc2a13f02aa148e9a1f72377e8526e243440a9487cb4d"
+        }
+      ],
+      "validation": "Separate complete API package rerun passed; original focused reports remain bound to pre-go-fix bytes. Full final-revision CI is a separate requirement.",
+      "files_sha256": [
+        {
+          "path": "amendments/go-fix-before.txt",
+          "sha256": "2caef127c81a8762d28ee9e84b693f08671f1813c4ee5c8249db6d4f4a0f098e"
+        },
+        {
+          "path": "amendments/after-API.txt",
+          "sha256": "36d58137a3edf3a8cfa18b6cf09e5c1dde268ed0c717a22994838971f43a8aa9"
+        }
+      ]
+    }
+  ]
+}

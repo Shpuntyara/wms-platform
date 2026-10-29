@@ -1,0 +1,433 @@
+{
+  "base_revision": "2244725dbda84b62ce6fe9ceefa12d6d4bfa5692",
+  "claim": "Local evidence only. Final-revision full CI and real installation SSO acceptance are separate release gates.",
+  "first_red": {
+    "node": {
+      "passed": 0,
+      "failed": 6,
+      "skipped": 0,
+      "log": "domain-red.txt",
+      "test_snapshot": "first-domain.test.mjs.txt"
+    },
+    "browser": {
+      "passed": 1,
+      "failed": 4,
+      "skipped": 0,
+      "log": "browser-red.txt",
+      "test_snapshot": "first-browser.spec.mjs.txt"
+    },
+    "sources": [
+      {
+        "path": "web/src/app.js",
+        "sha256": "3fff3d76e8f5d8c3c62736e5217d60785d754b3456b8258dc5b6669f72a68117"
+      },
+      {
+        "path": "web/src/demo.js",
+        "sha256": "2fa703e68499aa921a31ca74560969dbe672d902564c714d9d647d6e9dee74b8"
+      },
+      {
+        "path": "web/tests/handoff-domain.test.mjs",
+        "sha256": "7d7ae2e63a0c16fbdd22ed3358077f4394c9491637ba6a4c5dfca22fd5a8ba7c"
+      },
+      {
+        "path": "web/tests/handoff-workplace.spec.mjs",
+        "sha256": "6dd5834c532f1bf0745702e9ebf7ccc7d00e480bb512e332ba8ee3d25d2cc73e"
+      }
+    ]
+  },
+  "first_green": {
+    "node_passed": 6,
+    "browser_passed": 5,
+    "node_log": "domain-first-green.txt",
+    "browser_log": "browser-first-green.txt",
+    "sources": [
+      {
+        "path": "web/src/app.js",
+        "sha256": "06847e2e6bf1292deb9ef66890972a27f9215eb480624a4322ee164428e0e569"
+      },
+      {
+        "path": "web/src/handoff.js",
+        "sha256": "3a20fd9a99ea350c772aa09a4f9417847fab54bbcabbe064447784aab94a3026"
+      },
+      {
+        "path": "web/src/demo.js",
+        "sha256": "754a3ec789b4c0662ef6fb7eb1644746932e34dfbdfcc798117ebd62fbe36654"
+      },
+      {
+        "path": "web/tests/handoff-domain.test.mjs",
+        "sha256": "7d7ae2e63a0c16fbdd22ed3358077f4394c9491637ba6a4c5dfca22fd5a8ba7c"
+      },
+      {
+        "path": "web/tests/handoff-workplace.spec.mjs",
+        "sha256": "6dd5834c532f1bf0745702e9ebf7ccc7d00e480bb512e332ba8ee3d25d2cc73e"
+      }
+    ],
+    "snapshots": [
+      "app-first-green.js.txt",
+      "handoff-first-green.js.txt",
+      "demo-first-green.js.txt"
+    ]
+  },
+  "later_actual_red": [
+    {
+      "case": "Keyboard focus after saved handoff",
+      "failed": 1,
+      "log": "keyboard-red.txt"
+    },
+    {
+      "case": "Stock/handoff-only operator and production/transit stock actions",
+      "failed": 2,
+      "log": "role-stock-red.txt"
+    },
+    {
+      "case": "Mapped secondary B1 warehouse source",
+      "unit_failed": 1,
+      "browser_failed": 1,
+      "logs": [
+        "mapped-source-unit-red.txt",
+        "mapped-source-browser-red.txt"
+      ]
+    },
+    {
+      "case": "Incoming queue after 120 accepted records and historical receiving label",
+      "failed": 2,
+      "log": "queue-red.txt"
+    },
+    {
+      "case": "Training queue contract and Polish problem explanations",
+      "failed": 8,
+      "passed_characterization": 1,
+      "log": "queue-demo-messages-red.txt"
+    }
+  ],
+  "final_local": {
+    "node": {
+      "passed": 100,
+      "failed": 0,
+      "skipped": 0,
+      "log": "node-final-verified.txt"
+    },
+    "browser": {
+      "passed": 71,
+      "failed": 0,
+      "skipped": 0,
+      "log": "browser-final-verified.txt"
+    },
+    "real_postgres_handoff_browser": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "handoff-real-postgres-green.txt",
+      "database": "wms_kernel_test_handoffs_04",
+      "identity_adapter_replaced": true,
+      "real_http_postgresql_and_distinct_actor_permissions": true
+    },
+    "mutations": {
+      "legacy_ui": 37,
+      "industry_ui": 18,
+      "selection": 23,
+      "handoff_ui": 26,
+      "survived": 0,
+      "invalid": 0,
+      "skipped": 0,
+      "handoff_report": "handoff-ui-mutations.json"
+    },
+    "real_postgres_browser_suite": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "log": "real-postgres-final-verified.txt",
+      "cases": [
+        "Handoffs",
+        "ReceiptAndPutaway"
+      ]
+    }
+  },
+  "mutation_review": "Initial 22 kills/3 survivors/1 invalid were retained. Deterministic single-denial oracles and asserted expected-success paths closed test gaps. The redundant disabled-source check fault was replaced by the non-equivalent configured-route-direction fault: with DB-valid unique department IDs the separate uniqueDepartment enabled check already rejected disabled sources. No source behavior was changed to improve the mutation score.",
+  "boundaries": "Synthetic browser tests model state, native controls and the durable journal. Real PostgreSQL browser tests replace only the external OIDC adapter and use distinct DB-authorized employees. They deliberately lose send and accept responses after successful commits and replay identical command IDs/bodies. Installation real IdP and TLS acceptance is separate.",
+  "sources": [
+    {
+      "path": "web/src/app.js",
+      "sha256": "2271d5555f97902ee5ef477151e686c8e21cd043cae1254f1b050ffec9f3b600",
+      "sha256_lf": "414876287b485941a2a8f24e6b914782f422dbc86bdb9638f7cc85b46ddf0de0"
+    },
+    {
+      "path": "web/src/handoff.js",
+      "sha256": "4f9e3b5d0e84aafe9b4a176ec11aad621b6cb9c1feb887e4c5baa8fe130e38fb",
+      "sha256_lf": "4f9e3b5d0e84aafe9b4a176ec11aad621b6cb9c1feb887e4c5baa8fe130e38fb"
+    },
+    {
+      "path": "web/src/demo.js",
+      "sha256": "b490f4c682137181192830ba0486612f58620f8f27f5c026a0579b08aa06da82",
+      "sha256_lf": "b490f4c682137181192830ba0486612f58620f8f27f5c026a0579b08aa06da82"
+    },
+    {
+      "path": "web/src/messages.js",
+      "sha256": "33e2133278346091b912916136acdad356ed7f5ea3de4cdddbf8e1a5e22e1b73",
+      "sha256_lf": "33e2133278346091b912916136acdad356ed7f5ea3de4cdddbf8e1a5e22e1b73"
+    },
+    {
+      "path": "web/style.css",
+      "sha256": "a4b061bc58db16fb32d7558ac6bd8b9521ff9fc321c48b18a7108180ac88f311",
+      "sha256_lf": "ded832b838251f55c3f5f7c7b88286fb9f2c44b2b411e9d1826f88132cdfcb0a"
+    },
+    {
+      "path": "web/tests/handoff-domain.test.mjs",
+      "sha256": "6ca42f7917cfd656d8acaaa726b3a550f49331df25801cdc65cbd0aefd980e96",
+      "sha256_lf": "6ca42f7917cfd656d8acaaa726b3a550f49331df25801cdc65cbd0aefd980e96"
+    },
+    {
+      "path": "web/tests/handoff-demo.test.mjs",
+      "sha256": "7536382b4be1588946b812aaec4e00d0f1daecf3c4df781385af6272207837b5",
+      "sha256_lf": "7536382b4be1588946b812aaec4e00d0f1daecf3c4df781385af6272207837b5"
+    },
+    {
+      "path": "web/tests/handoff-messages.test.mjs",
+      "sha256": "02b89066f34f3a00c8fd81a41fd17910763a2915533d97dd7009e86c3a5b2c9b",
+      "sha256_lf": "02b89066f34f3a00c8fd81a41fd17910763a2915533d97dd7009e86c3a5b2c9b"
+    },
+    {
+      "path": "web/tests/handoff-workplace.spec.mjs",
+      "sha256": "77cc648cd92084acf719cc7c9e03044e2cc52af2bfa73bb0c0f78dfde12f0e38",
+      "sha256_lf": "77cc648cd92084acf719cc7c9e03044e2cc52af2bfa73bb0c0f78dfde12f0e38"
+    },
+    {
+      "path": "web/tests/handoff-live-workflow.spec.mjs",
+      "sha256": "dda04e6a57490acb03d11b97601b071c18710259b8285f0b580225c2dd05246d",
+      "sha256_lf": "dda04e6a57490acb03d11b97601b071c18710259b8285f0b580225c2dd05246d"
+    },
+    {
+      "path": "web/playwright.handoff-live.config.mjs",
+      "sha256": "e4bfbfefce52c9008be81977e75c7bc196ef987df5308039e35b35febc5b9c09",
+      "sha256_lf": "e4bfbfefce52c9008be81977e75c7bc196ef987df5308039e35b35febc5b9c09"
+    },
+    {
+      "path": "web/playwright.config.mjs",
+      "sha256": "cd0de84aa7b83aa3b763a8ab6c5967789dd1675c5709b1f4853c785a67715e14",
+      "sha256_lf": "cd0de84aa7b83aa3b763a8ab6c5967789dd1675c5709b1f4853c785a67715e14"
+    },
+    {
+      "path": "scripts/verify_handoff_ui_mutations.py",
+      "sha256": "e72f3a2ed61724102cc7f42d41fd1fc537b22cb9bea07174994ca96b91074c2b",
+      "sha256_lf": "e72f3a2ed61724102cc7f42d41fd1fc537b22cb9bea07174994ca96b91074c2b"
+    },
+    {
+      "path": "scripts/test_handoff_ui_mutations.py",
+      "sha256": "7c89b392dabbc693651e3e7e64291af8dce4ae6620851ed84e6068e17441091b",
+      "sha256_lf": "7c89b392dabbc693651e3e7e64291af8dce4ae6620851ed84e6068e17441091b"
+    },
+    {
+      "path": "web/tests/selection-workplace.spec.mjs",
+      "sha256": "fee04ef7431241a4b134881b137249c32b1e644e04e457cc60e5e5a69ace7c50",
+      "sha256_lf": "fee04ef7431241a4b134881b137249c32b1e644e04e457cc60e5e5a69ace7c50"
+    }
+  ],
+  "proof_files": [
+    {
+      "path": "app-before-onward-legacy-fix.js.txt",
+      "sha256": "ec7b79a07a227e53234b2395ec6137b01fbdc3376ea9a23708f04a25eb4b3d67"
+    },
+    {
+      "path": "app-before-saved-handoff-restore-fix.js.txt",
+      "sha256": "3115e1ec1d89d2cea5efb968f8527a25b444683b4ba35a0b99d880e75c647f50"
+    },
+    {
+      "path": "app-before.js.txt",
+      "sha256": "3fff3d76e8f5d8c3c62736e5217d60785d754b3456b8258dc5b6669f72a68117"
+    },
+    {
+      "path": "app-first-green.js.txt",
+      "sha256": "06847e2e6bf1292deb9ef66890972a27f9215eb480624a4322ee164428e0e569"
+    },
+    {
+      "path": "browser-after-review-green.txt",
+      "sha256": "47f4120e270d0317c8fd8ccbee989c2c1fbbcc81066a192b779294346579f212"
+    },
+    {
+      "path": "browser-final-verified.txt",
+      "sha256": "35669bc666803c1cc2a9245789db8658bf59147343a2f01d29ee58d22ded5a62"
+    },
+    {
+      "path": "browser-first-green.txt",
+      "sha256": "20d989224b369a107b1f8329f56c627837e6c14e19392ab2e4afdd85b003e901"
+    },
+    {
+      "path": "browser-green.txt",
+      "sha256": "ca736fbfd8d4b4280dbcb901203d77ad50865a5d40c41b2d514bf9261d35fbf8"
+    },
+    {
+      "path": "browser-red.txt",
+      "sha256": "4b3dfad2a61ee99c93dbd860da2362b3a87c0a98c569fc340bd61b3b57373d91"
+    },
+    {
+      "path": "demo-before.js.txt",
+      "sha256": "2fa703e68499aa921a31ca74560969dbe672d902564c714d9d647d6e9dee74b8"
+    },
+    {
+      "path": "demo-first-green.js.txt",
+      "sha256": "754a3ec789b4c0662ef6fb7eb1644746932e34dfbdfcc798117ebd62fbe36654"
+    },
+    {
+      "path": "domain-first-green.txt",
+      "sha256": "4e196d0dd587c7af8366c301b89eda8c5539308f3c7f957bebf49430f71c2333"
+    },
+    {
+      "path": "domain-red.txt",
+      "sha256": "05f3386b81b644368516dad15ea3ae37a6639e7d5328e991ba164ec26ad83561"
+    },
+    {
+      "path": "first-browser.spec.mjs.txt",
+      "sha256": "6dd5834c532f1bf0745702e9ebf7ccc7d00e480bb512e332ba8ee3d25d2cc73e"
+    },
+    {
+      "path": "first-domain.test.mjs.txt",
+      "sha256": "7d7ae2e63a0c16fbdd22ed3358077f4394c9491637ba6a4c5dfca22fd5a8ba7c"
+    },
+    {
+      "path": "handoff-first-green.js.txt",
+      "sha256": "3a20fd9a99ea350c772aa09a4f9417847fab54bbcabbe064447784aab94a3026"
+    },
+    {
+      "path": "handoff-real-postgres-green.txt",
+      "sha256": "f74418b10efcce7ef2f82f15ae89f69739e6f99e6f2f50361c6c0257bd1f39dc"
+    },
+    {
+      "path": "handoff-ui-mutations-first.json",
+      "sha256": "9d00ef046465260b38eb46b20d4ee58a2951f972a9de2ded356e52c27ebfe523"
+    },
+    {
+      "path": "handoff-ui-mutations.json",
+      "sha256": "6aeeff5acce9be7bed3a5ee91f8a6a1da33a85e5b033b061c122b038bb2107f7"
+    },
+    {
+      "path": "keyboard-red.txt",
+      "sha256": "0bfb10dbf4450265278c3bd5237015b66daa68f6413b3b730ceb8da2f4b5de9b"
+    },
+    {
+      "path": "legacy-selectors-red.txt",
+      "sha256": "45fcdb3a1f2e22be389bd3da7c05a65ddb5fa36449800c2eb4ac576128040a70"
+    },
+    {
+      "path": "legacy-valid-red.spec.mjs.txt",
+      "sha256": "7723de7fdcc8931a2f54f253c30417aae7396f52eb4782e8f240dd762fc52d0b"
+    },
+    {
+      "path": "mapped-source-browser-red.txt",
+      "sha256": "ef5044a07de8a62e7fbe5b41fcfc028f2d03fbd5869d0a0f33978d637db8edce"
+    },
+    {
+      "path": "mapped-source-unit-red.txt",
+      "sha256": "a5b3c226c9ce0ac9a56c366fba4255d9fe482d2ba7cfd8f80e0379c8a11b9238"
+    },
+    {
+      "path": "mutation-accounting.txt",
+      "sha256": "1631e45a7a306cccb4c65c46aa4d18d4501ec6a43e0511042ef6c4a2a4f32de6"
+    },
+    {
+      "path": "node-after-review-green.txt",
+      "sha256": "cc3b8107756a74592eda4cbf5c4fbdfe3d383276e09a76fb2473c228d208e2c3"
+    },
+    {
+      "path": "node-final-verified.txt",
+      "sha256": "d874c61b7511c723b47c4e8aa6823740f3a878ea9050537e85d5e618c65249d5"
+    },
+    {
+      "path": "node-green.txt",
+      "sha256": "4fc07e61ec3262e9b2859ec07ab5f9bf80d28f51e6a1fef66c41d71ac0216265"
+    },
+    {
+      "path": "onward-first-red.txt",
+      "sha256": "c86899ce48508a682ca7ac0ddc746a58748452686216c5e11df423393a953489"
+    },
+    {
+      "path": "onward-legacy-green.txt",
+      "sha256": "43c761f84f933bfe90be24797a36c3d0d93cfd8040238d3dee54eb196cb04370"
+    },
+    {
+      "path": "queue-demo-messages-red.txt",
+      "sha256": "c6d156b3bbf02603fcf44c60d24b2d635fab6b519abd26a2db4fe6212a6fc728"
+    },
+    {
+      "path": "queue-red.txt",
+      "sha256": "f3256a819cf11abab118d40708922322669d4681d886eddb5dbb65bd08b16fc6"
+    },
+    {
+      "path": "real-postgres-after-review-green.txt",
+      "sha256": "0eb2e23d588ab8029329cda3c817c19d2d1d2fd63945a6583469918f6296725c"
+    },
+    {
+      "path": "real-postgres-both-green.txt",
+      "sha256": "83534fc6be57196e050565502b4df8d8deedf9072d1749ffbcc713392d532311"
+    },
+    {
+      "path": "real-postgres-final-verified.txt",
+      "sha256": "70e5e1e96e9449295e7ccd145ecfd181fd4c20ea2b108b48d3f1598219ac10cb"
+    },
+    {
+      "path": "role-stock-red.txt",
+      "sha256": "cd9659ccfb6ddd3631f148a58d7c295050ca188ec6c37290ec883e41e83bc37a"
+    },
+    {
+      "path": "saved-handoff-restore-green.txt",
+      "sha256": "a1bd8a8bcc25bc3e827ca57a29ded12dd35e79c7877419953a2dc1db1378ff71"
+    },
+    {
+      "path": "saved-handoff-restore-red.spec.mjs.txt",
+      "sha256": "77cc648cd92084acf719cc7c9e03044e2cc52af2bfa73bb0c0f78dfde12f0e38"
+    },
+    {
+      "path": "saved-handoff-restore-red.txt",
+      "sha256": "af8b966df107dd9c7254517ecec8cab81bdd7ea27cc9a81ecf7a56c792154bbb"
+    }
+  ],
+  "post_review": {
+    "actual_product_red": [
+      {
+        "case": "Receiving in incoming queue then sending onward loses the known transit route/link",
+        "failed": 1,
+        "log": "onward-first-red.txt",
+        "before_source": "app-before-onward-legacy-fix.js.txt",
+        "note": "The other two failures in this first combined run were fixture transition races and are not counted as product RED."
+      },
+      {
+        "case": "Known accepted production stock offered in legacy MM and WZ lists",
+        "failed": 2,
+        "passed_characterization": 1,
+        "log": "legacy-selectors-red.txt",
+        "test_snapshot": "legacy-valid-red.spec.mjs.txt"
+      }
+    ],
+    "green": {
+      "passed": 4,
+      "failed": 0,
+      "log": "onward-legacy-green.txt"
+    },
+    "implementation": "APP only: use fresh selected handoff with complete scope/owner/item binding for transit labels; filter known department/transit stock from legacy choices/fresh confirmation and reject optional scans. SQL/domain/selection helpers unchanged.",
+    "harness_repairs": "Wait for send confirmation, unresolved journal or the explicit confirmed-write/read-failure outcome before switching synthetic identity. Await completed-document heading before reading the asynchronous close result in existing MM/WZ tests. All stock, recipient, identity and receipt assertions retained.",
+    "saved_handoff_restore": {
+      "actual_red": {
+        "failed": 3,
+        "passed_characterization": 1,
+        "log": "saved-handoff-restore-red.txt",
+        "source_snapshot": "app-before-saved-handoff-restore-fix.js.txt",
+        "test_snapshot": "saved-handoff-restore-red.spec.mjs.txt",
+        "hashes": [
+          {
+            "path": "web/src/app.js",
+            "sha256": "3115e1ec1d89d2cea5efb968f8527a25b444683b4ba35a0b99d880e75c647f50"
+          },
+          {
+            "path": "web/tests/handoff-workplace.spec.mjs",
+            "sha256": "77cc648cd92084acf719cc7c9e03044e2cc52af2bfa73bb0c0f78dfde12f0e38"
+          }
+        ]
+      },
+      "green": {
+        "passed": 4,
+        "failed": 0,
+        "log": "saved-handoff-restore-green.txt"
+      },
+      "behavior": "Only a restored saved-handoff GET returning 403/404 clears stale handoff keys and selections, opens the already-authorized stock scope, and shows a Polish notice. Infrastructure/authentication failures still propagate. No POST is issued."
+    }
+  }
+}

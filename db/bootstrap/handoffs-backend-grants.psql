@@ -1,0 +1,3 @@
+\set ON_ERROR_STOP on
+-- Trusted compatibility service only. On-premise API receives signed RPCs.
+GRANT EXECUTE ON FUNCTION warehouse.command_handoff(uuid,uuid,uuid,jsonb),warehouse.read_handoff(uuid,uuid,uuid,uuid),warehouse.read_handoffs(uuid,uuid,uuid,jsonb),warehouse.handoff_context(uuid,uuid,uuid) TO :"runtime_role";

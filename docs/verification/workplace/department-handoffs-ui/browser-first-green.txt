@@ -1,0 +1,20 @@
+
+[WebServer] (node:4980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 2 workers
+
+
+(node:31796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:31208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/5] tests\handoff-workplace.spec.mjs:54:1 › a different receiving employee accepts the full handoff with account audit and unchanged item identity
+[2/5] tests\handoff-workplace.spec.mjs:39:1 › department send shows authenticated sender, exact quantity and nonallocatable transit without labels
+[3/5] tests\handoff-workplace.spec.mjs:67:39 › lost send reply replays the same handoff command after reload
+[4/5] tests\handoff-workplace.spec.mjs:67:39 › lost accept reply replays the same handoff command after reload
+[5/5] tests\handoff-workplace.spec.mjs:93:1 › an installation without department grants keeps its existing workplace and makes no handoff reads
+  5 passed (3.0s)

@@ -1,0 +1,15 @@
+{
+  "actual_behavior_RED": "Eight actual native runtime-role nested custom/generic plans on sparse-owner10k100k histories; unbounded primary-key filtering",
+  "source_sha256": {
+    "db/migrations/0014_department_handoffs.sql": "905e7042969996549495ccc075b0276e2e0f6e7deacbbcd96e387b05f0f6498e",
+    "internal/postgres/department_handoffs_read_critic_integration_test.go": "ff10fa24cfb4ae8c5cc474a01abee20475c6eabeb4c042c40970c863e7f5dac6"
+  },
+  "test_snapshot_note": "The saved test includes a fixture-only LATERAL optimization made while the already compiled RED binary ran; predicates and plan assertions are unchanged. Actual executed read-function hash is preserved in the plan receipt. No assertion that the test file stayed unchanged during the run.",
+  "original_manifest_sha256_before_snapshot_rename": "530fb504faf0c8dc4f51311b6cef62910bef868e2276bfca44addf4b9b36c705",
+  "historical_go_snapshots": [
+    {
+      "original_source_path": "internal/postgres/department_handoffs_read_critic_integration_test.go",
+      "stored_path": "internal/postgres/department_handoffs_read_critic_integration_test.go.txt"
+    }
+  ]
+}

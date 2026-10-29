@@ -1,0 +1,182 @@
+package api
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
+	"github.com/Shpuntyara/wms-platform/internal/modules"
+)
+
+type handoffBackend interface {
+	CommandHandoff(context.Context, inventory.Principal, string, string, json.RawMessage, *modules.Registry) (json.RawMessage, error)
+	ListHandoffs(context.Context, inventory.Scope, inventory.Filters) (inventory.Page, error)
+	GetHandoff(context.Context, inventory.Scope, string) (json.RawMessage, error)
+	HandoffContext(context.Context, inventory.Scope) (json.RawMessage, error)
+}
+type handoffInput struct {
+	OrganizationID          string `json:"organization_id"`
+	WarehouseID             string `json:"warehouse_id"`
+	SourceBalanceID         string `json:"source_balance_id,omitempty"`
+	DestinationDepartmentID string `json:"destination_department_id,omitempty"`
+	Quantity                string `json:"quantity,omitempty"`
+	ExpectedVersion         int64  `json:"expected_version,omitempty"`
+}
+
+func (s *Server) handoffStorage(w http.ResponseWriter, r *http.Request) (handoffBackend, bool) {
+	b, ok := s.config.Backend.(handoffBackend)
+	if !ok {
+		s.problem(w, r, &inventory.Problem{Status: 503, Code: "handoff_unavailable", Detail: "Department handoff storage is unavailable."})
+	}
+	return b, ok
+}
+func (s *Server) handoffCommand(w http.ResponseWriter, r *http.Request) {
+	if !s.method(w, r, "POST") {
+		return
+	}
+	b, ok := s.handoffStorage(w, r)
+	if !ok {
+		return
+	}
+	command, err := inventory.NormalizeID(r.Header.Get("Idempotency-Key"))
+	if err != nil {
+		s.problem(w, r, inventory.Invalid("invalid_idempotency_key"))
+		return
+	}
+	var input handoffInput
+	if err = decode(w, r, &input); err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	for _, field := range []*string{&input.OrganizationID, &input.WarehouseID} {
+		*field, err = inventory.NormalizeID(*field)
+		if err != nil {
+			s.problem(w, r, err)
+			return
+		}
+	}
+	handoff, permission := "", "handoff.send"
+	if r.PathValue("id") != "" {
+		handoff, err = inventory.NormalizeID(r.PathValue("id"))
+		if err != nil {
+			s.problem(w, r, err)
+			return
+		}
+		permission = "handoff.accept"
+		if input.ExpectedVersion < 1 || input.SourceBalanceID != "" || input.DestinationDepartmentID != "" || input.Quantity != "" {
+			s.problem(w, r, inventory.Invalid("invalid_handoff"))
+			return
+		}
+	} else {
+		if input.ExpectedVersion != 0 {
+			s.problem(w, r, inventory.Invalid("invalid_handoff"))
+			return
+		}
+		for _, field := range []*string{&input.SourceBalanceID, &input.DestinationDepartmentID} {
+			*field, err = inventory.NormalizeID(*field)
+			if err != nil {
+				s.problem(w, r, err)
+				return
+			}
+		}
+		if err = inventory.ValidateQuantity(input.Quantity); err != nil {
+			s.problem(w, r, err)
+			return
+		}
+	}
+	if _, err = principal(r).Scope(permission, input.OrganizationID, input.WarehouseID); err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	raw, _ := json.Marshal(input)
+	result, err := b.CommandHandoff(r.Context(), principal(r), command, handoff, raw, s.config.Modules)
+	if err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	status := http.StatusCreated
+	if handoff != "" {
+		status = http.StatusOK
+	}
+	writeJSON(w, status, map[string]any{"data": result})
+}
+func (s *Server) handoffs(w http.ResponseWriter, r *http.Request) {
+	if !s.method(w, r, "GET") {
+		return
+	}
+	b, ok := s.handoffStorage(w, r)
+	if !ok {
+		return
+	}
+	org, wh, err := queryScope(r)
+	if err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	scope, err := principal(r).Scope("handoff.read", org, wh)
+	if err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	var result json.RawMessage
+	if strings.HasSuffix(r.URL.Path, "/context") {
+		result, err = b.HandoffContext(r.Context(), scope)
+	} else if r.PathValue("id") != "" {
+		var id string
+		id, err = inventory.NormalizeID(r.PathValue("id"))
+		if err == nil {
+			result, err = b.GetHandoff(r.Context(), scope, id)
+		}
+	} else {
+		filters := inventory.Filters{Limit: 50, Cursor: r.URL.Query().Get("cursor")}
+		filters.View = r.URL.Query().Get("view")
+		if filters.View == "" {
+			filters.View = "all"
+		}
+		if filters.View != "all" && filters.View != "incoming" && filters.View != "outgoing" {
+			s.problem(w, r, inventory.Invalid("invalid_handoff_view"))
+			return
+		}
+		if len(filters.Cursor) > 2048 {
+			s.problem(w, r, inventory.Invalid("invalid_cursor"))
+			return
+		}
+		if value := r.URL.Query().Get("limit"); value != "" {
+			filters.Limit, err = strconv.Atoi(value)
+			if err != nil || filters.Limit < 1 || filters.Limit > 200 {
+				s.problem(w, r, inventory.Invalid("invalid_limit"))
+				return
+			}
+		}
+		if value := r.URL.Query().Get("owner_id"); value != "" {
+			filters.OwnerID, err = inventory.NormalizeID(value)
+			if err != nil {
+				s.problem(w, r, err)
+				return
+			}
+		}
+		var page inventory.Page
+		page, err = b.ListHandoffs(r.Context(), scope, filters)
+		if err != nil {
+			s.problem(w, r, err)
+			return
+		}
+		if page.Data == nil {
+			page.Data = []json.RawMessage{}
+		}
+		var next any
+		if page.NextCursor != "" {
+			next = page.NextCursor
+		}
+		writeJSON(w, 200, map[string]any{"data": page.Data, "pagination": map[string]any{"next_cursor": next}})
+		return
+	}
+	if err != nil {
+		s.problem(w, r, err)
+		return
+	}
+	writeJSON(w, 200, map[string]any{"data": result})
+}

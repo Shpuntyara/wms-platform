@@ -1,0 +1,161 @@
+
+[WebServer] (node:31720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 2 workers
+
+
+(node:40204) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:37284) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/5] tests\handoff-workplace.spec.mjs:39:1 › department send shows authenticated sender, exact quantity and nonallocatable transit without labels
+[2/5] tests\handoff-workplace.spec.mjs:54:1 › a different receiving employee accepts the full handoff with account audit and unchanged item identity
+  1) tests\handoff-workplace.spec.mjs:39:1 › department send shows authenticated sender, exact quantity and nonallocatable transit without labels 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Przekazania między działami', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Przekazania między działami', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Przekazania między działami', exact: true })
+
+
+      39 | test('department send shows authenticated sender, exact quantity and nonallocatable transit without labels',async({page})=>{
+      40 |   const ids=await seed(page);
+    > 41 |   await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toBeVisible();
+         |                                                                                          ^
+      42 |   await send(page);
+      43 |   const detail=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+      44 |   await expect(detail).toContainText('Oczekuje na przyjęcie');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:41:90
+
+    Error Context: ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-departme-53263-able-transit-without-labels\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-departme-53263-able-transit-without-labels\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-departme-53263-able-transit-without-labels\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+(node:41944) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[3/5] tests\handoff-workplace.spec.mjs:67:39 › lost send reply replays the same handoff command after reload
+  2) tests\handoff-workplace.spec.mjs:54:1 › a different receiving employee accepts the full handoff with account audit and unchanged item identity 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'A1' }).getByRole('button', { name: 'Przekaż do działu', exact: true })
+
+
+      20 | }
+      21 | async function send(page,quantity='2') {
+    > 22 |   await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+         |                                                                                                                                            ^
+      23 |   const dialog=page.getByRole('dialog',{name:'Przekaż do działu',exact:true});
+      24 |   await expect(dialog).toContainText('Marek Wójcik');
+      25 |   await expect(dialog.getByRole('textbox',{name:/Pracownik|Nadawca|Odbiorca/})).toHaveCount(0);
+        at send (C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:22:140)
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:55:36
+
+    Error Context: ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-a-differ-fc064-and-unchanged-item-identity\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-a-differ-fc064-and-unchanged-item-identity\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-a-differ-fc064-and-unchanged-item-identity\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+(node:28976) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[4/5] tests\handoff-workplace.spec.mjs:67:39 › lost accept reply replays the same handoff command after reload
+  3) tests\handoff-workplace.spec.mjs:67:39 › lost send reply replays the same handoff command after reload 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'A1' }).getByRole('button', { name: 'Przekaż do działu', exact: true })
+
+
+      20 | }
+      21 | async function send(page,quantity='2') {
+    > 22 |   await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+         |                                                                                                                                            ^
+      23 |   const dialog=page.getByRole('dialog',{name:'Przekaż do działu',exact:true});
+      24 |   await expect(dialog).toContainText('Marek Wójcik');
+      25 |   await expect(dialog.getByRole('textbox',{name:/Pracownik|Nadawca|Odbiorca/})).toHaveCount(0);
+        at send (C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:22:140)
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:81:36
+
+    Error Context: ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-sen-1821d-andoff-command-after-reload\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-sen-1821d-andoff-command-after-reload\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-sen-1821d-andoff-command-after-reload\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+(node:33540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[5/5] tests\handoff-workplace.spec.mjs:93:1 › an installation without department grants keeps its existing workplace and makes no handoff reads
+  4) tests\handoff-workplace.spec.mjs:67:39 › lost accept reply replays the same handoff command after reload 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'A1' }).getByRole('button', { name: 'Przekaż do działu', exact: true })
+
+
+      20 | }
+      21 | async function send(page,quantity='2') {
+    > 22 |   await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+         |                                                                                                                                            ^
+      23 |   const dialog=page.getByRole('dialog',{name:'Przekaż do działu',exact:true});
+      24 |   await expect(dialog).toContainText('Marek Wójcik');
+      25 |   await expect(dialog.getByRole('textbox',{name:/Pracownik|Nadawca|Odbiorca/})).toHaveCount(0);
+        at send (C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:22:140)
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:81:36
+
+    Error Context: ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-acc-9b766-andoff-command-after-reload\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-acc-9b766-andoff-command-after-reload\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\browser-red-artifacts\handoff-workplace-lost-acc-9b766-andoff-command-after-reload\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4 failed
+    tests\handoff-workplace.spec.mjs:39:1 › department send shows authenticated sender, exact quantity and nonallocatable transit without labels 
+    tests\handoff-workplace.spec.mjs:54:1 › a different receiving employee accepts the full handoff with account audit and unchanged item identity 
+    tests\handoff-workplace.spec.mjs:67:39 › lost send reply replays the same handoff command after reload 
+    tests\handoff-workplace.spec.mjs:67:39 › lost accept reply replays the same handoff command after reload 
+  1 passed (1.0m)

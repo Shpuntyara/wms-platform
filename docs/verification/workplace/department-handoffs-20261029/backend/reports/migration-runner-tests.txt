@@ -1,0 +1,12 @@
+test_entire_plan_and_execution_receipts_are_newline_independent (test_migrate_core.MigrationPlanTests.test_entire_plan_and_execution_receipts_are_newline_independent) ... ok
+test_legacy_pin_preserves_the_original_trust_root (test_migrate_core.MigrationPlanTests.test_legacy_pin_preserves_the_original_trust_root) ... ok
+test_online_health_upgrade_preserves_guard_identity (test_migrate_core.MigrationPlanTests.test_online_health_upgrade_preserves_guard_identity) ... ok
+test_published_source_still_rejects_content_drift (test_migrate_core.MigrationPlanTests.test_published_source_still_rejects_content_drift) ... ok
+test_published_sources_use_canonical_lf_on_every_checkout (test_migrate_core.MigrationPlanTests.test_published_sources_use_canonical_lf_on_every_checkout)
+An unchanged published SQL file must work in Linux and Windows checkouts. ... ok
+test_runner_serializes_records_checksums_and_bounds_locks (test_migrate_core.MigrationPlanTests.test_runner_serializes_records_checksums_and_bounds_locks) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.124s
+
+OK

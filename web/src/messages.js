@@ -1,6 +1,12 @@
 export function errorMessage(error, unconfirmed = false) {
   if (unconfirmed) return 'Nie udało się potwierdzić operacji. Wybierz „Sprawdź wynik”.';
   const messages = {
+    handoff_managed_stock:'Materiał należy do przekazania między działami. Otwórz przekazanie, aby sprawdzić jego stan.',
+    handoff_managed_position:'To miejsce należy do działu produkcyjnego. Użyj przekazania między działami.',
+    handoff_version_conflict:'Przekazanie zmienił inny pracownik. Odśwież dane i sprawdź przyjęcie.',
+    handoff_already_accepted:'Przekazanie zostało już przyjęte. Odśwież dane, aby zobaczyć potwierdzenie.',
+    handoff_unavailable:'Przekazania między działami są chwilowo niedostępne. Odśwież dane i spróbuj ponownie.',
+    invalid_handoff_view:'Nie udało się otworzyć wybranego widoku przekazań. Odśwież dane.',
     invalid_document_recipient:'Wpisz odbiorcę wydania: firmę, dział lub osobę odbierającą towar.',
     invalid_work_order:'Sprawdź odbiorcę, towary i ilości w zamówieniu.',
     document_version_conflict:'Dokument zmienił inny pracownik. Odśwież go i sprawdź ilość.',

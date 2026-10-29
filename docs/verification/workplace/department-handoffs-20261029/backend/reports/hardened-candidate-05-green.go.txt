@@ -1,0 +1,219 @@
+-test.shuffle 1793309322526142800
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/unsigned_read
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/unsigned_create
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/read_action_cannot_create
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/another_command_ID
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/tampered_exact_body
+=== RUN   TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/tampered_read_filters
+--- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions (0.11s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/unsigned_read (0.00s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/unsigned_create (0.00s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/read_action_cannot_create (0.00s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/another_command_ID (0.00s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/tampered_exact_body (0.00s)
+    --- PASS: TestHardenedWorkOrdersRPCRejectsUnsignedTamperedAndWrongActions/tampered_read_filters (0.00s)
+=== RUN   TestHardenedWorkOrdersUnknownCommitSignedReplay
+=== RUN   TestHardenedWorkOrdersUnknownCommitSignedReplay/before_send
+=== RUN   TestHardenedWorkOrdersUnknownCommitSignedReplay/after_ack_eof
+=== RUN   TestHardenedWorkOrdersUnknownCommitSignedReplay/after_ack_generic
+--- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay (0.93s)
+    --- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay/before_send (0.30s)
+    --- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay/after_ack_eof (0.29s)
+    --- PASS: TestHardenedWorkOrdersUnknownCommitSignedReplay/after_ack_generic (0.34s)
+=== RUN   TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions
+=== RUN   TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions/worker_WZ
+=== RUN   TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions/worker_MM
+--- PASS: TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions (0.19s)
+    --- PASS: TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions/worker_WZ (0.04s)
+    --- PASS: TestHardenedDocumentBusinessWZAndMMSignedOwnerPermissions/worker_MM (0.01s)
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_actor
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_worker_create
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_owner
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_warehouse
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_*_FROM_warehouse.work_orders
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_*_FROM_warehouse.work_order_counters
+=== RUN   TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_warehouse.command_work_order($1::uuid,$2::uuid,$3::jsonb)
+--- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions (0.27s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_actor (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_worker_create (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_owner (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/forged_warehouse (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_*_FROM_warehouse.work_orders (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_*_FROM_warehouse.work_order_counters (0.00s)
+    --- PASS: TestHardenedWorkOrdersSignedReadCreateReplayAndPermissions/SELECT_warehouse.command_work_order($1::uuid,$2::uuid,$3::jsonb) (0.00s)
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup
+=== RUN   TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup
+--- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey (0.19s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/installation_identifier_changed_after_startup (0.02s)
+    --- PASS: TestHardenedOnPremCriticReadinessTracksInstallationAndSigningKey/signing_key_changed_after_startup (0.02s)
+=== RUN   TestHardenedOnPremiseMultiWarehouse
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_store_resolves_all_authorized_organizations_and_warehouses
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/0
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/1
+=== RUN   TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/2
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_actor_cannot_borrow_another_actors_warehouse_rights
+=== RUN   TestHardenedOnPremiseMultiWarehouse/scope_mixing_and_failed_commands_preserve_rollback_and_accounting
+=== RUN   TestHardenedOnPremiseMultiWarehouse/one_worker_expires_all_installation_warehouses
+=== RUN   TestHardenedOnPremiseMultiWarehouse/worker_drains_all_installation_warehouses_and_fences_stale_ack
+--- PASS: TestHardenedOnPremiseMultiWarehouse (0.61s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_store_resolves_all_authorized_organizations_and_warehouses (0.00s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse (0.09s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/0 (0.06s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/1 (0.02s)
+        --- PASS: TestHardenedOnPremiseMultiWarehouse/same_store_reads_writes_and_replays_each_authorized_warehouse/2 (0.01s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_actor_cannot_borrow_another_actors_warehouse_rights (0.00s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/scope_mixing_and_failed_commands_preserve_rollback_and_accounting (0.01s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/one_worker_expires_all_installation_warehouses (0.08s)
+    --- PASS: TestHardenedOnPremiseMultiWarehouse/worker_drains_all_installation_warehouses_and_fences_stale_ack (0.10s)
+=== RUN   TestHardenedHTTPAndContainment
+=== RUN   TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial
+=== RUN   TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval
+=== RUN   TestHardenedHTTPAndContainment/HTTP_release
+=== RUN   TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement
+=== RUN   TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution
+=== RUN   TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced
+=== RUN   TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation
+=== RUN   TestHardenedHTTPAndContainment/expiry_and_acknowledgement_service_all_installation_warehouses
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof
+=== RUN   TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic
+=== RUN   TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access
+--- PASS: TestHardenedHTTPAndContainment (0.95s)
+    --- PASS: TestHardenedHTTPAndContainment/startup_rejects_key_mismatch_legacy_and_role_confusion (0.05s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reads_and_foreign_warehouse_denial (0.05s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_reserve_replay_and_operation_retrieval (0.03s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_release (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/HTTP_create_activate_receipt_and_movement (0.02s)
+    --- PASS: TestHardenedHTTPAndContainment/SQL_checks_current_grants_after_principal_resolution (0.01s)
+    --- PASS: TestHardenedHTTPAndContainment/worker_services_installation_and_stale_ack_fenced (0.03s)
+    --- PASS: TestHardenedHTTPAndContainment/concurrent_replay_commits_one_reservation (0.06s)
+    --- PASS: TestHardenedHTTPAndContainment/expiry_and_acknowledgement_service_all_installation_warehouses (0.08s)
+    --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt (0.35s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/before_send (0.11s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_eof (0.12s)
+        --- PASS: TestHardenedHTTPAndContainment/unknown_COMMIT_outcome_retries_with_one_document_receipt/after_ack_generic (0.12s)
+    --- PASS: TestHardenedHTTPAndContainment/module_metadata_verifies_projection_without_runtime_fact_access (0.03s)
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/send/before_send
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/send/after_ack_eof
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/send/after_ack_generic
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/accept/before_send
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/accept/after_ack_eof
+=== RUN   TestHardenedHandoffsUnknownCommitSignedReplay/accept/after_ack_generic
+--- PASS: TestHardenedHandoffsUnknownCommitSignedReplay (3.31s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/send/before_send (0.55s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/send/after_ack_eof (0.56s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/send/after_ack_generic (0.42s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/accept/before_send (0.65s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/accept/after_ack_eof (0.58s)
+    --- PASS: TestHardenedHandoffsUnknownCommitSignedReplay/accept/after_ack_generic (0.55s)
+=== RUN   TestHardenedDocumentReadsAtScale
+=== RUN   TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle
+=== RUN   TestHardenedDocumentReadsAtScale/one-owner-first
+    hardened_load_integration_test.go:317: documents=100000 case=one-owner-first mode=force_custom_plan blocks=291 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=one-owner-first mode=force_generic_plan blocks=279 row_work=210 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/one-owner-deep
+    hardened_load_integration_test.go:317: documents=100000 case=one-owner-deep mode=force_custom_plan blocks=279 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=one-owner-deep mode=force_generic_plan blocks=279 row_work=210 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/multiple-owner-first
+    hardened_load_integration_test.go:317: documents=100000 case=multiple-owner-first mode=force_custom_plan blocks=290 row_work=402 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=multiple-owner-first mode=force_generic_plan blocks=290 row_work=402 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/multiple-owner-deep
+    hardened_load_integration_test.go:317: documents=100000 case=multiple-owner-deep mode=force_custom_plan blocks=291 row_work=585 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=multiple-owner-deep mode=force_generic_plan blocks=293 row_work=402 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/all-owner-first
+    hardened_load_integration_test.go:317: documents=100000 case=all-owner-first mode=force_custom_plan blocks=266 row_work=207 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=all-owner-first mode=force_generic_plan blocks=266 row_work=189 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/all-owner-deep
+    hardened_load_integration_test.go:317: documents=100000 case=all-owner-deep mode=force_custom_plan blocks=278 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=all-owner-deep mode=force_generic_plan blocks=278 row_work=210 line_hydrations=21
+=== RUN   TestHardenedDocumentReadsAtScale/explicit-owner
+    hardened_load_integration_test.go:317: documents=100000 case=explicit-owner mode=force_custom_plan blocks=279 row_work=210 line_hydrations=21
+    hardened_load_integration_test.go:317: documents=100000 case=explicit-owner mode=force_generic_plan blocks=279 row_work=210 line_hydrations=21
+=== NAME  TestHardenedDocumentReadsAtScale
+    hardened_load_integration_test.go:111: WMS_HARDENED_PLAN_DIR is unset; plans are temporary at C:\Users\sashk\AppData\Local\Temp\TestHardenedDocumentReadsAtScale2251747217\001\hardened-plans
+--- PASS: TestHardenedDocumentReadsAtScale (18.86s)
+    --- PASS: TestHardenedDocumentReadsAtScale/independent_randomized_pagination_oracle (3.19s)
+    --- PASS: TestHardenedDocumentReadsAtScale/one-owner-first (0.03s)
+    --- PASS: TestHardenedDocumentReadsAtScale/one-owner-deep (0.02s)
+    --- PASS: TestHardenedDocumentReadsAtScale/multiple-owner-first (0.02s)
+    --- PASS: TestHardenedDocumentReadsAtScale/multiple-owner-deep (0.02s)
+    --- PASS: TestHardenedDocumentReadsAtScale/all-owner-first (0.02s)
+    --- PASS: TestHardenedDocumentReadsAtScale/all-owner-deep (0.02s)
+    --- PASS: TestHardenedDocumentReadsAtScale/explicit-owner (0.02s)
+=== RUN   TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL
+--- PASS: TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL (0.33s)
+=== RUN   TestHardenedOnPremCriticWorkerRejectsInstallationDrift
+--- PASS: TestHardenedOnPremCriticWorkerRejectsInstallationDrift (0.14s)
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_context
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_list
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_detail
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_command
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/read_action_cannot_send
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_command_ID
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_handoff_ID
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_exact_body
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_list_filters
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_detail_ID
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_context_action
+=== RUN   TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_authenticated_actor
+--- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions (0.30s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_context (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_list (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_detail (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/unsigned_command (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/read_action_cannot_send (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_command_ID (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_handoff_ID (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_exact_body (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_list_filters (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_detail_ID (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/another_context_action (0.00s)
+    --- PASS: TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions/tampered_authenticated_actor (0.00s)
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.handoffs
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_employees
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_members
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.departments
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_positions
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_routes
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.handoff_transit_positions
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.command_handoff(NULL,NULL,NULL,'{}'::jsonb)
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.read_handoff(NULL,NULL,NULL,NULL)
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.read_handoffs(NULL,NULL,NULL,'{}'::jsonb)
+=== RUN   TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.handoff_context(NULL,NULL,NULL)
+--- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment (0.29s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.handoffs (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_employees (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_members (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.departments (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_positions (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.department_routes (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.handoff_transit_positions (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.command_handoff(NULL,NULL,NULL,'{}'::jsonb) (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.read_handoff(NULL,NULL,NULL,NULL) (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_*_FROM_warehouse.read_handoffs(NULL,NULL,NULL,'{}'::jsonb) (0.00s)
+    --- PASS: TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment/SELECT_warehouse.handoff_context(NULL,NULL,NULL) (0.00s)
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/current_user_cannot_read_another_owner_in_the_same_warehouse
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/forged_in-memory_owner_and_actor_scope_cannot_replace_SQL_grants
+=== RUN   TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/revoked_document_grants_reject_a_cached_read_scope_while_unrelated_grants_remain
+--- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants (0.17s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/current_user_cannot_read_another_owner_in_the_same_warehouse (0.02s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/forged_in-memory_owner_and_actor_scope_cannot_replace_SQL_grants (0.01s)
+    --- PASS: TestHardenedOnPremCriticCrossOwnerAndStaleReadGrants/revoked_document_grants_reject_a_cached_read_scope_while_unrelated_grants_remain (0.01s)
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/receipt
+=== RUN   TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/transfer
+--- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions (0.27s)
+    --- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/receipt (0.05s)
+    --- PASS: TestHardenedDocumentAutomaticNumberingSignedReplayAndPermissions/transfer (0.02s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	28.004s

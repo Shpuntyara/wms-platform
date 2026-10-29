@@ -1,0 +1,47 @@
+
+[WebServer] (node:39232) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+
+(node:25208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/1] tests\handoff-workplace.spec.mjs:200:1 › a mapped B1 source sends from the warehouse department without being its primary A1 position
+  1) tests\handoff-workplace.spec.mjs:200:1 › a mapped B1 source sends from the warehouse department without being its primary A1 position 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'B1' }).getByRole('button', { name: 'Przekaż do działu', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'B1' }).getByRole('button', { name: 'Przekaż do działu', exact: true }) with timeout 5000ms
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'B1' }).getByRole('button', { name: 'Przekaż do działu', exact: true })
+
+
+      208 |   await page.reload();
+      209 |   const row=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'B1'});
+    > 210 |   await expect(row.getByRole('button',{name:'Przekaż do działu',exact:true})).toBeVisible();
+          |                                                                               ^
+      211 |   await row.getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+      212 |   await page.getByLabel('Dział docelowy',{exact:true}).selectOption('welding');
+      213 |   await page.getByLabel('Ilość do przekazania',{exact:true}).fill('1');
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:210:79
+
+    Error Context: ..\work\handoff-ui-tdd\mapped-source-red-artifacts\handoff-workplace-a-mapped-4d930-ing-its-primary-A1-position\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\mapped-source-red-artifacts\handoff-workplace-a-mapped-4d930-ing-its-primary-A1-position\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\mapped-source-red-artifacts\handoff-workplace-a-mapped-4d930-ing-its-primary-A1-position\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    tests\handoff-workplace.spec.mjs:200:1 › a mapped B1 source sends from the warehouse department without being its primary A1 position 

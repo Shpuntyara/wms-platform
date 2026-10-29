@@ -1,0 +1,6 @@
+test_official_backend_preparation_includes_precise_handoff_grants (test_handoff_test_bootstrap.HandoffTestBootstrap.test_official_backend_preparation_includes_precise_handoff_grants) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.046s
+
+OK

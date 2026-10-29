@@ -1,0 +1,10 @@
+[
+  {
+    "path": "scripts/prepare-test-db.py",
+    "sha256": "5b2d36efc892577ac41eb2ec8277becd1595bcb5fbdf344e8c643238b6259db1"
+  },
+  {
+    "path": "scripts/test_handoff_test_bootstrap.py",
+    "sha256": "18dd8c22d126b0ab8a65a5c43e0153a347efbbd90efabf4199e6af17d2d7c933"
+  }
+]

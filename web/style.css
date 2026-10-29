@@ -260,3 +260,18 @@ input[aria-invalid=true] { border-color: #b55749; }
 .selection-card select:focus-visible,.selection-card input:focus-visible {outline:3px solid #24725f;outline-offset:3px}
 .selection-card :disabled {opacity:.65;cursor:wait}
 .selection-remaining {margin:4px 0 0;color:#465f54}
+.handoffs-layout {display:grid;grid-template-columns:minmax(280px,1fr) minmax(300px,1fr);gap:24px;align-items:start}
+.handoff-card {display:grid;width:100%;gap:10px;padding:20px;text-align:left;border:0;border-bottom:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.handoff-card.selected {background:var(--teal-wash);box-shadow:inset 3px 0 var(--teal)}
+.handoff-card small {color:var(--muted)}
+.handoff-sent {color:var(--amber);background:#fff2d4}
+.handoff-detail {padding:24px}
+.handoff-amount {font-size:1.7rem;font-weight:700}
+.handoff-meta {display:grid;gap:18px;margin:24px 0}
+.handoff-meta div {display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr);gap:12px}
+.handoff-meta dt {color:var(--muted)}
+.handoff-meta dd {margin:0;overflow-wrap:anywhere}
+.handoff-meta small {display:block;margin-top:6px;color:var(--muted)}
+.handoff-fields {display:grid;gap:12px;border:0;padding:0;margin:20px 0 0;min-width:0}
+.handoff-fields input,.handoff-fields select {width:100%;min-height:48px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+@media(max-width:800px) {.handoffs-layout{grid-template-columns:minmax(0,1fr)}.handoff-meta div{grid-template-columns:minmax(0,1fr)}}

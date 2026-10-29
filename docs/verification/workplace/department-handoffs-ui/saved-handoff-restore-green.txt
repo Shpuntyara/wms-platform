@@ -1,0 +1,19 @@
+
+[WebServer] (node:43184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 2 workers
+
+(node:38932) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+
+(node:29300) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved foreign-warehouse handoff preserves the valid stock workspace only for an access or not-found response
+[2/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved revoked-owner handoff preserves the valid stock workspace only for an access or not-found response
+[3/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved not-found handoff preserves the valid stock workspace only for an access or not-found response
+[4/4] tests\handoff-workplace.spec.mjs:345:119 › restoring a saved unavailable handoff preserves the valid stock workspace only for an access or not-found response
+  4 passed (2.3s)

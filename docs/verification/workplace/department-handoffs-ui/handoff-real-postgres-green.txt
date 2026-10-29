@@ -1,0 +1,13 @@
+=== RUN   TestBrowserHandoffsAgainstPostgres
+    handoffs_browser_integration_test.go:97: Real handoff browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\handoff-ui-tdd\real-pg-verified\db75986f-4c2d-4197-830a-684fed983289
+        
+        Running 1 test using 1 worker
+        
+        (node:28772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          ok 1 tests\handoff-live-workflow.spec.mjs:6:1 › different employees send and accept one exact handoff through real PostgreSQL despite both committed replies being lost (2.0s)
+        
+          1 passed (3.0s)
+--- PASS: TestBrowserHandoffsAgainstPostgres (4.12s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	4.155s

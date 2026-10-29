@@ -1,0 +1,42 @@
+test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) ... 
+  test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment') ... FAIL
+  test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions') ... FAIL
+  test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsUnknownCommitSignedReplay') ... FAIL
+  test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL') ... FAIL
+
+======================================================================
+FAIL: test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsSignedSendAcceptReadReplayAndContainment')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 24, in test_green_requires_actual_signed_handoff_custody_and_recovery
+    with self.subTest(missing=missing),self.assertRaises(ValueError):validate_receipt('green',0,report,output)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsRPCRejectsUnsignedTamperedAndWrongActions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 24, in test_green_requires_actual_signed_handoff_custody_and_recovery
+    with self.subTest(missing=missing),self.assertRaises(ValueError):validate_receipt('green',0,report,output)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsUnknownCommitSignedReplay')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 24, in test_green_requires_actual_signed_handoff_custody_and_recovery
+    with self.subTest(missing=missing),self.assertRaises(ValueError):validate_receipt('green',0,report,output)
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_green_requires_actual_signed_handoff_custody_and_recovery (test_hardened_gate.HardenedGateTests.test_green_requires_actual_signed_handoff_custody_and_recovery) (missing='TestHardenedHandoffsProfileReapplicationPreservesOwnerAndACL')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_hardened_gate.py", line 24, in test_green_requires_actual_signed_handoff_custody_and_recovery
+    with self.subTest(missing=missing),self.assertRaises(ValueError):validate_receipt('green',0,report,output)
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=4)

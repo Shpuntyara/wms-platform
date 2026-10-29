@@ -1,0 +1,9 @@
+{"Time":"2026-10-29T22:17:39.2417832+01:00","Action":"start","Package":"github.com/Shpuntyara/wms-platform/internal/postgres"}
+{"Time":"2026-10-29T22:17:39.263169+01:00","Action":"run","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestHandoffsQueueCursorCannotCrossViews"}
+{"Time":"2026-10-29T22:17:39.263169+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestHandoffsQueueCursorCannotCrossViews","Output":"=== RUN   TestHandoffsQueueCursorCannotCrossViews\n","OutputType":"frame"}
+{"Time":"2026-10-29T22:17:39.6758278+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestHandoffsQueueCursorCannotCrossViews","Output":"    handoffs_integration_test.go:404: HANDOFF_ASSERTION queue cursor changed its server view: \u003cnil\u003e\n","OutputType":"error"}
+{"Time":"2026-10-29T22:17:39.676333+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestHandoffsQueueCursorCannotCrossViews","Output":"--- FAIL: TestHandoffsQueueCursorCannotCrossViews (0.41s)\n","OutputType":"frame"}
+{"Time":"2026-10-29T22:17:39.676333+01:00","Action":"fail","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Test":"TestHandoffsQueueCursorCannotCrossViews","Elapsed":0.41}
+{"Time":"2026-10-29T22:17:39.676333+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"FAIL\n","OutputType":"frame"}
+{"Time":"2026-10-29T22:17:39.6804263+01:00","Action":"output","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Output":"FAIL\tgithub.com/Shpuntyara/wms-platform/internal/postgres\t0.438s\n","OutputType":"frame"}
+{"Time":"2026-10-29T22:17:39.6804263+01:00","Action":"fail","Package":"github.com/Shpuntyara/wms-platform/internal/postgres","Elapsed":0.439}

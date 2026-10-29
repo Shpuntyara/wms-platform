@@ -1,0 +1,182 @@
+TAP version 13
+# Subtest: handoff destinations are configured enabled routes for the authenticated source member only
+not ok 1 - handoff destinations are configured enabled routes for the authenticated source member only
+  ---
+  duration_ms: 1.2505
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:17:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper handoffDestinations must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:18:22)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: handoff send intent keeps exact decimal quantity and excludes owner or typed identities
+not ok 2 - handoff send intent keeps exact decimal quantity and excludes owner or typed identities
+  ---
+  duration_ms: 0.1692
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper handoffSendIntent must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:28:14)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination
+not ok 3 - handoff send rejects unavailable quantity, fractional pieces and an unconfigured destination
+  ---
+  duration_ms: 0.1744
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper handoffSendIntent must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:32:14)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: only a different authenticated receiving member can accept a sent handoff
+not ok 4 - only a different authenticated receiving member can accept a sent handoff
+  ---
+  duration_ms: 0.1585
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper canAcceptHandoff must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:38:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: acceptance confirms the full existing handoff version without quantity or identity inputs
+not ok 5 - acceptance confirms the full existing handoff version without quantity or identity inputs
+  ---
+  duration_ms: 0.1501
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper handoffAcceptIntent must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:49:16)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: handoff property: one micro-unit above availability never passes through floating point rounding
+not ok 6 - handoff property: one micro-unit above availability never passes through floating point rounding
+  ---
+  duration_ms: 0.1578
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-domain.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Handoff helper handoffSendIntent must exist before department transfers are safe
+    + actual - expected
+    
+    + 'undefined'
+    - 'function'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'function'
+  actual: 'undefined'
+  operator: 'strictEqual'
+  stack: |-
+    helper (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:6:28)
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-domain.test.mjs:54:14)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 106.5342

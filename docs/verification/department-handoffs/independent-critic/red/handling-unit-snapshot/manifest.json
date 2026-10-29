@@ -1,0 +1,15 @@
+{
+  "actual_behavior_RED": "Native owner-constraint HU UPDATE and INSERT admit available stock placement in fixed production/transit locations; no public HU relocation RPC exists, runtime DML denial is separate",
+  "leaf_failed": 4,
+  "source_sha256": {
+    "internal/postgres/department_handoffs_critic_integration_test.go": "8a13dfbb450263f9ae81c9e444763363f37f225c7c563fb90ac1521d2aa74c67",
+    "db/migrations/0014_department_handoffs.sql": "a51ffaa0216d3b1f8deeca51fb84e1bbd3041abcfb84df83d37f685e1bee9128"
+  },
+  "original_manifest_sha256_before_snapshot_rename": "4c78ed48f7253c89dd81d9cea3b8d42342f9c2842eaf57254e44d999456b7e5a",
+  "historical_go_snapshots": [
+    {
+      "original_source_path": "internal/postgres/department_handoffs_critic_integration_test.go",
+      "stored_path": "internal/postgres/department_handoffs_critic_integration_test.go.txt"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+FFFFFFFFFF
+======================================================================
+FAIL: test_database_seed_only_configures_metadata_and_grants (test_department_workflow.DepartmentWorkflowTests.test_database_seed_only_configures_metadata_and_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_deterministic_without_mutating_existing_configuration (test_department_workflow.DepartmentWorkflowTests.test_deterministic_without_mutating_existing_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_exact_route_and_named_employees (test_department_workflow.DepartmentWorkflowTests.test_exact_route_and_named_employees)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_instances_use_independent_department_actor_and_position_ids (test_department_workflow.DepartmentWorkflowTests.test_instances_use_independent_department_actor_and_position_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_merge_only_adds_four_places_preserving_items_and_unknown_metadata (test_department_workflow.DepartmentWorkflowTests.test_merge_only_adds_four_places_preserving_items_and_unknown_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_merge_refuses_changed_preexisting_department_place (test_department_workflow.DepartmentWorkflowTests.test_merge_refuses_changed_preexisting_department_place)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_missing_or_ambiguous_rack_address_refused (test_department_workflow.DepartmentWorkflowTests.test_missing_or_ambiguous_rack_address_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_operators_have_no_generic_posting_or_document_creation_grants (test_department_workflow.DepartmentWorkflowTests.test_operators_have_no_generic_posting_or_document_creation_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_scope_drift_and_wrong_installation_fail_closed (test_department_workflow.DepartmentWorkflowTests.test_scope_drift_and_wrong_installation_fail_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+======================================================================
+FAIL: test_seed_rejects_missing_or_injected_identity_subjects (test_department_workflow.DepartmentWorkflowTests.test_seed_rejects_missing_or_injected_identity_subjects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow.py", line 33, in setUp
+    self.assertIsNotNone(workflow,'The department workflow configurator must exist before the lab can safely enable authenticated transfers')
+AssertionError: unexpectedly None : The department workflow configurator must exist before the lab can safely enable authenticated transfers
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.002s
+
+FAILED (failures=10)

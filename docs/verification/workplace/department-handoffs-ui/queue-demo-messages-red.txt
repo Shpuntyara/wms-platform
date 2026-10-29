@@ -1,0 +1,230 @@
+TAP version 13
+# Subtest: training incoming queue filters before its bounded page and rejects a cursor from another view
+not ok 1 - training incoming queue filters before its bounded page and rejects a cursor from another view
+  ---
+  duration_ms: 5.6421
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-demo.test.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'history',
+        'first',
+    +   'second',
+    +   'own'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'first'
+  actual:
+    0: 'history'
+    1: 'first'
+    2: 'second'
+    3: 'own'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-demo.test.mjs:14:10)
+    async Test.run (node:internal/test_runner/test:1125:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: training queue rejects an unknown view instead of silently returning all records
+not ok 2 - training queue rejects an unknown view instead of silently returning all records
+  ---
+  duration_ms: 0.986
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-demo.test.mjs:20:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected rejection.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-demo.test.mjs:21:3)
+    async Test.run (node:internal/test_runner/test:1125:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: handoff problem handoff_managed_stock explains the next action in Polish
+not ok 3 - handoff problem handoff_managed_stock explains the next action in Polish
+  ---
+  duration_ms: 2.0413
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+    - 'Materiał należy do przekazania między działami. Otwórz przekazanie, aby sprawdzić jego stan.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Materiał należy do przekazania między działami. Otwórz przekazanie, aby sprawdzić jego stan.'
+  actual: 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: handoff problem handoff_managed_position explains the next action in Polish
+not ok 4 - handoff problem handoff_managed_position explains the next action in Polish
+  ---
+  duration_ms: 0.2281
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+    - 'To miejsce należy do działu produkcyjnego. Użyj przekazania między działami.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'To miejsce należy do działu produkcyjnego. Użyj przekazania między działami.'
+  actual: 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+  ...
+# Subtest: handoff problem handoff_version_conflict explains the next action in Polish
+not ok 5 - handoff problem handoff_version_conflict explains the next action in Polish
+  ---
+  duration_ms: 0.9027
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+    - 'Przekazanie zmienił inny pracownik. Odśwież dane i sprawdź przyjęcie.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Przekazanie zmienił inny pracownik. Odśwież dane i sprawdź przyjęcie.'
+  actual: 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: handoff problem handoff_already_accepted explains the next action in Polish
+not ok 6 - handoff problem handoff_already_accepted explains the next action in Polish
+  ---
+  duration_ms: 0.1536
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+    - 'Przekazanie zostało już przyjęte. Odśwież dane, aby zobaczyć potwierdzenie.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Przekazanie zostało już przyjęte. Odśwież dane, aby zobaczyć potwierdzenie.'
+  actual: 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: handoff problem handoff_unavailable explains the next action in Polish
+not ok 7 - handoff problem handoff_unavailable explains the next action in Polish
+  ---
+  duration_ms: 0.1386
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Nie udało się połączyć z serwerem. Wybierz „Odśwież” i spróbuj ponownie.'
+    - 'Przekazania między działami są chwilowo niedostępne. Odśwież dane i spróbuj ponownie.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Przekazania między działami są chwilowo niedostępne. Odśwież dane i spróbuj ponownie.'
+  actual: 'Nie udało się połączyć z serwerem. Wybierz „Odśwież” i spróbuj ponownie.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: handoff problem invalid_handoff_view explains the next action in Polish
+not ok 8 - handoff problem invalid_handoff_view explains the next action in Polish
+  ---
+  duration_ms: 0.1211
+  type: 'test'
+  location: 'C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\handoff-messages.test.mjs:11:4'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+    - 'Nie udało się otworzyć wybranego widoku przekazań. Odśwież dane.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Nie udało się otworzyć wybranego widoku przekazań. Odśwież dane.'
+  actual: 'Serwer odrzucił operację. Odśwież dokument i sprawdź dane lub skontaktuj się z kierownikiem.'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/sashk/Documents/WMS/wms-platform/web/tests/handoff-messages.test.mjs:12:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: unknown handoff commit always asks for journal replay before any other action
+ok 9 - unknown handoff commit always asks for journal replay before any other action
+  ---
+  duration_ms: 0.1489
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.2214

@@ -1,0 +1,105 @@
+import {test,expect} from '@playwright/test';
+
+async function seed(page) {
+  await page.goto('/app/?demo=1');
+  const ids=await page.evaluate(async()=>{
+    const {DemoWarehouse}=await import('/app/src/demo.js'),state=new DemoWarehouse(localStorage).state;
+    const scope=state.workspace.scopes[0],actor=state.workspace.actor_id;
+    scope.grants.push(...['handoff.read','handoff.send','handoff.accept'].map(permission=>({permission,owner_id:null})));
+    const positions=state.workspace.catalog.positions;
+    positions[1].code='A1';positions[1].name='Magazyn materiałów';positions[2].code='SPAW-01';positions[2].name='Spawanie';
+    const source=state.balances.find(row=>row.item_id===state.workspace.catalog.items[0].id&&row.position_id===positions[1].id);
+    const destination=state.balances.find(row=>row.item_id===source.item_id&&row.position_id===positions[2].id);
+    for(const row of state.balances) for(const key of ['on_hand','reserved_qty','available_qty']) row[key]+='.000000';
+    state.handoff_context={departments:[{id:'warehouse',code:'MAG',name:'Magazyn',kind:'warehouse',position_id:positions[1].id,enabled:true},{id:'welding',code:'SPAW',name:'Spawanie',kind:'production',position_id:positions[2].id,enabled:true},{id:'polishing',code:'SZLIF',name:'Szlifowanie',kind:'production',position_id:crypto.randomUUID(),enabled:true}],routes:[{source_department_id:'warehouse',destination_department_id:'welding'}],memberships:[{department_id:'warehouse'}],employee:{actor_id:actor,display_name:'Marek Wójcik'},can_send:true,can_accept:true};
+    state.handoffs=[];
+    localStorage.setItem('wms-training-v2',JSON.stringify(state));
+    return {source:source.id,destination:destination.id,item:source.item_id,sender:actor,receiver:crypto.randomUUID()};
+  });
+  await page.reload();return ids;
+}
+async function send(page,quantity='2') {
+  await page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'Przekaż do działu',exact:true});
+  await expect(dialog).toContainText('Marek Wójcik');
+  await expect(dialog.getByRole('textbox',{name:/Pracownik|Nadawca|Odbiorca/})).toHaveCount(0);
+  await expect(dialog.getByLabel('Dział docelowy',{exact:true}).locator('option[value="polishing"]')).toHaveCount(0);
+  await dialog.getByLabel('Dział docelowy',{exact:true}).selectOption('welding');
+  await dialog.getByLabel('Ilość do przekazania',{exact:true}).fill(quantity);
+  await dialog.getByRole('button',{name:'Wyślij do działu',exact:true}).click();
+}
+async function asReceiver(page,ids) {
+  await page.evaluate(receiver=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.workspace.actor_id=receiver;s.handoff_context.employee={actor_id:receiver,display_name:'Anna Nowak'};s.handoff_context.memberships=[{department_id:'welding'}];localStorage.setItem('wms-training-v2',JSON.stringify(s));},ids.receiver);
+  await page.reload();
+  await page.getByRole('button',{name:'Przekazania między działami',exact:true}).click();
+  await page.getByRole('button',{name:/^Otwórz przekazanie /}).first().click();
+}
+const state=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('wms-training-v2')));
+
+test('department send shows authenticated sender, exact quantity and nonallocatable transit without labels',async({page})=>{
+  const ids=await seed(page);
+  await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toBeVisible();
+  await send(page);
+  const detail=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+  await expect(detail).toContainText('Oczekuje na przyjęcie');
+  await expect(detail).toContainText('Marek Wójcik');await expect(detail).toContainText('Spawanie');
+  await expect(detail.getByRole('button',{name:'Potwierdź przyjęcie',exact:true})).toHaveCount(0);
+  const s=await state(page),record=s.handoffs[0];
+  expect(record).toMatchObject({quantity:'2',state:'sent',sender_actor_id:ids.sender,receiver_actor_id:null});
+  expect(record.sent_at).toBeTruthy();expect(s.balances.find(row=>row.id===ids.source).on_hand).toBe('22');
+  expect(s.balances.find(row=>row.id===record.transit_balance_id)).toMatchObject({on_hand:'2',stock_state:'in_transit',available_qty:'0'});
+  expect(s.workspace.catalog.items).toHaveLength(4);
+});
+
+test('a different receiving employee accepts the full handoff with account audit and unchanged item identity',async({page})=>{
+  const ids=await seed(page);await send(page);await asReceiver(page,ids);
+  await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();
+  const detail=page.getByRole('region',{name:'Wybrane przekazanie',exact:true});
+  await expect(detail).toContainText('Przyjęto');await expect(detail).toContainText('Anna Nowak');
+  const s=await state(page),record=s.handoffs[0];
+  expect(record).toMatchObject({state:'accepted',sender_actor_id:ids.sender,receiver_actor_id:ids.receiver,item_id:ids.item,version:2});
+  expect(record.accepted_at).toBeTruthy();expect(s.balances.find(row=>row.id===ids.destination).on_hand).toBe('2');
+  expect(s.balances.find(row=>row.id===record.transit_balance_id).on_hand).toBe('0');
+  const accepted=Object.values(s.commands).find(entry=>entry.path.endsWith('/accept'));
+  expect(JSON.parse(accepted.body)).toEqual({organization_id:record.organization_id,warehouse_id:record.warehouse_id,expected_version:1});
+});
+
+for(const fault of ['send','accept']) test(`lost ${fault} reply replays the same handoff command after reload`,async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const handoffOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {
+        const fault=body && ${fault==='send'?"path.endsWith('/handoffs/send')":"path.endsWith('/accept')"};
+        if(fault) {const attempts=JSON.parse(localStorage.getItem('handoff-attempts')||'[]');attempts.push({path,body,key});localStorage.setItem('handoff-attempts',JSON.stringify(attempts));}
+        const result=await handoffOriginal.call(this,path,body,key);
+        if(fault&&!localStorage.getItem('handoff-dropped')) {localStorage.setItem('handoff-dropped','1');throw new TypeError('Synthetic committed reply loss');}
+        return result;
+      };
+    `});
+  });
+  const ids=await seed(page);await send(page);
+  if(fault==='accept') {await asReceiver(page,ids);await page.getByRole('button',{name:'Potwierdź przyjęcie',exact:true}).click();}
+  await expect(page.getByRole('button',{name:'Sprawdź wynik',exact:true})).toBeVisible();
+  await page.reload();await page.getByRole('button',{name:'Sprawdź wynik',exact:true}).click();
+  await expect(page.getByRole('region',{name:'Wybrane przekazanie',exact:true})).toContainText(fault==='send'?'Oczekuje na przyjęcie':'Przyjęto');
+  const attempts=await page.evaluate(()=>JSON.parse(localStorage.getItem('handoff-attempts')));
+  expect(attempts).toHaveLength(2);expect(attempts[1]).toEqual(attempts[0]);
+  const s=await state(page);expect(s.handoffs).toHaveLength(1);
+  expect(s.balances.find(row=>row.id===ids.source).on_hand).toBe('22');
+  expect(s.balances.find(row=>row.id===ids.destination).on_hand).toBe(fault==='send'?'0.000000':'2');
+});
+
+test('an installation without department grants keeps its existing workplace and makes no handoff reads',async({page})=>{
+  await page.route('**/app/src/demo.js',async route=>{
+    const response=await route.fetch(),source=await response.text();
+    await route.fulfill({response,body:source+`
+      const paperOriginal=DemoWarehouse.prototype.request;
+      DemoWarehouse.prototype.request=async function(path,body,key) {if(path.includes('/handoffs'))localStorage.setItem('unexpected-handoff-read',path);return paperOriginal.call(this,path,body,key);};
+    `});
+  });
+  await page.goto('/app/?demo=1');await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Przekazania między działami',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Przekaż do działu',exact:true})).toHaveCount(0);
+  expect(await page.evaluate(()=>localStorage.getItem('unexpected-handoff-read'))).toBeNull();
+});

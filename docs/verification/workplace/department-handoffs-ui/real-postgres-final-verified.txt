@@ -1,0 +1,24 @@
+=== RUN   TestBrowserHandoffsAgainstPostgres
+    handoffs_browser_integration_test.go:97: Real handoff browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\handoff-ui-tdd\real-pg-start-restore-final\handoffs\ea23764c-77e7-4dcd-81af-aaa365ca58cc
+        
+        Running 1 test using 1 worker
+        
+        (node:36504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          ok 1 tests\handoff-live-workflow.spec.mjs:6:1 › different employees send and accept one exact handoff through real PostgreSQL despite both committed replies being lost (2.7s)
+        
+          1 passed (3.8s)
+--- PASS: TestBrowserHandoffsAgainstPostgres (4.97s)
+=== RUN   TestBrowserReceiptAndPutawayAgainstPostgres
+    ui_workflow_integration_test.go:106: Browser evidence: C:\Users\sashk\Documents\WMS\wms-platform\work\handoff-ui-tdd\real-pg-start-restore-final\receiving\493bc87a-0f44-4511-91ba-9d9e45d22c81
+        
+        Running 1 test using 1 worker
+        
+        (node:41156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+        (Use `node --trace-warnings ...` to show where the warning was created)
+          ok 1 tests\live-workflow.spec.mjs:6:1 › bureau receipt and no-code putaway survive a lost committed response with optional scanner validation (4.4s)
+        
+          1 passed (5.4s)
+--- PASS: TestBrowserReceiptAndPutawayAgainstPostgres (6.80s)
+PASS
+ok  	github.com/Shpuntyara/wms-platform/internal/postgres	11.804s

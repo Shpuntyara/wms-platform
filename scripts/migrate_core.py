@@ -24,6 +24,7 @@ PUBLISHED_MIGRATIONS = (
     '0011_document_owner_seek.sql',
     '0012_document_business_context.sql',
     '0013_work_orders.sql',
+    '0014_department_handoffs.sql',
 )
 
 def source(path):

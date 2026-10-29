@@ -1,0 +1,386 @@
+//go:build integration
+
+package postgres_test
+
+import (
+	"context"
+	"encoding/json"
+	"net"
+	"net/http"
+	"os"
+	"strings"
+	"sync/atomic"
+	"testing"
+
+	"github.com/Shpuntyara/wms-platform/internal/postgres"
+	"github.com/jackc/pgx/v5/pgxpool"
+)
+
+type handoffFixture struct {
+	*fixture
+	sender, receiver, outsider string
+	departments, positions     []string
+}
+
+func newHandoffFixture(t *testing.T) *handoffFixture {
+	t.Helper()
+	return configureHandoffFixture(t, newFixture(t))
+}
+func configureHandoffFixture(t *testing.T, base *fixture) *handoffFixture {
+	t.Helper()
+	f := &handoffFixture{fixture: base, receiver: id(), outsider: id()}
+	f.sender = f.actor
+	// Absence of the new feature is an explicit availability failure, never a skip.
+	if f.scalar(`SELECT (to_regprocedure('warehouse.command_handoff(uuid,uuid,uuid,jsonb)') IS NOT NULL)::text`) != "true" {
+		t.Fatal("HANDOFF_FEATURE_MISSING: authenticated custody command not installed")
+	}
+	f.exec(`INSERT INTO platform.actors(id,issuer,subject) VALUES($1,'https://tests.invalid',$1::uuid::text),($2,'https://tests.invalid',$2::uuid::text)`, f.receiver, f.outsider)
+	for i, name := range []string{"Magazyn", "Spawanie", "Szlifowanie", "Lakiernia", "Montaż"} {
+		dept, pos, loc := id(), id(), id()
+		if i == 0 {
+			pos = f.scalar(`SELECT position_id::text FROM inventory.stock_balances WHERE id=$1`, f.source)
+		} else {
+			f.exec(`INSERT INTO warehouse.locations(id,organization_id,warehouse_id,code,kind) VALUES($1,$2,$3,$1::uuid::text,'storage')`, loc, f.org, f.wh)
+			f.exec(`INSERT INTO warehouse.positions(id,organization_id,warehouse_id,location_id) VALUES($1,$2,$3,$4)`, pos, f.org, f.wh, loc)
+		}
+		kind := "production"
+		if i == 0 {
+			kind = "warehouse"
+		}
+		f.exec(`INSERT INTO warehouse.departments(id,organization_id,warehouse_id,code,name,kind,position_id) VALUES($1,$2,$3,$1::uuid::text,$4,$5,$6)`, dept, f.org, f.wh, name, kind, pos)
+		f.exec(`INSERT INTO warehouse.department_positions(organization_id,warehouse_id,department_id,position_id) VALUES($1,$2,$3,$4)`, f.org, f.wh, dept, pos)
+		f.departments = append(f.departments, dept)
+		f.positions = append(f.positions, pos)
+	}
+	for i, actor := range []string{f.sender, f.receiver, f.outsider} {
+		name := []string{"Jan Kowalski", "Anna Zielińska", "Piotr Nowak"}[i]
+		f.exec(`INSERT INTO warehouse.department_employees(actor_id,organization_id,display_name) VALUES($1,$2,$3)`, actor, f.org, name)
+		for _, permission := range []string{"handoff.send", "handoff.accept", "handoff.read"} {
+			f.exec(`INSERT INTO platform.actor_grants(actor_id,organization_id,warehouse_id,owner_id,permission) VALUES($1,$2,$3,$4,$5)`, actor, f.org, f.wh, f.owner, permission)
+		}
+	}
+	f.exec(`INSERT INTO warehouse.department_members(organization_id,warehouse_id,department_id,actor_id) VALUES($1,$2,$3,$4),($1,$2,$5,$6)`, f.org, f.wh, f.departments[0], f.sender, f.departments[1], f.receiver)
+	for i := range 5 {
+		f.exec(`INSERT INTO warehouse.department_routes(organization_id,warehouse_id,source_department_id,destination_department_id) VALUES($1,$2,$3,$4)`, f.org, f.wh, f.departments[i], f.departments[(i+1)%5])
+	}
+	return f
+}
+
+// These are transport-level characterization cases after the initial feature RED.
+// Each mode establishes a different durable outcome before same-command retry.
+func TestHandoffsUnknownCommitCanonicalReplay(t *testing.T) {
+	for _, action := range []string{"send", "accept"} {
+		for _, mode := range []string{"before_send", "after_ack_eof", "after_ack_generic"} {
+			t.Run(action+"/"+mode, func(t *testing.T) {
+				f := newHandoffFixture(t)
+				actor, path, body, status := f.sender, "/api/v1/handoffs/send", f.sendBody("1.25"), 201
+				if action == "accept" {
+					sent := f.request(f.actorHandler(f.sender), "POST", path, body, id())
+					requireStatus(t, sent, 201)
+					handoff := handoffResult(t, sent.Body.Bytes())["handoff_id"].(string)
+					actor = f.receiver
+					path = "/api/v1/handoffs/" + handoff + "/accept"
+					body = f.acceptBody(1)
+					status = 200
+				}
+				cfg, err := pgxpool.ParseConfig(os.Getenv("WMS_TEST_RUNTIME_DSN"))
+				if err != nil {
+					t.Fatal(err)
+				}
+				cfg.MaxConns = 1
+				var dropped atomic.Bool
+				cfg.ConnConfig.DialFunc = func(ctx context.Context, network, address string) (net.Conn, error) {
+					conn, err := (&net.Dialer{}).DialContext(ctx, network, address)
+					if err != nil {
+						return nil, err
+					}
+					return &documentCommitFault{Conn: conn, mode: mode, dropped: &dropped}, nil
+				}
+				pool, err := pgxpool.NewWithConfig(t.Context(), cfg)
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(pool.Close)
+				f.store, err = postgres.New(t.Context(), pool)
+				if err != nil {
+					t.Fatal(err)
+				}
+				h, key := f.actorHandler(actor), id()
+				interrupted := f.request(h, "POST", path, body, key)
+				requireStatus(t, interrupted, 503)
+				if !dropped.Load() || !strings.Contains(interrupted.Body.String(), "same command identifier") {
+					t.Fatal("HANDOFF_ASSERTION actual COMMIT loss did not require identical retry")
+				}
+				want := "1"
+				if mode == "before_send" {
+					want = "0"
+				}
+				if got := f.scalar(`SELECT count(*) FROM platform.operations WHERE id=$1 AND completed_at IS NOT NULL`, key); got != want {
+					t.Fatalf("HANDOFF_ASSERTION committed before retry=%s want=%s", got, want)
+				}
+				first := f.request(h, "POST", path, body, key)
+				requireStatus(t, first, status)
+				for range 2 {
+					replay := f.request(h, "POST", path, body, key)
+					requireStatus(t, replay, status)
+					if replay.Body.String() != first.Body.String() {
+						t.Fatal("HANDOFF_ASSERTION unconfirmed commit duplicated or changed handoff")
+					}
+				}
+				if f.scalar(`SELECT count(*) FROM warehouse.handoffs WHERE organization_id=$1`, f.org) != "1" || f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, f.source) != "8.750000" {
+					t.Fatal("HANDOFF_ASSERTION retry posted send twice")
+				}
+				movements := "2"
+				if action == "accept" {
+					movements = "3"
+				}
+				if f.scalar(`SELECT count(*) FROM inventory.movements WHERE organization_id=$1`, f.org) != movements {
+					t.Fatal("HANDOFF_ASSERTION retry duplicated ledger events")
+				}
+			})
+		}
+	}
+}
+func (f *handoffFixture) sendBody(quantity string) map[string]any {
+	return map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "source_balance_id": f.source, "destination_department_id": f.departments[1], "quantity": quantity}
+}
+func (f *handoffFixture) acceptBody(version int) map[string]any {
+	return map[string]any{"organization_id": f.org, "warehouse_id": f.wh, "expected_version": version}
+}
+func (f *handoffFixture) actorHandler(actor string) http.Handler {
+	original := f.actor
+	f.actor = actor
+	h := f.handler(nil, nil)
+	f.actor = original
+	return h
+}
+func handoffResult(t *testing.T, response []byte) map[string]any {
+	t.Helper()
+	var envelope struct{ Data map[string]any }
+	if err := json.Unmarshal(response, &envelope); err != nil || envelope.Data == nil {
+		t.Fatalf("missing handoff result: %s (%v)", response, err)
+	}
+	return envelope.Data
+}
+
+func TestHandoffsRealPostgresSendAcceptPreservesCustodyAndIdentity(t *testing.T) {
+	f := newHandoffFixture(t)
+	sender, receiver := f.actorHandler(f.sender), f.actorHandler(f.receiver)
+	key := id()
+	sent := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("2.125"), key)
+	requireStatus(t, sent, 201)
+	commandResult := handoffResult(t, sent.Body.Bytes())
+	handoff := commandResult["handoff_id"].(string)
+	readSent := f.request(sender, "GET", f.scopePath("handoffs/"+handoff), nil, "")
+	requireStatus(t, readSent, 200)
+	h := handoffResult(t, readSent.Body.Bytes())
+	if h["sender_actor_id"] != f.sender || h["sender_name"] != "Jan Kowalski" || h["receiver_actor_id"] != nil || h["state"] != "sent" || h["quantity"] != "2.125000" || h["item_id"] != f.item {
+		t.Fatalf("wrong sent identity: %v", h)
+	}
+	if f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, f.source) != "7.875000" {
+		t.Fatal("HANDOFF_ASSERTION source was not debited exactly")
+	}
+	if f.scalar(`SELECT concat(b.on_hand::text,'/',b.stock_state,'/',s.allocatable::text,'/',s.shippable::text) FROM inventory.stock_balances b JOIN inventory.stock_states s ON s.code=b.stock_state WHERE b.id=$1`, h["transit_balance_id"]) != "2.125000/in_transit/false/false" {
+		t.Fatal("HANDOFF_ASSERTION pending material is available again")
+	}
+	for range 2 {
+		replay := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("2.125"), key)
+		requireStatus(t, replay, 201)
+		if replay.Body.String() != sent.Body.String() {
+			t.Fatal("HANDOFF_ASSERTION send replay changed result")
+		}
+	}
+	self := f.request(sender, "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(1), id())
+	requireStatus(t, self, 403)
+	acceptKey := id()
+	accepted := f.request(receiver, "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(1), acceptKey)
+	requireStatus(t, accepted, 200)
+	acceptedRead := f.request(receiver, "GET", f.scopePath("handoffs/"+handoff), nil, "")
+	requireStatus(t, acceptedRead, 200)
+	got := handoffResult(t, acceptedRead.Body.Bytes())
+	if got["receiver_actor_id"] != f.receiver || got["receiver_name"] != "Anna Zielińska" || got["state"] != "accepted" || got["version"] != float64(2) {
+		t.Fatalf("HANDOFF_ASSERTION receiver not independently bound: %v", got)
+	}
+	if f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, got["destination_balance_id"]) != "2.125000" || f.scalar(`SELECT on_hand::text FROM inventory.stock_balances WHERE id=$1`, got["transit_balance_id"]) != "0.000000" {
+		t.Fatal("HANDOFF_ASSERTION accept does not conserve exact quantities")
+	}
+	for range 2 {
+		replay := f.request(receiver, "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(1), acceptKey)
+		requireStatus(t, replay, 200)
+		if replay.Body.String() != accepted.Body.String() {
+			t.Fatal("HANDOFF_ASSERTION accept replay changed result")
+		}
+	}
+	for _, document := range []any{got["send_document_id"], got["accept_document_id"]} {
+		if f.scalar(`SELECT concat(kind,'/',state,'/',(SELECT count(*) FROM warehouse.document_lines l WHERE l.document_id=d.id AND l.item_id=$2)) FROM warehouse.documents d WHERE id=$1`, document, f.item) != "transfer/closed/1" {
+			t.Fatal("HANDOFF_ASSERTION internal MM not completed for original product")
+		}
+	}
+	if f.scalar(`SELECT count(*) FROM catalog.items WHERE organization_id=$1`, f.org) != "1" {
+		t.Fatal("HANDOFF_ASSERTION handoff manufactured another SKU")
+	}
+	read := f.request(receiver, "GET", f.scopePath("handoffs/"+handoff), nil, "")
+	requireStatus(t, read, 200)
+	ctx := f.request(receiver, "GET", f.scopePath("handoffs/context"), nil, "")
+	requireStatus(t, ctx, 200)
+	list := f.request(receiver, "GET", f.scopePath("handoffs"), nil, "")
+	requireStatus(t, list, 200)
+}
+
+func TestHandoffsRealPostgresRejectsChangedPayloadMembershipAndVersion(t *testing.T) {
+	f := newHandoffFixture(t)
+	sender, receiver := f.actorHandler(f.sender), f.actorHandler(f.receiver)
+	key := id()
+	sent := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("1"), key)
+	requireStatus(t, sent, 201)
+	h := handoffResult(t, sent.Body.Bytes())
+	handoff := h["handoff_id"].(string)
+	reused := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("2"), key)
+	requireStatus(t, reused, 409)
+	for _, tc := range []struct {
+		name, actor string
+		version     int
+	}{{"wrong department", f.outsider, 1}, {"same actor", f.sender, 1}, {"stale version", f.receiver, 7}} {
+		t.Run(tc.name, func(t *testing.T) {
+			want := 403
+			if tc.version != 1 {
+				want = 409
+			}
+			r := f.request(f.actorHandler(tc.actor), "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(tc.version), id())
+			requireStatus(t, r, want)
+		})
+	}
+	f.exec(`UPDATE warehouse.department_members SET enabled=false WHERE actor_id=$1`, f.sender)
+	replay := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("1"), key)
+	requireStatus(t, replay, 403)
+	f.exec(`UPDATE warehouse.department_members SET enabled=true WHERE actor_id=$1`, f.sender)
+	acceptKey := id()
+	accepted := f.request(receiver, "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(1), acceptKey)
+	requireStatus(t, accepted, 200)
+	f.exec(`UPDATE warehouse.department_members SET enabled=false WHERE actor_id=$1`, f.receiver)
+	replay = f.request(receiver, "POST", "/api/v1/handoffs/"+handoff+"/accept", f.acceptBody(1), acceptKey)
+	requireStatus(t, replay, 403)
+	if got := f.scalar(`SELECT count(*) FROM inventory.movements WHERE organization_id=$1`, f.org); got != "3" {
+		t.Fatalf("HANDOFF_ASSERTION denied commands changed ledger: %s", got)
+	}
+}
+
+func TestHandoffsRealPostgresGuardDeniesGenericTransitAndProductionWrites(t *testing.T) {
+	f := newHandoffFixture(t)
+	sender := f.actorHandler(f.sender)
+	sent := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("1"), id())
+	requireStatus(t, sent, 201)
+	commandResult := handoffResult(t, sent.Body.Bytes())
+	read := f.request(sender, "GET", f.scopePath("handoffs/"+commandResult["handoff_id"].(string)), nil, "")
+	requireStatus(t, read, 200)
+	h := handoffResult(t, read.Body.Bytes())
+	for _, tc := range []struct{ name, source, target string }{
+		{"steal transit", h["transit_balance_id"].(string), f.target},
+		{"inject transit", f.source, h["transit_balance_id"].(string)},
+		{"bypass independent receipt", f.source, h["destination_balance_id"].(string)},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			_, line := f.doc("transfer", "1", f.owner)
+			key := id()
+			before := f.scalar(`SELECT jsonb_agg(to_jsonb(b) ORDER BY id)::text FROM inventory.stock_balances b WHERE organization_id=$1`, f.org)
+			_, err := f.runtime.Exec(t.Context(), `SELECT inventory.post_movement($1,$2,$3,1,'transfer',$4,$5,1)`, key, f.sender, line, tc.source, tc.target)
+			if err == nil {
+				t.Fatal("HANDOFF_ASSERTION generic movement bypassed custody")
+			}
+			if after := f.scalar(`SELECT jsonb_agg(to_jsonb(b) ORDER BY id)::text FROM inventory.stock_balances b WHERE organization_id=$1`, f.org); after != before {
+				t.Fatal("HANDOFF_ASSERTION denied movement changed a balance/version")
+			}
+			if f.scalar(`SELECT count(*) FROM platform.operations WHERE id=$1`, key) != "0" {
+				t.Fatal("HANDOFF_ASSERTION denied movement committed operation")
+			}
+		})
+	}
+	if _, err := f.runtime.Exec(t.Context(), `SELECT inventory.ensure_balance($1,$2,$3,$4,$5,'available')`, f.org, f.wh, f.owner, f.item, h["transit_position_id"]); err == nil {
+		t.Fatal("HANDOFF_ASSERTION transit admits allocatable identity")
+	}
+	_, err := f.runtime.Exec(t.Context(), `SELECT inventory.reserve_stock($1,$2,$3,1,$4,1)`, id(), f.sender, f.line, h["transit_balance_id"])
+	if err == nil {
+		t.Fatal("HANDOFF_ASSERTION pending quantity reservable")
+	}
+}
+
+func TestHandoffsContextIncludesEveryConfiguredSourcePosition(t *testing.T) {
+	f := newHandoffFixture(t)
+	additional := f.scalar(`SELECT position_id::text FROM inventory.stock_balances WHERE id=$1`, f.target)
+	f.exec(`INSERT INTO warehouse.department_positions(organization_id,warehouse_id,department_id,position_id) VALUES($1,$2,$3,$4)`, f.org, f.wh, f.departments[0], additional)
+	r := f.request(f.actorHandler(f.sender), "GET", f.scopePath("handoffs/context"), nil, "")
+	requireStatus(t, r, 200)
+	var result struct {
+		Data struct {
+			Departments []struct {
+				ID          string
+				PositionID  string   `json:"position_id"`
+				PositionIDs []string `json:"position_ids"`
+			}
+		}
+	}
+	if err := json.Unmarshal(r.Body.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	for _, dept := range result.Data.Departments {
+		if dept.ID == f.departments[0] {
+			if dept.PositionID != f.positions[0] || len(dept.PositionIDs) != 2 || !(dept.PositionIDs[0] == additional || dept.PositionIDs[1] == additional) || !(dept.PositionIDs[0] == f.positions[0] || dept.PositionIDs[1] == f.positions[0]) {
+				t.Fatalf("HANDOFF_ASSERTION department context hides configured source locations: %+v", dept)
+			}
+			return
+		}
+	}
+	t.Fatal("HANDOFF_ASSERTION department missing from context")
+}
+
+func TestHandoffsQueueFiltersUseAuthenticatedRecipientAndSender(t *testing.T) {
+	f := newHandoffFixture(t)
+	sender, receiver := f.actorHandler(f.sender), f.actorHandler(f.receiver)
+	sent := f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("1"), id())
+	requireStatus(t, sent, 201)
+	acceptedID := handoffResult(t, sent.Body.Bytes())["handoff_id"].(string)
+	accepted := f.request(receiver, "POST", "/api/v1/handoffs/"+acceptedID+"/accept", f.acceptBody(1), id())
+	requireStatus(t, accepted, 200)
+	sent = f.request(sender, "POST", "/api/v1/handoffs/send", f.sendBody("1"), id())
+	requireStatus(t, sent, 201)
+	pendingID := handoffResult(t, sent.Body.Bytes())["handoff_id"].(string)
+	f.exec(`INSERT INTO warehouse.department_routes(organization_id,warehouse_id,source_department_id,destination_department_id) VALUES($1,$2,$3,$4)`, f.org, f.wh, f.departments[0], f.departments[2])
+	body := f.sendBody("1")
+	body["destination_department_id"] = f.departments[2]
+	sent = f.request(sender, "POST", "/api/v1/handoffs/send", body, id())
+	requireStatus(t, sent, 201)
+	for _, tc := range []struct {
+		name, actor, view string
+		count             int
+	}{
+		{"recipient pending only", f.receiver, "incoming", 1}, {"recipient own outgoing empty", f.receiver, "outgoing", 0},
+		{"sender cannot receive own party", f.sender, "incoming", 0}, {"sender outgoing includes history", f.sender, "outgoing", 3}, {"all remains history", f.receiver, "all", 3},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw, _ := json.Marshal(map[string]any{"limit": 100, "view": tc.view})
+			rows, err := f.runtime.Query(t.Context(), `SELECT * FROM warehouse.read_handoffs($1,$2,$3,$4::jsonb)`, tc.actor, f.org, f.wh, raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer rows.Close()
+			ids := []string{}
+			for rows.Next() {
+				var data json.RawMessage
+				if err = rows.Scan(&data); err != nil {
+					t.Fatal(err)
+				}
+				var result struct{ ID string }
+				if err = json.Unmarshal(data, &result); err != nil {
+					t.Fatal(err)
+				}
+				ids = append(ids, result.ID)
+			}
+			if err = rows.Err(); err != nil {
+				t.Fatal(err)
+			}
+			if len(ids) != tc.count || tc.view == "incoming" && tc.count == 1 && ids[0] != pendingID {
+				t.Fatalf("HANDOFF_ASSERTION server queue %s leaked or hid custody work: %v", tc.view, ids)
+			}
+		})
+	}
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "path": "db/migrations/0014_department_handoffs.sql",
+    "sha256": "a51ffaa0216d3b1f8deeca51fb84e1bbd3041abcfb84df83d37f685e1bee9128"
+  },
+  {
+    "path": "deploy/linux/wmsctl.py",
+    "sha256": "c2e6574eefb6c66b0bbd2b278785a4551904dbf2c79d9c7dd29cc4022ddec8f7"
+  },
+  {
+    "path": "internal/postgres/handoffs_integration_test.go",
+    "sha256": "32e8a533150add5d0093182174dd259d0dd825642c3ce6dd577b5da266bd93b7"
+  },
+  {
+    "path": "tests/test_handoff_installer.py",
+    "sha256": "ada0a07d35c7416865d340f26338a18bd56a47357abaf7cb08ae69c117026cf8"
+  }
+]

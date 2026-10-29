@@ -56,6 +56,11 @@ func New(config Config) (http.Handler, error) {
 	s := &Server{config: config, mux: http.NewServeMux()}
 	s.mux.HandleFunc("/api/v1/workspace", s.workspace)
 	s.mux.HandleFunc("/api/v1/work-orders", s.workOrders)
+	s.mux.HandleFunc("/api/v1/handoffs", s.handoffs)
+	s.mux.HandleFunc("/api/v1/handoffs/context", s.handoffs)
+	s.mux.HandleFunc("/api/v1/handoffs/{id}", s.handoffs)
+	s.mux.HandleFunc("/api/v1/handoffs/send", s.handoffCommand)
+	s.mux.HandleFunc("/api/v1/handoffs/{id}/accept", s.handoffCommand)
 	s.mux.HandleFunc("/livez", func(w http.ResponseWriter, r *http.Request) {
 		if !s.method(w, r, "GET") {
 			return

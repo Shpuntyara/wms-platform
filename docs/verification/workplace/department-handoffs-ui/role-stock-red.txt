@@ -1,0 +1,89 @@
+[WebServer] (node:42076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 2 workers
+
+
+(node:40608) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:35264) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] tests\handoff-workplace.spec.mjs:183:1 › transit and production stock show the handoff route without generic warehouse actions
+[2/2] tests\handoff-workplace.spec.mjs:167:1 › an operator with only stock and handoff grants opens the warehouse without document reads
+  1) tests\handoff-workplace.spec.mjs:167:1 › an operator with only stock and handoff grants opens the warehouse without document reads 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'Stany według adresów', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Stany według adresów', exact: true }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'Stany według adresów', exact: true })
+
+
+      176 |   await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('wms-training-v2'));s.workspace.scopes[0].grants=s.workspace.scopes[0].grants.filter(row=>row.permission==='stock.read'||row.permission.startsWith('handoff.'));s.limited_operator=true;localStorage.setItem('wms-training-v2',JSON.stringify(s));});
+      177 |   await page.reload();
+    > 178 |   await expect(page.getByRole('heading',{name:'Stany według adresów',exact:true})).toBeVisible();
+          |                                                                                    ^
+      179 |   await expect(page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'A1'}).getByRole('button',{name:'Przekaż do działu',exact:true})).toBeVisible();
+      180 |   expect(await page.evaluate(()=>localStorage.getItem('denied-document-read'))).toBeNull();
+      181 | });
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:178:84
+
+    Error Context: ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-an-opera-dc615-ouse-without-document-reads\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-an-opera-dc615-ouse-without-document-reads\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-an-opera-dc615-ouse-without-document-reads\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\handoff-workplace.spec.mjs:183:1 › transit and production stock show the handoff route without generic warehouse actions 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' })
+    Expected substring: "Magazyn → Spawanie"
+    Received string:    "Śruba M8 × 40, ocynkowanaBOLT-M8W przekazaniuPółnoc · ZaopatrzenieW przekazaniuOczekuje na potwierdzenie przyjęcia2 szt.00 szt.Wydaj towarPrzenieś towar"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' }) with timeout 5000ms
+      - waiting for getByRole('row').filter({ hasText: 'BOLT-M8' }).filter({ hasText: 'W przekazaniu' })
+        14 × locator resolved to <tr>…</tr>
+           - unexpected value "Śruba M8 × 40, ocynkowanaBOLT-M8W przekazaniuPółnoc · ZaopatrzenieW przekazaniuOczekuje na potwierdzenie przyjęcia2 szt.00 szt.Wydaj towarPrzenieś towar"
+
+
+      185 |   await page.getByRole('button',{name:'Stany',exact:true}).click();
+      186 |   const transit=page.getByRole('row').filter({hasText:'BOLT-M8'}).filter({hasText:'W przekazaniu'});
+    > 187 |   await expect(transit).toContainText('Magazyn → Spawanie');
+          |                         ^
+      188 |   await expect(transit.getByRole('button',{name:'Wydaj towar',exact:true})).toHaveCount(0);
+      189 |   await expect(transit.getByRole('button',{name:'Przenieś towar',exact:true})).toHaveCount(0);
+      190 |   await transit.getByRole('button',{name:'Pokaż przekazanie',exact:true}).click();
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:187:25
+
+    Error Context: ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-transit--716e0-t-generic-warehouse-actions\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-transit--716e0-t-generic-warehouse-actions\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\role-stock-red-artifacts\handoff-workplace-transit--716e0-t-generic-warehouse-actions\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    tests\handoff-workplace.spec.mjs:167:1 › an operator with only stock and handoff grants opens the warehouse without document reads 
+    tests\handoff-workplace.spec.mjs:183:1 › transit and production stock show the handoff route without generic warehouse actions 

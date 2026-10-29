@@ -1,0 +1,34 @@
+--- C:\Users\sashk\Documents\WMS\wms-platform\internal\api\handoffs_test.go (old)
++++ C:\Users\sashk\Documents\WMS\wms-platform\internal\api\handoffs_test.go (new)
+@@ -45,7 +45,7 @@
+ }
+ func handoffsHandler(t *testing.T, permissions ...string) (http.Handler, *handoffsBackend) {
+ 	t.Helper()
+-	b := &handoffsBackend{fakeBackend: fakeBackend{principal: inventory.Principal{ActorID: testActor}}}
++	b := &handoffsBackend{principal: inventory.Principal{ActorID: testActor}}
+ 	for _, permission := range permissions {
+ 		b.principal.Grants = append(b.principal.Grants, inventory.Grant{OrganizationID: testOrg, WarehouseID: testWarehouse, OwnerID: planOwner, Permission: permission})
+ 	}
+--- C:\Users\sashk\Documents\WMS\wms-platform\internal\postgres\department_handoffs_critic_integration_test.go (old)
++++ C:\Users\sashk\Documents\WMS\wms-platform\internal\postgres\department_handoffs_critic_integration_test.go (new)
+@@ -9,6 +9,7 @@
+ 	"math/big"
+ 	"math/rand/v2"
+ 	"net/http"
++	"slices"
+ 	"sync"
+ 	"testing"
+ 
+@@ -178,9 +179,9 @@
+ 			if got := h.scalar(`SELECT count(DISTINCT transit_position_id)::text FROM warehouse.handoffs WHERE organization_id=$1`, h.org); got != "4" {
+ 				t.Fatalf("HANDOFF_ASSERTION: same-SKU pending parcels share transit identity: %s", got)
+ 			}
+-			for i := len(parcels) - 1; i >= 0; i-- {
+-				h.accept(t, parcels[i].handoff, 1)
+-				pending.Sub(pending, criticHandoffQuantity(t, parcels[i].quantity))
++			for _, parcel := range slices.Backward(parcels) {
++				h.accept(t, parcel.handoff, 1)
++				pending.Sub(pending, criticHandoffQuantity(t, parcel.quantity))
+ 				h.assertConservation(t, pending)
+ 			}
+ 			for next := 2; next < len(h.departments); next++ {

@@ -1,0 +1,31 @@
+FF
+======================================================================
+FAIL: test_existing_department_identity_drift_is_rejected_without_partial_stock_or_grant_changes (test_department_workflow_postgres.DepartmentSetupPostgresTests.test_existing_department_identity_drift_is_rejected_without_partial_stock_or_grant_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 60, in setUp
+    self.sql('BEGIN;\n'+'\n'.join(statements)+'\nCOMMIT;')
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 28, in sql
+    if success:self.assertEqual(result.returncode,0,result.stderr)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 3 != 0 : ERROR:  null value in column "line_no" of relation "document_lines" violates not-null constraint
+DETAIL:  Failing row contains (e3eed4bf-8571-4307-b021-b733d762dc78, 7390eabb-2660-4812-b4e2-fec0c5ec5997, f4abab1f-2009-4360-affc-261c0f7a1135, c80787ee-0e29-496b-9653-2142a6a08375, 548c78b6-8d1b-417d-8a9a-3c5fda98c902, 20b40557-7a34-4ca2-9790-b2c0b8ee65c8, null, 10.000000, 0.000000, 0.000000).
+
+
+======================================================================
+FAIL: test_real_seed_is_additive_idempotent_and_preserves_positive_stock_documents_and_skus (test_department_workflow_postgres.DepartmentSetupPostgresTests.test_real_seed_is_additive_idempotent_and_preserves_positive_stock_documents_and_skus)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 60, in setUp
+    self.sql('BEGIN;\n'+'\n'.join(statements)+'\nCOMMIT;')
+  File "C:\Users\sashk\Documents\WMS\wms-platform\tests\test_department_workflow_postgres.py", line 28, in sql
+    if success:self.assertEqual(result.returncode,0,result.stderr)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 3 != 0 : ERROR:  null value in column "line_no" of relation "document_lines" violates not-null constraint
+DETAIL:  Failing row contains (f7208f67-2845-4ca3-b12c-aae347a128c7, 0ca58598-df71-4361-b138-144df09f2802, 2c48b70b-fe99-41a5-b97d-af763be0c440, debe0434-6fde-4115-aab4-6d3aedd68fe4, 930f4a8f-91ec-4081-8c87-d6ad95e3d306, 6e127659-6d5f-47e3-85b0-6345b4f9e993, null, 10.000000, 0.000000, 0.000000).
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.203s
+
+FAILED (failures=2)

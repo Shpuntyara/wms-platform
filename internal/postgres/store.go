@@ -530,6 +530,9 @@ func translate(err error) error {
 		}
 		return &inventory.Problem{Status: 503, Code: "database_busy", Detail: "The operation is unavailable."}
 	case "P0001":
+		if pgerr.Message == "handoff_managed_stock" || pgerr.Message == "handoff_managed_position" || pgerr.Message == "handoff_version_conflict" || pgerr.Message == "handoff_already_accepted" {
+			return &inventory.Problem{Status: 409, Code: pgerr.Message, Detail: "The operation conflicts with department custody or current handoff state."}
+		}
 		if pgerr.Message == "required_guard_unavailable" {
 			return &modules.Unavailable{}
 		}

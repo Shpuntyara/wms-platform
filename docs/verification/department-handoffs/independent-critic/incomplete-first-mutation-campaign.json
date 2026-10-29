@@ -1,0 +1,541 @@
+{
+  "passed": false,
+  "scope": "Isolated custody faults; only explicit behavior assertions can kill a mutant.\n\nAn owned, empty database is migrated by the official migrator. Each SQL fault\nuses a fresh clone of that clean template. No shared test DB or migration source\nis edited, and no installation/VM data is used.\n",
+  "source_sha256_lf": {
+    "db/migrations/0014_department_handoffs.sql": "6acf0f59ea181cf05628aa4943a1c2883879c573ca2a57af3bc266c885788a9d",
+    "internal/postgres/department_handoffs_critic_integration_test.go": "de865acde90d8a5600318b9c852671bddcbbc204493c7c078a76d141328a34b4",
+    "scripts/verify_handoff_mutations.py": "e68cab709331675f713012df1aa916f346d079a0be98829d749d0a434534b18e"
+  },
+  "mutations": [
+    {
+      "name": "owner_permission_ignored",
+      "signature": "warehouse.handoff_authorize(uuid,uuid,uuid,uuid,text)",
+      "status": "survived",
+      "tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/loop_to_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_Spawanie",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_to_Montaż",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/ungranted_owner_with_real_stock"
+      ],
+      "failed_tests": [],
+      "source_function_sha256_lf": "9e54200191e39ba7466ad9cd016f1dad22456a57b92dfadaab46b2ab898416bc",
+      "mutant_sha256": "84732884c08981d5eeb62e1c82ebabcd6800ceb3915fe3e66c7cebdb8536fcbf"
+    },
+    {
+      "name": "specific_permission_ignored",
+      "signature": "warehouse.handoff_authorize(uuid,uuid,uuid,uuid,text)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_employee",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_membership",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_permission"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_permission",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay"
+      ],
+      "source_function_sha256_lf": "9e54200191e39ba7466ad9cd016f1dad22456a57b92dfadaab46b2ab898416bc",
+      "mutant_sha256": "d4a540a454df8056091455503f61e9c43b0ceb5e208272fd3fa2d8ba098a3142"
+    },
+    {
+      "name": "membership_revocation_ignored",
+      "signature": "warehouse.handoff_member(uuid,uuid,uuid,uuid)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_employee",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_membership",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_permission"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_membership",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay"
+      ],
+      "source_function_sha256_lf": "7934c641a87b835433f99127faed4e4905a5adcd7c03e8ec130d1b0a6111189a",
+      "mutant_sha256": "c4ad2130a0dfb81a07ba90323ffc3a0890a770de1838c3dc3a10c0f6b1554d45"
+    },
+    {
+      "name": "employee_disabled_ignored",
+      "signature": "warehouse.handoff_member(uuid,uuid,uuid,uuid)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_employee",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_membership",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_permission"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_employee",
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay"
+      ],
+      "source_function_sha256_lf": "7934c641a87b835433f99127faed4e4905a5adcd7c03e8ec130d1b0a6111189a",
+      "mutant_sha256": "aaf3c50d8d097e9aaa9420e83f3f94052d0b62190fce3e16463f32c9852cb7fd"
+    },
+    {
+      "name": "source_membership_ignored",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/loop_to_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_Spawanie",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_to_Montaż",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/ungranted_owner_with_real_stock"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "c8a7fc0ded235e758c6ba9fae9eda9460be194862a2e6528a8255f32a9f7da6c"
+    },
+    {
+      "name": "receiving_membership_ignored",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticAuthenticatedActorsAreActualWitnesses"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticAuthenticatedActorsAreActualWitnesses"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "1ea4728fddca12ece8b130a4f778ec403ece18dbdda75274bcb81c2cb42f6e8f"
+    },
+    {
+      "name": "route_disabled_ignored",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/loop_to_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_Spawanie",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_to_Montaż",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/ungranted_owner_with_real_stock"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "9e560203d47041d8f50a2eb4acee5e7fd19094d48f47532f25772e67252bd7b5"
+    },
+    {
+      "name": "replay_payload_ignored",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "invalid",
+      "tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "3771837c3c128ea7f6835ee7dbe326b7769e27d9fe74165be5eb3f8f68c863c9"
+    },
+    {
+      "name": "replay_actor_ignored",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/loop_to_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_Spawanie",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_to_Montaż",
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/ungranted_owner_with_real_stock"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "cbf1cc99e762d8e48eb927db1b4f93366cb97137d3c5751c572702fb1bf8377e"
+    },
+    {
+      "name": "quantity_float_rounding",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact",
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/lot",
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/lot_serial",
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/none",
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/serial"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/none",
+        "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "583f34d6dd220707463c3b421978700009be20955d3785eb779605e0d10fe7f2"
+    },
+    {
+      "name": "production_generic_boundary_ignored",
+      "signature": "inventory.guard_handoff_movement()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_pending_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_next_department",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_warehouse",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints"
+      ],
+      "source_function_sha256_lf": "1c4a49a1001a941fd8dcf1654b60ecb6aeaa686742d6ec77fcfbff3b34da9733",
+      "mutant_sha256": "15cf6907704abff42493d1562d8e8ba0efb1c9265bdc1eaca68be0df477d2edc"
+    },
+    {
+      "name": "production_department_identity_ignored",
+      "signature": "inventory.guard_handoff_movement()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_pending_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_next_department",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_warehouse",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints"
+      ],
+      "source_function_sha256_lf": "1c4a49a1001a941fd8dcf1654b60ecb6aeaa686742d6ec77fcfbff3b34da9733",
+      "mutant_sha256": "0d865d89b93b0005c4a7b5319de75a2f5dc3731627f568639bf3e689a7faaccb"
+    },
+    {
+      "name": "same_department_membership_ignored",
+      "signature": "inventory.guard_handoff_movement()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticSameDepartmentMovementRequiresCurrentMember"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticSameDepartmentMovementRequiresCurrentMember"
+      ],
+      "source_function_sha256_lf": "1c4a49a1001a941fd8dcf1654b60ecb6aeaa686742d6ec77fcfbff3b34da9733",
+      "mutant_sha256": "2237727fdd04be176b1d9417d9d6657e473e461f4bd597d7f408db9d6f8c19f3"
+    },
+    {
+      "name": "transit_capability_ignored",
+      "signature": "inventory.guard_handoff_movement()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_pending_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_next_department",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_warehouse",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_warehouse",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_next_department",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_pending_to_ordinary",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_pending",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+        "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints"
+      ],
+      "source_function_sha256_lf": "1c4a49a1001a941fd8dcf1654b60ecb6aeaa686742d6ec77fcfbff3b34da9733",
+      "mutant_sha256": "d8676c52eb828936737d895e44c18bb3000e3933ce23a04de890368dce9494dc"
+    },
+    {
+      "name": "transit_stock_identity_ignored",
+      "signature": "inventory.guard_handoff_balance()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_accepted_production",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_pending",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_available",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_damaged",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_quarantine"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_available",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_quarantine",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_damaged",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged"
+      ],
+      "source_function_sha256_lf": "e1d0bc1e6420bd67e17be441d1cb4ccde34771b7bb405e417f0ed396e6f8e11f",
+      "mutant_sha256": "5f6ec437f82f11a3d695be765f274645cb5973910ba6cbd3f3b09ba29f15e3a1"
+    },
+    {
+      "name": "production_reservation_allowed",
+      "signature": "inventory.guard_handoff_balance()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_accepted_production",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_pending",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_available",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_damaged",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_quarantine"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_accepted_production",
+        "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged"
+      ],
+      "source_function_sha256_lf": "e1d0bc1e6420bd67e17be441d1cb4ccde34771b7bb405e417f0ed396e6f8e11f",
+      "mutant_sha256": "e48a2f223da54b5e181b52f814fdd811c6a7c98d2334e087157a2a072757b4f3"
+    },
+    {
+      "name": "handling_unit_managed_destination_allowed",
+      "signature": "warehouse.protect_managed_handling_unit()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations",
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/production",
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/transit"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/production",
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/transit",
+        "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations"
+      ],
+      "source_function_sha256_lf": "4040a18e73abc0a7384b1ec77b08295d3bb6b7ebfe8b3ef26400f25958c11be1",
+      "mutant_sha256": "9f93dc8ccd3c7cd15abdb8f5f1cdcc4b022b08e8ebc0e546849001dcba462183"
+    },
+    {
+      "name": "ordinary_handling_unit_blocked",
+      "signature": "warehouse.protect_managed_handling_unit()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticOrdinaryHandlingUnitRemainsUsable"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticOrdinaryHandlingUnitRemainsUsable"
+      ],
+      "source_function_sha256_lf": "4040a18e73abc0a7384b1ec77b08295d3bb6b7ebfe8b3ef26400f25958c11be1",
+      "mutant_sha256": "6a18696ac1c64e04a14e6cf8127caea0620ece8b219898f84943e9fae0f50088"
+    },
+    {
+      "name": "acceptance_uses_transaction_start",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticServerChronologyUsesEventTime"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticServerChronologyUsesEventTime"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "ebb33613d7558b176d9aa5888258f4e5411d0c948de35b931ac2c3c8b93f0182"
+    },
+    {
+      "name": "history_guard_omitted",
+      "signature": "warehouse.protect_handoff_history()",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticWitnessNamesAndHistoryAreImmutable"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticWitnessNamesAndHistoryAreImmutable"
+      ],
+      "source_function_sha256_lf": "600b2168bc4b56d5b569a43184a77de3e4f087c1101e02c3bd6d600579c5c8c0",
+      "mutant_sha256": "95e0549380b95a39a8af7649f3ca77d9a63d10f67c50be092d80630bc09ce626"
+    },
+    {
+      "name": "send_inventory_post_omitted",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticIndependentConservationHistories",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_1",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_10",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_11",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_12",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_2",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_3",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_4",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_5",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_6",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_7",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_8",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_9"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_1",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_2",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_3",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_4",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_5",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_6",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_7",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_8",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_9",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_10",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_11",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_12",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "480ced44e1a217f958ebb99c30683ffe26c2844b373ac59957948214499038ad"
+    },
+    {
+      "name": "accept_inventory_post_omitted",
+      "signature": "warehouse.command_handoff(uuid,uuid,uuid,jsonb)",
+      "status": "killed",
+      "tests": [
+        "TestDepartmentHandoffsCriticIndependentConservationHistories",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_1",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_10",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_11",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_12",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_2",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_3",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_4",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_5",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_6",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_7",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_8",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_9"
+      ],
+      "failed_tests": [
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_1",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_2",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_3",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_4",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_5",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_6",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_7",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_8",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_9",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_10",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_11",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories/history_12",
+        "TestDepartmentHandoffsCriticIndependentConservationHistories"
+      ],
+      "source_function_sha256_lf": "f12d18fc9d14b26be9d8a5e458ed2233cb1c1df2953ea74961c089c7dd88e46f",
+      "mutant_sha256": "3e0acb476edef83f52307e66e16e09ad595ddf2ab8c4b76e33d9099f50798b2a"
+    }
+  ],
+  "baseline": {
+    "tests": [
+      "TestDepartmentHandoffsCriticAuthenticatedActorsAreActualWitnesses",
+      "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations",
+      "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/production",
+      "TestDepartmentHandoffsCriticHandlingUnitCannotEnterManagedLocations/transit",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_1",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_10",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_11",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_12",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_2",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_3",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_4",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_5",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_6",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_7",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_8",
+      "TestDepartmentHandoffsCriticIndependentConservationHistories/history_9",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_ordinary_to_production",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_pending_to_ordinary",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_next_department",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_ordinary",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_production_to_warehouse",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_same_department_by_outsider",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_pending",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/MM_warehouse_to_production",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_pending",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/PZ_into_production",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_pending",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_into_production",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_pending",
+      "TestDepartmentHandoffsCriticLegacyCommandsCannotBypassManagedEndpoints/adjustment_out_of_production",
+      "TestDepartmentHandoffsCriticOrdinaryHandlingUnitRemainsUsable",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_department",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/disabled_route",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/loop_to_source_department",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/nonmember_of_source_department",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_Spawanie",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/skip_to_Montaż",
+      "TestDepartmentHandoffsCriticOwnerRouteAndActorCannotBeSubstituted/ungranted_owner_with_real_stock",
+      "TestDepartmentHandoffsCriticSameDepartmentMovementRequiresCurrentMember",
+      "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay",
+      "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_employee",
+      "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_membership",
+      "TestDepartmentHandoffsCriticSelfAcceptanceAndRevocationBeforeReplay/send_replay_revoked_permission",
+      "TestDepartmentHandoffsCriticServerChronologyUsesEventTime",
+      "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact",
+      "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/lot",
+      "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/lot_serial",
+      "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/none",
+      "TestDepartmentHandoffsCriticTrackingAndLargeDecimalsStayExact/serial",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_accepted_production",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/reserve_pending",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_available",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_damaged",
+      "TestDepartmentHandoffsCriticTransitIdentityAndReservationCannotBeForged/transit_identity_quarantine",
+      "TestDepartmentHandoffsCriticWitnessNamesAndHistoryAreImmutable"
+    ],
+    "duration_seconds": 27.0,
+    "status": "survived"
+  },
+  "killed": 20,
+  "survived": 1,
+  "invalid": 1,
+  "skipped": 0,
+  "source_unchanged": true
+}

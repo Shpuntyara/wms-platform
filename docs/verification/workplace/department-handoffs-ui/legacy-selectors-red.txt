@@ -1,0 +1,93 @@
+
+[WebServer] (node:32276) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 2 workers
+
+
+(node:24796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+(node:37928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance
+[2/3] tests\handoff-workplace.spec.mjs:311:54 › legacy receipt selection excludes known production and transit balances after department acceptance
+[3/3] tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance
+  1) tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]')
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]') with timeout 5000ms
+      - waiting for getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]')
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      325 |     await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator('option')).toHaveCount(2);
+      326 |   } else {
+    > 327 |     for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce źródłowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+          |                                                                                                                                                          ^
+      328 |     await page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(fixture.source);
+      329 |     if(kind==='transfer')for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce docelowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+      330 |     if(kind==='shipment') {
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:327:154
+
+    Error Context: ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-t-9f9ea-after-department-acceptance\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2) tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]')
+    Expected: 0
+    Received: 1
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]') with timeout 5000ms
+      - waiting for getByLabel('Miejsce źródłowe', { exact: true }).locator('option[value="22222222-2222-4222-8222-000000000202"]')
+        14 × locator resolved to 1 element
+           - unexpected value "1"
+
+
+      325 |     await expect(page.getByLabel('Miejsce przyjęcia',{exact:true}).locator('option')).toHaveCount(2);
+      326 |   } else {
+    > 327 |     for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce źródłowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+          |                                                                                                                                                          ^
+      328 |     await page.getByLabel('Miejsce źródłowe',{exact:true}).selectOption(fixture.source);
+      329 |     if(kind==='transfer')for(const id of [fixture.production,fixture.transit])await expect(page.getByLabel('Miejsce docelowe',{exact:true}).locator(`option[value="${id}"]`)).toHaveCount(0);
+      330 |     if(kind==='shipment') {
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\handoff-workplace.spec.mjs:327:154
+
+    Error Context: ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\work\handoff-ui-tdd\legacy-valid-red-artifacts\handoff-workplace-legacy-s-0d8cf-after-department-acceptance\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    tests\handoff-workplace.spec.mjs:311:54 › legacy transfer selection excludes known production and transit balances after department acceptance 
+    tests\handoff-workplace.spec.mjs:311:54 › legacy shipment selection excludes known production and transit balances after department acceptance 
+  1 passed (8.0s)

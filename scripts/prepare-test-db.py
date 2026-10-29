@@ -26,6 +26,7 @@ for _ in range(2):
         raise RuntimeError('Online upgrade changed the guard function identity')
 files = [root / 'db/bootstrap/grants.psql', root / 'db/bootstrap/backend-grants.psql']
 files += [root / 'db/bootstrap/industry-backend-grants.psql']
+files += [root / 'db/bootstrap/handoffs-backend-grants.psql']
 files += sorted((root / 'modules/dispatch-quality/migrations').glob('*.sql'))
 files += [root / 'db/bootstrap/dispatch-quality-grants.psql']
 for file in files:

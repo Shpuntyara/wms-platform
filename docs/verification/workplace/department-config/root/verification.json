@@ -1,0 +1,119 @@
+{
+  "scope": "Owned METALFORM lab configuration and account provisioning; mocked identity API plus real native PostgreSQL checks. No VM deployment or real Keycloak acceptance is claimed by these receipts.",
+  "artifacts": [
+    {
+      "path": "before-least-privilege.py.txt",
+      "sha256": "f90d9246725dbd822829fb1bc17b806da1caafeaa3124490bcae9aa7a2c8ed62",
+      "bytes": 16020
+    },
+    {
+      "path": "before-provisioning.py.txt",
+      "sha256": "62f3c98816457dd05b6de8227054ac8d40f1317a22301c32c9331daed86936d6",
+      "bytes": 8019
+    },
+    {
+      "path": "candidate-04-all-green.txt",
+      "sha256": "6fd5e02785de4b3c5e8fa517e319cf0fd5c66faa87d49011f73e84afb8871cb6",
+      "bytes": 122
+    },
+    {
+      "path": "first-green.txt",
+      "sha256": "8abce0903e54e721da7707823f3498595fa400d321f7d5ea7807876220b37d48",
+      "bytes": 114
+    },
+    {
+      "path": "first-red.txt",
+      "sha256": "7f52e6157e4a67b7166997d91502935b1a7a762b790e235800d67456d8ca3f85",
+      "bytes": 7562
+    },
+    {
+      "path": "first-test-sha256.json",
+      "sha256": "f07f60a2cd4e050aaaaa747871474b562e0ab662eb12f1058983b9662fdbfb7f",
+      "bytes": 207
+    },
+    {
+      "path": "first-test.py.txt",
+      "sha256": "45ee7fbbf3304c051915590bb870149382d261d0d5c17ba1c5739ffe3ed5e101",
+      "bytes": 7722
+    },
+    {
+      "path": "installer-critic-green.txt",
+      "sha256": "7fc110c067a3377506dda6bc5b6045be6dab6056ebe35ebcfbc2c6760e7eab49",
+      "bytes": 139
+    },
+    {
+      "path": "native-config-first.txt",
+      "sha256": "aeb399ff03221beccf535215a82dac581b431dbde90a755954dbd9dae556f2cd",
+      "bytes": 2674
+    },
+    {
+      "path": "native-config-fixture-corrected.txt",
+      "sha256": "75a6a86958592bd69732f3734dd5fef0a0f77b487e94267899099497a5711571",
+      "bytes": 105
+    },
+    {
+      "path": "operator-least-privilege-green.txt",
+      "sha256": "3b6c631f81321eaf29bb3ae359b51fd67f014a9c4c7405c615708ec7bbb80a1b",
+      "bytes": 120
+    },
+    {
+      "path": "operator-least-privilege-red-sha256.json",
+      "sha256": "b55352fb3937199efdd4c08a15305e81f4836349b169835d8a7dfe15271636e9",
+      "bytes": 444
+    },
+    {
+      "path": "operator-least-privilege-red.txt",
+      "sha256": "4c338ac4b5d2b287f1107c424bc2484b9858100dd08b9072ecc1f45f5b7aaa7b",
+      "bytes": 873
+    },
+    {
+      "path": "provisioning-green.txt",
+      "sha256": "3cd839730f6c19d21c77b4ee992baa9bb04c3aac2d32e6d318cddce2fc2eb37c",
+      "bytes": 120
+    },
+    {
+      "path": "provisioning-red-sha256.json",
+      "sha256": "3a9b92bd62635550c11477905a2d4ea4e4b6bc12e8d6ad16146e6088db610c0f",
+      "bytes": 444
+    },
+    {
+      "path": "provisioning-red-test.py.txt",
+      "sha256": "417da9307919966aaeedf69e942e1be30b67d9614057c07d76f07474719bab7d",
+      "bytes": 13297
+    },
+    {
+      "path": "provisioning-red.txt",
+      "sha256": "da64b1b774e28d8290fd4cf5c79575f11638fd7289f3f0c9acd59ad2961bb859",
+      "bytes": 4407
+    }
+  ],
+  "final_inputs": [
+    {
+      "path": "deploy/linux/department_workflow.py",
+      "sha256": "56a2066a325a2d4fa9ce2aeb4d607582446054e55525751d60dcc64cbd260eb8",
+      "sha256_lf": "56a2066a325a2d4fa9ce2aeb4d607582446054e55525751d60dcc64cbd260eb8"
+    },
+    {
+      "path": "tests/test_department_workflow.py",
+      "sha256": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99",
+      "sha256_lf": "e555b25ff4426aecc25b2e7f2fc908cfafe6f39f684574292822d7a3eb7c8e99"
+    },
+    {
+      "path": "tests/test_department_workflow_postgres.py",
+      "sha256": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c",
+      "sha256_lf": "bdfdbb7c71bdbcc8f1176c4e873f573452f0e848fa45e6378193284a4790024c"
+    },
+    {
+      "path": "tests/test_department_workflow_critic.py",
+      "sha256": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf",
+      "sha256_lf": "1c18995f360cb870317b82a8b681f2d622b6340f38ba9de3d9706916f2c8baaf"
+    },
+    {
+      "path": "db/migrations/0014_department_handoffs.sql",
+      "sha256": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5",
+      "sha256_lf": "7def1456ca75fb8cc0575b43cb040437acce0003f6271d9dc691d383ed94f2a5"
+    }
+  ],
+  "final_cases": 35,
+  "skipped": 0
+}
