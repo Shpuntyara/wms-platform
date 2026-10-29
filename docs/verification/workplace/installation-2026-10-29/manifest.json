@@ -1,0 +1,186 @@
+{
+  "date": "2026-10-29",
+  "status": "real installed workflow verified on both lab VMs",
+  "runtime_revision": "ce4f6550f23d3c187cefcfe753be406d3f4b0a79",
+  "credential_scan_matches": 0,
+  "files": [
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/A/biuro-real-login.png",
+      "sha256": "c9a2115ad883b0a661cf7b83bb882b178631bb6b05095cd24474efd50c74f499"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/A/magazynier-real-login.png",
+      "sha256": "a4b4ff3376b0d7eee2a95572226eaafdc7a4ed30ad5395d519d8163f5354c2a5"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/A/stany-after-cleanup.png",
+      "sha256": "024cea88fa2fc08423eb6c81a3fe5e683ad72a01068837d3944097a4298e6ee7"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/A/stany-after-putaway.png",
+      "sha256": "4463a018c55281783e30c3104ea308e64fad3c5a2e3fc30f018762e707cd1508"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/A/verified-workflow.json",
+      "sha256": "aa6ded42bd7ad48a5b7bd863d99a4b60cbfc33e43d360a6f6d91fe69bb622110"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/A/verified-cleanup.json",
+      "sha256": "287027e269ab0566d75623b41806228bd88288e656d90e03664e8c400be43109"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/B/biuro-real-login.png",
+      "sha256": "44365df830adc13a9efd34f65261edf7c74e63a4b9dc88d3e0edc537a73a4ae0"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/B/magazynier-real-login.png",
+      "sha256": "80c03b91cbc5b5f764584e6bd51d078b4f0dcfb4fcc6a9654a3a52b80f478fd9"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/B/stany-after-cleanup.png",
+      "sha256": "510d0c821479dc422c5e66b5a2074c811f16a0948ba0acca9dec77c27ce9cb61"
+    },
+    {
+      "path": "docs/portfolio/workplace-vms/2026-10-29/B/stany-after-putaway.png",
+      "sha256": "34956426f9a271c5584a52a939a1c3aafe97836ef9fd32b42047475963ff9e0d"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/B/verified-workflow.json",
+      "sha256": "2233ce185553b24df998af72fd7761c6d907524451119d5e5d8d92c4bcd317c9"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/B/verified-cleanup.json",
+      "sha256": "b31829b57e0f8129695a0a326967469f88559dbbb33c253c0b187eee9653ff73"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/browser-verification.json",
+      "sha256": "563264c4814b59913aa5a61460f09f8517ee84ab0ea72741a433bd685f0e46d1"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/browser-green.txt",
+      "sha256": "92a1780250ec9c2e6ee7dc60a3c82420be26ee74df80a7247933615ebb7cbebe"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-browser-tdd/keycloak-red.txt",
+      "sha256": "57525ebe6020993049582dabd52ba3088ff63431acaf3901d219ec27616fb16c"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-browser-tdd/keycloak-red-hashes.json",
+      "sha256": "17fe350558c8a902b6be5ab860238f5944275e3d3bdeebd1ce3ebfa7b30af2eb"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-browser-tdd/real-login-logout-red.txt",
+      "sha256": "107fc88926e0ac7d219d96f09bd3200afaaa4e64e09cca729a957cf648b92ef0"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-browser-tdd/real-login-logout-red-hashes.json",
+      "sha256": "7e90b45ce4b966f393b3382c69937161f2bb0f7c3093a564940cc66cd09f8de4"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/setup-assertion-red.txt",
+      "sha256": "b6b0f2fd517743e73162214da384376f19af42ef7378f34f9ccc49e809cef6ee"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/setup-assertion-red-hashes.json",
+      "sha256": "92fd1fa129ecc4fb4c6f6e7e724520c1dea2dd0e76ca5ab83e439a1cea3d43de"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/profile-red.txt",
+      "sha256": "7e680d468b438f09ffe31f3c885670719aabe516e16079d8e5789fe6e6ee4576"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/profile-red-hashes.json",
+      "sha256": "336c4ecee1de40f588587433bf45098adacbf362cff68a432e4b9b80c134c0b3"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/logout-red.txt",
+      "sha256": "38cb39c77201f3cdf8e59a7ae69873344cdc11c0339adc91ec140ef0a09c5628"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/logout-red-hashes.json",
+      "sha256": "0a1d9996c7f574483581e7454e2a55477a041c61c7de97f4c27eb0aa0d5b312f"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/bootstrap-revocation-red.txt",
+      "sha256": "18af7e7473883709778a9a79dc061c1d6f0b70aa755de9dd8bca16c297d0afb6"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-install-tdd/bootstrap-revocation-red-hashes.json",
+      "sha256": "a6ec6e5d85611be727e9abffc29a09b96ea4ffb5e2a251b794d4c1ac2773d493"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-address-tdd/red.txt",
+      "sha256": "d7fe24eddbe78262c3ac0a4c806c341d795b308ac6be51477cef21572ac439e8"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-address-tdd/red-hashes.json",
+      "sha256": "0b81cdda5dc001c507882d502ddda5b77638b1eb2aefa3ddda6be1e19eafa183"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-address-tdd/workspace-backup-red.txt",
+      "sha256": "b4fcb2da5ed12b6c1dca94caba188c3fbfac1a133205f539874243b363a86c69"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-address-tdd/workspace-backup-red-hashes.json",
+      "sha256": "8ab20f3ae65f381a75129900727121deb69226a45f89cf32b1e668058f7a016f"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-workplace-red.txt",
+      "sha256": "5bcea9f675a18ede3c49ba9aa0576b64ae1c400bb8b263bb6286d5fe6f5eaac8"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-workplace-red-hashes.json",
+      "sha256": "591597fefeca2f83c72820a8799250306529596a6bf03c578ae48fce7a5d515d"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-workplace-green.txt",
+      "sha256": "20d76bc0cf1954ce113ca02f428565c449ba9fc46d0cfda92e59ebe75ed77322"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-workplace-green-hashes.json",
+      "sha256": "c18720c50ee3359d90dee48fc0843c05242b89e65df5bcbd00a25f45a92e7414"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-guard-gate-red.txt",
+      "sha256": "86f3cfa52ecc1ccda844e81063144154a36ccbe61d4ceacbcc2ff46ecaf4083f"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/address-guard-gate-red-hashes.json",
+      "sha256": "76e34c670d95b73d8814f7819e2e6b8cbbec3ab0f4184236889fa84c9406746d"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/audience-roundtrip-red.txt",
+      "sha256": "f0a6972005d93d369b2ea1252e00a424971e943e5ea8d97ba2cfa2f3189bc7d9"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/audience-roundtrip-red-hashes.json",
+      "sha256": "8ac19aa44094e15cc6c33438cdce8bb1b88f642efa89e784b8a14f9ef078add2"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/replay-live-red/source-hashes.json",
+      "sha256": "e9ea818824ab48c1e2471d08a0898f7dbf88384f4626a3dcfa5993069c140f8e"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/replay-live-red/WMS-Lab-A.json",
+      "sha256": "c470dcfa6f3b04b5fc1c4fde7698805c9e2242376c0d6493cf987ff507eede61"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/replay-live-red/WMS-Lab-B.json",
+      "sha256": "66e7678d7a87f887cce37341ad32391ca71f59fd190573db632829e476eeecdf"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/audience-final-green.txt",
+      "sha256": "dd48bb817ea0c8d139527996a5da32a50e12107b9d21a5a3c97fb75c34535adf"
+    },
+    {
+      "path": "docs/verification/workplace/installation-2026-10-29/workplace-final-audit/audience-roundtrip-green-hashes.json",
+      "sha256": "eec3bfe6bbbab5cfd735b47141275806dcb66d86170d9064839a6e33c8364313"
+    }
+  ],
+  "limits": [
+    "Final CI and later exact revision deployment receipts are collected separately after the final source commit.",
+    "Broken diagnostic harness attempts are not counted as RED evidence.",
+    "Browser checks are separate from the SQL runtime profile verifier.",
+    "Both VMs share one physical Hyper-V host; this does not prove host-level high availability."
+  ]
+}

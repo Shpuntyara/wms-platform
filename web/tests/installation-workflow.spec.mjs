@@ -152,6 +152,7 @@ for (const rawSite of input.installations) {
     let receiptID, putawayID;
     let completed = false;
     let verification;
+    let phase = 'real bureau login and document preparation';
     try {
       const bureau = await login(site,'biuro'); sessions.push(bureau);
       const workspace = await api(bureau,site.origin,'/api/v1/workspace');
@@ -179,6 +180,7 @@ for (const rawSite of input.installations) {
       await expect(bureau.page.getByRole('button',{name:'Otwórz na stanowisku magazynowym',exact:true})).toHaveCount(0);
       await bureau.page.screenshot({path:test.info().outputPath('biuro-real-login.png'),fullPage:true});
 
+      phase = 'real warehouse employee login and permission checks';
       const worker = await login(site,'magazynier'); sessions.push(worker);
       const workerWorkspace = await api(worker,site.origin,'/api/v1/workspace');
       expect(workerWorkspace.status).toBe(200);
@@ -194,6 +196,7 @@ for (const rawSite of input.installations) {
       const anonymous = await worker.context.request.get(site.origin+'/api/v1/workspace');
       expect(anonymous.status()).toBe(401);
 
+      phase = 'receiving and closing the receipt';
       await openDocument(worker.page,receiptNumber);
       await worker.page.getByRole('button',{name:'Otwórz na stanowisku magazynowym',exact:true}).click();
       await scan(worker.page,'Kod towaru',site.catalog.sku);
@@ -205,6 +208,7 @@ for (const rawSite of input.installations) {
       await expect(worker.page.getByRole('heading',{name:'Dokument zakończony',exact:true})).toBeVisible();
       await expect(worker.page.getByRole('button',{name:'Utwórz rozmieszczenie',exact:true})).toHaveCount(0);
 
+      phase = 'preparing a separate putaway document';
       await bureau.page.getByRole('button',{name:'Odśwież',exact:true}).click();
       await bureau.page.getByRole('button',{name:'Utwórz rozmieszczenie',exact:true}).click();
       await bureau.page.getByLabel('Numer dokumentu',{exact:true}).fill(putawayNumber);
@@ -216,9 +220,11 @@ for (const rawSite of input.installations) {
       await bureau.page.getByRole('button',{name:'Rozpocznij pracę',exact:true}).click();
       await expect(bureau.page.getByRole('button',{name:'Rozpocznij pracę',exact:true})).toHaveCount(0);
 
+      phase = 'selecting putaway in the warehouse workplace';
       await worker.page.reload();
-      await worker.page.getByRole('button',{name:'Rozmieszczenie',exact:true}).click();
+      await worker.page.getByRole('navigation',{name:'Operacje magazynowe',exact:true}).getByRole('button',{name:/^Rozmieszczenie(?:\s*\d+)?$/}).click();
       await openDocument(worker.page,putawayNumber);
+      phase = 'moving the goods to storage';
       await worker.page.getByRole('button',{name:'Otwórz na stanowisku magazynowym',exact:true}).click();
       await scan(worker.page,'Kod towaru',site.catalog.sku);
       await scan(worker.page,'Adres źródłowy',site.catalog.receiving_code);
@@ -253,6 +259,9 @@ for (const rawSite of input.installations) {
         documents:{receipt:finalReceipt,putaway:finalPutaway},before_balances:[beforeReceiving,beforeStorage],balances,
       };
       completed = true;
+    } catch (error) {
+      const summary = (error.message || error.name).split('\n')[0].replace(/https?:\/\/[^\s"']+/g,'[URL omitted]');
+      throw new Error(`${site.name}: installed workflow failed while ${phase}: ${summary}`);
     } finally {
       let logoutFailed = false;
       for (const session of sessions) {

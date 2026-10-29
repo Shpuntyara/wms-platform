@@ -1,0 +1,127 @@
+FFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_apply_needs_explicit_lab_and_checks_database_identity_before_mutation (scripts.test_workplace_setup.WorkplaceTests.test_apply_needs_explicit_lab_and_checks_database_identity_before_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 131, in test_apply_needs_explicit_lab_and_checks_database_identity_before_mutation
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_existing_unowned_user_or_client_refused_before_changes (scripts.test_workplace_setup.WorkplaceTests.test_existing_unowned_user_or_client_refused_before_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 170, in test_existing_unowned_user_or_client_refused_before_changes
+    with tempfile.TemporaryDirectory() as temp, self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_generated_plans_keep_ids_unique_and_foreign_installations_disjoint (scripts.test_workplace_setup.WorkplaceTests.test_generated_plans_keep_ids_unique_and_foreign_installations_disjoint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 190, in test_generated_plans_keep_ids_unique_and_foreign_installations_disjoint
+    self.assertIn('ids', plan)
+AssertionError: 'ids' not found in {}
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '91eccc52-c08d-4c1f-b454-0d4599369fd2', 'address': '192.0.2.12', 'issuer': 'https://192.0.2.12/auth/realms/wms-test', 'audience': 'wms-api-test'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '01d646d5-6b88-4b01-978d-c287f1521232', 'address': '192.0.2.12', 'issuer': 'https://other.invalid/auth/realms/test', 'audience': 'wms-api-test'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '01d646d5-6b88-4b01-978d-c287f1521232', 'address': '127.0.0.1', 'issuer': 'https://192.0.2.12/auth/realms/wms-test', 'audience': 'wms-api-test'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '01d646d5-6b88-4b01-978d-c287f1521232', 'address': '192.0.2.12', 'issuer': 'http://192.0.2.12/auth/realms/test', 'audience': 'wms-api-test'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '01d646d5-6b88-4b01-978d-c287f1521232', 'address': '192.0.2.12', 'issuer': 'https://192.0.2.12/auth/realms/wms-test?token=secret', 'audience': 'wms-api-test'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_identity_and_origin_drift_fail_before_a_plan_can_be_applied (scripts.test_workplace_setup.WorkplaceTests.test_identity_and_origin_drift_fail_before_a_plan_can_be_applied) (changed={'instance_id': '01d646d5-6b88-4b01-978d-c287f1521232', 'address': '192.0.2.12', 'issuer': 'https://192.0.2.12/auth/realms/wms-test', 'audience': ''})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 85, in test_identity_and_origin_drift_fail_before_a_plan_can_be_applied
+    with self.subTest(changed=changed), self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_managed_users_reuse_passwords_and_subjects_without_resetting (scripts.test_workplace_setup.WorkplaceTests.test_managed_users_reuse_passwords_and_subjects_without_resetting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 147, in test_managed_users_reuse_passwords_and_subjects_without_resetting
+    self.assertTrue(credentials.exists())
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_plan_is_stable_installation_bound_and_has_complete_polish_catalog (scripts.test_workplace_setup.WorkplaceTests.test_plan_is_stable_installation_bound_and_has_complete_polish_catalog)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 67, in test_plan_is_stable_installation_bound_and_has_complete_polish_catalog
+    self.assertIn('instance_id', plan)
+AssertionError: 'instance_id' not found in {}
+
+======================================================================
+FAIL: test_protected_receipt_roundtrips_and_symlinks_are_refused (scripts.test_workplace_setup.WorkplaceTests.test_protected_receipt_roundtrips_and_symlinks_are_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 179, in test_protected_receipt_roundtrips_and_symlinks_are_refused
+    self.assertEqual(workplace.read_protected(path), {'marker':'value'})
+AssertionError: {} != {'marker': 'value'}
+- {}
++ {'marker': 'value'}
+
+======================================================================
+FAIL: test_public_client_cannot_bypass_pkce_or_exact_origin (scripts.test_workplace_setup.WorkplaceTests.test_public_client_cannot_bypass_pkce_or_exact_origin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 91, in test_public_client_cannot_bypass_pkce_or_exact_origin
+    self.assertIn('client', plan)
+AssertionError: 'client' not found in {}
+
+======================================================================
+FAIL: test_scope_and_passwords_are_not_in_public_plan (scripts.test_workplace_setup.WorkplaceTests.test_scope_and_passwords_are_not_in_public_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 107, in test_scope_and_passwords_are_not_in_public_plan
+    self.assertIn('permissions', plan)
+AssertionError: 'permissions' not found in {}
+
+======================================================================
+FAIL: test_sql_is_transactional_own_installation_and_never_resets_quantities (scripts.test_workplace_setup.WorkplaceTests.test_sql_is_transactional_own_installation_and_never_resets_quantities)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 117, in test_sql_is_transactional_own_installation_and_never_resets_quantities
+    self.assertIn('BEGIN;', sql)
+AssertionError: 'BEGIN;' not found in ''
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.006s
+
+FAILED (failures=15)

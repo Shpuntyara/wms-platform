@@ -2,7 +2,9 @@
 
 Każda maszyna ma własną instalację WMS, bazę, realm, klucze i hasła pracowników. To wdrożenie laboratoryjne korzysta z prawdziwego PostgreSQL i rzeczywistego logowania Keycloak. Dane towarowe są przykładowe; nie jest to tryb `demo=1` przeglądarki.
 
-Najpierw wykonaj zweryfikowaną aktualizację według [instrukcji instalatora](deployment-installer.md). Jeżeli adres DHCP maszyny się zmienił, aktualizacja wymaga jawnego `--previous-address <poprzedni-IP>`. Instalator zatrzymuje writerów, wykonuje pełne kopie WMS i Keycloak z odtworzeniem w osobnych bazach, zachowuje klucze i weryfikuje nowy certyfikat oraz issuer. Oryginalne identyfikatory pracowników pozostają bez zmian.
+Najpierw wykonaj zweryfikowaną aktualizację według [instrukcji instalatora](deployment-installer.md). Przed skonfigurowaniem kont pracowników odzyskanie zmienionego adresu DHCP wymaga jawnego `--previous-address <poprzedni-IP>`. Instalator zatrzymuje writerów, wykonuje pełne kopie WMS i Keycloak z odtworzeniem w osobnych bazach, zachowuje klucze i weryfikuje nowy certyfikat oraz issuer.
+
+**Automatyczna zmiana adresu już skonfigurowanego stanowiska pracowników nie jest obsługiwana.** Instalator odmawia jej przed rozpakowaniem wydania, zatrzymaniem usług i zmianami danych; nie przepina częściowo issuer ani ustawień logowania. Użyj stałego adresu lub rezerwacji DHCP. Późniejsza zmiana wymaga uzgodnionej z operatorem konfiguracji SSO, adresów klienta Keycloak oraz plików stanowiska. Zwykła aktualizacja na dotychczasowym adresie pozostaje obsługiwana.
 
 Na właściwej maszynie, jako root:
 

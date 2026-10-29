@@ -777,16 +777,26 @@ def install(args, value):
         raise
 
 
+def _guard_workplace_origin(old_address, new_address):
+    configured = any(path.exists() or path.is_symlink()
+                     for path in (WORKSPACE_CONFIG, CONFIG / 'workplace-users.json'))
+    if old_address != new_address and configured:
+        raise ValueError('Zmiana adresu instalacji z kontami pracowników nie jest obsługiwana automatycznie. '
+                         'Zachowaj poprzedni adres lub uzgodnij ponowną konfigurację SSO z operatorem.')
+
+
 def _address_change(args, value):
     """Require the stored previous origin, and bind recovery to this installation."""
     path = CONFIG / 'identity.json'
     if not path.exists():
         return None
     identity = json.loads(path.read_text())
+    _guard_workplace_origin(identity.get('address'), args.address)
     pending = STATE / 'address-change.json'
     if pending.exists():
         change = json.loads(pending.read_text())
         if change.get('status') != 'complete':
+            _guard_workplace_origin(change.get('old_address'), change.get('new_address'))
             if (change.get('instance_id') != value['instance_id'] or args.address != change.get('new_address')
                     or getattr(args, 'previous_address', None) != change.get('old_address')
                     or identity.get('address') not in (change['old_address'], change['new_address'])):

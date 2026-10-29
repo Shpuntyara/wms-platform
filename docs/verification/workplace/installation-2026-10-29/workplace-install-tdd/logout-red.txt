@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_public_client_cannot_bypass_pkce_or_exact_origin (scripts.test_workplace_setup.WorkplaceTests.test_public_client_cannot_bypass_pkce_or_exact_origin)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 111, in test_public_client_cannot_bypass_pkce_or_exact_origin
+    self.assertEqual(client['attributes'].get('post.logout.redirect.uris'), 'https://192.0.2.12/app/')
+AssertionError: None != 'https://192.0.2.12/app/'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

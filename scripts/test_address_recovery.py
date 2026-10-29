@@ -216,6 +216,55 @@ class AddressRecoveryTests(unittest.TestCase):
                 wms._prepare_address_change(change,{'restore_verified':True})
             write.assert_not_called()
 
+    def test_configured_workplace_address_change_refuses_before_any_mutation(self):
+        for public,private in [(True,False),(False,True),(True,True)]:
+            with self.subTest(public=public,private=private),tempfile.TemporaryDirectory() as tmp:
+                base=Path(tmp); config=base/'config'; config.mkdir()
+                workspace=base/'workspace/workspace.json'; workspace.parent.mkdir()
+                (config/'identity.json').write_text(json.dumps({'instance_id':INSTANCE,'address':OLD,'issuer':OLD_ISSUER}))
+                if public: workspace.write_text(json.dumps({'oidc':{'url':'https://'+OLD+'/auth'}}))
+                if private: (config/'workplace-users.json').write_text(json.dumps({'instance_id':INSTANCE,'origin':'https://'+OLD,'users':{}}))
+                before={p.relative_to(base).as_posix():p.read_bytes() for p in base.rglob('*') if p.is_file()}
+                args=argparse.Namespace(action='update',address=NEW,previous_address=OLD,
+                    archive=base/'release.tar',sha256='a'*64,revision='b'*40)
+                caught=None
+                with patch.object(wms,'CONFIG',config),patch.object(wms,'STATE',base/'state'), \
+                     patch.object(wms,'WORKSPACE_CONFIG',workspace),patch.object(wms,'BASE',base/'installation'), \
+                     patch.object(wms,'release_extract',side_effect=RuntimeError('test release stage')) as extract, \
+                     patch.object(wms,'run') as run,patch.object(wms,'configuration') as configuration, \
+                     patch.object(wms,'backup') as backup,patch.object(wms,'sql') as sql:
+                    try: wms.install(args,{'instance_id':INSTANCE})
+                    except Exception as error: caught=error
+                self.assertIsInstance(caught,ValueError,'Configured workplace address change reached release extraction')
+                self.assertIn('Zmiana adresu',str(caught))
+                extract.assert_not_called();run.assert_not_called();configuration.assert_not_called();backup.assert_not_called();sql.assert_not_called()
+                after={p.relative_to(base).as_posix():p.read_bytes() for p in base.rglob('*') if p.is_file()}
+                self.assertEqual(after,before,'Fail-closed address guard changed installed identity or employee metadata')
+
+    def test_same_address_workplace_update_still_reaches_the_release_stage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp); config=base/'config'; config.mkdir()
+            workspace=base/'workspace.json';workspace.write_text('{"oidc":{}}')
+            (config/'identity.json').write_text(json.dumps({'instance_id':INSTANCE,'address':OLD,'issuer':OLD_ISSUER}))
+            args=argparse.Namespace(action='update',address=OLD,previous_address=None,
+                archive=base/'release.tar',sha256='a'*64,revision='b'*40)
+            with patch.object(wms,'CONFIG',config),patch.object(wms,'STATE',base/'state'), \
+                 patch.object(wms,'WORKSPACE_CONFIG',workspace),patch.object(wms,'release_extract',side_effect=RuntimeError('test release stage')) as extract:
+                with self.assertRaisesRegex(RuntimeError,'test release stage'):
+                    wms.install(args,{'instance_id':INSTANCE})
+            extract.assert_called_once()
+
+    def test_configured_workplace_cannot_resume_a_pending_origin_rebind(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp);config=base/'config';state=base/'state';config.mkdir();state.mkdir()
+            (config/'identity.json').write_text(json.dumps({'instance_id':INSTANCE,'address':NEW,'issuer':NEW_ISSUER}))
+            (state/'address-change.json').write_text(json.dumps({'instance_id':INSTANCE,'old_address':OLD,'new_address':NEW,'old_issuer':OLD_ISSUER,'new_issuer':NEW_ISSUER,'status':'prepared'}))
+            workspace=base/'workspace.json';workspace.write_text(json.dumps({'oidc':{'url':'https://'+OLD+'/auth'}}))
+            args=argparse.Namespace(action='update',address=NEW,previous_address=OLD)
+            with patch.object(wms,'CONFIG',config),patch.object(wms,'STATE',state),patch.object(wms,'WORKSPACE_CONFIG',workspace):
+                with self.assertRaisesRegex(ValueError,'Zmiana adresu'):
+                    wms._address_change(args,{'instance_id':INSTANCE})
+
 
 if __name__ == '__main__':
     unittest.main()

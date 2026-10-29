@@ -1,0 +1,37 @@
+FFFF.
+======================================================================
+FAIL: test_configured_workplace_address_change_refuses_before_any_mutation (scripts.test_address_recovery.AddressRecoveryTests.test_configured_workplace_address_change_refuses_before_any_mutation) (public=True, private=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 238, in test_configured_workplace_address_change_refuses_before_any_mutation
+    self.assertIsInstance(caught,ValueError,'Configured workplace address change reached release extraction')
+AssertionError: RuntimeError('test release stage') is not an instance of <class 'ValueError'> : Configured workplace address change reached release extraction
+
+======================================================================
+FAIL: test_configured_workplace_address_change_refuses_before_any_mutation (scripts.test_address_recovery.AddressRecoveryTests.test_configured_workplace_address_change_refuses_before_any_mutation) (public=False, private=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 238, in test_configured_workplace_address_change_refuses_before_any_mutation
+    self.assertIsInstance(caught,ValueError,'Configured workplace address change reached release extraction')
+AssertionError: RuntimeError('test release stage') is not an instance of <class 'ValueError'> : Configured workplace address change reached release extraction
+
+======================================================================
+FAIL: test_configured_workplace_address_change_refuses_before_any_mutation (scripts.test_address_recovery.AddressRecoveryTests.test_configured_workplace_address_change_refuses_before_any_mutation) (public=True, private=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 238, in test_configured_workplace_address_change_refuses_before_any_mutation
+    self.assertIsInstance(caught,ValueError,'Configured workplace address change reached release extraction')
+AssertionError: RuntimeError('test release stage') is not an instance of <class 'ValueError'> : Configured workplace address change reached release extraction
+
+======================================================================
+FAIL: test_configured_workplace_cannot_resume_a_pending_origin_rebind (scripts.test_address_recovery.AddressRecoveryTests.test_configured_workplace_cannot_resume_a_pending_origin_rebind)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 265, in test_configured_workplace_cannot_resume_a_pending_origin_rebind
+    with self.assertRaisesRegex(ValueError,'Zmiana adresu'):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.028s
+
+FAILED (failures=4)

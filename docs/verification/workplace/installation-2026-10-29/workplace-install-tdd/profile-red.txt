@@ -1,0 +1,22 @@
+F
+======================================================================
+FAIL: test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes (scripts.test_workplace_setup.WorkplaceTests.test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 250, in test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes
+    workplace.apply(runtime,runtime.identity['instance_id'],lab=True,
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\workplace.py", line 249, in apply
+    raise ValueError('Nie udało się potwierdzić nowego użytkownika')
+ValueError: Nie udało się potwierdzić nowego użytkownika
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 253, in test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes
+    self.fail('Managed ownership attribute was not configured before user creation: '+str(error))
+AssertionError: Managed ownership attribute was not configured before user creation: Nie udało się potwierdzić nowego użytkownika
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+FAILED (failures=1)

@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_revocation_failure_still_attempts_exact_client_delete (scripts.test_workplace_bootstrap.BootstrapTests.test_revocation_failure_still_attempts_exact_client_delete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_bootstrap.py", line 111, in test_revocation_failure_still_attempts_exact_client_delete
+    self.assertIn(('DELETE','/auth/admin/realms/master/clients/'+identifier),calls)
+AssertionError: ('DELETE', '/auth/admin/realms/master/clients/9db9e279-9e0f-4b07-b46f-904b57909d21') not found in [('GET', '/auth/admin/realms/master/clients?clientId=wms-workplace-admin-46b09838974e4097aa7d6363401a07c1'), ('POST', '/auth/realms/master/protocol/openid-connect/revoke')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)

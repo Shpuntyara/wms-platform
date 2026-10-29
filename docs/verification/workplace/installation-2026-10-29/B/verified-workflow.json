@@ -1,0 +1,142 @@
+{
+  "installation": "B",
+  "origin": "https://172.30.136.184",
+  "identityAdapterReplaced": false,
+  "databaseProfileVerification": "Checked separately by the guest deployment/status verifier; the browser does not introspect SQL runtime configuration",
+  "tlsValidation": true,
+  "receipt_id": "b253b3ef-af70-4ca2-b700-e6fa67df7f29",
+  "receipt_number": "PZ-ODBIOR-20261029151324-B",
+  "putaway_id": "5be19ce2-f713-41e1-b65e-29fc6fd3efbd",
+  "putaway_number": "MM-ODBIOR-20261029151324-B",
+  "quantity": "4",
+  "roles": {
+    "bureau_create": true,
+    "bureau_movement_denied": 403,
+    "worker_create_denied": 403
+  },
+  "auth": {
+    "bureau": {
+      "authorizationCode": true,
+      "pkceS256": true,
+      "exactRedirect": true,
+      "tokenReceived": true
+    },
+    "worker": {
+      "authorizationCode": true,
+      "pkceS256": true,
+      "exactRedirect": true,
+      "tokenReceived": true
+    },
+    "foreign_installation_token_rejected": true,
+    "anonymous_rejected": true
+  },
+  "documents": {
+    "receipt": {
+      "id": "b253b3ef-af70-4ca2-b700-e6fa67df7f29",
+      "kind": "receipt",
+      "lines": [
+        {
+          "id": "b8265763-f667-4397-b0b2-b2aea7dcc036",
+          "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+          "line_no": 1,
+          "reserved_qty": "0.000000",
+          "fulfilled_qty": "4.000000",
+          "requested_qty": "4.000000"
+        }
+      ],
+      "state": "closed",
+      "number": "PZ-ODBIOR-20261029151324-B",
+      "version": 4,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7",
+      "content_revision": 4
+    },
+    "putaway": {
+      "id": "5be19ce2-f713-41e1-b65e-29fc6fd3efbd",
+      "kind": "transfer",
+      "lines": [
+        {
+          "id": "79577a52-3cf4-4b12-a42d-5eb964785d1f",
+          "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+          "line_no": 1,
+          "reserved_qty": "0.000000",
+          "fulfilled_qty": "4.000000",
+          "requested_qty": "4.000000"
+        }
+      ],
+      "state": "closed",
+      "number": "MM-ODBIOR-20261029151324-B",
+      "version": 4,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7",
+      "content_revision": 4
+    }
+  },
+  "before_balances": [
+    {
+      "id": "797d8a41-b638-5c1d-b10c-f0f2d4d07ce9",
+      "lot_id": null,
+      "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+      "on_hand": "4.000000",
+      "version": 2,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "serial_id": null,
+      "position_id": "9c15469a-4a80-5757-b78c-23c2418a99c8",
+      "stock_state": "available",
+      "reserved_qty": "0.000000",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "available_qty": "4.000000",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7"
+    },
+    {
+      "id": "bdbdf6be-d777-5f01-8938-a375aa7b9089",
+      "lot_id": null,
+      "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+      "on_hand": "0.000000",
+      "version": 1,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "serial_id": null,
+      "position_id": "02166d63-92de-52af-9f5c-bd8334d55bd9",
+      "stock_state": "available",
+      "reserved_qty": "0.000000",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "available_qty": "0.000000",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7"
+    }
+  ],
+  "balances": [
+    {
+      "id": "797d8a41-b638-5c1d-b10c-f0f2d4d07ce9",
+      "lot_id": null,
+      "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+      "on_hand": "4.000000",
+      "version": 4,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "serial_id": null,
+      "position_id": "9c15469a-4a80-5757-b78c-23c2418a99c8",
+      "stock_state": "available",
+      "reserved_qty": "0.000000",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "available_qty": "4.000000",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7"
+    },
+    {
+      "id": "bdbdf6be-d777-5f01-8938-a375aa7b9089",
+      "lot_id": null,
+      "item_id": "3f42486f-aa0c-5ca2-b897-e56df0c70f56",
+      "on_hand": "4.000000",
+      "version": 2,
+      "owner_id": "14e41261-bcad-5ea6-8c19-90ea04a91ecc",
+      "serial_id": null,
+      "position_id": "02166d63-92de-52af-9f5c-bd8334d55bd9",
+      "stock_state": "available",
+      "reserved_qty": "0.000000",
+      "warehouse_id": "e8760cbe-c4ff-51eb-b7b9-78b71ff16107",
+      "available_qty": "4.000000",
+      "organization_id": "e9e709ca-0e77-5deb-b97d-d6148b03fbf7"
+    }
+  ],
+  "logout_verified": true
+}

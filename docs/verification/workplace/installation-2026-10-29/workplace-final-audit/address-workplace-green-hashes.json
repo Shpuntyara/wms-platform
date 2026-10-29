@@ -1,0 +1,17 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "B4E41DCF5F595AAD589DE34BF2EFFC6BA9606C553DA3330027B498B73130D696",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\deploy\\linux\\wmsctl.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "BB381DBFBBB45196B156F22746E8F8C7021ADB60FD2CC0DA1AC281315420A5EA",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_address_recovery.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "5851836A30996E778A415A897902091F015FA0506890B1C73B84365B58C195A0",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\docs\\workplace-installation.md"
+  }
+]

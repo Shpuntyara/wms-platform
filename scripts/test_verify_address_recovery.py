@@ -9,12 +9,17 @@ from verify_address_recovery import validate_report
 class AddressMutationAccountingTests(unittest.TestCase):
     def good(self):
         names=['leaf_address_not_revalidated','leaf_key_regenerated','previous_address_mismatch_accepted',
-               'old_origin_resumed_before_cutover','actor_snapshot_binding_removed']
+               'old_origin_resumed_before_cutover','actor_snapshot_binding_removed','configured_workplace_address_change_accepted']
         return {'baseline_passed':True,'source_unchanged':True,
                 'mutants':[{'id':name,'status':'killed'} for name in names]}
 
     def test_complete_independent_behavioral_kills_pass(self):
         self.assertTrue(validate_report(self.good()))
+
+    def test_workplace_origin_guard_cannot_be_omitted_from_the_mutation_gate(self):
+        report=self.good()
+        report['mutants']=[case for case in report['mutants'] if case['id']!='configured_workplace_address_change_accepted']
+        with self.assertRaises(ValueError): validate_report(report)
 
     def test_survivor_invalid_missing_duplicate_or_changed_source_never_passes(self):
         for alteration in ['survivor','invalid','missing','duplicate','baseline','source']:

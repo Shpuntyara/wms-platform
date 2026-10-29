@@ -37,6 +37,8 @@ def catalog():
         ('profile_marker_missing','if desired_profile != profile:', 'if False:', 'test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes'),
         ('profile_marker_user_editable',"'permissions':{'view':['admin'],'edit':['admin']}", "'permissions':{'view':['admin'],'edit':['admin','user']}", 'test_managed_ownership_attribute_works_without_enabling_unmanaged_attributes'),
         ('unowned_client_adopted',"if client.get('attributes',{}).get('wms.workplace.installation') != plan['instance_id']:", 'if False:', 'test_existing_unowned_user_or_client_refused_before_changes'),
+        ('canonical_userinfo_false_omitted', ",'userinfo.token.claim':'false'", '', 'test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords'),
+        ('audience_disclosure_or_mapper_drift_accepted', "if mappers != plan['client']['protocolMappers']:", 'if False:', 'test_audience_claim_or_additional_mapper_drift_is_not_canonicalization'),
     ]
 
 
@@ -77,7 +79,7 @@ def main():
         (stage/'scripts/__init__.py').touch()
         # The full class baseline guards against a missing/empty test suite.
         baseline = subprocess.run([sys.executable,'-m','unittest','scripts.test_workplace_setup'],cwd=stage,capture_output=True,text=True,encoding='utf8',timeout=30)
-        report['baseline_passed'] = baseline.returncode == 0 and 'Ran 13 tests' in baseline.stderr and 'OK' in baseline.stderr
+        report['baseline_passed'] = baseline.returncode == 0 and 'Ran 15 tests' in baseline.stderr and 'OK' in baseline.stderr
         if not report['baseline_passed']: raise RuntimeError('Workplace setup baseline is not fully green')
         for name,needle,replacement,test in catalog():
             if source.count(needle) != 1:

@@ -1,0 +1,60 @@
+FFF.F
+======================================================================
+FAIL: test_actual_leaf_certificate_changes_ip_without_rotating_keys_or_ca (scripts.test_address_recovery.AddressRecoveryTests.test_actual_leaf_certificate_changes_ip_without_rotating_keys_or_ca)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 65, in test_actual_leaf_certificate_changes_ip_without_rotating_keys_or_ca
+    self.assertEqual(checked.returncode, 0, 'Installed certificate still identifies the previous DHCP address')
+AssertionError: 2 != 0 : Installed certificate still identifies the previous DHCP address
+
+======================================================================
+FAIL: test_backup_can_leave_keycloak_stopped_until_its_new_origin_is_ready (scripts.test_address_recovery.AddressRecoveryTests.test_backup_can_leave_keycloak_stopped_until_its_new_origin_is_ready)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 85, in test_backup_can_leave_keycloak_stopped_until_its_new_origin_is_ready
+    self.assertIn('resume', inspect.signature(wms.backup).parameters,
+AssertionError: 'resume' not found in mappingproxy(OrderedDict([('value', <Parameter "value">)])) : An address cutover cannot resume and poll the unreachable previous origin
+
+======================================================================
+FAIL: test_explicit_address_update_uses_verified_backup_and_waits_for_the_new_issuer (scripts.test_address_recovery.AddressRecoveryTests.test_explicit_address_update_uses_verified_backup_and_waits_for_the_new_issuer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 149, in test_explicit_address_update_uses_verified_backup_and_waits_for_the_new_issuer
+    wms.install(args,{'instance_id':INSTANCE})
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\wmsctl.py", line 744, in install
+    return _install(args, value, recovery)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\wmsctl.py", line 755, in _install
+    raise ValueError('Address/issuer change requires an explicit identity migration')
+ValueError: Address/issuer change requires an explicit identity migration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 151, in test_explicit_address_update_uses_verified_backup_and_waits_for_the_new_issuer
+    self.fail('Explicit previous-address recovery was refused: ' + str(error))
+AssertionError: Explicit previous-address recovery was refused: Address/issuer change requires an explicit identity migration
+
+======================================================================
+FAIL: test_valid_leaf_does_not_change_and_missing_private_key_is_not_regenerated (scripts.test_address_recovery.AddressRecoveryTests.test_valid_leaf_does_not_change_and_missing_private_key_is_not_regenerated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 78, in test_valid_leaf_does_not_change_and_missing_private_key_is_not_regenerated
+    self.tls(base, NEW)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 55, in tls
+    wms.tls(address)
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\wmsctl.py", line 318, in tls
+    os.chmod(directory / key, 0o640 if key == 'server.key' else 0o600)
+FileNotFoundError: [WinError 2] The system cannot find the file specified: 'C:\\Users\\sashk\\AppData\\Local\\Temp\\tmp_yp1l46f\\tls\\server.key'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 80, in test_valid_leaf_does_not_change_and_missing_private_key_is_not_regenerated
+    self.assertIsInstance(error, ValueError, 'Missing identity key needs a fail-closed diagnosis')
+AssertionError: FileNotFoundError(2, 'The system cannot find the file specified') is not an instance of <class 'ValueError'> : Missing identity key needs a fail-closed diagnosis
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.988s
+
+FAILED (failures=4)

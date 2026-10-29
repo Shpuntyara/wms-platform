@@ -1,0 +1,5 @@
+{
+  "deploy/linux/workplace.py": "aea0a4b65e2d87a3ce0821f49d10d6f2170fe009fe3d7011b81a5cd79e98afc6",
+  "deploy/linux/workplace_bootstrap.py": "788cc5dafa0875d998140b8a3c19ffb752376a097a554df068135dc159a0821f",
+  "work/replay_workplace_setup.py": "46c1f185beb0c4207703bf1edc2a0c7348fa444951e443cca40d284457681a67"
+}

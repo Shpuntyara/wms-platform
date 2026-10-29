@@ -1,0 +1,21 @@
+FF
+======================================================================
+FAIL: test_real_keycloak_exposes_polish_employee_login (__main__.InstalledPolishWorkplace.test_real_keycloak_exposes_polish_employee_login) (installation='WMS-Lab-A')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\work\workplace-browser-tdd\probe_installed.py", line 31, in test_real_keycloak_exposes_polish_employee_login
+    self.assertEqual(result['status'],200,'Actual browser client must expose an employee login form')
+AssertionError: 400 != 200 : Actual browser client must expose an employee login form
+
+======================================================================
+FAIL: test_real_keycloak_exposes_polish_employee_login (__main__.InstalledPolishWorkplace.test_real_keycloak_exposes_polish_employee_login) (installation='WMS-Lab-B')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\work\workplace-browser-tdd\probe_installed.py", line 31, in test_real_keycloak_exposes_polish_employee_login
+    self.assertEqual(result['status'],200,'Actual browser client must expose an employee login form')
+AssertionError: 400 != 200 : Actual browser client must expose an employee login form
+
+----------------------------------------------------------------------
+Ran 1 test in 0.849s
+
+FAILED (failures=2)

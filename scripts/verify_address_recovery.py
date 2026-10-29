@@ -24,6 +24,8 @@ MUTANTS = [
      'test_explicit_address_update_uses_verified_backup_and_waits_for_the_new_issuer'),
     ('actor_snapshot_binding_removed', 'if observed not in (old, new):', 'if False:',
      'test_recorded_actor_snapshot_cannot_adopt_changed_subjects_or_extra_actors'),
+    ('configured_workplace_address_change_accepted', 'if old_address != new_address and configured:', 'if False:',
+     'test_configured_workplace_address_change_refuses_before_any_mutation'),
 ]
 
 
@@ -63,7 +65,7 @@ def main():
             (stage/name).parent.mkdir(parents=True,exist_ok=True)
             shutil.copyfile(root/name,stage/name)
         (stage/'scripts/__init__.py').touch()
-        baseline=execute(stage,['scripts.test_address_recovery.AddressRecoveryTests'],8)
+        baseline=execute(stage,['scripts.test_address_recovery.AddressRecoveryTests'],11)
         report['baseline']=baseline
         report['baseline_passed']=baseline['status']=='survived'
         if report['baseline_passed']:

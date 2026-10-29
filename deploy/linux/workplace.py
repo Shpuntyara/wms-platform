@@ -66,7 +66,7 @@ def build_plan(identity, expected_instance):
         'redirectUris':[origin+'/app/'],'webOrigins':[origin],
         'attributes':{'pkce.code.challenge.method':'S256','post.logout.redirect.uris':origin+'/app/','wms.workplace.installation':installation},
         'protocolMappers':[{'name':'wms-audience','protocol':'openid-connect','protocolMapper':'oidc-audience-mapper',
-            'consentRequired':False,'config':{'included.client.audience':audience,'id.token.claim':'false','access.token.claim':'true'}}]}
+            'consentRequired':False,'config':{'included.client.audience':audience,'id.token.claim':'false','access.token.claim':'true','userinfo.token.claim':'false'}}]}
     balances = [{'id':ids['balance_'+item+'_'+position],**scope,'owner_id':ids['owner'],'item_id':ids['item_'+item],
                  'position_id':ids['position_'+position],'stock_state':'available','lot_id':None,'serial_id':None}
                 for item in ['bolt','cable'] for position in ['receiving','storage']]

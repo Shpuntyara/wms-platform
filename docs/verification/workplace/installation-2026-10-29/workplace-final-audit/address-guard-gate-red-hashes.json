@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "ACCEE32B73AB79B244EBD4F1B8CE6F54C0C7D211F5F38D9384B2DC111EE2A3A9",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_verify_address_recovery.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "29BC2BF222D89B0101393D4B6C4445E81B078877C572498F2FF8BDB15D84F16E",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\verify_address_recovery.py"
+  }
+]

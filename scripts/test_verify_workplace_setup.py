@@ -8,6 +8,12 @@ spec.loader.exec_module(gate)
 
 
 class WorkplaceMutationAccountingTests(unittest.TestCase):
+    def test_real_keycloak_audience_roundtrip_mutations_are_mandatory(self):
+        names={case[0] for case in gate.catalog()}
+        self.assertIn('canonical_userinfo_false_omitted',names)
+        self.assertIn('audience_disclosure_or_mapper_drift_accepted',names)
+        self.assertGreaterEqual(len(names),19)
+
     def test_assertion_kills_and_green_survives(self):
         self.assertEqual(gate.classify(1,{'tests':1,'failures':['test_behavior'],'errors':[],'skipped':[]},1),'killed')
         self.assertEqual(gate.classify(0,{'tests':1,'failures':[],'errors':[],'skipped':[]},1),'survived')

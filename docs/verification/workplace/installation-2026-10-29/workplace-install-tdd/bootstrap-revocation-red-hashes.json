@@ -1,0 +1,12 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "6FE830247C802A8050A025336DF53652C6F54050FC6046E39DF6F8EE6A088AC0",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\deploy\\linux\\workplace_bootstrap.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "25CF5F2DBE0EF6B7F4DC3A331FB2959C4812009ABF9EFDB3DE7EF60EC6F0924F",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_workplace_bootstrap.py"
+  }
+]

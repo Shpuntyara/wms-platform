@@ -1,0 +1,79 @@
+{
+  "runtime_revision": "ce4f6550f23d3c187cefcfe753be406d3f4b0a79",
+  "harness_worktree_sha256": {
+    "web/tests/installation-workflow.spec.mjs": "74856fdc96512016f16095f5f7b552686a256f118392dce59503a279f5eda715",
+    "web/playwright.installation.config.mjs": "19d19a911834fdc1be9d83ea1b87b83323932eb0132cf83f4fc40807cb5398c8",
+    "web/tests/live-workflow.spec.mjs": "435f1c357b176b453feaf839f40a765b6eede3f1665f250810e8080385e6b62d",
+    "web/style.css": "05e65dfe944d8340a624b28d7f440da55b1a3c5e8684187deef76f365f893136",
+    "web/src/app.js": "9c8aed7bb3e7be7b0143b012fe4e64c8133aad1f6c3b7b0c6dee5650f0cc5616"
+  },
+  "hash_representation": "Raw local workspace bytes; harness changes may not yet be committed.",
+  "executed_cases": 2,
+  "failed": 0,
+  "skipped": 0,
+  "browser": "Playwright Firefox157 with isolated NSS trust, no Windows trust changes, normal TLS validation",
+  "real_identity_provider": true,
+  "browser_contexts_closed": true,
+  "credential_scan": {
+    "files": 13,
+    "matches": 0
+  },
+  "files_sha256": {
+    "A/verified-workflow.json": "aa6ded42bd7ad48a5b7bd863d99a4b60cbfc33e43d360a6f6d91fe69bb622110",
+    "A/biuro-real-login.png": "c9a2115ad883b0a661cf7b83bb882b178631bb6b05095cd24474efd50c74f499",
+    "A/magazynier-real-login.png": "a4b4ff3376b0d7eee2a95572226eaafdc7a4ed30ad5395d519d8163f5354c2a5",
+    "A/stany-after-putaway.png": "4463a018c55281783e30c3104ea308e64fad3c5a2e3fc30f018762e707cd1508",
+    "B/verified-workflow.json": "2233ce185553b24df998af72fd7761c6d907524451119d5e5d8d92c4bcd317c9",
+    "B/biuro-real-login.png": "44365df830adc13a9efd34f65261edf7c74e63a4b9dc88d3e0edc537a73a4ae0",
+    "B/magazynier-real-login.png": "80c03b91cbc5b5f764584e6bd51d078b4f0dcfb4fcc6a9654a3a52b80f478fd9",
+    "B/stany-after-putaway.png": "34956426f9a271c5584a52a939a1c3aafe97836ef9fd32b42047475963ff9e0d",
+    "A/verified-cleanup.json": "287027e269ab0566d75623b41806228bd88288e656d90e03664e8c400be43109",
+    "A/stany-after-cleanup.png": "024cea88fa2fc08423eb6c81a3fe5e683ad72a01068837d3944097a4298e6ee7",
+    "B/verified-cleanup.json": "b31829b57e0f8129695a0a326967469f88559dbbb33c253c0b187eee9653ff73",
+    "B/stany-after-cleanup.png": "510d0c821479dc422c5e66b5a2074c811f16a0948ba0acca9dec77c27ce9cb61"
+  },
+  "installations": [
+    {
+      "name": "A",
+      "origin": "https://172.30.141.242",
+      "receipt_id": "91a8498b-682d-41fb-be76-f5c115681b5f",
+      "receipt_number": "PZ-ODBIOR-20261029151324-A",
+      "putaway_id": "eb8be48f-4612-499d-857d-98f3109b8a9a",
+      "putaway_number": "MM-ODBIOR-20261029151324-A",
+      "logout_verified": true
+    },
+    {
+      "name": "B",
+      "origin": "https://172.30.136.184",
+      "receipt_id": "b253b3ef-af70-4ca2-b700-e6fa67df7f29",
+      "receipt_number": "PZ-ODBIOR-20261029151324-B",
+      "putaway_id": "5be19ce2-f713-41e1-b65e-29fc6fd3efbd",
+      "putaway_number": "MM-ODBIOR-20261029151324-B",
+      "logout_verified": true
+    }
+  ],
+  "scoped_previous_run_cleanup": [
+    {
+      "installation": "A",
+      "document_id": "853c4690-d596-4fa7-b5ce-d0ba79dd1a00",
+      "document_number": "MM-ODBIOR-20261029150647-A",
+      "closed": true,
+      "remaining_receiving_qty": "0",
+      "storage_qty": "8",
+      "logout_verified": true
+    },
+    {
+      "installation": "B",
+      "document_id": "2875b658-471a-4d60-bb07-3076334ed0a5",
+      "document_number": "MM-ODBIOR-20261029150647-B",
+      "closed": true,
+      "remaining_receiving_qty": "0",
+      "storage_qty": "8",
+      "logout_verified": true
+    }
+  ],
+  "cleanup_credential_scan": {
+    "files": 5,
+    "matches": 0
+  }
+}

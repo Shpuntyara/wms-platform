@@ -1,0 +1,13 @@
+F
+======================================================================
+FAIL: test_backup_includes_only_the_bound_separate_workspace_file (scripts.test_address_recovery.AddressRecoveryTests.test_backup_includes_only_the_bound_separate_workspace_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_address_recovery.py", line 126, in test_backup_includes_only_the_bound_separate_workspace_file
+    self.assertIn('wms-workplace/workspace.json',archive.getnames())
+AssertionError: 'wms-workplace/workspace.json' not found in ['wms', 'wms/identity.json']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.031s
+
+FAILED (failures=1)

@@ -1,0 +1,46 @@
+
+Running 2 tests using 1 worker
+
+(node:7852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  1 tests\installation-workflow.spec.mjs:146:3 › A: real Polish employee login, receipt and putaway (20.4s)
+(node:32208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 tests\installation-workflow.spec.mjs:146:3 › B: real Polish employee login, receipt and putaway (19.9s)
+
+
+  1) tests\installation-workflow.spec.mjs:146:3 › A: real Polish employee login, receipt and putaway 
+
+    Error: Logout is inaccessible at shared desktop width for A/biuro
+
+      104 |   } catch {
+      105 |     await context.close();
+    > 106 |     throw new Error(`Logout is inaccessible at shared desktop width for ${site.name}/${role}`);
+          |           ^
+      107 |   }
+      108 |   return {context, page, signal, token:() => accessToken};
+      109 | }
+        at login (C:\Users\sashk\Documents\WMS\wms-platform\web\tests\installation-workflow.spec.mjs:106:11)
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\installation-workflow.spec.mjs:156:22
+
+    Error Context: ..\work\workplace-browser-tdd\real-login-logout-red\installation-workflow-A-re-1e8fc-e-login-receipt-and-putaway\error-context.md
+
+  2) tests\installation-workflow.spec.mjs:146:3 › B: real Polish employee login, receipt and putaway 
+
+    Error: Logout is inaccessible at shared desktop width for B/biuro
+
+      104 |   } catch {
+      105 |     await context.close();
+    > 106 |     throw new Error(`Logout is inaccessible at shared desktop width for ${site.name}/${role}`);
+          |           ^
+      107 |   }
+      108 |   return {context, page, signal, token:() => accessToken};
+      109 | }
+        at login (C:\Users\sashk\Documents\WMS\wms-platform\web\tests\installation-workflow.spec.mjs:106:11)
+        at C:\Users\sashk\Documents\WMS\wms-platform\web\tests\installation-workflow.spec.mjs:156:22
+
+    Error Context: ..\work\workplace-browser-tdd\real-login-logout-red\installation-workflow-B-re-2a267-e-login-receipt-and-putaway\error-context.md
+
+  2 failed
+    tests\installation-workflow.spec.mjs:146:3 › A: real Polish employee login, receipt and putaway 
+    tests\installation-workflow.spec.mjs:146:3 › B: real Polish employee login, receipt and putaway 

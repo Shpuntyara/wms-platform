@@ -1,0 +1,35 @@
+F.F
+======================================================================
+FAIL: test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords (scripts.test_workplace_setup.WorkplaceTests.test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 276, in test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords
+    repeated=workplace.apply(runtime,runtime.identity['instance_id'],lab=True,credentials_file=credentials,workspace_file=workspace)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\workplace.py", line 245, in apply
+    realm,clients,subjects,profile,desired_profile = preflight_keycloak(runtime,plan,state)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sashk\Documents\WMS\wms-platform\deploy\linux\workplace.py", line 218, in preflight_keycloak
+    if mappers != plan['client']['protocolMappers']: raise ValueError('Niezgodna konfiguracja audience klienta')
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Niezgodna konfiguracja audience klienta
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_workplace_setup.py", line 278, in test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords
+    self.fail('Real Keycloak canonical audience representation broke setup replay: '+str(error))
+AssertionError: Real Keycloak canonical audience representation broke setup replay: Niezgodna konfiguracja audience klienta
+
+======================================================================
+FAIL: test_real_keycloak_audience_roundtrip_mutations_are_mandatory (scripts.test_verify_workplace_setup.WorkplaceMutationAccountingTests.test_real_keycloak_audience_roundtrip_mutations_are_mandatory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\sashk\Documents\WMS\wms-platform\scripts\test_verify_workplace_setup.py", line 13, in test_real_keycloak_audience_roundtrip_mutations_are_mandatory
+    self.assertIn('canonical_userinfo_false_omitted',names)
+AssertionError: 'canonical_userinfo_false_omitted' not found in {'password_grant_enabled', 'profile_marker_missing', 'database_installation_unchecked', 'implicit_flow_enabled', 'foreign_namespace_reused', 'redirect_wildcard', 'logout_wildcard', 'bureau_can_post_movements', 'http_origin', 'profile_marker_user_editable', 'unowned_client_adopted', 'worker_can_create_documents', 'pkce_downgrade', 'passwords_regenerated', 'confidential_browser_client', 'wrong_installation_accepted', 'browser_service_account'}
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.084s
+
+FAILED (failures=2)

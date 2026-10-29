@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A5E44F3BB89986C9EB0CD300BF5751F8784F6AEBC23CD1AABC03F5D929462A4D",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\tests\\installation-workflow.spec.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "19D19A911834FDC1BE9D83EA1B87B83323932EB0132CF83F4FC40807CB5398C8",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\playwright.installation.config.mjs"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "2E59B90DC975283C9DB3C775DFAEED83D3E26F57E8B9244102E721222D398E15",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\style.css"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "9C8AED7BB3E7BE7B0143B012FE4E64C8133AAD1F6C3B7B0C6DEE5650F0CC5616",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\web\\src\\app.js"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "Algorithm": "SHA256",
+    "Hash": "AEA0A4B65E2D87A3CE0821F49D10D6F2170FE009FE3D7011B81A5CD79E98AFC6",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\deploy\\linux\\workplace.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "A1D4A97EF0EB7EF32B6AFDA52726FC44D34A794AAE79008600B99B0FC709CF67",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_workplace_setup.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "8B8A3C711D308E82B516FDF0C900ED553C8CABFB57C9FBF3D28E19EDE1D09708",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\verify_workplace_setup.py"
+  },
+  {
+    "Algorithm": "SHA256",
+    "Hash": "9C05344A973B74DCB92C0947D44010892951DAC51B5A9EF413CCC4BA3210B734",
+    "Path": "C:\\Users\\sashk\\Documents\\WMS\\wms-platform\\scripts\\test_verify_workplace_setup.py"
+  }
+]

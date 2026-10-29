@@ -261,6 +261,42 @@ class WorkplaceTests(unittest.TestCase):
         self.assertEqual(runtime.profile['unmanagedAttributePolicy'],'DISABLED')
         self.assertEqual(runtime.profile['attributes'][0],email)
 
+    def test_real_keycloak_audience_roundtrip_preserves_subjects_and_passwords(self):
+        runtime=Runtime(identity())
+        with tempfile.TemporaryDirectory() as temp:
+            credentials,workspace=Path(temp)/'users.json',Path(temp)/'workspace.json'
+            first=workplace.apply(runtime,runtime.identity['instance_id'],lab=True,credentials_file=credentials,workspace_file=workspace)
+            before=credentials.read_bytes()
+            # Actual Keycloak 26.8.1 GET on BOTH VMs adds this false claim.
+            mapper=runtime.clients[0]['protocolMappers'][0]
+            mapper['id']=str(uuid.uuid4())
+            mapper['config']['userinfo.token.claim']='false'
+            posts=sum(method=='POST' for method,_,_ in runtime.calls)
+            try:
+                repeated=workplace.apply(runtime,runtime.identity['instance_id'],lab=True,credentials_file=credentials,workspace_file=workspace)
+            except ValueError as error:
+                self.fail('Real Keycloak canonical audience representation broke setup replay: '+str(error))
+            self.assertEqual(credentials.read_bytes(),before)
+            self.assertEqual(first['subjects'],repeated['subjects'])
+            self.assertEqual(sum(method=='POST' for method,_,_ in runtime.calls),posts)
+
+    def test_audience_claim_or_additional_mapper_drift_is_not_canonicalization(self):
+        mutations=[lambda mapper:mapper['config'].update({'userinfo.token.claim':'true'}),
+                   lambda mapper:mapper['config'].update({'included.client.audience':'foreign-api'}),
+                   lambda mapper:mapper['config'].update({'unknown.extra.claim':'false'}),
+                   lambda mapper:mapper.update({'protocolMapper':'oidc-hardcoded-claim-mapper'})]
+        for mutate in mutations+[None]:
+            with self.subTest(mutate=mutate),tempfile.TemporaryDirectory() as temp:
+                runtime=Runtime(identity())
+                credentials,workspace=Path(temp)/'users.json',Path(temp)/'workspace.json'
+                workplace.apply(runtime,runtime.identity['instance_id'],lab=True,credentials_file=credentials,workspace_file=workspace)
+                if mutate: mutate(runtime.clients[0]['protocolMappers'][0])
+                else: runtime.clients[0]['protocolMappers'].append(dict(runtime.clients[0]['protocolMappers'][0],name='second-mapper'))
+                before=len(runtime.calls)
+                with self.assertRaises(ValueError):
+                    workplace.apply(runtime,runtime.identity['instance_id'],lab=True,credentials_file=credentials,workspace_file=workspace)
+                self.assertFalse(any(method!='GET' for method,_,_ in runtime.calls[before:]))
+
 
 if __name__ == '__main__':
     unittest.main()
