@@ -1,0 +1,68 @@
+{
+  "problem": "Crash laboratory shipment builder omitted the newly required WZ recipient; the process-crash campaign failed before its first kill.",
+  "ci_RED": {
+    "head": "46e438eb599d433f3775fcf4bbd57d0f49402e28",
+    "run": 40933404200,
+    "job": 123657495559,
+    "artifact": 12922713615,
+    "sha256": "a3414fa1002b4109364f495ed501358029e658df58d020d95851f1f0cdcb6f7e"
+  },
+  "actual_regression_RED": "Generated laboratory SQL executed on the latest PostgreSQL kernel and failed invalid_document_recipient before the harness edit.",
+  "fix": "Add constant nonempty recipient Laboratorium WMS to the shared shipment JSON builder. Command IDs, request generation, crash cycles, writers, reconciliation and replay checks remain intact.",
+  "local_GREEN": {
+    "real_postgresql": true,
+    "race": true,
+    "canaries": 2,
+    "normal_and_probe_units": 4,
+    "durable_commands": 50,
+    "quantities": [
+      "integer",
+      "fractional"
+    ],
+    "each_request_replayed": 2,
+    "exact_operation_results": true,
+    "nonzero_canary_witness": true,
+    "runtime_document_read_contract": true,
+    "audit_and_outbox_exact": true,
+    "python_regression_tests": 34,
+    "skipped": 0
+  },
+  "limitation": "Local regression executes real generated SQL; it does not kill or restore PostgreSQL. The full Linux crash/recovery campaign and all final-head CI jobs must run again.",
+  "initial_green_attempt": "The first post-fix integration attempt reached reconciliation and exposed a test-adapter role-argument mismatch. The adapter was corrected to execute the actual runtime role and official grants; only race-green is counted as GREEN.",
+  "source_sha256": [
+    {
+      "path": "scripts/crash_restore.py",
+      "sha256": "cdb1c09f7bce947be3e8de1d4492f4673383f054b61c4e5ce0b3245165b17f31"
+    },
+    {
+      "path": "internal/postgres/crash_restore_lab_integration_test.go",
+      "sha256": "a915db6f9bc0feb5fcea78533e3bba7f87380b54a8d3334bea363a1c0685cb39"
+    }
+  ],
+  "files_sha256": [
+    {
+      "path": "artifact-receipt.json",
+      "sha256": "34ae4da9833611dfcdd16262c60b3bdc24e7fdba7446ef383e4546f3dd7afdf2"
+    },
+    {
+      "path": "red-source-hashes.json",
+      "sha256": "4466d10d7b10f2a87bb824f1033c7552552bab8e07fe91e943d2c271ffd44c27"
+    },
+    {
+      "path": "resilience-contract-red.jsonl",
+      "sha256": "2058a5f1d051e4a690ff6ee4aab5d02643f8234aee58b59aefc5e55b19e610de"
+    },
+    {
+      "path": "resilience-contract-race-green.jsonl",
+      "sha256": "033e0dc9e0d9a97e82860d8be09fb917416a31564a840134a6ae3d48510ca45f"
+    },
+    {
+      "path": "resilience-python-green.txt",
+      "sha256": "0b07dc26f68457e306dc550f8fc187a3459dc810b0a9b6d5c9b43a20fb93b054"
+    },
+    {
+      "path": "ci-postgres-error.txt",
+      "sha256": "135f560d74f138b1a0736fceea4a1877236cdb29addc0a0f58e2cc256db2c292"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "issue": "The position-only mutation anchor became ambiguous when recipes added a separate warehouse guard.",
+  "actual_CI_RED": {
+    "head": "46e438eb599d433f3775fcf4bbd57d0f49402e28",
+    "run": 40933404200,
+    "killed": 7,
+    "invalid": 1,
+    "passed": false
+  },
+  "local_RED": {
+    "killed": 7,
+    "invalid": 1,
+    "passed": false
+  },
+  "implementation": "Only needle/replacement context in tests/ui_backend_mutations.py changed; position warehouse filtering is still the mutated behavior. All8faults and REQUIRED tests were preserved.",
+  "GREEN": {
+    "killed": 8,
+    "survived": 0,
+    "invalid": 0,
+    "source_unchanged": true,
+    "position_mutant_failed_tests": [
+      "github.com/Shpuntyara/wms-platform/internal/api/TestWorkspaceCatalogCannotExposeForeignScopesOwnersOrOIDC",
+      "github.com/Shpuntyara/wms-platform/internal/api/TestWorkspaceCatalogPropertyMatchesIndependentPermissionScopes"
+    ]
+  },
+  "sha256_after": [
+    {
+      "path": "tests/ui_backend_mutations.py",
+      "sha256": "97c6fd3f2d21bf04d02cb534a4eab6003d3331647d850515703492de98008f8d"
+    },
+    {
+      "path": "internal/api/workspace.go",
+      "sha256": "f6060bf3bf10a3dcc0033b155ef56cd92388fb54142748176c0a602c0ee25d35"
+    },
+    {
+      "path": "internal/api/workspace_test.go",
+      "sha256": "739191adf77dcd8d4393f213b7ef09b2fb46ff2ea7ce96eac63dca86e44b0fec"
+    },
+    {
+      "path": "internal/api/workspace_property_test.go",
+      "sha256": "74ff807ef04b1890fb5819d3a0179383f007cde5ab96bbb468ff1dc8116c86db"
+    }
+  ],
+  "application_sources_and_assertions_unchanged": true
+}

@@ -1,0 +1,8 @@
+catalog-create-grant-can-read: killed
+catalog-owner-filter-removed: killed
+workspace-duplicate-grants: killed
+config-accepts-secret-fields: killed
+config-accepts-seventh-decimal: killed
+static-private-file-allowlist-removed: killed
+browser-issuer-binding-removed: killed
+{"passed": false, "killed": 7, "survived": 0, "invalid": 1, "source_unchanged": true}

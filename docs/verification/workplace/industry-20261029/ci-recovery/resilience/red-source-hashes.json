@@ -1,0 +1,18 @@
+[
+  {
+    "path": "scripts/crash_restore.py",
+    "sha256": "5a9a75f8020803bab46a01806aa05695dc203f6e2802f6d07ababe0d6d36d9e9"
+  },
+  {
+    "path": "internal/postgres/crash_restore_lab_integration_test.go",
+    "sha256": "45cc21f0f3d2a3d62a0b126d0e42282ec2ae0bd7534127fb7a931f31566aae5e"
+  },
+  {
+    "path": "db/migrations/0012_document_business_context.sql",
+    "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+  },
+  {
+    "path": "db/migrations/0013_work_orders.sql",
+    "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+  }
+]

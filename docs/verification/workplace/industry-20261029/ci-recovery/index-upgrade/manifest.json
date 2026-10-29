@@ -1,0 +1,85 @@
+{
+  "status": "locally_verified",
+  "problem": "Index-only regression accidentally applied later business-column/planning migrations, changing whole-row JSON shape legitimately",
+  "CI_RED": {
+    "head": "46e438eb599d433f3775fcf4bbd57d0f49402e28",
+    "run": 40933404200,
+    "job": 123657495635,
+    "failures": 5,
+    "cases": 11
+  },
+  "local_RED": {
+    "failures": 5,
+    "cleanup_databases": 11
+  },
+  "fix": "Explicit build_script(ROOT,through=0011), retaining the0010 baseline and complete JSON row equality; all11 scenarios remain unchanged",
+  "local_GREEN": {
+    "passed": 11,
+    "failed": 0,
+    "invalid": 0,
+    "cleanup_databases": 11
+  },
+  "unmodified_published_sources": [
+    "scripts/migrate_core.py",
+    "db/migrations/0011_document_owner_seek.sql",
+    "db/migrations/0012_document_business_context.sql",
+    "db/migrations/0013_work_orders.sql"
+  ],
+  "source_sha256": [
+    {
+      "path": "tests/document_owner_index_upgrade.py",
+      "sha256": "99a58e5efe4aee5f6900f2b434b4febf718e6e6f07bfa00a0a2f1af35df80d6e"
+    },
+    {
+      "path": "scripts/migrate_core.py",
+      "sha256": "cc3063f4128d84b691740d1126b3e3e98e76cd66e1b4ddf618e5ea2770e858ea"
+    },
+    {
+      "path": "db/migrations/0011_document_owner_seek.sql",
+      "sha256": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+    },
+    {
+      "path": "db/migrations/0012_document_business_context.sql",
+      "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+    },
+    {
+      "path": "db/migrations/0013_work_orders.sql",
+      "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+    }
+  ],
+  "proof_files_sha256": [
+    {
+      "path": "index-upgrade-ci-report.json",
+      "sha256": "9d9213589c6ba0fbc6eb746cd8ab367e03832db5ed154f4ca7b478b14c817cd0"
+    },
+    {
+      "path": "index-upgrade-before-hashes.json",
+      "sha256": "c766034907b453847aeb987dee9510a33fb89c6dcbb402fd573b3496e9785909"
+    },
+    {
+      "path": "index-upgrade-local-red.json",
+      "sha256": "f03c9f77bf001d3eac4a4095d40f60728189abc1b1dc83e273c755f1355a4122"
+    },
+    {
+      "path": "index-upgrade-local-red.stdout.txt",
+      "sha256": "70bff19b2bfa11b4c682ef9435d5117c82a568d626126f3457438b0545ad417d"
+    },
+    {
+      "path": "index-upgrade-local-red.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "index-upgrade-local-green.json",
+      "sha256": "5b3022ed22bd47a23f9e0c2fad81132e23287168fb96537cac8d10fb22b41bcc"
+    },
+    {
+      "path": "index-upgrade-local-green.stdout.txt",
+      "sha256": "6a202235bab1b8ce7fd52d9f74ceed7273b1345e8b157acf4404ba7cb3760a0b"
+    },
+    {
+      "path": "index-upgrade-local-green.stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "full_final_CI": "Required on the next commit; not claimed by this local result"
+}

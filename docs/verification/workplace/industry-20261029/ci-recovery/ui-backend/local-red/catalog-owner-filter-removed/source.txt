@@ -1,0 +1,105 @@
+package api
+
+import (
+	"cmp"
+	"net/http"
+	"slices"
+
+	"github.com/Shpuntyara/wms-platform/internal/inventory"
+)
+
+type workspaceGrant struct {
+	Permission string  `json:"permission"`
+	OwnerID    *string `json:"owner_id"`
+}
+
+type workspaceScope struct {
+	OrganizationID string           `json:"organization_id"`
+	WarehouseID    string           `json:"warehouse_id"`
+	Grants         []workspaceGrant `json:"grants"`
+}
+
+func (s *Server) workspace(w http.ResponseWriter, r *http.Request) {
+	if !s.method(w, r, http.MethodGet) {
+		return
+	}
+	p := principal(r)
+	grants := slices.Clone(p.Grants)
+	slices.SortFunc(grants, func(a, b inventory.Grant) int {
+		if n := cmp.Compare(a.OrganizationID, b.OrganizationID); n != 0 {
+			return n
+		}
+		if n := cmp.Compare(a.WarehouseID, b.WarehouseID); n != 0 {
+			return n
+		}
+		if n := cmp.Compare(a.Permission, b.Permission); n != 0 {
+			return n
+		}
+		return cmp.Compare(a.OwnerID, b.OwnerID)
+	})
+	grants = slices.Compact(grants)
+	scopes := []workspaceScope{}
+	for _, g := range grants {
+		if len(scopes) == 0 || scopes[len(scopes)-1].OrganizationID != g.OrganizationID || scopes[len(scopes)-1].WarehouseID != g.WarehouseID {
+			scopes = append(scopes, workspaceScope{OrganizationID: g.OrganizationID, WarehouseID: g.WarehouseID, Grants: []workspaceGrant{}})
+		}
+		var owner *string
+		if g.OwnerID != "" {
+			owner = &g.OwnerID
+		}
+		last := &scopes[len(scopes)-1]
+		last.Grants = append(last.Grants, workspaceGrant{Permission: g.Permission, OwnerID: owner})
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"data": map[string]any{"actor_id": p.ActorID, "scopes": scopes, "catalog": s.config.Workspace.catalog(p)}})
+}
+
+func (c WorkspaceConfig) catalog(p inventory.Principal) map[string]any {
+	organizations := []NamedOrganization{}
+	warehouses := []NamedWarehouse{}
+	owners := []NamedOwner{}
+	items := []NamedItem{}
+	positions := []NamedPosition{}
+	recipes := []ProductionRecipe{}
+	readOrganizations := map[string]bool{}
+	readWarehouses := map[[2]string]bool{}
+	for _, g := range p.Grants {
+		if g.Permission == "document.read" || g.Permission == "stock.read" {
+			readOrganizations[g.OrganizationID] = true
+			readWarehouses[[2]string{g.OrganizationID, g.WarehouseID}] = true
+		}
+	}
+	for _, entry := range c.Organizations {
+		if readOrganizations[entry.ID] {
+			organizations = append(organizations, entry)
+		}
+	}
+	for _, entry := range c.Warehouses {
+		if readWarehouses[[2]string{entry.OrganizationID, entry.ID}] {
+			warehouses = append(warehouses, entry)
+		}
+	}
+	for _, entry := range c.Owners {
+		for _, g := range p.Grants {
+			if g.OrganizationID == entry.OrganizationID && (g.Permission == "document.read" || g.Permission == "stock.read") && true {
+				owners = append(owners, entry)
+				break
+			}
+		}
+	}
+	for _, entry := range c.Items {
+		if readOrganizations[entry.OrganizationID] {
+			items = append(items, entry)
+		}
+	}
+	for _, entry := range c.Positions {
+		if readWarehouses[[2]string{entry.OrganizationID, entry.WarehouseID}] {
+			positions = append(positions, entry)
+		}
+	}
+	for _, entry := range c.Recipes {
+		if readWarehouses[[2]string{entry.OrganizationID, entry.WarehouseID}] {
+			recipes = append(recipes, entry)
+		}
+	}
+	return map[string]any{"organizations": organizations, "warehouses": warehouses, "owners": owners, "items": items, "positions": positions, "recipes": recipes}
+}

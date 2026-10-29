@@ -1,0 +1,32 @@
+{
+  "head": "46e438eb599d433f3775fcf4bbd57d0f49402e28",
+  "run": "https://github.com/Shpuntyara/wms-platform/actions/runs/40933404200",
+  "conclusion": "failure",
+  "artifacts": [
+    {
+      "name": "security-test-evidence",
+      "id": 12924465718,
+      "sha256": "sha256:78037f82ad03811d0dcd015b23e8be216d3eb2a73e6f63d638c2166a9941ad45"
+    },
+    {
+      "name": "workplace-test-evidence",
+      "id": 12923487311,
+      "sha256": "sha256:3d6b2942c31043c76e43c2332278f43ba910dd5ffd9a0d61681025a585f9ee32"
+    },
+    {
+      "name": "runtime-durability-evidence",
+      "id": 12923467302,
+      "sha256": "sha256:f74ac74525fd2b4bea99d2b1684267ffb5fe45d4a1465b026955e1282f154776"
+    },
+    {
+      "name": "hardened-test-evidence",
+      "id": 12922884687,
+      "sha256": "sha256:488a6b75ba66c67ad2581e1282eda7ab3b4032feb40c68e257e71a694b5a0035"
+    },
+    {
+      "name": "resilience-test-evidence",
+      "id": 12922713615,
+      "sha256": "sha256:a3414fa1002b4109364f495ed501358029e658df58d020d95851f1f0cdcb6f7e"
+    }
+  ]
+}

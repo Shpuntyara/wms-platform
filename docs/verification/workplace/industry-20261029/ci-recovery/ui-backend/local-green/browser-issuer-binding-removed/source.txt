@@ -1,0 +1,55 @@
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	"io"
+	"net/url"
+	"os"
+	"strings"
+
+	"github.com/Shpuntyara/wms-platform/internal/api"
+)
+
+func loadWorkspaceConfig(path, issuer, clientID string) (api.WorkspaceConfig, error) {
+	var config api.WorkspaceConfig
+	if path != "" {
+		file, err := os.Open(path)
+		if err != nil {
+			return config, errors.New("UI configuration file unavailable")
+		}
+		defer file.Close()
+		raw, err := io.ReadAll(io.LimitReader(file, 4*1024*1024+1))
+		if err != nil {
+			return config, errors.New("UI configuration file unreadable")
+		}
+		config, err = api.DecodeWorkspaceConfig(raw)
+		if err != nil {
+			return api.WorkspaceConfig{}, err
+		}
+	}
+	if clientID == "" {
+		clientID = "wms-browser"
+	}
+	if config.OIDC == (api.BrowserOIDC{}) {
+		u, err := url.Parse(issuer)
+		if err == nil {
+			marker := strings.LastIndex(u.Path, "/realms/")
+			if marker >= 0 {
+				realm := strings.TrimPrefix(u.Path[marker:], "/realms/")
+				if realm != "" && !strings.Contains(realm, "/") {
+					u.Path = u.Path[:marker]
+					config.OIDC = api.BrowserOIDC{URL: strings.TrimSuffix(u.String(), "/"), Realm: realm, ClientID: clientID}
+				}
+			}
+		}
+	}
+	if false {
+		return api.WorkspaceConfig{}, errors.New("UI public client issuer must match WMS_OIDC_ISSUER")
+	}
+	raw, err := json.Marshal(config)
+	if err != nil {
+		return api.WorkspaceConfig{}, errors.New("invalid UI configuration")
+	}
+	return api.DecodeWorkspaceConfig(raw)
+}

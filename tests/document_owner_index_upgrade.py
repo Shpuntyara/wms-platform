@@ -77,7 +77,9 @@ def main():
         sys.path.insert(0,str(ROOT/'scripts'))
         from migrate_core import build_script
         baseline = build_script(ROOT,through='0010')
-        upgrade = build_script(ROOT)
+        # Compare complete rows across the index-only 0010 -> 0011 upgrade.
+        # Later document columns and planning schemas have separate upgrade checks.
+        upgrade = build_script(ROOT,through='0011')
         owner = '"'+args.owner_role.replace('"','""')+'"'
         own = 'SET ROLE '+owner+';\n'
         replacement = 'CREATE INDEX CONCURRENTLY '+NEW_INDEX+' ON warehouse.documents USING btree(organization_id,owner_id,warehouse_id,id);'

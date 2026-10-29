@@ -363,6 +363,7 @@ BEGIN
   jsonb_build_object('organization_id',org,'warehouse_id',wh,'expected_document_version',3,'state','closed'));
  sc:=warehouse.command_document((p->'commands'->>4)::uuid,actor,NULL,jsonb_build_object(
   'organization_id',org,'warehouse_id',wh,'owner_id',own,'kind','shipment','number','s-'||(p->>'unit_id'),
+  'recipient','Laboratorium WMS',
   'lines',jsonb_build_array(jsonb_build_object('item_id',p->>'item','quantity',qty::text))));
  sa:=warehouse.command_document((p->'commands'->>5)::uuid,actor,(sc->>'document_id')::uuid,
   jsonb_build_object('organization_id',org,'warehouse_id',wh,'expected_document_version',1,'state','active'));

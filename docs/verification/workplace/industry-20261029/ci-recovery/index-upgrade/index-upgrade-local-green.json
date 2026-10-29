@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "name": "upgrade_and_repeat_preserve_rows_and_owner_lookup_prefix",
+      "status": "pass"
+    },
+    {
+      "name": "resume_valid_created_index_old_absent=False",
+      "status": "pass"
+    },
+    {
+      "name": "resume_valid_created_index_old_absent=True",
+      "status": "pass"
+    },
+    {
+      "name": "failed_after_create_before_drop_retries_without_data_loss",
+      "status": "pass"
+    },
+    {
+      "name": "wrong_existing_column_order_refused_before_old_drop",
+      "status": "pass"
+    },
+    {
+      "name": "wrong_existing_descending_refused_before_old_drop",
+      "status": "pass"
+    },
+    {
+      "name": "wrong_existing_include_refused_before_old_drop",
+      "status": "pass"
+    },
+    {
+      "name": "wrong_existing_partial_refused_before_old_drop",
+      "status": "pass"
+    },
+    {
+      "name": "wrong_existing_access_method_refused_before_old_drop",
+      "status": "pass"
+    },
+    {
+      "name": "unexpected_old_index_name_contract_is_retained",
+      "status": "pass"
+    },
+    {
+      "name": "cancelled_concurrent_build_refuses_until_explicit_owned_repair",
+      "status": "pass"
+    }
+  ],
+  "cleanup_databases": 11,
+  "source_sha256": [
+    {
+      "path": "tests/document_owner_index_upgrade.py",
+      "sha256": "99a58e5efe4aee5f6900f2b434b4febf718e6e6f07bfa00a0a2f1af35df80d6e"
+    },
+    {
+      "path": "scripts/migrate_core.py",
+      "sha256": "cc3063f4128d84b691740d1126b3e3e98e76cd66e1b4ddf618e5ea2770e858ea"
+    },
+    {
+      "path": "db/migrations/0011_document_owner_seek.sql",
+      "sha256": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+    }
+  ]
+}

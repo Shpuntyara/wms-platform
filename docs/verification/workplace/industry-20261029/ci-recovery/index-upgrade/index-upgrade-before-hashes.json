@@ -1,0 +1,22 @@
+[
+  {
+    "path": "tests/document_owner_index_upgrade.py",
+    "sha256": "60ecb2721f185ece5ecb5c9fb78ba6696434c6cf49de36e712ef55ae8e702689"
+  },
+  {
+    "path": "scripts/migrate_core.py",
+    "sha256": "cc3063f4128d84b691740d1126b3e3e98e76cd66e1b4ddf618e5ea2770e858ea"
+  },
+  {
+    "path": "db/migrations/0011_document_owner_seek.sql",
+    "sha256": "319b3f149053e49a8fa9cec8751fdd7e110d7dc4fa2309935f204d5c198b8192"
+  },
+  {
+    "path": "db/migrations/0012_document_business_context.sql",
+    "sha256": "25d1d333dbaa6f877f0dd177332ee83728b1a4b51545e3b76925c74813a41fe3"
+  },
+  {
+    "path": "db/migrations/0013_work_orders.sql",
+    "sha256": "743abeaea282f18fb8cf593a52e005aca515938a5eabe856a0704075f54147ca"
+  }
+]
